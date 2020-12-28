@@ -12,9 +12,9 @@
 #ifndef RestCore_TRestDetectorHitsToSignalProcess
 #define RestCore_TRestDetectorHitsToSignalProcess
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -26,7 +26,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     TRestDetectorReadout* fReadout;  //!
-    TRestDetectorGas* fGas;                  //!
+    TRestDetectorGas* fGas;          //!
 #endif
 
     void InitFromConfigFile();
@@ -43,6 +43,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     Double_t fGasPressure;    // atm
     Double_t fElectricField;  // V/mm
     Double_t fDriftVelocity;  // mm/us
+    Bool_t fUseElectronNumberSampling;
 
    public:
     any GetInputEvent() { return fHitsEvent; }
@@ -75,7 +76,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDef(TRestDetectorHitsToSignalProcess, 1);  // Template for a REST "event process" class inherited from
-                                            // TRestEventProcess
+    ClassDef(TRestDetectorHitsToSignalProcess, 2);  // Template for a REST "event process" class inherited
+                                                    // from TRestEventProcess
 };
 #endif

@@ -13,9 +13,9 @@
 #define RestCore_TRestDetectorElectronDiffusionProcess
 
 #include <TRandom3.h>
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 
 #include "TRestEventProcess.h"
 
@@ -25,7 +25,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-    TRestDetectorGas* fGas;                  //!
+    TRestDetectorGas* fGas;          //!
     TRestDetectorReadout* fReadout;  //!
 
     TRandom3* fRandom;  //!
@@ -44,6 +44,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fWvalue;
     Double_t fLonglDiffCoeff;
     Double_t fTransDiffCoeff;
+    Bool_t fUseElectronNumberSampling;
 
     Int_t fMaxHits;
 
@@ -90,7 +91,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
-    ClassDef(TRestDetectorElectronDiffusionProcess, 2);  // Template for a REST "event process" class inherited from
-                                                 // TRestEventProcess
+    ClassDef(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
+                                                         // inherited from TRestEventProcess
 };
 #endif

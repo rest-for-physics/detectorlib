@@ -64,7 +64,8 @@ void TRestDetectorHitsToSignalProcess::LoadConfig(string cfgFilename, string nam
     //// electronDiffusionProcess
     // if (fElectricField == PARAMETER_NOT_FOUND_DBL) {
     //    fElectricField =
-    //        this->GetDoubleParameterFromFriendsWithUnits("TRestDetectorElectronDiffusionProcess", "electricField");
+    //        this->GetDoubleParameterFromFriendsWithUnits("TRestDetectorElectronDiffusionProcess",
+    //        "electricField");
     //    if (fElectricField != PARAMETER_NOT_FOUND_DBL) {
     //        cout << "Getting electric field from electronDiffusionProcess : " << fElectricField << " V/cm"
     //             << endl;
@@ -95,7 +96,8 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != NULL) {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries." << endl;
+        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+             << endl;
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorHitsToSignalProcess"
              << endl;
@@ -184,7 +186,12 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
 
             time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
-            fSignalEvent->AddChargeToSignal(daqId, time, energy);
+            if (fUseElectronNumberSampling) {
+                fSignalEvent->AddChargeToSignal(daqId, time, 1);
+            } else {
+                fSignalEvent->AddChargeToSignal(daqId, time, energy);
+            }
+
         } else {
             if (GetVerboseLevel() >= REST_Debug)
                 cout << "readout channel not find for position (" << x << ", " << y << ", " << z << ")!"
@@ -195,9 +202,10 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
     fSignalEvent->SortSignals();
 
     if (GetVerboseLevel() >= REST_Debug) {
-        cout << "TRestDetectorHitsToSignalProcess : Number of signals added : " << fSignalEvent->GetNumberOfSignals()
+        cout << "TRestDetectorHitsToSignalProcess : Number of signals added : "
+             << fSignalEvent->GetNumberOfSignals() << endl;
+        cout << "TRestDetectorHitsToSignalProcess : Total signals integral : " << fSignalEvent->GetIntegral()
              << endl;
-        cout << "TRestDetectorHitsToSignalProcess : Total signals integral : " << fSignalEvent->GetIntegral() << endl;
     }
 
     return fSignalEvent;
@@ -222,4 +230,5 @@ void TRestDetectorHitsToSignalProcess::InitFromConfigFile() {
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
     // DONE : velocity units are implemented with standard unit "mm/us"
     fDriftVelocity = GetDblParameterWithUnits("driftVelocity", -1.);
+    fUseElectronNumberSampling = StringToBool(GetParameter("useElectronNumberSampling", "false"));
 }
