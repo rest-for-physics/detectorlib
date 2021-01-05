@@ -168,7 +168,9 @@ ClassImp(TRestDetectorHits3DReconstructionProcess)
 }
 
 //______________________________________________________________________________
-TRestDetectorHits3DReconstructionProcess::~TRestDetectorHits3DReconstructionProcess() { delete fOutputHitsEvent; }
+TRestDetectorHits3DReconstructionProcess::~TRestDetectorHits3DReconstructionProcess() {
+    delete fOutputHitsEvent;
+}
 
 //______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::Initialize() {
@@ -193,8 +195,9 @@ void TRestDetectorHits3DReconstructionProcess::InitProcess() {
         htemp = new TH2D("hhits", "hhits", 100, -PlaneMaxX, PlaneMaxX, 100, -PlaneMaxY, PlaneMaxY);
         CreateCanvas();
     }
-
-    fCompareProc = GetFriendLive("TRestGeant4ToHitsProcess");
+#ifdef REST_Geant4Lib
+    fCompareProc = GetFriendLive("TRestGeant4ToDetectorHitsProcess");
+#endif
 }
 
 //______________________________________________________________________________
@@ -475,10 +478,9 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
         if (fDraw && (layerambiguity > fDrawThres)) {
             if (regionhits.size() == 0) continue;
             double maxenergyofregionhits =
-                (*min_element(regionhits.begin(), regionhits.end(), [](const regionhit& h1,
-                                                                       const regionhit& h2) -> bool {
-                    return h1.e > h2.e;
-                })).e;
+                (*min_element(regionhits.begin(), regionhits.end(),
+                              [](const regionhit& h1, const regionhit& h2) -> bool { return h1.e > h2.e; }))
+                    .e;
 
             fCanvas->Clear();
             htemp->SetStats(false);
@@ -538,14 +540,14 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
         auto hits1 = *fOutputHitsEvent->GetHits();
         auto hits2 = *reference->GetHits();
 
-        double maxz1 = (*min_element(hits1.begin(), hits1.end(), [](const TRestHits::iterator& h1,
-                                                                    const TRestHits::iterator& h2) -> bool {
-                           return h1.z() > h2.z();
-                       })).z();
-        double maxz2 = (*min_element(hits2.begin(), hits2.end(), [](const TRestHits::iterator& h1,
-                                                                    const TRestHits::iterator& h2) -> bool {
-                           return h1.z() > h2.z();
-                       })).z();
+        double maxz1 = (*min_element(hits1.begin(), hits1.end(),
+                                     [](const TRestHits::iterator& h1,
+                                        const TRestHits::iterator& h2) -> bool { return h1.z() > h2.z(); }))
+                           .z();
+        double maxz2 = (*min_element(hits2.begin(), hits2.end(),
+                                     [](const TRestHits::iterator& h1,
+                                        const TRestHits::iterator& h2) -> bool { return h1.z() > h2.z(); }))
+                           .z();
         double dz = maxz2 - maxz1;
 
         double mindistmean = 1e9;
