@@ -116,7 +116,8 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != NULL) {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries." << endl;
+        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+             << endl;
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorSignalToHitsProcess"
              << endl;
@@ -269,6 +270,19 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
+        } else if (fSignalToHitMethod == "qCenter") {
+            Double_t energy_signal = 0;
+            Double_t distanceToPlane = 0;
+
+            for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
+                Double_t energy_point = sgnl->GetData(j);
+                energy_signal += energy_point;
+                distanceToPlane += sgnl->GetTime(j) * fDriftVelocity * energy_point;
+            }
+            Double_t energy = energy_signal / sgnl->GetNumberOfPoints();
+
+            Double_t z = zPosition + fieldZDirection * (distanceToPlane / energy_signal);
+            fHitsEvent->AddHit(x, y, z, energy, 0, type);
         } else {
             for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
                 Double_t energy = sgnl->GetData(j);
