@@ -14,11 +14,9 @@
 
 using namespace std;
 
-ClassImp(TRestDetectorHitsToSignalProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsToSignalProcess);
+//______________________________________________________________________________
+TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess() { Initialize(); }
 
 // __________________________________________________________
 //     TODO : Perhaps this constructor should be removed
@@ -34,8 +32,6 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFile
     PrintMetadata();
 
     if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
-
-    // TRestDetectorHitsToSignalProcess default constructor
 }
 
 //______________________________________________________________________________
@@ -43,7 +39,6 @@ TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
     if (fReadout != NULL) delete fReadout;
 
     delete fSignalEvent;
-    // TRestDetectorHitsToSignalProcess destructor
 }
 
 void TRestDetectorHitsToSignalProcess::LoadDefaultConfig() {
@@ -186,16 +181,12 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
 
             time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
-            if (fUseElectronNumberSampling) {
-                fSignalEvent->AddChargeToSignal(daqId, time, 1);
-            } else {
-                fSignalEvent->AddChargeToSignal(daqId, time, energy);
-            }
+            fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
         } else {
             if (GetVerboseLevel() >= REST_Debug)
-                cout << "readout channel not find for position (" << x << ", " << y << ", " << z << ")!"
-                     << endl;
+                debug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
+                      << ", " << y << ", " << z << ")!" << endl;
         }
     }
 
@@ -230,5 +221,4 @@ void TRestDetectorHitsToSignalProcess::InitFromConfigFile() {
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
     // DONE : velocity units are implemented with standard unit "mm/us"
     fDriftVelocity = GetDblParameterWithUnits("driftVelocity", -1.);
-    fUseElectronNumberSampling = StringToBool(GetParameter("useElectronNumberSampling", "false"));
 }

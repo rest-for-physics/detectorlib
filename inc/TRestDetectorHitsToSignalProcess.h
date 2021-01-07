@@ -43,7 +43,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     Double_t fGasPressure;    // atm
     Double_t fElectricField;  // V/mm
     Double_t fDriftVelocity;  // mm/us
-    Bool_t fUseElectronNumberSampling;
 
    public:
     any GetInputEvent() { return fHitsEvent; }
@@ -76,7 +75,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDef(TRestDetectorHitsToSignalProcess, 2);  // Template for a REST "event process" class inherited
-                                                    // from TRestEventProcess
+    ClassDef(TRestDetectorHitsToSignalProcess, 1);
 };
 #endif
