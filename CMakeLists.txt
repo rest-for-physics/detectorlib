@@ -1,3 +1,6 @@
+set( LibraryVersion "1.0" )
+add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
+
 #find garfield libs and includes
 IF( NOT DEFINED REST_GARFIELD )
    set(REST_GARFIELD OFF)
