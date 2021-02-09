@@ -107,7 +107,9 @@ TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityPro
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
-TRestDetectorSignalChannelActivityProcess::~TRestDetectorSignalChannelActivityProcess() { delete fSignalEvent; }
+TRestDetectorSignalChannelActivityProcess::~TRestDetectorSignalChannelActivityProcess() {
+    delete fSignalEvent;
+}
 
 ///////////////////////////////////////////////
 /// \brief Function to load the default config in absence of RML input
@@ -120,6 +122,7 @@ void TRestDetectorSignalChannelActivityProcess::LoadDefaultConfig() { SetTitle("
 ///
 void TRestDetectorSignalChannelActivityProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fSignalEvent = new TRestDetectorSignalEvent();
 }

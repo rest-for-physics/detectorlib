@@ -60,6 +60,7 @@ void TRestDetectorHitsRotateAndTranslateProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fDeltaX = 1.0;
     fDeltaY = 1.0;

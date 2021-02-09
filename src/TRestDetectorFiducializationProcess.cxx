@@ -37,6 +37,7 @@ void TRestDetectorFiducializationProcess::LoadDefaultConfig() { SetTitle("Defaul
 //______________________________________________________________________________
 void TRestDetectorFiducializationProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
     fInputHitsEvent = NULL;
@@ -86,8 +87,10 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
 
     if (this->GetVerboseLevel() >= REST_Debug) {
-        cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits() << endl;
-        cout << "TRestDetectorFiducializationProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy() << endl;
+        cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
+             << endl;
+        cout << "TRestDetectorFiducializationProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
+             << endl;
     }
 
     return fOutputHitsEvent;

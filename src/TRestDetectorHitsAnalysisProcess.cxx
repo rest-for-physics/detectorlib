@@ -142,6 +142,7 @@ void TRestDetectorHitsAnalysisProcess::LoadDefaultConfig() { SetTitle("Default c
 //______________________________________________________________________________
 void TRestDetectorHitsAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fInputHitsEvent = NULL;
     fOutputHitsEvent = new TRestDetectorHitsEvent();

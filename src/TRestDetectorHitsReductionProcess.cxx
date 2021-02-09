@@ -43,6 +43,7 @@ void TRestDetectorHitsReductionProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorHitsReductionProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fInputHitsEvent = NULL;
     fOutputHitsEvent = NULL;

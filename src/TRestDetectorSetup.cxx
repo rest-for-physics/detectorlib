@@ -43,6 +43,7 @@ TRestDetectorSetup::~TRestDetectorSetup() {
 
 void TRestDetectorSetup::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fRunNumber = 0;
     fSubRunNumber = 0;

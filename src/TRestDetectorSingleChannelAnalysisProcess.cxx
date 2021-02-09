@@ -36,6 +36,7 @@ TRestDetectorSingleChannelAnalysisProcess::~TRestDetectorSingleChannelAnalysisPr
 //______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fSignalEvent = NULL;
 

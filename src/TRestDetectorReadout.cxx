@@ -321,6 +321,7 @@ TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName, string name)
 ///
 void TRestDetectorReadout::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fDecoding = false;
 

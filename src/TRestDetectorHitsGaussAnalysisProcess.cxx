@@ -129,7 +129,7 @@ void TRestDetectorHitsGaussAnalysisProcess::InitProcess() {
 ///
 void TRestDetectorHitsGaussAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
-    // SetLibraryVersion(LIBRARY_VERSION);
+    SetLibraryVersion(LIBRARY_VERSION);
 
     // fHitsEvent = new TRestDetectorHitsEvent();
     fInputHitsEvent = NULL;
@@ -160,8 +160,10 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
         fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
     }
 
-    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX(fReadoutChannelsX, fStartChannelPosition, fEndChannelPosition, fPitch);
-    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fReadoutChannelsX, fStartChannelPosition, fEndChannelPosition, fPitch);
+    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX(fReadoutChannelsX, fStartChannelPosition,
+                                                           fEndChannelPosition, fPitch);
+    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fReadoutChannelsX, fStartChannelPosition,
+                                                           fEndChannelPosition, fPitch);
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
@@ -190,7 +192,6 @@ void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
     fEndChannelPosition = StringToInteger(GetParameter("EndChPos", "30"));
 
     fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
-
 }
 
 ///////////////////////////////////////////////

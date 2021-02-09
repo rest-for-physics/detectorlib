@@ -6,11 +6,15 @@ ClassImp(TRestDetectorDriftVolume)
     TRestDetectorDriftVolume::TRestDetectorDriftVolume() {
     Initialize();
 }
-TRestDetectorDriftVolume::TRestDetectorDriftVolume(const char* cfgFileName, string name) : TRestMetadata(cfgFileName) {
+TRestDetectorDriftVolume::TRestDetectorDriftVolume(const char* cfgFileName, string name)
+    : TRestMetadata(cfgFileName) {
     LoadConfigFromFile(cfgFileName, name);
 }
 
 void TRestDetectorDriftVolume::Initialize() {
+    SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
+
     fMaterial = "";
     fW = -1;
 

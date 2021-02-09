@@ -94,6 +94,7 @@ void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string na
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
     SetSectionName(ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fRandom = new TRandom3(0);
     fInputHitsEvent = NULL;

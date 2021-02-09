@@ -175,6 +175,7 @@ TRestDetectorHits3DReconstructionProcess::~TRestDetectorHits3DReconstructionProc
 //______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fInputHitsEvent = NULL;
     fOutputHitsEvent = new TRestDetectorHitsEvent();

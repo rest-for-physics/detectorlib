@@ -55,6 +55,7 @@ void TRestDetectorHitsSmearingProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorHitsSmearingProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fEnergyRef = 5.9;
     fResolutionAtEref = 15.0;

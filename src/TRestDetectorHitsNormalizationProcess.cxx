@@ -54,6 +54,7 @@ void TRestDetectorHitsNormalizationProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fFactor = 1.;
 
@@ -88,7 +89,8 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evIn
                                  fHitsInputEvent->GetTime(hit), fHitsInputEvent->GetType(hit));
 
     if (this->GetVerboseLevel() >= REST_Debug) {
-        cout << "TRestDetectorHitsNormalizationProcess. Hits added : " << fHitsOutputEvent->GetNumberOfHits() << endl;
+        cout << "TRestDetectorHitsNormalizationProcess. Hits added : " << fHitsOutputEvent->GetNumberOfHits()
+             << endl;
         cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : " << fHitsOutputEvent->GetEnergy()
              << endl;
     }

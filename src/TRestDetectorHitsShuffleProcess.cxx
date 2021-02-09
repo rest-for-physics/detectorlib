@@ -39,6 +39,7 @@ void TRestDetectorHitsShuffleProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorHitsShuffleProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = NULL;
 

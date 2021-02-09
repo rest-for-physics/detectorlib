@@ -37,6 +37,7 @@ void TRestDetectorTriggerAnalysisProcess::LoadDefaultConfig() { SetTitle("Defaul
 //______________________________________________________________________________
 void TRestDetectorTriggerAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fSignalEvent = new TRestDetectorSignalEvent();
 

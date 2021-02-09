@@ -245,14 +245,16 @@ TRestDetectorGas::TRestDetectorGas() : TRestDetectorDriftVolume() {
 /// section. \param name The name of the TRestDetectorGas section to be read. \param
 /// gasGeneration Parameter allowing to activate the gas generation.
 ///
-TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool gasGeneration, bool test) : TRestDetectorDriftVolume() {
+TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool gasGeneration, bool test)
+    : TRestDetectorDriftVolume() {
     Initialize();
     fGasGeneration = gasGeneration;
 
     fTest = test;
 
     if (strcmp(cfgFileName, "server") == 0) {
-        LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"), NULL);
+        LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"),
+                              NULL);
     } else {
         fConfigFileName = cfgFileName;
         LoadConfigFromFile(fConfigFileName, name);
@@ -280,6 +282,7 @@ void TRestDetectorGas::Initialize() {
     debug << "TRestDetectorGas. Entering ... Initialize()." << endl;
 
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fPressureInAtm = 1;
     fTemperatureInK = 300;
@@ -354,7 +357,8 @@ void TRestDetectorGas::LoadGasFile() {
 }
 
 void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
-    debug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )" << endl;
+    debug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )"
+          << endl;
 
 #if defined USE_Garfield
     if (fEnodes <= 0) {
@@ -434,8 +438,8 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
 /// \param fraction The element fraction in volume.
 ///
 void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
-    debug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName << " , fraction=" << fraction
-          << " )" << endl;
+    debug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName
+          << " , fraction=" << fraction << " )" << endl;
 
     fGasComponentName.push_back(gasName);
     fGasComponentFraction.push_back(fraction);
@@ -564,7 +568,8 @@ void TRestDetectorGas::InitFromConfigFile() {
 
     // construct the gas file name and try to find it, either locally or from gas server
     fGasFilename = ConstructFilename();
-    debug << "TRestDetectorGas::InitFromConfigFile. ConstructFilename. fGasFilename = " << fGasFilename << endl;
+    debug << "TRestDetectorGas::InitFromConfigFile. ConstructFilename. fGasFilename = " << fGasFilename
+          << endl;
     fGasFilename = FindGasFile((string)fGasFilename);
     debug << "TRestDetectorGas::InitFromConfigFile. FindGasFile. fGasFilename = " << fGasFilename << endl;
 
@@ -1193,8 +1198,8 @@ void TRestDetectorGas::PrintGasInfo() {
 }
 
 Int_t TRestDetectorGas::Write(const char* name, Int_t option, Int_t bufsize) {
-    debug << "Entering ... TRestDetectorGas::Write( name=" << name << " option=" << option << " bufsize=" << bufsize
-          << " )" << endl;
+    debug << "Entering ... TRestDetectorGas::Write( name=" << name << " option=" << option
+          << " bufsize=" << bufsize << " )" << endl;
 
     if (fGasFileContent == "" && GasFileLoaded()) {
         ifstream infile;

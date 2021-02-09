@@ -71,6 +71,7 @@ void TRestDetectorHitsToSignalProcess::LoadConfig(string cfgFilename, string nam
 //______________________________________________________________________________
 void TRestDetectorHitsToSignalProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fReadout = NULL;
     fGas = NULL;

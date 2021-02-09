@@ -43,6 +43,7 @@ void TRestDetectorSignalViewerProcess::LoadDefaultConfig() { SetTitle("Default c
 //______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fSignalEvent = NULL;
 

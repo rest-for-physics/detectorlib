@@ -42,6 +42,7 @@ void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorElectronDiffusionProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fElectricField = 0;
     fAttachment = 0;

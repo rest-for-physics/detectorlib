@@ -61,6 +61,7 @@ void TRestDetectorAvalancheProcess::LoadDefaultConfig() {
 //______________________________________________________________________________
 void TRestDetectorAvalancheProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fGas = NULL;
 

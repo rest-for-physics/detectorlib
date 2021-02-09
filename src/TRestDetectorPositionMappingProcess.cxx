@@ -33,6 +33,7 @@ TRestDetectorPositionMappingProcess::~TRestDetectorPositionMappingProcess() {}
 //______________________________________________________________________________
 void TRestDetectorPositionMappingProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = NULL;
 

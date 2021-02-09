@@ -31,6 +31,7 @@ TRestDetectorDaqChannelSwitchingProcess::~TRestDetectorDaqChannelSwitchingProces
 
 //______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
+    SetLibraryVersion(LIBRARY_VERSION);
     SetSectionName(this->ClassName());
 
     fFirstDaqChannelDef.clear();

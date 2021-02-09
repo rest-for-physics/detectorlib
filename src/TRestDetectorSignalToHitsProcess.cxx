@@ -96,6 +96,7 @@ void TRestDetectorSignalToHitsProcess::LoadConfig(std::string cfgFilename, std::
 //______________________________________________________________________________
 void TRestDetectorSignalToHitsProcess::Initialize() {
     SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = new TRestDetectorHitsEvent();
     fSignalEvent = 0;
