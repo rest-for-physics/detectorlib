@@ -26,3 +26,6 @@ if (NOT ${REST_EVE} MATCHES "ON")
 endif ()
 
 COMPILELIB("")
+
+file(GLOB_RECURSE MAC "${CMAKE_CURRENT_SOURCE_DIR}/macros/*")
+INSTALL(FILES ${MAC} DESTINATION ./macros/detector)
