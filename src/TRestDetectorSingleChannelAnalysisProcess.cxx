@@ -22,6 +22,7 @@
 #include <TPaveText.h>
 #include <TRandom.h>
 #include <TSpectrum.h>
+#include <TLine.h>
 using namespace std;
 
 ClassImp(TRestDetectorSingleChannelAnalysisProcess)
