@@ -39,24 +39,24 @@ class TRestDetector : public TRestMetadata {
     string fDetectorName = "REST Detector";
     Int_t fRunNumber = 0;
 
-    Double_t fDriftVoltage;   // In V
-    Double_t fDriftDistance;  // in mm
-    Double_t fDriftGain;      // in mm
+    Double_t fDriftVoltage = -1;   // In V
+    Double_t fDriftDistance = -1;  // in mm
+    Double_t fDriftGain = -1;      // in mm
 
-    Double_t fAmplificationVoltage;   // In V
-    Double_t fAmplificationDistance;  // in mm
-    Double_t fAmplificationGain;      //
+    Double_t fAmplificationVoltage = -1;   // In V
+    Double_t fAmplificationDistance = -1;  // in mm
+    Double_t fAmplificationGain = -1;      //
 
-    Double_t fMass;    // in kg
-    Double_t fHeight;  // in mm
-    Double_t fRadius;  // in mm
-    Double_t fLength;  // in mm
-    Double_t fWidth;   // in mm
+    Double_t fMass = -1;    // in kg
+    Double_t fHeight = -1;  // in mm
+    Double_t fRadius = -1;  // in mm
+    Double_t fLength = -1;  // in mm
+    Double_t fWidth = -1;   // in mm
 
-    Double_t fDAQShapingTime;   // in us
-    Double_t fDAQSamplingTime;  // in us
-    Double_t fDAQDynamicRange;
-    Double_t fDAQThreshold;
+    Double_t fDAQShapingTime = -1;   // in us
+    Double_t fDAQSamplingTime = -1;  // in us
+    Double_t fDAQDynamicRange = -1;
+    Double_t fDAQThreshold = -1;
 
     void InitFromConfigFile() { ReadAllParameters(); }
     void PrintMetadata();
