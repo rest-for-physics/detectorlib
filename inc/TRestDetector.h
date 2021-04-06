@@ -37,7 +37,6 @@ using namespace std;
 class TRestDetector : public TRestMetadata {
    public:
     string fDetectorName = "REST Detector";
-    Int_t fRunNumber = 0;
 
     Double_t fDriftVoltage = -1;   // In V
     Double_t fDriftDistance = -1;  // in mm
@@ -66,7 +65,7 @@ class TRestDetector : public TRestMetadata {
     // Destructor
     ~TRestDetector() {}
 
-    ClassDef(TRestDetector, 1);
+    ClassDef(TRestDetector, 2);
 };
 
 #endif
