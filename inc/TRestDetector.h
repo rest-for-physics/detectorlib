@@ -58,9 +58,9 @@ class TRestDetector : public TRestMetadata {
     Double_t fDAQDynamicRange = -1;
     Double_t fDAQThreshold = -1;
     
-    string fElectronicsGain = -1;    //hexadecimal
-    string fElectronicsClock = -1;   //hexadecimal
-    string fElectronicsShaping = -1; //hexadecimal
+    string fElectronicsGain;    //hexadecimal
+    string fElectronicsClock;   //hexadecimal
+    string fElectronicsShaping; //hexadecimal
 
     void InitFromConfigFile() { ReadAllParameters(); }
     void PrintMetadata();
