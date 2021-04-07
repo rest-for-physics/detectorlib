@@ -51,11 +51,16 @@ class TRestDetector : public TRestMetadata {
     Double_t fRadius = -1;  // in mm
     Double_t fLength = -1;  // in mm
     Double_t fWidth = -1;   // in mm
+    Double_t fPressure = -1; // in atm
 
     Double_t fDAQShapingTime = -1;   // in us
     Double_t fDAQSamplingTime = -1;  // in us
     Double_t fDAQDynamicRange = -1;
     Double_t fDAQThreshold = -1;
+    
+    string fElectronicsGain = -1;    //hexadecimal
+    string fElectronicsClock = -1;   //hexadecimal
+    string fElectronicsShaping = -1; //hexadecimal
 
     void InitFromConfigFile() { ReadAllParameters(); }
     void PrintMetadata();
