@@ -74,27 +74,25 @@ class TRestDetector : public TRestMetadata {
 
     /// The electronics shaping time in us
     Double_t fElectronicsShapingTime = -1;
-
     /// The electronics sampling time in us
     Double_t fElectronicsSamplingTime = -1;
-
     /// The electronics dynamic range in V
     Double_t fElectronicsDynamicRange = -1;
-
     /// The electronics threshold in ADC units
     Double_t fElectronicsThreshold = -1;
 
     /// The electronics gain in raw configuration format (hexadecimal)
     string fElectronicsGain = "-1";
-
     /// The electronics clock (sampling) in raw configuration format (hexadecimal)
     string fElectronicsClock = "-1";
-
     /// The electronics shaping in raw configuration format (hexadecimal)
     string fElectronicsShaping = "-1";
 
     void InitFromConfigFile() { ReadAllParameters(); }
+
     void PrintMetadata();
+
+    void UpdateMetadataMembers();
 
     // Constructors
     TRestDetector() {}

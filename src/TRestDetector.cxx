@@ -66,4 +66,12 @@ void TRestDetector::PrintMetadata() {
     metadata << "---------------------------------------" << endl;
 }
 
+void TRestDetector::UpdateMetadataMembers() {
+    // We divide 100Mhz by the clock divider for AGET electronics.
+    // We could have in future an additional member to say the electronics we are using
+    if (fElectronicsShaping != "-1") {
+        fElectronicsSamplingTime = (StringToInteger(fElectronicsShaping) + 1) / 100.;
+    }
+}
+
 ClassImp(TRestDetector);
