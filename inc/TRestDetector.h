@@ -99,7 +99,7 @@ class TRestDetector : public TRestMetadata {
     // Destructor
     ~TRestDetector() {}
 
-    ClassDef(TRestDetector, 2);
+    ClassDef(TRestDetector, 3);
 };
 
 #endif
