@@ -50,6 +50,8 @@ class TRestDetector : public TRestMetadata {
 
     /// The detector drift voltage in V
     Double_t fDriftVoltage = -1;
+    /// The detector drift voltage in V/mm
+    Double_t fDriftField = -1;
     /// The detector drift distance in mm
     Double_t fDriftDistance = -1;
     /// The detector amplification voltage in V
@@ -99,7 +101,7 @@ class TRestDetector : public TRestMetadata {
     // Destructor
     ~TRestDetector() {}
 
-    ClassDef(TRestDetector, 3);
+    ClassDef(TRestDetector, 4);
 };
 
 #endif
