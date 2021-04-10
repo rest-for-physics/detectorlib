@@ -222,7 +222,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
             type = XZ;
         }
 
-        if (fSignalToHitMethod == "onlyMax") {
+        if (fMethod == "onlyMax") {
             Double_t time = sgnl->GetMaxPeakTime();
             Double_t distanceToPlane = time * fDriftVelocity;
 
@@ -237,7 +237,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
                      << " Energy : " << energy << endl;
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
-        } else if (fSignalToHitMethod == "tripleMax") {
+        } else if (fMethod == "tripleMax") {
             Int_t bin = sgnl->GetMaxIndex();
             int binprev = (bin - 1) < 0 ? bin : bin - 1;
             int binnext = (bin + 1) > sgnl->GetNumberOfPoints() - 1 ? bin : bin + 1;
@@ -271,7 +271,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
-        } else if (fSignalToHitMethod == "qCenter") {
+        } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;
 
@@ -332,10 +332,3 @@ void TRestDetectorSignalToHitsProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
-void TRestDetectorSignalToHitsProcess::InitFromConfigFile() {
-    fElectricField = GetDblParameterWithUnits("electricField", 100.);
-    fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
-    fDriftVelocity = GetDblParameterWithUnits("driftVelocity", -1.);
-    fSignalToHitMethod = GetParameter("method", "all");
-}

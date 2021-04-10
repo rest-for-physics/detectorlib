@@ -1,36 +1,44 @@
-///______________________________________________________________________________
-///______________________________________________________________________________
-///______________________________________________________________________________
-///
-///
-///             RESTSoft : Software for Rare Event Searches with TPCs
-///
-///             TRestDetectorSignalToHitsProcess.h
-///
-///_______________________________________________________________________________
+/*************************************************************************
+ * This file is part of the REST software framework.                     *
+ *                                                                       *
+ * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
+ * For more information see http://gifna.unizar.es/trex                  *
+ *                                                                       *
+ * REST is free software: you can redistribute it and/or modify          *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * REST is distributed in the hope that it will be useful,               *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have a copy of the GNU General Public License along with   *
+ * REST in $REST_PATH/LICENSE.                                           *
+ * If not, see http://www.gnu.org/licenses/.                             *
+ * For the list of contributors see $REST_PATH/CREDITS.                  *
+ *************************************************************************/
 
 #ifndef RestCore_TRestDetectorSignalToHitsProcess
 #define RestCore_TRestDetectorSignalToHitsProcess
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
+#include <TRestDetectorReadout.h>
 
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
 
+//! A process to transform a daq channel and physical time to spatial coordinates
 class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fHitsEvent;      //!
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     TRestDetectorReadout* fReadout;  //!
-    TRestDetectorGas* fGas;                  //!
-#endif
-
-    void InitFromConfigFile();
+    TRestDetectorGas* fGas;          //!
 
     void Initialize();
 
@@ -41,7 +49,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     Double_t fGasPressure;    // atm
     Double_t fDriftVelocity;  // mm/us
 
-    TString fSignalToHitMethod;
+    TString fMethod;
 
    public:
     any GetInputEvent() { return fSignalEvent; }
@@ -60,7 +68,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
         metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
         metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
 
-        metadata << "Signal to hits method : " << fSignalToHitMethod << endl;
+        metadata << "Signal to hits method : " << fMethod << endl;
 
         EndPrintProcess();
     }
@@ -73,7 +81,6 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 2);  // Template for a REST "event process" class inherited from
-                                            // TRestEventProcess
+    ClassDef(TRestDetectorSignalToHitsProcess, 3);
 };
 #endif
