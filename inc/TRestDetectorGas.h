@@ -181,7 +181,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     Double_t GetLongitudinalDiffusion() {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
+            warning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value" << endl;
         }
         return GetLongitudinalDiffusion(fElectricField * units("V/cm"));
@@ -189,7 +189,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     Double_t GetTransversalDiffusion() {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
+            warning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value" << endl;
         }
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
@@ -197,7 +197,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     Double_t GetTownsendCoefficient() {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
+            warning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value" << endl;
         }
         return GetTownsendCoefficient(fElectricField * units("V/cm"));
@@ -205,7 +205,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     Double_t GetAttachmentCoefficient() {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
+            warning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value" << endl;
         }
         return GetAttachmentCoefficient(fElectricField * units("V/cm"));
