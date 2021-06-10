@@ -34,12 +34,13 @@ build:
   script:
     - echo "**${CI_PROJECT_DIR}**"
     - rm -rf ${CI_PROJECT_DIR}/install
-    - git clone --single-branch --branch development https://github.com/rest-for-physics/framework.git framework
+    - git clone https://github.com/rest-for-physics/framework.git framework
     - cd framework
+    - ./scripts/checkoutRemoteBranch.sh ${CI_COMMIT_BRANCH}
     - git submodule init source/libraries/detector
     - git submodule update source/libraries/detector
     - cd source/libraries/detector/
-    - git checkout master
+    - git checkout ${CI_COMMIT_BRANCH}
     - cd ../../../
     - mkdir build
     - cd build
