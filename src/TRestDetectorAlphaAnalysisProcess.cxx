@@ -27,9 +27,26 @@
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
 ///
+///
+/// ### Observables
+///
+/// * **directionUpDownMaxHit**: Relative time position of the most energetic
+/// hit in the event.
+/// * **directionUpDownEnergy**: Relative time position where half of the event 
+/// energy has been collected.
+/// * **beginTrackX**: Position of first hit recorded in X in the low energy side, 
+/// using directionUpDownMaxHit.
+/// * **beginTrackY**: Position of first hit recorded in Y in the low energy side, 
+/// using directionUpDownMaxHit.
+/// * **endTrackX**: Position of last hit recorded in X in the high energy side, 
+/// using directionUpDownMaxHit.
+/// * **endTrackY**: Position of last hit recorded in Y in the high energy side, 
+/// using directionUpDownMaxHit.
+/// * **lengthTrack**: Root of squared sum in X, Y and Z.
+///
 /// History of developments:
 ///
-/// 2021-June: First implementation of hits analysis process into REST_v2.
+/// 2021-June: First implementation of hits alpha analysis process into REST_v2.3
 ///
 /// \class      TRestDetectorAlphaAnalysisProcess
 /// \author     David Diez
@@ -141,8 +158,6 @@ TRestEvent* TRestDetectorAlphaAnalysisProcess::ProcessEvent(TRestEvent* evInput)
         }    
     }
     SetObservableValue("directionUpDownEnergy", I);
-    
-                    
     
     
     // Initial and end points, length
