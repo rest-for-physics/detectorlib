@@ -118,7 +118,31 @@ TRestEvent* TRestDetectorAlphaAnalysisProcess::ProcessEvent(TRestEvent* evInput)
     }
     
     D = (double)(EMaxPos-Tmin)/(Tmax - Tmin);
-    SetObservableValue("directionUpDown", D);
+    SetObservableValue("directionUpDownMaxHit", D);
+    
+    // Time of half energy
+    double tLast = 0, tMin, EHalf = 0, I = -1;
+    int a = 0;
+    
+    for (int k=0; k<hits->GetNumberOfHits(); k++){
+        tMin = 500;
+        for (int q=0; q<hits->GetNumberOfHits(); q++){
+            if(-hits->GetZ(q) > tLast){
+                if(-hits->GetZ(q) < tMin){
+                    tMin = -hits->GetZ(q);
+                }
+            }
+        }
+        tLast = tMin;
+        for (int q=0; q<hits->GetNumberOfHits(); q++){if(-hits->GetZ(q) == tLast){EHalf += hits->GetEnergy(q);}}
+        if(EHalf >= fDetectorHitsEvent->GetEnergy()/2. && a==0){
+            I = (double)(tLast-Tmin)/(Tmax - Tmin); 
+            a = 1; 
+        }    
+    }
+    SetObservableValue("directionUpDownEnergy", I);
+    
+                    
     
     
     // Initial and end points, length
