@@ -51,7 +51,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-
+/**
     /// The number of channels or strips in the X direction
     Int_t fReadoutChannelsX;
 
@@ -63,7 +63,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
 
     /// The first channel position in mm
     Int_t fStartChannelPosition;
-
+**/
     /// The pitch or size of the strips in mm
     Double_t fPitch;
 
