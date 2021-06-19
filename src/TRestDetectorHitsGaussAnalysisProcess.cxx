@@ -162,12 +162,11 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 
     Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX();
     Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY();
-    Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
-    if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05) {
-        auto s = string("Event ID: ") + to_string(fInputHitsEvent->GetID()) + string("||\n");
-        debug << s << endl;
-    }
     Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ();
+    Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
+
+    if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05)
+        debug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << endl;
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
