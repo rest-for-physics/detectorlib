@@ -14,8 +14,6 @@
 
 #include <TH1D.h>
 
-//#include <TCanvas.h>
-
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -25,12 +23,8 @@
 
 class TRestDetectorSignalViewerProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorSignalEvent* fSignalEvent;  //!
-    // TODO We must get here a pointer to TRestDaqMetadata
-    // In order to convert the parameters to time using the sampling time
 
-    // TCanvas *fCanvas;
     vector<TObject*> fDrawingObjects;  //!
     Double_t fDrawRefresh;             //!
 
@@ -38,7 +32,6 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     int eveCounter = 0;  //!
     int sgnCounter = 0;  //!
-#endif
 
     void InitFromConfigFile();
 
@@ -71,14 +64,11 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "rawSignalViewer"; }
 
-    // Constructor
     TRestDetectorSignalViewerProcess();
     TRestDetectorSignalViewerProcess(char* cfgFileName);
-    // Destructor
+
     ~TRestDetectorSignalViewerProcess();
 
-    ClassDef(TRestDetectorSignalViewerProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorSignalViewerProcess, 1);
 };
 #endif

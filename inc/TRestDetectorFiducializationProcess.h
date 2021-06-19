@@ -19,13 +19,10 @@
 
 class TRestDetectorFiducializationProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
     TRestDetectorReadout* fReadout;  //!
-
-#endif
 
     void InitFromConfigFile();
 
@@ -52,14 +49,11 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "fiducialization"; }
 
-    // Constructor
     TRestDetectorFiducializationProcess();
     TRestDetectorFiducializationProcess(char* cfgFileName);
-    // Destructor
+
     ~TRestDetectorFiducializationProcess();
 
-    ClassDef(TRestDetectorFiducializationProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorFiducializationProcess, 1);
 };
 #endif

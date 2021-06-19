@@ -37,13 +37,11 @@
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
     Bool_t fCylinderFiducial;  //!
     Bool_t fPrismFiducial;     //!
-#endif
 
     void InitFromConfigFile();
 
@@ -92,14 +90,11 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "hitsAnalysis"; }
 
-    // Constructor
     TRestDetectorHitsAnalysisProcess();
     TRestDetectorHitsAnalysisProcess(char* cfgFileName);
-    // Destructor
+
     ~TRestDetectorHitsAnalysisProcess();
 
-    ClassDef(TRestDetectorHitsAnalysisProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorHitsAnalysisProcess, 1);
 };
 #endif

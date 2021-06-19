@@ -14,8 +14,6 @@
 
 #include <TH1D.h>
 
-//#include <TCanvas.h>
-
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -26,12 +24,10 @@
 
 class TRestDetectorPositionMappingProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fHitsEvent;  //!
     TRestDetectorReadout* fReadout;      //!
     TRestDetectorGainMap* fCalib;        //!
     TRestDetectorGas* fGas;              //!
-#endif
 
     void InitFromConfigFile();
 
@@ -83,14 +79,11 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "readoutAnalysis"; }
 
-    // Constructor
     TRestDetectorPositionMappingProcess();
     TRestDetectorPositionMappingProcess(char* cfgFileName);
-    // Destructor
+
     ~TRestDetectorPositionMappingProcess();
 
-    ClassDef(TRestDetectorPositionMappingProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorPositionMappingProcess, 1);
 };
 #endif
