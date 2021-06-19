@@ -126,7 +126,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     Double_t GetGaussSigmaX() { return GetXZHits()->GetGaussSigmaX(); }
     Double_t GetGaussSigmaY() { return GetYZHits()->GetGaussSigmaY(); }
-	Double_t GetGaussSigmaZ() { return fHits->GetGaussSigmaZ(); }
+    Double_t GetGaussSigmaZ() { return fHits->GetGaussSigmaZ(); }
 
     Double_t GetSigmaZ2() { return fHits->GetSigmaZ2(); }
     Double_t GetSkewXY() { return fHits->GetSkewXY(); }

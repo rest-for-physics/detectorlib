@@ -60,6 +60,6 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     ~TRestDetectorHitsShuffleProcess();
 
     ClassDef(TRestDetectorHitsShuffleProcess, 1);  // Template for a REST "event process" class inherited from
-                                           // TRestEventProcess
+                                                   // TRestEventProcess
 };
 #endif

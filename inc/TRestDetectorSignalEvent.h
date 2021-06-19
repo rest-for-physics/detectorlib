@@ -28,8 +28,8 @@
 #include <TObject.h>
 #include <TPad.h>
 
-#include "TRestEvent.h"
 #include "TRestDetectorSignal.h"
+#include "TRestEvent.h"
 
 class TRestDetectorSignalEvent : public TRestEvent {
    protected:

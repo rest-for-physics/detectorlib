@@ -19,10 +19,10 @@
 #include <TFitResult.h>
 #include <TLatex.h>
 #include <TLegend.h>
+#include <TLine.h>
 #include <TPaveText.h>
 #include <TRandom.h>
 #include <TSpectrum.h>
-#include <TLine.h>
 using namespace std;
 
 ClassImp(TRestDetectorSingleChannelAnalysisProcess)

@@ -18,8 +18,8 @@
 #include <TCanvas.h>
 #include <TPad.h>
 
-#include "TRestEventViewer.h"
 #include "TRestDetectorSignalEvent.h"
+#include "TRestEventViewer.h"
 //#include "TRestDecoding.h"
 #include "TH2Poly.h"
 #include "TRestDetectorReadout.h"

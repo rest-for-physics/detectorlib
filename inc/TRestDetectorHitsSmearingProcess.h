@@ -78,6 +78,6 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     ~TRestDetectorHitsSmearingProcess();
 
     ClassDef(TRestDetectorHitsSmearingProcess, 1);  // Template for a REST "event process"
-                                        // class inherited from TRestEventProcess
+                                                    // class inherited from TRestEventProcess
 };
 #endif

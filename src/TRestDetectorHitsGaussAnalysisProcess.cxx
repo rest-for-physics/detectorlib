@@ -163,16 +163,16 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
     Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX();
     Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY();
     Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
-	if (hits->GetNumberOfHits()>30 && xy2SigmaGaus<0.05) {
-		auto s = string("Event ID: ") + to_string(fInputHitsEvent->GetID()) + string("||\n");
-		debug << s << endl;
-	}
+    if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05) {
+        auto s = string("Event ID: ") + to_string(fInputHitsEvent->GetID()) + string("||\n");
+        debug << s << endl;
+    }
     Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ();
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
     SetObservableValue("zSigmaGaus", gausSigmaZ);
-	SetObservableValue("xy2SigmaGaus", xy2SigmaGaus);
+    SetObservableValue("xy2SigmaGaus", xy2SigmaGaus);
     SetObservableValue("xySigmaBalanceGaus", (gausSigmaX - gausSigmaY) / (gausSigmaX + gausSigmaY));
 
     // We transform here fHitsEvent if necessary
@@ -191,7 +191,6 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 /// TRestDetectorHitsGaussAnalysisProcess section
 ///
 void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
-
     fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
 }
 
@@ -203,7 +202,7 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
     BeginPrintProcess();
 
     // Print output metadata using, metadata << endl;
-	metadata << "Pitch (mm) : " << fPitch << endl;
+    metadata << "Pitch (mm) : " << fPitch << endl;
 
     EndPrintProcess();
 }

@@ -14,9 +14,9 @@
 
 #include <TH1D.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -72,7 +72,8 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorTriggerAnalysisProcess();
 
-    ClassDef(TRestDetectorTriggerAnalysisProcess, 1);  // Template for a REST "event process" class inherited from
-                                               // TRestEventProcess
+    ClassDef(TRestDetectorTriggerAnalysisProcess,
+             1);  // Template for a REST "event process" class inherited from
+                  // TRestEventProcess
 };
 #endif

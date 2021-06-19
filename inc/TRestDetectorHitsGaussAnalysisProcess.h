@@ -27,9 +27,9 @@
 
 #include <TCanvas.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -53,7 +53,6 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
    protected:
     /// The pitch or size of the strips in mm
     Double_t fPitch;
-
 
    public:
     any GetInputEvent() { return fInputHitsEvent; }

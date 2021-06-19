@@ -16,21 +16,21 @@
 
 //#include <TCanvas.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
-#include "TRestEventProcess.h"
 #include "TRestDetectorGainMap.h"
+#include "TRestEventProcess.h"
 
 class TRestDetectorPositionMappingProcess : public TRestEventProcess {
    private:
 #ifndef __CINT__
-    TRestDetectorHitsEvent* fHitsEvent;      //!
-    TRestDetectorReadout* fReadout;  //!
-    TRestDetectorGainMap* fCalib;            //!
-    TRestDetectorGas* fGas;                  //!
+    TRestDetectorHitsEvent* fHitsEvent;  //!
+    TRestDetectorReadout* fReadout;      //!
+    TRestDetectorGainMap* fCalib;        //!
+    TRestDetectorGas* fGas;              //!
 #endif
 
     void InitFromConfigFile();
@@ -89,7 +89,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorPositionMappingProcess();
 
-    ClassDef(TRestDetectorPositionMappingProcess, 1);  // Template for a REST "event process" class inherited from
-                                               // TRestEventProcess
+    ClassDef(TRestDetectorPositionMappingProcess,
+             1);  // Template for a REST "event process" class inherited from
+                  // TRestEventProcess
 };
 #endif

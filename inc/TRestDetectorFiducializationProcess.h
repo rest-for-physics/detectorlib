@@ -12,8 +12,8 @@
 #ifndef RestCore_TRestDetectorFiducializationProcess
 #define RestCore_TRestDetectorFiducializationProcess
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 
 #include "TRestEventProcess.h"
 
@@ -58,7 +58,8 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorFiducializationProcess();
 
-    ClassDef(TRestDetectorFiducializationProcess, 1);  // Template for a REST "event process" class inherited from
-                                               // TRestEventProcess
+    ClassDef(TRestDetectorFiducializationProcess,
+             1);  // Template for a REST "event process" class inherited from
+                  // TRestEventProcess
 };
 #endif

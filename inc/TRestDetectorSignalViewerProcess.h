@@ -16,9 +16,9 @@
 
 //#include <TCanvas.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -77,7 +77,8 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorSignalViewerProcess();
 
-    ClassDef(TRestDetectorSignalViewerProcess, 1);  // Template for a REST "event process" class inherited from
-                                            // TRestEventProcess
+    ClassDef(TRestDetectorSignalViewerProcess,
+             1);  // Template for a REST "event process" class inherited from
+                  // TRestEventProcess
 };
 #endif
