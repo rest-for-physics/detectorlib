@@ -165,11 +165,13 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
     Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
 	if (hits->GetNumberOfHits()>30 && xy2SigmaGaus<0.05) {
 		auto s = string("Event ID: ") + to_string(fInputHitsEvent->GetID()) + string("||\n");
-		cout << s << endl;
+		debug << s << endl;
 	}
+    Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ();
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
+    SetObservableValue("zSigmaGaus", gausSigmaZ);
 	SetObservableValue("xy2SigmaGaus", xy2SigmaGaus);
     SetObservableValue("xySigmaBalanceGaus", (gausSigmaX - gausSigmaY) / (gausSigmaX + gausSigmaY));
 
