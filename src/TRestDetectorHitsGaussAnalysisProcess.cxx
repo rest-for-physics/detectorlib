@@ -162,8 +162,6 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 
     Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX();
     Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY();
-    //Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fReadoutChannelsX, fStartChannelPosition,
-                                                          // fEndChannelPosition, fPitch);
     Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
 	if (hits->GetNumberOfHits()>30 && xy2SigmaGaus<0.05) {
 		auto s = string("Event ID: ") + to_string(fInputHitsEvent->GetID()) + string("||\n");
@@ -172,7 +170,6 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
-    //SetObservableValue("xy2SigmaGaus", (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY));
 	SetObservableValue("xy2SigmaGaus", xy2SigmaGaus);
     SetObservableValue("xySigmaBalanceGaus", (gausSigmaX - gausSigmaY) / (gausSigmaX + gausSigmaY));
 
@@ -192,11 +189,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 /// TRestDetectorHitsGaussAnalysisProcess section
 ///
 void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
-    /**fReadoutChannelsX = StringToInteger(GetParameter("readoutChannelsX", "120"));
-    fReadoutChannelsY = StringToInteger(GetParameter("readoutChannelsY", "120"));
-    fStartChannelPosition = StringToInteger(GetParameter("StartChPos", "-30"));
-    fEndChannelPosition = StringToInteger(GetParameter("EndChPos", "30"));
-**/
+
     fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
 }
 
@@ -208,12 +201,6 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
     BeginPrintProcess();
 
     // Print output metadata using, metadata << endl;
-/**
-    metadata << "Number of X readout channels : " << fReadoutChannelsX << endl;
-    metadata << "Number of Y readout channels : " << fReadoutChannelsY << endl;
-    metadata << "Start channel position (mm) : " << fStartChannelPosition << endl;
-    metadata << "End channel position (mm) : " << fEndChannelPosition << endl;
-  **/
 	metadata << "Pitch (mm) : " << fPitch << endl;
 
     EndPrintProcess();

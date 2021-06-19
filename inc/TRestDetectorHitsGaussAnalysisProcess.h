@@ -51,19 +51,6 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-/**
-    /// The number of channels or strips in the X direction
-    Int_t fReadoutChannelsX;
-
-    /// The number of channels or strips in the Y direction
-    Int_t fReadoutChannelsY;
-
-    /// The last channel poistion in mm
-    Int_t fEndChannelPosition;
-
-    /// The first channel position in mm
-    Int_t fStartChannelPosition;
-**/
     /// The pitch or size of the strips in mm
     Double_t fPitch;
 
@@ -90,6 +77,6 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     ~TRestDetectorHitsGaussAnalysisProcess();
 
     // If new members are added, removed or modified in this class version number must be increased!
-    ClassDef(TRestDetectorHitsGaussAnalysisProcess, 1);
+    ClassDef(TRestDetectorHitsGaussAnalysisProcess, 2);
 };
 #endif
