@@ -16,19 +16,18 @@
 
 //#include <TCanvas.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
 
 class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestEvent* fEvent;              //!
     TRestDetectorReadout* fReadout;  //!
-#endif
+
     std::map<int, int> fFirstDaqChannelDef;  //[module id, first daq id]
     bool fIgnoreUndefinedModules;
 
@@ -58,12 +57,9 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    // Constructor
     TRestDetectorDaqChannelSwitchingProcess();
-    // Destructor
     ~TRestDetectorDaqChannelSwitchingProcess();
 
-    ClassDef(TRestDetectorDaqChannelSwitchingProcess, 1);  // Template for a REST "event process" class inherited from
-                                                   // TRestEventProcess
+    ClassDef(TRestDetectorDaqChannelSwitchingProcess, 1);
 };
 #endif

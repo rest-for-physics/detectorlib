@@ -25,15 +25,12 @@
 
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
-
     TRestDetectorHitsEvent* fHitsInputEvent;   //!
     TRestDetectorHitsEvent* fHitsOutputEvent;  //!
 
     TRandom3* fRandom;  //!
 
     TRestDetectorGas* fGas;  //!
-#endif
 
     void InitFromConfigFile();
     void Initialize();
@@ -71,13 +68,11 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     Double_t GetEnergyReference() { return fEnergyRef; }
     Double_t GetResolutionReference() { return fResolutionAtEref; }
 
-    // Constructor
     TRestDetectorHitsSmearingProcess();
     TRestDetectorHitsSmearingProcess(char* cfgFileName);
-    // Destructor
+
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDef(TRestDetectorHitsSmearingProcess, 1);  // Template for a REST "event process"
-                                        // class inherited from TRestEventProcess
+    ClassDef(TRestDetectorHitsSmearingProcess, 1);
 };
 #endif

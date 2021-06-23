@@ -16,13 +16,13 @@
 
 //#include <TCanvas.h>
 
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
-#include "TRestEventProcess.h"
 #include "TRestDetectorGainMap.h"
+#include "TRestEventProcess.h"
 
 class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
    private:

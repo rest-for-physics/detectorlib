@@ -151,7 +151,8 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
     void GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints = 3);
 
     void GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Double_t noiseLevel = 1.);
-    void GetSignalGaussianConvolution(TRestDetectorSignal* convSgnl, Double_t sigma = 100., Int_t nSigmas = 5);
+    void GetSignalGaussianConvolution(TRestDetectorSignal* convSgnl, Double_t sigma = 100.,
+                                      Int_t nSigmas = 5);
 
     void AddGaussianSignal(Double_t amp, Double_t sigma, Double_t time, Int_t N, Double_t fromTime,
                            Double_t toTime);

@@ -137,7 +137,8 @@ Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t en
 }
 
 /* {{{
-Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline, Int_t endBaseline,
+Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline, Int_t
+endBaseline,
                                                Double_t nSigmas, Int_t nPointsOverThreshold,
                                                Double_t nMinSigmas) {
     if (startBaseline < 0) startBaseline = 0;
@@ -426,8 +427,8 @@ void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
     for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] += inSgnl->GetData(i);
 }
 
-void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double_t time, Int_t N, Double_t fromTime,
-                                    Double_t toTime) {
+void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double_t time, Int_t N,
+                                            Double_t fromTime, Double_t toTime) {
     for (int i = 0; i < N; i++) {
         Double_t tme = fromTime + (double)i / (N - 1) * (toTime - fromTime);
 
@@ -450,7 +451,8 @@ void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Do
     }
 }
 
-void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* convSgnl, Double_t sigma, Int_t nSigmas) {
+void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* convSgnl, Double_t sigma,
+                                                       Int_t nSigmas) {
     this->Sort();
 
     Int_t nPoints = GetMaxTime() - GetMinTime();

@@ -101,9 +101,11 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 ///////////////////////////////////////////////
 /// \brief Adds a new hit to this event
 ///
-/// It adds a new hit with coordinates `x`,`y`,`z` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
+/// It adds a new hit with coordinates `x`,`y`,`z` in mm, and energy `en` in keV, to this
+/// TRestDetectorHitsEvent
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t, REST_HitType type) {
+void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
+                                    REST_HitType type) {
     fHits->AddHit(x, y, z, en, t, type);
 }
 
@@ -150,7 +152,7 @@ void TRestDetectorHitsEvent::Initialize() {
 }
 
 void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
-                                                 const TRestHits::iterator& hit2)) {
+                                                         const TRestHits::iterator& hit2)) {
     if (comparecondition == 0) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
@@ -299,7 +301,7 @@ TVector3 TRestDetectorHitsEvent::GetMeanPositionInCylinder(TVector3 x0, TVector3
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
 Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                         Double_t theta) {
+                                                 Double_t theta) {
     if (fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) > 0) return true;
 
     return false;
@@ -315,7 +317,7 @@ Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(TVector3 x0, TVector3 x1, Doubl
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
 Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                          Double_t theta) {
+                                                  Double_t theta) {
     if (fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) == GetNumberOfHits()) return true;
 
     return false;
@@ -332,7 +334,7 @@ Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(TVector3 x0, TVector3 x1, Doub
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
 Double_t TRestDetectorHitsEvent::GetEnergyInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                          Double_t theta) {
+                                                  Double_t theta) {
     return fHits->GetEnergyInPrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -346,8 +348,8 @@ Double_t TRestDetectorHitsEvent::GetEnergyInPrism(TVector3 x0, TVector3 x1, Doub
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                                 Double_t theta) {
+Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX,
+                                                         Double_t sizeY, Double_t theta) {
     return fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -361,8 +363,8 @@ Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                                Double_t theta) {
+TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1, Double_t sizeX,
+                                                        Double_t sizeY, Double_t theta) {
     return fHits->GetMeanPositionInPrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -377,7 +379,7 @@ TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1
 /// \return If no hit is found inside the cylinder, -1 is returned.
 ///
 Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderWall(TVector3 x0, TVector3 x1,
-                                                                   Double_t radius) {
+                                                                           Double_t radius) {
     Double_t rad2 = radius * radius;
     Double_t hitDistance = rad2;
 
@@ -414,7 +416,8 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderWall(TVect
 ///
 /// \return If no hit is found inside the cylinder, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVector3 x0, TVector3 x1, Double_t radius) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVector3 x0, TVector3 x1,
+                                                                          Double_t radius) {
     TVector3 axis = x1 - x0;
     Double_t cylLength = axis.Mag();
 
@@ -448,7 +451,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVecto
 /// \return If no hit is found inside the cylinder, -1 is returned.
 ///
 Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderBottom(TVector3 x0, TVector3 x1,
-                                                                     Double_t radius) {
+                                                                             Double_t radius) {
     TVector3 axis = x1 - x0;
     Double_t cylLength = axis.Mag();
 
@@ -483,8 +486,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderBottom(TVe
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3 x0, TVector3 x1, Double_t sizeX,
-                                                                Double_t sizeY, Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3 x0, TVector3 x1,
+                                                                        Double_t sizeX, Double_t sizeY,
+                                                                        Double_t theta) {
     Double_t dX = sizeX / 2;
     Double_t dY = sizeY / 2;
 
@@ -522,8 +526,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1, Double_t sizeX,
-                                                               Double_t sizeY, Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1,
+                                                                       Double_t sizeX, Double_t sizeY,
+                                                                       Double_t theta) {
     TVector3 axis = x1 - x0;
     Double_t prismLength = axis.Mag();
 
@@ -558,8 +563,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1, Double_t sizeX,
-                                                                  Double_t sizeY, Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1,
+                                                                          Double_t sizeX, Double_t sizeY,
+                                                                          Double_t theta) {
     TVector3 axis = x1 - x0;
     Double_t prismLength = axis.Mag();
 

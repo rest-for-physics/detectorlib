@@ -479,9 +479,10 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
         if (fDraw && (layerambiguity > fDrawThres)) {
             if (regionhits.size() == 0) continue;
             double maxenergyofregionhits =
-                (*min_element(regionhits.begin(), regionhits.end(),
-                              [](const regionhit& h1, const regionhit& h2) -> bool { return h1.e > h2.e; }))
-                    .e;
+                (*min_element(regionhits.begin(), regionhits.end(), [](const regionhit& h1,
+                                                                       const regionhit& h2) -> bool {
+                    return h1.e > h2.e;
+                })).e;
 
             fCanvas->Clear();
             htemp->SetStats(false);
@@ -541,14 +542,14 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
         auto hits1 = *fOutputHitsEvent->GetHits();
         auto hits2 = *reference->GetHits();
 
-        double maxz1 = (*min_element(hits1.begin(), hits1.end(),
-                                     [](const TRestHits::iterator& h1,
-                                        const TRestHits::iterator& h2) -> bool { return h1.z() > h2.z(); }))
-                           .z();
-        double maxz2 = (*min_element(hits2.begin(), hits2.end(),
-                                     [](const TRestHits::iterator& h1,
-                                        const TRestHits::iterator& h2) -> bool { return h1.z() > h2.z(); }))
-                           .z();
+        double maxz1 = (*min_element(hits1.begin(), hits1.end(), [](const TRestHits::iterator& h1,
+                                                                    const TRestHits::iterator& h2) -> bool {
+                           return h1.z() > h2.z();
+                       })).z();
+        double maxz2 = (*min_element(hits2.begin(), hits2.end(), [](const TRestHits::iterator& h1,
+                                                                    const TRestHits::iterator& h2) -> bool {
+                           return h1.z() > h2.z();
+                       })).z();
         double dz = maxz2 - maxz1;
 
         double mindistmean = 1e9;
