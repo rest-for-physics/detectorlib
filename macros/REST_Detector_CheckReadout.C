@@ -13,9 +13,28 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 
 //*******************************************************************************************************
 //***
-//*** Your HELP is needed to verify, validate and document this macro
-//*** This macro might need update/revision.
-//***
+//*** The following macro allows to perform tests to validate the proper readout construction. It
+//*** will produce Monte Carlo generated positions on the a specific region of the readout plane
+//*** definition, mapping the full active area of the detector to a region of area unity.
+//*** ---
+//*** A 128-bits mask allows to enable the channels we want to be tested. I.e. only Monte Carlo
+//*** generated positions falling at the enabled channels will be drawn. Therefore, this macro is now
+//*** limited to readouts with only 128-channels. A solution, if needed, would be to add an additional
+//*** offset to shift the 128-channels mask.
+//*** ---
+//*** See also github.com/rest-for-physics/basic-readouts
+//*** ---
+//*** A region at the top-left bottom corner of the detector would be defined as:
+//*** Double_t region[4]; region[0] = 0.0; region[1] = 0.5; region[2] = 0.5; region = 1.0;
+//*** ---
+//*** A mask enabling just channels from 72 to 80 would be defined as:
+//*** Int_t mask[4]; mask[0] = 0x0; mask[1] = 0x0; mask[2] = 0xFF00; mask[3] = 0x0;
+//*** ---
+//*** A root file containing a TRestReadoutDetector with its name should be provided in the two first
+//*** arguments. Optional arguments allow to control the statistics and the readout plane index where
+//*** tests will be executed.
+//*** ---
+//*** Usage: restManager Detector_CheckReadout readouts.root readoutName region mask [N] [plane]
 //*******************************************************************************************************
 Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region[4], Int_t stripsMask[4],
                                  Int_t N = 1E4, Int_t plane = 0) {
