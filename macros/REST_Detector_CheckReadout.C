@@ -32,14 +32,18 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 //*** A mask enabling just channels from 72 to 80 would be defined as:
 //*** Int_t mask[4]; mask[0] = 0x0; mask[1] = 0x0; mask[2] = 0xFF00; mask[3] = 0x0;
 //*** ---
+//*** The 128-bits mask might be shifted by a given offset, so that the first mask channel is identified
+//*** with that offset
+//*** ---
 //*** A root file containing a TRestReadoutDetector with its name should be provided in the two first
 //*** arguments. Optional arguments allow to control the statistics and the readout plane index where
 //*** tests will be executed.
 //*** ---
-//*** Usage: restManager Detector_CheckReadout readouts.root readoutName region mask [N] [plane]
+//*** Usage: restManager Detector_CheckReadout readouts.root readoutName region mask [offset] [N] [plane]
+//***
 //*******************************************************************************************************
 Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region[4], Int_t stripsMask[4],
-                                 Int_t N = 1E4, Int_t plane = 0, Int_t offset = 0) {
+                                 Int_t offset = 0, Int_t N = 1E4, Int_t plane = 0) {
     TFile* f = new TFile(rootFile);
     TRestDetectorReadout* readout = (TRestDetectorReadout*)f->Get(name);
     readout->PrintMetadata();
