@@ -27,6 +27,7 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 //*** A region at the top-left bottom corner of the detector would be defined as:
 //*** Double_t region[4]; region[0] = 0.0; region[1] = 0.5; region[2] = 0.5; region = 1.0;
 //*** ---
+//*** The 128-bits mask is split into four 32-bits integer fields identifying each with 32-channels.
 //*** A mask enabling just channels from 72 to 80 would be defined as:
 //*** Int_t mask[4]; mask[0] = 0x0; mask[1] = 0x0; mask[2] = 0xFF00; mask[3] = 0x0;
 //*** ---
