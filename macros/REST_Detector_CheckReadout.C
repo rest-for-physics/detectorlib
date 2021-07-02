@@ -6,7 +6,8 @@
 #include <iostream>
 using namespace std;
 
-TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t region[4], Int_t N);
+TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t region[4], Int_t N,
+                          Int_t offset);
 
 #ifndef RESTTask_CheckReadout
 #define RESTTask_CheckReadout
@@ -38,7 +39,7 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 //*** Usage: restManager Detector_CheckReadout readouts.root readoutName region mask [N] [plane]
 //*******************************************************************************************************
 Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region[4], Int_t stripsMask[4],
-                                 Int_t N = 1E4, Int_t plane = 0) {
+                                 Int_t N = 1E4, Int_t plane = 0, Int_t offset = 0) {
     TFile* f = new TFile(rootFile);
     TRestDetectorReadout* readout = (TRestDetectorReadout*)f->Get(name);
     readout->PrintMetadata();
@@ -125,7 +126,7 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
     c->DrawFrame(xmin, ymin, xmax, ymax);
     c->SetTicks();
 
-    GetHittedStripMap(readoutPlane, stripsMask, region, N)->Draw("Psame");
+    GetHittedStripMap(readoutPlane, stripsMask, region, N, offset)->Draw("Psame");
 
     for (int i = 0; i < modGraphID; i++) modGraph[i]->Draw("same");
 
@@ -134,13 +135,16 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
     return 0;
 }
 
-TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t region[4], Int_t N) {
+TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t region[4], Int_t N,
+                          Int_t offset) {
     Double_t xmin, xmax, ymin, ymax;
 
     p->GetBoundaries(xmin, xmax, ymin, ymax);
 
-    cout << "Xmax : " << xmax << " Xmin : " << xmin << endl;
-    cout << "Ymax : " << ymax << " Ymin : " << ymin << endl;
+    cout << "Readout plane boundaries" << endl;
+    cout << "------------------------" << endl;
+    cout << "Xmin : " << xmin << " Xmax : " << xmax << endl;
+    cout << "Ymin : " << ymin << " Ymax : " << ymax << endl;
 
     cout << "region 1 : " << region[0] << endl;
     cout << "region 2 : " << region[1] << endl;
@@ -153,8 +157,10 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
     Double_t yMin = region[2] * (ymax - ymin) + ymin;
     Double_t yMax = region[3] * (ymax - ymin) + ymin;
 
-    cout << "Xmax : " << xMax << " Xmin : " << xMin << endl;
-    cout << "Ymax : " << yMax << " Ymin : " << yMin << endl;
+    cout << "Region boundaries on plane coordinates" << endl;
+    cout << "--------------------------------------" << endl;
+    cout << "Xmin : " << xMin << " Xmax : " << xMax << endl;
+    cout << "Ymin : " << yMin << " Ymax : " << yMax << endl;
 
     TRandom* rnd = new TRandom();
 
@@ -169,7 +175,7 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
         Int_t msk = 0x1 << bit;
         if (msk & mask[level]) {
             cout << "Adding channel : " << 32 * level + bit << endl;
-            channelIds.push_back(32 * level + bit);
+            channelIds.push_back(32 * level + bit + offset);
         }
     }
 
