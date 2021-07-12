@@ -21,15 +21,11 @@
 
 class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fHitsEvent;      //!
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     TRestDetectorReadout* fReadout;  //!
     TRestDetectorGas* fGas;          //!
-#endif
-
-    void InitFromConfigFile();
 
     void Initialize();
 
