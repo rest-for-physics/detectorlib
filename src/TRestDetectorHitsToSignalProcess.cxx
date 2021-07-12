@@ -212,14 +212,3 @@ void TRestDetectorHitsToSignalProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
-//______________________________________________________________________________
-void TRestDetectorHitsToSignalProcess::InitFromConfigFile() {
-    fSampling = GetDblParameterWithUnits("sampling");
-    // returned in REST standard unit: atm
-    fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
-    // convert REST standard unit "V/mm" to "V/cm"
-    fElectricField = GetDblParameterWithUnits("electricField", -1.);
-    // DONE : velocity units are implemented with standard unit "mm/us"
-    fDriftVelocity = GetDblParameterWithUnits("driftVelocity", -1.);
-}
