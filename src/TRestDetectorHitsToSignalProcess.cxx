@@ -52,22 +52,6 @@ void TRestDetectorHitsToSignalProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorHitsToSignalProcess::LoadConfig(string cfgFilename, string name) {
-    // if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
-
-    //// If the parameters have no value it tries to obtain it from
-    //// electronDiffusionProcess
-    // if (fElectricField == PARAMETER_NOT_FOUND_DBL) {
-    //    fElectricField =
-    //        this->GetDoubleParameterFromFriendsWithUnits("TRestDetectorElectronDiffusionProcess",
-    //        "electricField");
-    //    if (fElectricField != PARAMETER_NOT_FOUND_DBL) {
-    //        cout << "Getting electric field from electronDiffusionProcess : " << fElectricField << " V/cm"
-    //             << endl;
-    //    }
-    //}
-}
-
 //______________________________________________________________________________
 void TRestDetectorHitsToSignalProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -82,13 +66,6 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 
 //______________________________________________________________________________
 void TRestDetectorHitsToSignalProcess::InitProcess() {
-    // Function to be executed once at the beginning of process
-    // (before starting the process of the events)
-
-    // Start by calling the InitProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::InitProcess();
-
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != NULL) {
 #ifndef USE_Garfield
@@ -97,7 +74,8 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorHitsToSignalProcess"
              << endl;
-        exit(-1);
+        fGas->SetError("REST was not compiled with Garfield.");
+        this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
@@ -203,12 +181,3 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
-void TRestDetectorHitsToSignalProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
-}
