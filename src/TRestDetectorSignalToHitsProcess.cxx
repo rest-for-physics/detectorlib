@@ -63,8 +63,8 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorSignalToHitsProcess"
              << endl;
-        fGas->SetError("REST was not compiled with Garfield.");
-        this->SetError("Attempt to use TRestDetectorGas without Garfield");
+        if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
+        if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
@@ -74,24 +74,23 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
 
         if (fDriftVelocity <= 0) fDriftVelocity = fGas->GetDriftVelocity();
     } else {
-        warning << "No TRestDetectorGas found in TRestRun." << endl;
-        if (fDriftVelocity == -1) {
-            ferr << "TRestDetectorHitsToSignalProcess: drift velocity is undefined in the rml file!" << endl;
-            exit(-1);
+        if (fDriftVelocity < 0) {
+            if (!this->GetError()) this->SetError("Drift velocity is negative.");
         }
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
 
     if (fReadout == NULL) {
-        ferr << "Readout has not been initialized" << endl;
-        exit(-1);
+        if (!this->GetError()) this->SetError("The readout was not properly initialized.");
     }
 }
 
 //______________________________________________________________________________
 TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) {
     fSignalEvent = (TRestDetectorSignalEvent*)evInput;
+
+    if (!fReadout) return nullptr;
 
     fHitsEvent->SetID(fSignalEvent->GetID());
     fHitsEvent->SetSubID(fSignalEvent->GetSubID());
@@ -259,8 +258,9 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
     }
 
     if (fHitsEvent->GetNumberOfHits() <= 0) {
-        string errMsg = "Event id: " + IntegerToString(fHitsEvent->GetID()) + ". No hits found!";
-        if (!GetError()) SetError(errMsg);
+        string errMsg = "Event id: " + IntegerToString(fHitsEvent->GetID()) +
+                        ". Failed to find readout positions in channel to hit conversion.";
+        SetWarning(errMsg);
         return nullptr;
     }
 
