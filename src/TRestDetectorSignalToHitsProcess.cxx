@@ -81,7 +81,7 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
 
     fReadout = GetMetadata<TRestDetectorReadout>();
 
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         if (!this->GetError()) this->SetError("The readout was not properly initialized.");
     }
 }
@@ -258,7 +258,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
     }
 
     if (fHitsEvent->GetNumberOfHits() <= 0) {
-        string errMsg = "Event id: " + IntegerToString(fHitsEvent->GetID()) +
+        string errMsg = "Last event id: " + IntegerToString(fHitsEvent->GetID()) +
                         ". Failed to find readout positions in channel to hit conversion.";
         SetWarning(errMsg);
         return nullptr;
