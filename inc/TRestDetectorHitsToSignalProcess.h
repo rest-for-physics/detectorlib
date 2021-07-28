@@ -46,9 +46,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
-
-    void LoadConfig(std::string cfgFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();

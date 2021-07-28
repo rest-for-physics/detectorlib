@@ -45,11 +45,11 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-    Double_t fElectricField;  // V/cm
-    Double_t fGasPressure;    // atm
-    Double_t fDriftVelocity;  // mm/us
+    Double_t fElectricField = 100;  // V/cm
+    Double_t fGasPressure = 1;      // atm
+    Double_t fDriftVelocity = 1;    // mm/us
 
-    TString fMethod;
+    TString fMethod = "tripleMax";
 
    public:
     any GetInputEvent() { return fSignalEvent; }
@@ -57,7 +57,6 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
 
     void LoadConfig(std::string cfgFilename, std::string name = "");
 

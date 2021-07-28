@@ -34,65 +34,6 @@ TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() {
     // TRestDetectorSignalToHitsProcess destructor
 }
 
-void TRestDetectorSignalToHitsProcess::LoadDefaultConfig() {
-    SetName("signalToHitsProcess-Default");
-    SetTitle("Default config");
-
-    cout << "Signal to hits metadata not found. Loading default values" << endl;
-
-    fElectricField = 1000;
-    fGasPressure = 10;
-}
-
-void TRestDetectorSignalToHitsProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
-
-    // If the parameters have no value it tries to obtain it from detector setup
-
-    // if (fElectricField == PARAMETER_NOT_FOUND_DBL) {
-    //    TRestDetectorSetup* detSetup = GetMetadata<TRestDetectorSetup>();
-    //    if (detSetup != NULL) {
-    // fElectricField = gDetector->GetDriftField();
-    // cout << "SignalToHitsProcess : Obtainning electric field from detector "
-    //        "setup : "
-    //     << fElectricField << " V/cm" << endl;
-    //    }
-    //}
-
-    // if( fGasPressure <= 0 )
-    //{
-    // TRestDetectorSetup *detSetup = (TRestDetectorSetup *)
-    // this->GetDetectorSetup(); if ( detSetup != NULL )
-    // {
-    //  fGasPressure = detSetup->GetPressureInBar( );
-    //  cout << "SignalToHitsProcess : Obtainning gas pressure from detector setup
-    //  : " << fGasPressure << " bar" << endl;
-    // }
-
-    //}
-
-    /* THIS IS OBSOLETE ( NOW WE SHOULD DEFINE TRestDetectorSetup inside TRestRun,
-       TRestDetectorSetup defines field, pressure, sampling, etc ) if (
-       fElectricField == PARAMETER_NOT_FOUND_DBL )
-            {
-                    fElectricField = this->GetDoubleParameterFromClassWithUnits(
-       "TRestDetectorElectronDiffusionProcess", "electricField" ); if( fElectricField !=
-       PARAMETER_NOT_FOUND_DBL ) cout << "Getting electric field from
-       electronDiffusionProcess : " << fElectricField << " V/cm" << endl;
-            }
-
-            GetChar();
-
-            if ( fSampling == PARAMETER_NOT_FOUND_DBL )
-            {
-                    fSampling = this->GetDoubleParameterFromClassWithUnits(
-       "TRestDetectorHitsToSignalProcess", "sampling" ); if( fSampling !=
-       PARAMETER_NOT_FOUND_DBL ) cout << "Getting sampling rate from hitsToSignal
-       process : " << fSampling << " um" << endl;
-            }
-    */
-}
-
 //______________________________________________________________________________
 void TRestDetectorSignalToHitsProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -122,7 +63,8 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorSignalToHitsProcess"
              << endl;
-        exit(-1);
+        if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
+        if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
@@ -132,18 +74,15 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
 
         if (fDriftVelocity <= 0) fDriftVelocity = fGas->GetDriftVelocity();
     } else {
-        warning << "No TRestDetectorGas found in TRestRun." << endl;
-        if (fDriftVelocity == -1) {
-            ferr << "TRestDetectorHitsToSignalProcess: drift velocity is undefined in the rml file!" << endl;
-            exit(-1);
+        if (fDriftVelocity < 0) {
+            if (!this->GetError()) this->SetError("Drift velocity is negative.");
         }
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
 
-    if (fReadout == NULL) {
-        ferr << "Readout has not been initialized" << endl;
-        exit(-1);
+    if (fReadout == nullptr) {
+        if (!this->GetError()) this->SetError("The readout was not properly initialized.");
     }
 }
 
@@ -151,12 +90,15 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
 TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) {
     fSignalEvent = (TRestDetectorSignalEvent*)evInput;
 
-    if (GetVerboseLevel() >= REST_Debug) fSignalEvent->PrintEvent();
+    if (!fReadout) return nullptr;
 
     fHitsEvent->SetID(fSignalEvent->GetID());
     fHitsEvent->SetSubID(fSignalEvent->GetSubID());
     fHitsEvent->SetTimeStamp(fSignalEvent->GetTimeStamp());
     fHitsEvent->SetSubEventTag(fSignalEvent->GetSubEventTag());
+
+    debug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << endl;
+    if (GetVerboseLevel() >= REST_Debug) fSignalEvent->PrintEvent();
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
 
@@ -306,10 +248,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
         }
     }
 
-    if (this->GetVerboseLevel() >= REST_Debug) {
-        debug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << endl;
-        debug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << endl;
-    }
+    debug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << endl;
+    debug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << endl;
 
     if (this->GetVerboseLevel() == REST_Debug) {
         fHitsEvent->PrintEvent(30);
@@ -317,17 +257,13 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
         fHitsEvent->PrintEvent(-1);
     }
 
-    if (fHitsEvent->GetNumberOfHits() <= 0) return NULL;
+    if (fHitsEvent->GetNumberOfHits() <= 0) {
+        string errMsg = "Last event id: " + IntegerToString(fHitsEvent->GetID()) +
+                        ". Failed to find readout positions in channel to hit conversion.";
+        SetWarning(errMsg);
+        return nullptr;
+    }
 
     return fHitsEvent;
 }
 
-//______________________________________________________________________________
-void TRestDetectorSignalToHitsProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
-}

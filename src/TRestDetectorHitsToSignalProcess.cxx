@@ -52,22 +52,6 @@ void TRestDetectorHitsToSignalProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorHitsToSignalProcess::LoadConfig(string cfgFilename, string name) {
-    // if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
-
-    //// If the parameters have no value it tries to obtain it from
-    //// electronDiffusionProcess
-    // if (fElectricField == PARAMETER_NOT_FOUND_DBL) {
-    //    fElectricField =
-    //        this->GetDoubleParameterFromFriendsWithUnits("TRestDetectorElectronDiffusionProcess",
-    //        "electricField");
-    //    if (fElectricField != PARAMETER_NOT_FOUND_DBL) {
-    //        cout << "Getting electric field from electronDiffusionProcess : " << fElectricField << " V/cm"
-    //             << endl;
-    //    }
-    //}
-}
-
 //______________________________________________________________________________
 void TRestDetectorHitsToSignalProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -82,13 +66,6 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 
 //______________________________________________________________________________
 void TRestDetectorHitsToSignalProcess::InitProcess() {
-    // Function to be executed once at the beginning of process
-    // (before starting the process of the events)
-
-    // Start by calling the InitProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::InitProcess();
-
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != NULL) {
 #ifndef USE_Garfield
@@ -97,7 +74,8 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorHitsToSignalProcess"
              << endl;
-        exit(-1);
+        if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
+        if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
@@ -107,18 +85,15 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
 
         if (fDriftVelocity <= 0) fDriftVelocity = fGas->GetDriftVelocity();
     } else {
-        warning << "No TRestDetectorGas found in TRestRun." << endl;
-        if (fDriftVelocity == -1) {
-            ferr << "TRestDetectorHitsToSignalProcess: drift velocity is undefined in the rml file!" << endl;
-            exit(-1);
+        if (fDriftVelocity < 0) {
+            if (!this->GetError()) this->SetError("Drift velocity is negative.");
         }
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
 
-    if (fReadout == NULL) {
-        ferr << "Readout has not been initialized" << endl;
-        exit(-1);
+    if (fReadout == nullptr) {
+        if (!this->GetError()) this->SetError("The readout was not properly initialized.");
     }
 }
 
@@ -135,7 +110,8 @@ Int_t TRestDetectorHitsToSignalProcess::FindModule(Int_t readoutPlane, Double_t 
 TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsEvent = (TRestDetectorHitsEvent*)evInput;
     fSignalEvent->SetEventInfo(fHitsEvent);
-    //     fHitsEvent = dynamic_cast<TRestDetectorHitsEvent*>(evInput);
+
+    if (!fReadout) return nullptr;
 
     if (GetVerboseLevel() >= REST_Debug) {
         cout << "Number of hits : " << fHitsEvent->GetNumberOfHits() << endl;
@@ -203,12 +179,3 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
-void TRestDetectorHitsToSignalProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
-}
