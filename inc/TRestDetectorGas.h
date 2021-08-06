@@ -181,6 +181,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us");
     }  // in standard unit mm/us
 
+    /// Returns the longitudinal diffusion in (cm)^1/2
     Double_t GetLongitudinalDiffusion() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << endl;
@@ -188,8 +189,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
                     << endl;
         }
         return GetLongitudinalDiffusion(fElectricField * units("V/cm"));
-    }  // in unit (cm)^1/2
+    }
 
+    /// Returns the transversal diffusion in (cm)^1/2
     Double_t GetTransversalDiffusion() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << endl;
@@ -197,7 +199,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
                     << endl;
         }
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
-    }  // in unit (cm)^1/2
+    }
 
     Double_t GetTownsendCoefficient() {
         if (fElectricField == 0) {

@@ -909,8 +909,8 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
     for (int i = 0; i < nSteps; i++) {
         eField[i] = (eMin + (double)i * (eMax - eMin) / nSteps);
 
-        this->SetElectricField(eField[i]);
-        driftVel[i] = GetDriftVelocity();
+        this->SetElectricField(eField[i] / units("V/cm"));
+        driftVel[i] = GetDriftVelocity() * units("cm/us");
     }
 
     TCanvas* c = new TCanvas("Drift velocity", "  ");
@@ -942,7 +942,7 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
-        this->SetElectricField(eField[i]);
+        this->SetElectricField(eField[i] / units("V/cm"));
         longDiff[i] = GetLongitudinalDiffusion();
     }
 
@@ -975,7 +975,7 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
-        this->SetElectricField(eField[i]);
+        this->SetElectricField(eField[i] / units("V/cm"));
         transDiff[i] = GetTransversalDiffusion();
     }
 
