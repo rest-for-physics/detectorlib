@@ -23,22 +23,22 @@
 
 #ifndef RestCore_TRestDetectorDriftVolume
 #define RestCore_TRestDetectorDriftVolume
+#include <TROOT.h>
 #include <stdlib.h>
+
 #include <fstream>
 #include <iostream>
 
-#include <TROOT.h>
 #include "TApplication.h"
 #include "TArrayI.h"
 #include "TAxis.h"
 #include "TCanvas.h"
 #include "TGraph.h"
 #include "TNamed.h"
+#include "TRestMetadata.h"
 #include "TString.h"
 #include "TSystem.h"
 #include "TVector3.h"
-
-#include "TRestMetadata.h"
 
 class TRestDetectorDriftVolume : public TRestMetadata {
    protected:
@@ -65,9 +65,13 @@ class TRestDetectorDriftVolume : public TRestMetadata {
     virtual string GetMaterial() { return fMaterial; }
     virtual Double_t GetW() { return fW; }
     virtual Double_t GetWvalue() { return fW; }
+
+    /// Returns the electric field in V/mm.
     virtual Double_t GetElectricField() { return fElectricField; }
 
+    /// Returns the drift velocity in mm/us.
     virtual Double_t GetDriftVelocity() { return fDriftVelocity; }
+
     virtual Double_t GetElectronLifeTime() { return fElectronLifeTime; }
     virtual Double_t GetLongitudinalDiffusion() { return fLongitudinalDiffusion; }
     virtual Double_t GetTransversalDiffusion() { return fTransversalDiffusion; }
@@ -78,11 +82,16 @@ class TRestDetectorDriftVolume : public TRestMetadata {
     virtual Double_t GetTemperature() { return fTemperatureInK; }
 
     virtual void SetMaterial(string value) { fMaterial = value; }
+
+    /// Sets the electric field of the drift volume. Given in V/mm.
     virtual void SetW(double value) { fW = value; }
+
+    /// Sets the electric field. Must be given in V/mm.
     virtual void SetElectricField(double value) { fElectricField = value; }
 
-    // returned drift velocity is in unit mm/us
+    // Sets the drift velocity. Must be given in mm/us.
     virtual void SetDriftVelocity(double value) { fDriftVelocity = value; }
+
     virtual void SetElectronLifeTime(double value) { fElectronLifeTime = value; }
     virtual void SetLongitudinalDiffusion(double value) { fLongitudinalDiffusion = value; }
     virtual void SetTransversalDiffusion(double value) { fTransversalDiffusion = value; }
