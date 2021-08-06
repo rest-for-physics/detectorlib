@@ -909,13 +909,14 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
     for (int i = 0; i < nSteps; i++) {
         eField[i] = (eMin + (double)i * (eMax - eMin) / nSteps);
 
-        driftVel[i] = GetDriftVelocity(eField[i]);
+        this->SetElectricField(eField[i]);
+        driftVel[i] = GetDriftVelocity();
     }
 
     TCanvas* c = new TCanvas("Drift velocity", "  ");
     TGraph* fDriftVel = new TGraph(nSteps, &eField[0], &driftVel[0]);
     TString str;
-    str.Form("Drift Velocity for %s", GetName());
+    str.Form("Drift Velocity for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fDriftVel->SetTitle(str);
     fDriftVel->GetXaxis()->SetTitle("E [V/cm]");
     fDriftVel->GetYaxis()->SetTitle("Drift velocity [cm/#mus]");
@@ -941,13 +942,14 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
-        longDiff[i] = GetLongitudinalDiffusion(eField[i]);
+        this->SetElectricField(eField[i]);
+        longDiff[i] = GetLongitudinalDiffusion();
     }
 
     TCanvas* c = new TCanvas("Longitudinal diffusion", "  ");
     TGraph* fLongDiff = new TGraph(nSteps, &eField[0], &longDiff[0]);
     TString str;
-    str.Form("Longitudinal diffusion for %s", GetName());
+    str.Form("Longitudinal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fLongDiff->SetTitle(str);
     fLongDiff->GetXaxis()->SetTitle("E [V/cm]");
     fLongDiff->GetYaxis()->SetTitle("Longitudinal diffusion [#mum/#sqrt{cm}]");
@@ -973,13 +975,14 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
-        transDiff[i] = GetTransversalDiffusion(eField[i]);
+        this->SetElectricField(eField[i]);
+        transDiff[i] = GetTransversalDiffusion();
     }
 
     TCanvas* c = new TCanvas("Transitudinal diffusion", "  ");
     TGraph* fTransDiff = new TGraph(nSteps, &eField[0], &transDiff[0]);
     TString str;
-    str.Form("Transversal diffusion for %s", GetName());
+    str.Form("Transversal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fTransDiff->SetTitle(str);
     fTransDiff->GetXaxis()->SetTitle("E [V/cm]");
     fTransDiff->GetYaxis()->SetTitle("Transversal diffusion [#mum/#sqrt{cm}]");
