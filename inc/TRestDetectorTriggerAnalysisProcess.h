@@ -35,7 +35,6 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-    Double_t fW;
     Double_t fSampling;
     Int_t fADCLength;
 
@@ -45,7 +44,6 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
 
     void LoadConfig(std::string cfgFilename, std::string name = "");
 
@@ -64,6 +62,6 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorTriggerAnalysisProcess();
 
-    ClassDef(TRestDetectorTriggerAnalysisProcess, 1);
+    ClassDef(TRestDetectorTriggerAnalysisProcess, 2);
 };
 #endif
