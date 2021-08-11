@@ -39,8 +39,6 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// A vector to temporary the extracted threshold value from the corresponding observable
     std::vector<double> fThreshold;  //!
 
-    void InitFromConfigFile();
-
     void Initialize();
 
     void LoadDefaultConfig();
