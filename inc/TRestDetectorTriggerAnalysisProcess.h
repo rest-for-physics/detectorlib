@@ -1,32 +1,43 @@
-///______________________________________________________________________________
-///______________________________________________________________________________
-///______________________________________________________________________________
-///
-///
-///             RESTSoft : Software for Rare Event Searches with TPCs
-///
-///             TRestDetectorTriggerAnalysisProcess.h
-///
-///_______________________________________________________________________________
+/*************************************************************************
+ * This file is part of the REST software framework.                     *
+ *                                                                       *
+ * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
+ * For more information see http://gifna.unizar.es/trex                  *
+ *                                                                       *
+ * REST is free software: you can redistribute it and/or modify          *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * REST is distributed in the hope that it will be useful,               *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have a copy of the GNU General Public License along with   *
+ * REST in $REST_PATH/LICENSE.                                           *
+ * If not, see http://www.gnu.org/licenses/.                             *
+ * For the list of contributors see $REST_PATH/CREDITS.                  *
+ *************************************************************************/
 
 #ifndef RestCore_TRestDetectorTriggerAnalysisProcess
 #define RestCore_TRestDetectorTriggerAnalysisProcess
 
-#include <TH1D.h>
-
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
 
+//! A process to generate integral observables for signal ADC windows found above the defined energy threshold
 class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
    private:
+    /// A pointer to the specific TRestSignalEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
+    /// A vector to temporary store the name of threshold observables
     std::vector<std::string> fIntegralObservables;  //!
-    std::vector<double> fThreshold;                 //!
+
+    /// A vector to temporary the extracted threshold value from the corresponding observable
+    std::vector<double> fThreshold;  //!
 
     void InitFromConfigFile();
 
@@ -35,28 +46,35 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-    Double_t fW;
+    /// It defines the sampling time in us to treat the signal as if it would be a rawsignal.
     Double_t fSampling;
+
+    /// It defines the number of bins used to define the sampling depth.
     Int_t fADCLength;
 
    public:
+    /// Returns a pointer to the input signal event
     any GetInputEvent() { return fSignalEvent; }
+
+    /// Returns a pointer to the input signal event
     any GetOutputEvent() { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
 
     void LoadConfig(std::string cfgFilename, std::string name = "");
 
+    /// Prints on screen the metadata information registered by this process
     void PrintMetadata() {
         BeginPrintProcess();
 
-        metadata << " W : " << fW << endl;
+        metadata << "Sampling : " << fSampling << " us" << endl;
+        metadata << "ADC length : " << fADCLength << endl;
 
         EndPrintProcess();
     }
 
+    /// Returns a string with the process name
     TString GetProcessName() { return (TString) "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
@@ -64,6 +82,6 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorTriggerAnalysisProcess();
 
-    ClassDef(TRestDetectorTriggerAnalysisProcess, 1);
+    ClassDef(TRestDetectorTriggerAnalysisProcess, 2);
 };
 #endif
