@@ -39,18 +39,16 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// A vector to temporary the extracted threshold value from the corresponding observable
     std::vector<double> fThreshold;  //!
 
-    void InitFromConfigFile();
-
     void Initialize();
 
     void LoadDefaultConfig();
 
    protected:
     /// It defines the sampling time in us to treat the signal as if it would be a rawsignal.
-    Double_t fSampling;
+    Double_t fSampling = 0.2;
 
     /// It defines the number of bins used to define the sampling depth.
-    Int_t fADCLength;
+    Int_t fADCLength = 512;
 
    public:
     /// Returns a pointer to the input signal event
