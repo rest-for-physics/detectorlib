@@ -45,11 +45,23 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region[4], Int_t stripsMask[4],
                                  Int_t offset = 0, Int_t N = 1E4, Int_t plane = 0) {
     TFile* f = new TFile(rootFile);
+    if (!f) {
+        cout << "File not found: " << rootFile << endl;
+        return 1;
+    }
+
     TRestDetectorReadout* readout = (TRestDetectorReadout*)f->Get(name);
+    if (!readout) {
+        cout << "The readout with name " << name << " does not exist inside the file " << rootFile << endl;
+        return 2;
+    }
     readout->PrintMetadata();
 
     TRestDetectorReadoutPlane* readoutPlane = &(*readout)[plane];
-
+    if (!readoutPlane) {
+        cout << "The readout definition does not contain a readout plane with id : " << plane << endl;
+        return 3;
+    }
     Int_t nModules = readoutPlane->GetNumberOfModules();
 
     Int_t totalPixels = 0;
