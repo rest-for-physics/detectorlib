@@ -13,6 +13,8 @@
 #include "TRestDetectorSignalToHitsProcess.h"
 
 #include <TRestDetectorSetup.h>
+
+#include <string>
 using namespace std;
 
 ClassImp(TRestDetectorSignalToHitsProcess);
@@ -23,10 +25,15 @@ TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess() { Initializ
 TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(char* cfgFileName) {
     Initialize();
 
-    LoadConfig(cfgFileName);
+    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
 
     // TRestDetectorSignalToHitsProcess default constructor
 }
+
+///////////////////////////////////////////////
+/// \brief Function to load the default config in absence of RML input
+///
+void TRestDetectorSignalToHitsProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
 //______________________________________________________________________________
 TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() {
