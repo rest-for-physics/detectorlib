@@ -29,8 +29,6 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFile
 
     if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
 
-    PrintMetadata();
-
     if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
 }
 
