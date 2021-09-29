@@ -13,8 +13,6 @@
 #include "TRestDetectorSignalToHitsProcess.h"
 
 #include <TRestDetectorSetup.h>
-
-#include <string>
 using namespace std;
 
 ClassImp(TRestDetectorSignalToHitsProcess);
