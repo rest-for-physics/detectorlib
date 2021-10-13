@@ -1188,6 +1188,7 @@ void TRestDetectorGas::PrintGasInfo() {
     metadata << "Temperature : " << fTemperatureInK << " K" << endl;
     metadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << endl;
     metadata << "W-value : " << fW << " eV" << endl;
+    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us") << " mm/us " << endl;
     metadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << endl;
     metadata << "Field grid nodes : " << fEnodes << endl;
     metadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << endl;
