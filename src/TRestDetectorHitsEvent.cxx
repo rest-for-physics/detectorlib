@@ -36,7 +36,7 @@
 /// \author     Javier Galan
 ///
 /// <hr>
-///
+
 #include "TRestDetectorHitsEvent.h"
 
 #include "TCanvas.h"
@@ -65,23 +65,23 @@ ClassImp(TRestDetectorHitsEvent);
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();
 
-    fPad = NULL;
+    fPad = nullptr;
 
-    fXYHitGraph = NULL;
-    fXZHitGraph = NULL;
-    fYZHitGraph = NULL;
+    fXYHitGraph = nullptr;
+    fXZHitGraph = nullptr;
+    fYZHitGraph = nullptr;
 
-    fXYHisto = NULL;
-    fXZHisto = NULL;
-    fYZHisto = NULL;
+    fXYHisto = nullptr;
+    fXZHisto = nullptr;
+    fYZHisto = nullptr;
 
-    fXZHits = NULL;
-    fYZHits = NULL;
-    fXYZHits = NULL;
+    fXZHits = nullptr;
+    fYZHits = nullptr;
+    fXYZHits = nullptr;
 
-    fXHisto = NULL;
-    fYHisto = NULL;
-    fZHisto = NULL;
+    fXHisto = nullptr;
+    fYHisto = nullptr;
+    fZHisto = nullptr;
 
     fMinX = -10;
     fMaxX = 10;
@@ -101,21 +101,19 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 ///////////////////////////////////////////////
 /// \brief Adds a new hit to this event
 ///
-/// It adds a new hit with coordinates `x`,`y`,`z` in mm, and energy `en` in keV, to this
-/// TRestDetectorHitsEvent
-/// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
-                                    REST_HitType type) {
-    fHits->AddHit(x, y, z, en, t, type);
-}
-
-///////////////////////////////////////////////
-/// \brief Adds a new hit to this event
-///
 /// It adds a new hit with position `pos` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(TVector3 pos, Double_t en, Double_t t, REST_HitType type) {
+void TRestDetectorHitsEvent::AddHit(const TVector3& pos, Double_t en, Double_t t, REST_HitType type) {
     fHits->AddHit(pos, en, t, type);
+}
+
+void TRestDetectorHitsEvent::AddVetoHit(const TString& volumeName, const TVector3& position, Double_t energy,
+                                         double_t time) {
+    if (fVetoHits.count(volumeName) == 0) {
+        fVetoHits[volumeName] = new TRestHits();
+    }
+    auto hits = fVetoHits[volumeName];
+    hits->AddHit(position, energy, time, XYZ);
 }
 
 ///////////////////////////////////////////////
@@ -128,15 +126,15 @@ void TRestDetectorHitsEvent::Initialize() {
 
     if (fXZHits) {
         delete fXZHits;
-        fXZHits = NULL;
+        fXZHits = nullptr;
     }
     if (fYZHits) {
         delete fYZHits;
-        fYZHits = NULL;
+        fYZHits = nullptr;
     }
     if (fXYZHits) {
         delete fXYZHits;
-        fXYZHits = NULL;
+        fXYZHits = nullptr;
     }
 
     fXZHits = new TRestHits();
@@ -153,7 +151,7 @@ void TRestDetectorHitsEvent::Initialize() {
 
 void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
-    if (comparecondition == 0) {
+    if (comparecondition == nullptr) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
                   [](const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) -> bool {
@@ -168,8 +166,8 @@ void TRestDetectorHitsEvent::Shuffle(int NLoop) {
     Int_t nHits = fHits->GetNumberOfHits();
     if (nHits >= 2) {
         for (int n = 0; n < NLoop; n++) {
-            Int_t hit1 = (Int_t)(nHits * gRandom->Uniform(0, 1));
-            Int_t hit2 = (Int_t)(nHits * gRandom->Uniform(0, 1));
+            auto hit1 = (Int_t)(nHits * gRandom->Uniform(0, 1));
+            auto hit2 = (Int_t)(nHits * gRandom->Uniform(0, 1));
 
             fHits->SwapHits(hit1, hit2);
         }
@@ -236,7 +234,7 @@ TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
 /// \param x1 The center of the top face of the cylinder.
 /// \param radius The radius of the cylinder.
 ///
-Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
+Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(const TVector3& x0, const TVector3& x1, Double_t radius) {
     if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) > 0) return true;
 
     return false;
@@ -249,7 +247,8 @@ Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Do
 /// \param x1 The center of the top face of the cylinder.
 /// \param radius The radius of the cylinder.
 ///
-Bool_t TRestDetectorHitsEvent::allHitsInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
+Bool_t TRestDetectorHitsEvent::allHitsInsideCylinder(const TVector3& x0, const TVector3& x1,
+                                                     Double_t radius) {
     if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) == GetNumberOfHits()) return true;
 
     return false;
@@ -263,7 +262,8 @@ Bool_t TRestDetectorHitsEvent::allHitsInsideCylinder(TVector3 x0, TVector3 x1, D
 /// \param x1 The center of the top face of the cylinder.
 /// \param radius The radius of the cylinder.
 ///
-Double_t TRestDetectorHitsEvent::GetEnergyInCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
+Double_t TRestDetectorHitsEvent::GetEnergyInCylinder(const TVector3& x0, const TVector3& x1,
+                                                     Double_t radius) {
     return fHits->GetEnergyInCylinder(x0, x1, radius);
 }
 
@@ -275,7 +275,8 @@ Double_t TRestDetectorHitsEvent::GetEnergyInCylinder(TVector3 x0, TVector3 x1, D
 /// \param x1 The center of the top face of the cylinder.
 /// \param radius The radius of the cylinder.
 ///
-Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
+Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsideCylinder(const TVector3& x0, const TVector3& x1,
+                                                            Double_t radius) {
     return fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius);
 }
 
@@ -287,7 +288,8 @@ Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsideCylinder(TVector3 x0, TVector
 /// \param x1 The center of the top face of the cylinder.
 /// \param radius The radius of the cylinder.
 ///
-TVector3 TRestDetectorHitsEvent::GetMeanPositionInCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
+TVector3 TRestDetectorHitsEvent::GetMeanPositionInCylinder(const TVector3& x0, const TVector3& x1,
+                                                           Double_t radius) {
     return fHits->GetMeanPositionInCylinder(x0, x1, radius);
 }
 
@@ -300,8 +302,8 @@ TVector3 TRestDetectorHitsEvent::GetMeanPositionInCylinder(TVector3 x0, TVector3
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                                 Double_t theta) {
+Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(const TVector3& x0, const TVector3& x1, Double_t sizeX,
+                                                 Double_t sizeY, Double_t theta) {
     if (fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) > 0) return true;
 
     return false;
@@ -316,8 +318,8 @@ Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(TVector3 x0, TVector3 x1, Doubl
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                                  Double_t theta) {
+Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(const TVector3& x0, const TVector3& x1, Double_t sizeX,
+                                                  Double_t sizeY, Double_t theta) {
     if (fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) == GetNumberOfHits()) return true;
 
     return false;
@@ -333,8 +335,8 @@ Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(TVector3 x0, TVector3 x1, Doub
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-Double_t TRestDetectorHitsEvent::GetEnergyInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
-                                                  Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetEnergyInPrism(const TVector3& x0, const TVector3& x1, Double_t sizeX,
+                                                  Double_t sizeY, Double_t theta) {
     return fHits->GetEnergyInPrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -348,8 +350,8 @@ Double_t TRestDetectorHitsEvent::GetEnergyInPrism(TVector3 x0, TVector3 x1, Doub
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX,
-                                                         Double_t sizeY, Double_t theta) {
+Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(const TVector3& x0, const TVector3& x1,
+                                                         Double_t sizeX, Double_t sizeY, Double_t theta) {
     return fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -363,8 +365,8 @@ Int_t TRestDetectorHitsEvent::GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x
 /// \param sizeY Size of the side X of the prism face.
 /// \param theta An angle in radians to rotate the face of the prism.
 ///
-TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1, Double_t sizeX,
-                                                        Double_t sizeY, Double_t theta) {
+TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(const TVector3& x0, const TVector3& x1,
+                                                        Double_t sizeX, Double_t sizeY, Double_t theta) {
     return fHits->GetMeanPositionInPrism(x0, x1, sizeX, sizeY, theta);
 }
 
@@ -617,9 +619,9 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
     if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
-    if (fPad != NULL) {
+    if (fPad != nullptr) {
         delete fPad;
-        fPad = NULL;
+        fPad = nullptr;
     }
 
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
@@ -695,17 +697,17 @@ void TRestDetectorHitsEvent::SetBoundaries() {
 }
 
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
-    if (fXYHitGraph != NULL) {
+    if (fXYHitGraph != nullptr) {
         delete fXYHitGraph;
-        fXYHitGraph = NULL;
+        fXYHitGraph = nullptr;
     }
-    if (fXZHitGraph != NULL) {
+    if (fXZHitGraph != nullptr) {
         delete fXZHitGraph;
-        fXZHitGraph = NULL;
+        fXZHitGraph = nullptr;
     }
-    if (fYZHitGraph != NULL) {
+    if (fYZHitGraph != nullptr) {
         delete fYZHitGraph;
-        fYZHitGraph = NULL;
+        fYZHitGraph = nullptr;
     }
 
     Double_t xz[2][this->GetNumberOfHits()];
@@ -792,30 +794,30 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 }
 
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TString histOption) {
-    if (fXYHisto != NULL) {
+    if (fXYHisto != nullptr) {
         delete fXYHisto;
-        fXYHisto = NULL;
+        fXYHisto = nullptr;
     }
-    if (fXZHisto != NULL) {
+    if (fXZHisto != nullptr) {
         delete fXZHisto;
-        fXZHisto = NULL;
+        fXZHisto = nullptr;
     }
-    if (fYZHisto != NULL) {
+    if (fYZHisto != nullptr) {
         delete fYZHisto;
-        fYZHisto = NULL;
+        fYZHisto = nullptr;
     }
 
-    if (fXHisto != NULL) {
+    if (fXHisto != nullptr) {
         delete fXHisto;
-        fXHisto = NULL;
+        fXHisto = nullptr;
     }
-    if (fYHisto != NULL) {
+    if (fYHisto != nullptr) {
         delete fYHisto;
-        fYHisto = NULL;
+        fYHisto = nullptr;
     }
-    if (fZHisto != NULL) {
+    if (fZHisto != nullptr) {
         delete fZHisto;
-        fZHisto = NULL;
+        fZHisto = nullptr;
     }
 
     Int_t nBinsX = (fMaxX - fMinX + 20) / pitch;

@@ -2,6 +2,8 @@
 #ifndef TRestSoft_TRestDetectorHitsEvent
 #define TRestSoft_TRestDetectorHitsEvent
 
+#include <TGraph.h>
+
 #include <iostream>
 
 #include "TArrayI.h"
@@ -10,12 +12,6 @@
 #include "TH2F.h"
 #include "TMath.h"
 #include "TObject.h"
-
-#include <TGraph.h>
-#include "TH2F.h"
-
-#include "TVector3.h"
-
 #include "TRestEvent.h"
 #include "TRestHits.h"
 #include "TVector3.h"
@@ -75,12 +71,20 @@ class TRestDetectorHitsEvent : public TRestEvent {
     /// The hits structure that is is saved to disk.
     TRestHits* fHits;  //->
 
+    std::map<TString, TRestHits*> fVetoHits;  // Hits not in the main detector, such as veto scintillators
+
    public:
-    void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
-    void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
+    void AddHit(const TVector3& pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
+    inline void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0,
+                       REST_HitType type = XYZ) {
+        AddHit({x, y, z}, en, t, type);
+    }
+    void AddVetoHit(const TString& volumeName, const TVector3& position, Double_t energy, double_t time);
+    std::map<TString, TRestHits*> GetVetoHits() const { return fVetoHits; }
 
     void SetBoundaries();
-    void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
+    void Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
+                                     const TRestHits::iterator& hit2) = nullptr);
     void Shuffle(int NLoop);
 
     Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
@@ -105,9 +109,9 @@ class TRestDetectorHitsEvent : public TRestEvent {
     TRestHits* GetYZHits();
     TRestHits* GetXYZHits();
 
-    virtual void Initialize();
+    void Initialize() override;
 
-    virtual void PrintEvent() { TRestDetectorHitsEvent::PrintEvent(-1); };
+    inline void PrintEvent() override { TRestDetectorHitsEvent::PrintEvent(-1); };
     virtual void PrintEvent(Int_t nHits);
 
     TVector3 GetPosition(int n) { return fHits->GetPosition(n); }
@@ -144,30 +148,34 @@ class TRestDetectorHitsEvent : public TRestEvent {
     Double_t GetEnergy(int n) { return fHits->GetEnergy(n); }
     Double_t GetTime(int n) { return GetHits()->GetTime(n); }  // return value in us
 
-    Int_t GetClosestHit(TVector3 position) { return fHits->GetClosestHit(position); }
+    Int_t GetClosestHit(const TVector3& position) { return fHits->GetClosestHit(position); }
 
     // Inside Cylinder methods
-    Bool_t anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
-    Bool_t allHitsInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
-    Double_t GetEnergyInCylinder(TVector3 x0, TVector3 x1, Double_t radius);
-    Int_t GetNumberOfHitsInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
-    TVector3 GetMeanPositionInCylinder(TVector3 x0, TVector3 x1, Double_t radius);
+    Bool_t anyHitInsideCylinder(const TVector3& x0, const TVector3& x1, Double_t radius);
+    Bool_t allHitsInsideCylinder(const TVector3& x0, const TVector3& x1, Double_t radius);
+    Double_t GetEnergyInCylinder(const TVector3& x0, const TVector3& x1, Double_t radius);
+    Int_t GetNumberOfHitsInsideCylinder(const TVector3& x0, const TVector3& x1, Double_t radius);
+    TVector3 GetMeanPositionInCylinder(const TVector3& x0, const TVector3& x1, Double_t radius);
 
     // Inside Prim methods
-    Bool_t anyHitInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY, Double_t theta);
-    Bool_t allHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sX, Double_t sY, Double_t theta);
+    Bool_t anyHitInsidePrism(const TVector3& x0, const TVector3& x1, Double_t sizeX, Double_t sizeY,
+                             Double_t theta);
+    Bool_t allHitsInsidePrism(const TVector3& x0, const TVector3& x1, Double_t sX, Double_t sY,
+                              Double_t theta);
 
-    Double_t GetEnergyInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY, Double_t theta);
-    Int_t GetNumberOfHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
+    Double_t GetEnergyInPrism(const TVector3& x0, const TVector3& x1, Double_t sizeX, Double_t sizeY,
+                              Double_t theta);
+    Int_t GetNumberOfHitsInsidePrism(const TVector3& x0, const TVector3& x1, Double_t sizeX, Double_t sizeY,
                                      Double_t theta);
-    TVector3 GetMeanPositionInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY, Double_t theta);
+    TVector3 GetMeanPositionInPrism(const TVector3& x0, const TVector3& x1, Double_t sizeX, Double_t sizeY,
+                                    Double_t theta);
 
-    // Get closest distance to cylinder walls methods
+    // Get the closest distance to cylinder walls methods
     Double_t GetClosestHitInsideDistanceToCylinderWall(TVector3 x0, TVector3 x1, Double_t radius);
     Double_t GetClosestHitInsideDistanceToCylinderTop(TVector3 x0, TVector3 x1, Double_t radius);
     Double_t GetClosestHitInsideDistanceToCylinderBottom(TVector3 x0, TVector3 x1, Double_t radius);
 
-    // Get closest distance to prism walls methods
+    // Get the closest distance to prism walls methods
     Double_t GetClosestHitInsideDistanceToPrismWall(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                     Double_t theta);
     Double_t GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
@@ -179,9 +187,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
     void DrawGraphs(Int_t& column);
 
-    // Construtor
     TRestDetectorHitsEvent();
-    // Destructor
     ~TRestDetectorHitsEvent();
 
     ClassDef(TRestDetectorHitsEvent, 1);
