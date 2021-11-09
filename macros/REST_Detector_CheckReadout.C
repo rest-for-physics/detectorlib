@@ -199,6 +199,8 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
     std::vector<Double_t> yPos;
 
     Int_t cont = 0;
+    cout << "Number of points to be launched : " << N << endl;
+    cout << "Number of modules : " << p->GetNumberOfModules() << endl;
     while (N > 0) {
         xR = rnd->Uniform(xMin, xMax);
         yR = rnd->Uniform(yMin, yMax);
