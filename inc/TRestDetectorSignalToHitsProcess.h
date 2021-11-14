@@ -47,7 +47,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    protected:
     Double_t fElectricField = 100;  // V/cm
     Double_t fGasPressure = 1;      // atm
-    Double_t fDriftVelocity = 1;    // mm/us
+    Double_t fDriftVelocity = -1;    // mm/us
 
     TString fMethod = "tripleMax";
 
