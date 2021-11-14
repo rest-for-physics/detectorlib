@@ -77,6 +77,15 @@
 /// averaged on all points (Perhaps this is not the most appropiate?).
 /// * **all**: It will simply transport all points found at the TRestSignal 
 /// to the TRestDetetorHitsEvent.
+///
+/// \htmlonly <style>div.image img[src="signalToHits.png"]{width:1000px;}</style> \endhtmlonly
+///
+/// The following figure shows the results of applying the process to a 
+/// Monte Carlo artificially signal generated where the energy deposits
+/// are exactly at their corresponding physical drift time values. No shaping
+/// electronic effects were included at the input event.
+/// 
+/// ![An ilustration showing the input event (left) and the resulting output event (right) ](trigger.png)
 /// 
 ///--------------------------------------------------------------------------
 ///
