@@ -85,7 +85,7 @@
 /// are exactly at their corresponding physical drift time values. No shaping
 /// electronic effects were included at the input event.
 /// 
-/// ![An ilustration showing the input event (left) and the resulting output event (right) ](trigger.png)
+/// ![An ilustration showing the input event (left) and the resulting output event (right) ](signalToHits.png)
 /// 
 ///--------------------------------------------------------------------------
 ///
