@@ -78,14 +78,16 @@
 /// * **all**: It will simply transport all points found at the TRestSignal 
 /// to the TRestDetetorHitsEvent.
 ///
-/// \htmlonly <style>div.image img[src="signalToHits.png"]{width:1000px;}</style> \endhtmlonly
+/// \htmlonly <style>div.image img[src="signalToHits.png"]{width:800px;}</style> \endhtmlonly
 ///
 /// The following figure shows the results of applying the process to a 
-/// Monte Carlo artificially signal generated where the energy deposits
-/// are exactly at their corresponding physical drift time values. No shaping
-/// electronic effects were included at the input event.
-/// 
-/// ![An ilustration showing the input event (left) and the resulting output event (right) ](signalToHits.png)
+/// Monte Carlo artificially signal generated, where the energy deposits
+/// are exactly at their corresponding physical drift time values. No shaping or
+/// any other electronic effects were included at the input event (left figure).
+/// The drift time is translated to a Z-coordinate on the output event, where we
+/// show only one readout projection in X (right figure). 
+///
+/// \image html signalToHits.png
 /// 
 ///--------------------------------------------------------------------------
 ///
