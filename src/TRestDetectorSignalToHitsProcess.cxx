@@ -337,7 +337,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
         }
 	else
 	{
-		string errMsg = "The method " + fMethod + " is not implemented!";
+		string errMsg = "The method " + (string) fMethod + " is not implemented!";
 		SetError( errMsg );
 	}
     }
