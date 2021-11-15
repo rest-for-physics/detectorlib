@@ -34,10 +34,16 @@
 //! A process to transform a daq channel and physical time to spatial coordinates
 class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    private:
+    /// A pointer to the specific TRestDetectorHitsEvent output
     TRestDetectorHitsEvent* fHitsEvent;      //!
+
+    /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
+    /// A pointer to the detector readout definition accesible to TRestRun
     TRestDetectorReadout* fReadout;  //!
+    
+    /// A pointer to the detector gas definition accessible to TRestRun
     TRestDetectorGas* fGas;          //!
 
     void Initialize();
@@ -45,10 +51,17 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     void LoadDefaultConfig();
 
    protected:
-    Double_t fElectricField = 100;  // V/cm
-    Double_t fGasPressure = 1;      // atm
-    Double_t fDriftVelocity = 1;    // mm/us
 
+    /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
+    Double_t fElectricField = 100;
+
+    /// The gas pressure in atm. Only relevant if TRestDetectorGas is used.
+    Double_t fGasPressure = 1;
+
+    /// The drift velocity in standard REST units (mm/us).
+    Double_t fDriftVelocity = -1;
+
+    /// The method used to transform the signal points to hits.
     TString fMethod = "tripleMax";
 
    public:
@@ -60,6 +73,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
     void LoadConfig(std::string cfgFilename, std::string name = "");
 
+    /// It prints out the process parameters stored in the metadata structure
     void PrintMetadata() {
         BeginPrintProcess();
 
@@ -72,12 +86,11 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
+    /// Returns the name of this process
     TString GetProcessName() { return (TString) "signalToHits"; }
 
-    // Constructor
     TRestDetectorSignalToHitsProcess();
     TRestDetectorSignalToHitsProcess(char* cfgFileName);
-    // Destructor
     ~TRestDetectorSignalToHitsProcess();
 
     ClassDef(TRestDetectorSignalToHitsProcess, 3);
