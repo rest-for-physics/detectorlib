@@ -245,7 +245,7 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
  * If we want just to have a method to export data, in principe it is possible. But
  * better without using a new TRestRun instance. TRestRun should only be created for
  * writting the standard processing scheme.
- *
+ ***/
 void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename) {
     cout << "TRestDetectorSingleChannelAnalysisProcess: saving result..." << endl;
 
@@ -257,7 +257,7 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     fCalib->fChannelGain = fChannelGain;
     fCalib->SetName("ChannelCalibration");
 
-    TRestRun* r = new TRestRun();
+    TRestRun* r = (TRestRun*)fRunInfo->Clone();
     r->SetOutputFileName(filename);
     r->AddMetadata(fCalib);
     r->AddMetadata(fReadout);
@@ -265,8 +265,9 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     r->FormOutputFile();
 
     PrintChannelSpectrums(filename);
+    delete r;
 }
-***/
+
 
 TH1D* TRestDetectorSingleChannelAnalysisProcess::GetChannelSpectrum(int id) {
     if (fChannelThrIntegral.count(id) != 0) return fChannelThrIntegral[id];
