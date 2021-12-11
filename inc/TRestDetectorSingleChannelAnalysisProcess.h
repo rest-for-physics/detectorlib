@@ -57,7 +57,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
 
     void FitChannelGain();
     // See comments on CXX
-    //   void SaveGainMetadata(string filename);
+    void SaveGainMetadata(string filename);
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
