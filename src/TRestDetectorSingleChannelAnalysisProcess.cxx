@@ -50,17 +50,16 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fCalib = GetMetadata<TRestDetectorGainMap>();
     if (fReadout == NULL) {
     } else {
-        auto readout = *fReadout;
-        for (int i = 0; i < readout.GetNumberOfReadoutPlanes(); i++) {
-            auto plane = readout[i];
-            for (int j = 0; j < plane.GetNumberOfModules(); j++) {
-                auto mod = plane[j];
-                for (int k = 0; k < mod.GetNumberOfChannels(); k++) {
-                    auto channel = mod[k];
-                    fChannelGain[channel.GetDaqID()] = 1;       // default correction factor is 1
-                    fChannelGainError[channel.GetDaqID()] = 1;  // relative error
-                    fChannelThrIntegral[channel.GetDaqID()] =
-                        new TH1D(Form("h%i", channel.GetDaqID()), Form("h%i", channel.GetDaqID()), 100, 0,
+        for (int i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
+            auto plane = fReadout->GetReadoutPlane(i);
+            for (int j = 0; j < plane->GetNumberOfModules(); j++) {
+                auto mod = plane->GetModule(j);
+                for (int k = 0; k < mod->GetNumberOfChannels(); k++) {
+                    auto channel = mod->GetChannel(k);
+                    fChannelGain[channel->GetDaqID()] = 1;       // default correction factor is 1
+                    fChannelGainError[channel->GetDaqID()] = 1;  // relative error
+                    fChannelThrIntegral[channel->GetDaqID()] =
+                        new TH1D(Form("h%i", channel->GetDaqID()), Form("h%i", channel->GetDaqID()), 100, 0,
                                  fSpecFitRange.Y() * 1.5);
                 }
             }
@@ -169,7 +168,7 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
 void TRestDetectorSingleChannelAnalysisProcess::EndProcess() {
     if (fCreateGainMap) {
         FitChannelGain();
-        SaveGainMetadata(fCalibSave);
+        // SaveGainMetadata(fCalibSave);
     }
 }
 
@@ -240,6 +239,13 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
     }
 }
 
+/*** This should not be done. The framework saves any metadata structure inside of the
+ * common TRestRun during processing. If TRestRun does not know a particular metadata
+ * instance, then it should be added to the run, and it will be written to disk with it.
+ * If we want just to have a method to export data, in principe it is possible. But
+ * better without using a new TRestRun instance. TRestRun should only be created for
+ * writting the standard processing scheme.
+ ***/
 void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename) {
     cout << "TRestDetectorSingleChannelAnalysisProcess: saving result..." << endl;
 
@@ -251,7 +257,7 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     fCalib->fChannelGain = fChannelGain;
     fCalib->SetName("ChannelCalibration");
 
-    TRestRun* r = new TRestRun();
+    TRestRun* r = (TRestRun*)fRunInfo->Clone();
     r->SetOutputFileName(filename);
     r->AddMetadata(fCalib);
     r->AddMetadata(fReadout);
@@ -259,7 +265,9 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     r->FormOutputFile();
 
     PrintChannelSpectrums(filename);
+    delete r;
 }
+
 
 TH1D* TRestDetectorSingleChannelAnalysisProcess::GetChannelSpectrum(int id) {
     if (fChannelThrIntegral.count(id) != 0) return fChannelThrIntegral[id];
