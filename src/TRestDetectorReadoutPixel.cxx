@@ -41,7 +41,7 @@
 /// <hr>
 ///
 
-double delta = 1.e-6;
+double delta = 1.e-3;
 
 #include "TRestDetectorReadoutPixel.h"
 using namespace std;
