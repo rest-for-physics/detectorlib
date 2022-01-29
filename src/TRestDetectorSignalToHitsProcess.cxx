@@ -77,6 +77,9 @@
 /// averaged on all points (Perhaps this is not the most appropiate?).
 /// * **all**: It will simply transport all points found at the TRestSignal 
 /// to the TRestDetetorHitsEvent.
+/// * **intwindow**: Splits the time into a window defined by fIntwindow
+/// while performing the average of the data points. Every point corresponds
+/// to a Hit
 ///
 /// \htmlonly <style>div.image img[src="signalToHits.png"]{width:800px;}</style> \endhtmlonly
 ///
@@ -97,6 +100,9 @@
 ///
 /// 2016-January: First concept and implementation.
 /// \author     Javier Galan
+///
+/// 2022-January: Implementing new method intwindod
+/// \author     JuanAn Garcia
 ///
 /// \class TRestDetectorSignalToHitsProcess
 ///
@@ -213,9 +219,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
     fHitsEvent->SetSubEventTag(fSignalEvent->GetSubEventTag());
 
     debug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << endl;
-    if (GetVerboseLevel() >= REST_Debug) fSignalEvent->PrintEvent();
+    if (GetVerboseLevel() >= REST_Extreme) fSignalEvent->PrintEvent();
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
+
+    if(numberOfSignals==0)return nullptr;
 
     Int_t planeID, readoutChannel = -1, readoutModule;
     for (int i = 0; i < numberOfSignals; i++) {
@@ -336,8 +344,31 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
-        }
-	else
+        } else if (fMethod == "intwindow" ) {
+          Int_t nPoints = sgnl->GetNumberOfPoints();  
+            for(int j= 0; j<nPoints-fIntWindow;j+=fIntWindow){
+              double energy =0;
+              double time =0;
+                for(int p=0;p<fIntWindow;p++){
+                  energy += (double)sgnl->GetData(j+p);
+                  time += (double)sgnl->GetTime(j+p);
+                }
+                  if(fIntWindow>0){
+                    energy /= (double)fIntWindow;
+                    time /= (double)fIntWindow; 
+                  }
+                if(energy <  fThreshold ) continue;
+              debug<<"TimeBin "<<j<<"-"<<j+(fIntWindow -1)<<" Time "<<time<<" Charge: "<<energy <<" Thr: " <<(fThreshold)<<endl;
+              Double_t distanceToPlane = time * fDriftVelocity;
+              Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+              debug << "Time : " << time << " Drift velocity : " << fDriftVelocity << "\nDistance to plane : " << distanceToPlane << endl;
+              debug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z <<" type "<<type<<endl;
+
+                fHitsEvent->AddHit(x, y, z, energy, 0, type);
+            }
+
+	} else
 	{
 		string errMsg = "The method " + (string) fMethod + " is not implemented!";
 		SetError( errMsg );
