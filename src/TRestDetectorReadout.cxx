@@ -611,6 +611,8 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     module.SetName(GetFieldValue("name", moduleDefinition));
     module.SetSize(StringTo2DVector(GetFieldValue("size", moduleDefinition)));
     module.SetTolerance(StringToDouble(GetFieldValue("tolerance", moduleDefinition)));
+    Double_t pixelTolerance = StringToDouble(GetFieldValue("pixelTolerance", moduleDefinition));
+    if (pixelTolerance == -1) pixelTolerance = 1.e-6;
 
 #pragma region addChannel
     vector<TRestDetectorReadoutChannel> channelVector;
@@ -634,6 +636,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
             pixel.SetSize(StringTo2DVector(GetFieldValue("size", pixelDefinition)));
             pixel.SetRotation(StringToDouble(GetFieldValue("rotation", pixelDefinition)));
             pixel.SetTriangle(StringToBool(GetFieldValue("triangle", pixelDefinition)));
+            pixel.SetTolerance(pixelTolerance);
 
             if (StringToInteger(GetFieldValue("id", pixelDefinition)) != -1)
                 pixelIDVector.push_back(StringToInteger(GetFieldValue("id", pixelDefinition)));

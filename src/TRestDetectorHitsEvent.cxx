@@ -607,7 +607,8 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
     optList.erase(std::remove(optList.begin(), optList.end(), "print"), optList.end());
 
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
+    /// The default histogram using a pitch of 0.5mm
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
 
     if (fPad != NULL) {
         delete fPad;
