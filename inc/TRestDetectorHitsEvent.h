@@ -32,20 +32,14 @@ class TRestDetectorHitsEvent : public TRestEvent {
     /// An auxiliar TRestHits structure to register hits on XYZ projection
     TRestHits* fXYZHits;  //!
 
-    /// Stores the minimum x-position value. It is initialized by SetBoundaries.
-    Double_t fMinX;  //!
-    /// Stores the maximum x-position value. It is initialized by SetBoundaries.
-    Double_t fMaxX;  //!
+    /// Stores the minimum xyz-position value. It is initialized by SetBoundaries.
+    TVector3 fMin;  //!
+    /// Stores the maximum xyz-position value. It is initialized by SetBoundaries.
+    TVector3 fMax;  //!
 
-    /// Stores the minimum y-position value. It is initialized by SetBoundaries.
-    Double_t fMinY;  //!
-    /// Stores the maximum y-position value. It is initialized by SetBoundaries.
-    Double_t fMaxY;  //!
-
-    /// Stores the minimum z-position value. It is initialized by SetBoundaries.
-    Double_t fMinZ;  //!
-    /// Stores the maximum z-position value. It is initialized by SetBoundaries.
-    Double_t fMaxZ;  //!
+    /// Stores the minimum distance in xyz-position hits values. 
+    /// It is initialized by SetBoundaries.
+    TVector3 fMinDiff;  //!
 
    protected:
     // TODO These graphs should be placed in TRestHits?
@@ -80,9 +74,9 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
     void SetBoundaries();
+    void GetBoundaries(TVector3 &max, TVector3 &min, TVector3 &nBins, double offset=10);
     void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
     void Shuffle(int NLoop);
-    void GetBoundaries(TVector3 &max, TVector3 &min, TVector3& nBins, double offset=10);
 
     Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
 
@@ -177,8 +171,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                       Double_t sizeY, Double_t theta);
 
     TPad* DrawEvent(TString option = "");
-    TPad* DrawEvent(const TVector3 &origin, const TVector3 &end, const TVector3 &max, const TVector3 &min, const TVector3& nBins);
-    void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
+    void DrawHistograms(Int_t& column, TString histOption = "");
     void DrawGraphs(Int_t& column);
 
     // Construtor
