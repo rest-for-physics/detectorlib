@@ -933,6 +933,120 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
     column++;
 }
 
+TPad* TRestDetectorHitsEvent::DrawEvent(const TVector3 &origin, const TVector3 &end, const TVector3 &max, const TVector3 &min, const TVector3& nBins){
+
+  if(fPad)delete fPad;
+  if(fXZHisto)delete fXZHisto;
+  if(fXZHisto)delete fYZHisto;
+
+  fPad = new TPad("HitEvent", " ", 0, 0, 1, 1);
+  fPad->Divide(2);
+  fPad->Draw();
+  fXZHisto = new TH2F("HXZ","HXZ",(int)nBins.X(),min.X(),max.X(),(int)nBins.Z(), min.Z(), max.Z());
+  fYZHisto = new TH2F("HYZ","HYZ",(int)nBins.Y(),min.Y(),max.Y(),(int)nBins.Z(), min.Z(), max.Z());
+
+     for (int nhit = 0; nhit < GetNumberOfHits(); nhit++) {
+       if(fHits->GetType(nhit) == XZ)fXZHisto->Fill(fHits->GetX(nhit),fHits->GetZ(nhit),fHits->GetEnergy(nhit));
+       if(fHits->GetType(nhit) == YZ)fYZHisto->Fill(fHits->GetY(nhit),fHits->GetZ(nhit),fHits->GetEnergy(nhit));
+     }
+
+
+  TGraph *originXZGr = new TGraph();
+  originXZGr->SetPoint(0,origin.X(),origin.Z());
+  TGraph *originYZGr = new TGraph();
+  originYZGr->SetPoint(0,origin.Y(),origin.Z());
+  TGraph *endXZGr = new TGraph();
+  endXZGr->SetPoint(0,end.X(),end.Z());
+  TGraph *endYZGr = new TGraph();
+  endYZGr->SetPoint(0,end.Y(),end.Z());
+
+  fPad->cd(1);
+  fXZHisto->Draw("COLZ");
+  originXZGr->SetMarkerColor(kRed);
+  originXZGr->SetMarkerStyle(20);
+  originXZGr->Draw("LP");
+  endXZGr->SetMarkerColor(kBlack);
+  endXZGr->SetMarkerStyle(20);
+  endXZGr->Draw("LP");
+  
+  fPad->cd(2);
+  fYZHisto->Draw("COLZ");
+  originYZGr->SetMarkerColor(kRed);
+  originYZGr->SetMarkerStyle(20);
+  originYZGr->Draw("LP");
+  endYZGr->SetMarkerColor(kBlack);
+  endYZGr->SetMarkerStyle(20);
+  endYZGr->Draw("LP");
+
+  return fPad;
+}
+
+void TRestDetectorHitsEvent::GetBoundaries(TVector3 &max, TVector3 &min, TVector3& nBins, double offset){
+
+  std::vector<double> XH;
+  std::vector<double> YH;
+  std::vector<double> ZH;
+
+    for (int nhit = 0; nhit < GetNumberOfHits(); nhit++) {
+       if(fHits->GetType(nhit) % X == 0)XH.emplace_back(fHits->GetX(nhit));
+       if(fHits->GetType(nhit) % Y == 0)YH.emplace_back(fHits->GetY(nhit));
+       if(fHits->GetType(nhit) % Z == 0)ZH.emplace_back(fHits->GetZ(nhit));
+    }
+
+  
+  std::sort(XH.begin(),XH.end());
+  double maxX=XH.back();
+  double minX=XH.front();
+
+  double minDiffX = 1E6;
+  double prevVal=1E6;
+   for (const auto &h : XH){
+     double diff = std::abs( h - prevVal);
+     if(diff>0 && diff<minDiffX )minDiffX=diff;
+     prevVal=h;
+   }
+
+  std::sort(YH.begin(),YH.end());
+  double maxY=YH.back();
+  double minY=YH.front();
+
+  double minDiffY = 1E6;
+  prevVal=1E6;
+   for (const auto &h : YH){
+     double diff = std::abs(h - prevVal);
+     if(diff>0 && diff<minDiffY )minDiffY=diff;
+     prevVal=h;
+   }
+
+  std::sort(ZH.begin(),ZH.end());
+  double minZ = ZH.front();
+  double maxZ = ZH.back();
+
+  double minDiffZ = 1E6;
+  prevVal=1E6;
+   for (const auto &h : ZH){
+     double diff = std::abs(h - prevVal);
+     if(diff>0 && diff<minDiffZ )minDiffZ=diff;
+     prevVal=h;
+   }
+
+  maxX+=offset*minDiffX+minDiffX/2.;
+  maxY+=offset*minDiffY+minDiffX/2.;
+  maxZ+=offset*minDiffZ+minDiffX/2.;
+  minX-=offset*minDiffX-minDiffX/2.;
+  minY-=offset*minDiffY-minDiffX/2.;
+  minZ-=offset*minDiffZ-minDiffX/2.;
+
+  int nBinsX = std::round((maxX-minX)/minDiffX);
+  int nBinsY = std::round((maxY-minY)/minDiffY);
+  int nBinsZ = std::round((maxZ-minZ)/minDiffZ);
+
+  max.SetXYZ(maxX,maxY,maxZ);
+  min.SetXYZ(minX,minY,minZ);
+  nBins.SetXYZ(nBinsX,nBinsY,nBinsZ);
+
+}
+
 void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) {
     TRestEvent::PrintEvent();
 

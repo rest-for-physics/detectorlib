@@ -82,6 +82,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void SetBoundaries();
     void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
     void Shuffle(int NLoop);
+    void GetBoundaries(TVector3 &max, TVector3 &min, TVector3& nBins, double offset=10);
 
     Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
 
@@ -176,6 +177,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                       Double_t sizeY, Double_t theta);
 
     TPad* DrawEvent(TString option = "");
+    TPad* DrawEvent(const TVector3 &origin, const TVector3 &end, const TVector3 &max, const TVector3 &min, const TVector3& nBins);
     void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
     void DrawGraphs(Int_t& column);
 
