@@ -102,6 +102,6 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     TRestDetectorSignalToHitsProcess(char* cfgFileName);
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 3);
+    ClassDef(TRestDetectorSignalToHitsProcess, 4);
 };
 #endif
