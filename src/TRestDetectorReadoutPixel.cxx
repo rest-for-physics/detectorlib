@@ -41,8 +41,6 @@
 /// <hr>
 ///
 
-double delta = 1.e-6;
-
 #include "TRestDetectorReadoutPixel.h"
 using namespace std;
 
@@ -125,15 +123,15 @@ Bool_t TRestDetectorReadoutPixel::isInside(Double_t x, Double_t y) {
 Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
     pos = TransformToPixelCoordinates(pos);
     Double_t const x = pos.X();
-    if (pos.X() >= -delta && pos.X() <= fPixelSizeX + delta)  // Condition on X untouched
+    if (pos.X() >= -fTolerance && pos.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
     {
-        if (fTriangle && pos.Y() >= -delta &&
-            pos.Y() <= fPixelSizeY + delta -
+        if (fTriangle && pos.Y() >= -fTolerance &&
+            pos.Y() <= fPixelSizeY + fTolerance -
                            x * (fPixelSizeY / fPixelSizeX))  // if triangle, third condition depends on x
             return true;
-        if (!fTriangle && pos.Y() >= -delta &&
-            pos.Y() <= fPixelSizeY + delta)  // for a normal rectangular pixel, same
-                                             // simple conditions
+        if (!fTriangle && pos.Y() >= -fTolerance &&
+            pos.Y() <= fPixelSizeY + fTolerance)  // for a normal rectangular pixel, same
+                                                  // simple conditions
             return true;
     }
     return false;
