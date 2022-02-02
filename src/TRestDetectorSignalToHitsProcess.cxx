@@ -42,6 +42,9 @@
 /// is used.
 /// * **electricField**: Electric field. Typically in V/cm. Relevant only 
 /// if TRestDetectorGas is used.
+/// * **intWindow**: In case intwindow method is selected, it defines the
+/// integral window (us) that will be used to define the window in which
+/// the data points are integrated
 ///
 /// On top of that, this process will need to get access to a 
 /// TRestDetectorReadout definition in order to transform the corresponding
@@ -345,20 +348,24 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
         } else if (fMethod == "intwindow" ) {
-          Int_t nPoints = sgnl->GetNumberOfPoints();  
-            for(int j= 0; j<nPoints-fIntWindow;j+=fIntWindow){
-              double energy =0;
-              double time =0;
-                for(int p=0;p<fIntWindow;p++){
-                  energy += (double)sgnl->GetData(j+p);
-                  time += (double)sgnl->GetTime(j+p);
-                }
-                  if(fIntWindow>0){
-                    energy /= (double)fIntWindow;
-                    time /= (double)fIntWindow; 
-                  }
-                if(energy <  fThreshold ) continue;
-              debug<<"TimeBin "<<j<<"-"<<j+(fIntWindow -1)<<" Time "<<time<<" Charge: "<<energy <<" Thr: " <<(fThreshold)<<endl;
+          Int_t nPoints = sgnl->GetNumberOfPoints();
+          std::map<int,std::pair<int,double> > windowMap;
+            for(int j= 0; j<nPoints;j++){
+              int index = sgnl->GetTime(j)/fIntWindow;
+              auto it = windowMap.find(index);
+              if (it != windowMap.end()){
+                it->second.first++;
+                it->second.second += sgnl->GetData(j);
+              } else {
+                windowMap[index] = std::make_pair(1,sgnl->GetData(j));
+              }
+            }
+
+            for(const auto &[index, pair] : windowMap){
+              Double_t time = index * fIntWindow + fIntWindow/2.;
+              Double_t energy = pair.second/pair.first;
+              if(energy <  fThreshold ) continue;
+              debug<<"TimeBin "<<index<<" Time "<<time<<" Charge: "<<energy <<" Thr: " <<(fThreshold)<<endl;
               Double_t distanceToPlane = time * fDriftVelocity;
               Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
@@ -367,7 +374,6 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
-
 	} else
 	{
 		string errMsg = "The method " + (string) fMethod + " is not implemented!";
