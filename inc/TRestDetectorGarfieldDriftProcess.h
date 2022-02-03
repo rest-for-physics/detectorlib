@@ -19,14 +19,13 @@
 
 #if defined USE_Garfield
 #include "AvalancheMC.hh"
-#include "ComponentBase.hh"
+#include "Component.hh"
 #include "Sensor.hh"
 // TODO Could we have this as an option given through metadata?
 #define DRIFT_METHOD AvalancheMC
 #endif
 
 #include <TRandom3.h>
-
 #include <TRestDetectorGeometry.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>

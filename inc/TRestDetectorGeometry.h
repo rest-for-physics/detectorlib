@@ -27,7 +27,7 @@
 #include <TRestDetectorGas.h>
 
 #if defined USE_Garfield
-#include "ComponentBase.hh"
+#include "Component.hh"
 #include "GeometryRoot.hh"
 #include "Sensor.hh"
 #endif
@@ -39,7 +39,7 @@ class TRestDetectorGeometry : public TGeoManager {
 #if defined USE_Garfield
     Garfield::GeometryRoot* fGfGeometry;            //!///< Pointer to Garfield::GeometryRoot object of the
                                                     //! geometry
-    vector<Garfield::ComponentBase*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
+    vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
     vector<Garfield::Sensor*> vGfSensor;            //!///< Vector of pointers to Garfield Sensor object
     TGeoNode* fDriftElec;                           //!///< pointer to drift electrode
     vector<TGeoNode*> vReadoutElec;                 //!///< vector of pointers to readout planes
@@ -64,7 +64,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Set Garfield field component
-    void AddGfComponent(Garfield::ComponentBase* c) {
+    void AddGfComponent(Garfield::Component* c) {
         c->SetGeometry(fGfGeometry);
         vGfComponent.push_back(c);
     }
@@ -93,7 +93,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Get i^th Gf component
-    Garfield::ComponentBase* GetGfComponent(unsigned int i) {
+    Garfield::Component* GetGfComponent(unsigned int i) {
         if (i < vGfComponent.size())
             return vGfComponent[i];
         else
