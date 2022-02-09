@@ -40,7 +40,6 @@
 #include "TSystem.h"
 #include "TVector3.h"
 
-//#define USE_Garfield
 #if defined USE_Garfield
 #include "ComponentConstant.hh"
 #include "GeometrySimple.hh"
@@ -149,7 +148,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void CalcGarField(double Emin, double Emax, int n);
 
-    Int_t Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0);
+    Int_t Write(const char* name = nullptr, Int_t option = 0, Int_t bufsize = 0);
 
     void InitFromRootFile();
 

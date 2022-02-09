@@ -16,6 +16,8 @@
 #ifndef RestCore_TRestDetectorGeometry
 #define RestCore_TRestDetectorGeometry
 
+#include <TRestDetectorGas.h>
+
 #include <iostream>
 #include <vector>
 
@@ -23,8 +25,6 @@
 #include "TGeoMaterial.h"
 #include "TGeoVolume.h"
 #include "TObject.h"
-
-#include <TRestDetectorGas.h>
 
 #if defined USE_Garfield
 #include "Component.hh"
@@ -37,12 +37,12 @@ using namespace std;
 class TRestDetectorGeometry : public TGeoManager {
    protected:
 #if defined USE_Garfield
-    Garfield::GeometryRoot* fGfGeometry;            //!///< Pointer to Garfield::GeometryRoot object of the
-                                                    //! geometry
+    Garfield::GeometryRoot* fGfGeometry;        //!///< Pointer to Garfield::GeometryRoot object of the
+                                                //! geometry
     vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
-    vector<Garfield::Sensor*> vGfSensor;            //!///< Vector of pointers to Garfield Sensor object
-    TGeoNode* fDriftElec;                           //!///< pointer to drift electrode
-    vector<TGeoNode*> vReadoutElec;                 //!///< vector of pointers to readout planes
+    vector<Garfield::Sensor*> vGfSensor;        //!///< Vector of pointers to Garfield Sensor object
+    TGeoNode* fDriftElec;                       //!///< pointer to drift electrode
+    vector<TGeoNode*> vReadoutElec;             //!///< vector of pointers to readout planes
 #endif
 
    public:
@@ -89,7 +89,7 @@ class TRestDetectorGeometry : public TGeoManager {
         if (i < vReadoutElec.size())
             return vReadoutElec[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Get i^th Gf component
@@ -97,7 +97,7 @@ class TRestDetectorGeometry : public TGeoManager {
         if (i < vGfComponent.size())
             return vGfComponent[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Getnumber of Gf components
@@ -108,7 +108,7 @@ class TRestDetectorGeometry : public TGeoManager {
         if (i < vGfSensor.size())
             return vGfSensor[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Getnumber of Gf sensors
