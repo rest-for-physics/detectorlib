@@ -18,6 +18,8 @@ if (${REST_GARFIELD} MATCHES "ON")
 
     set(feature_added "Garfield")
     set(feature_added ${feature_added} PARENT_SCOPE)
+
+    install(DIRECTORY ${GARFIELD_INSTALL}/include/ DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
 else ()
     set(REST_GARFIELD OFF)
 endif (${REST_GARFIELD} MATCHES "ON")
