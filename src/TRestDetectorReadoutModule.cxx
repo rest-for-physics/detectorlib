@@ -75,7 +75,7 @@ void TRestDetectorReadoutModule::Initialize() {
     fMaximumDaqId = -1;
     fMininimumDaqId = -1;
 
-    fTolerance = 1.e-6;
+    fTolerance = 1.e-3;
 
     showWarnings = false;
 }
@@ -289,8 +289,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
         pixel = fMapping.GetPixelByNode(nodeX, nodeY);
 
         if (count > totalNodes / 10) {
-            cout << "REST Error? I did not find any channel for hit position (" << x << "," << y << ")"
-                 << endl;
+            warning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x << ","
+                    << y << ") in internal module coordinates" << endl;
 
             for (int ch = 0; ch < GetNumberOfChannels(); ch++)
                 for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++)
@@ -552,6 +552,7 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
         metadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << endl;
         metadata << "-- Rotation : " << fModuleRotation << " degrees" << endl;
         metadata << "-- Total channels : " << GetNumberOfChannels() << endl;
+        metadata << "-- Tolerance : " << fTolerance << endl;
         metadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 
         for (int n = 0; n < GetNumberOfChannels(); n++) fReadoutChannel[n].Print(DetailLevel - 1);

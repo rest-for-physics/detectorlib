@@ -44,6 +44,10 @@ class TRestDetectorReadoutPixel : public TObject {
 
     Bool_t fTriangle;  ///< The type of the pixel : false is rectangular, true is
                        ///< triangle
+
+    /// It will be initialized with the module parameter "pixelTolerance"
+    Double_t fTolerance = 1.e-6;  //!
+
     void Initialize();
 
    protected:
@@ -105,6 +109,9 @@ class TRestDetectorReadoutPixel : public TObject {
 
     /// Sets the type of the pixel
     void SetTriangle(Bool_t type) { fTriangle = type; }
+
+    /// Sets the value of the tolerance in mm. Used in IsInside method.
+    void SetTolerance(Double_t tol) { fTolerance = tol; }
 
     Bool_t isInside(TVector2 pos);
     Bool_t isInside(Double_t x, Double_t y);
