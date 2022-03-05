@@ -20,7 +20,7 @@ if (${REST_GARFIELD} MATCHES "ON")
         # Old way, for backwards compatibility
         message(STATUS "Using old Garfield CMake")
         set(GARFIELD_INSTALL $ENV{GARFIELD_HOME})
-        # include(FindGarfield)
+        include(FindGarfield)
         set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/Include)
         set(external_include_dirs ${external_include_dirs} ${Garfield_DIR}/Heed)
         set(external_libs "${external_libs} ${Garfield_LIBRARIES}")
@@ -28,9 +28,6 @@ if (${REST_GARFIELD} MATCHES "ON")
     else ()
         message(FATAL_ERROR "Garfield not found")
     endif ()
-
-    string(STRIP "${external_include_dirs}" external_include_dirs)
-    string(STRIP "${external_libs}" external_libs)
 
     set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
     message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
