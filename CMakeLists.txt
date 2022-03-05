@@ -1,21 +1,34 @@
-set( LibraryVersion "1.5" )
+set(LibraryVersion "1.5")
 add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
 
 #find garfield libs and includes
-IF( NOT DEFINED REST_GARFIELD )
-   set(REST_GARFIELD OFF)
-ENDIF()
+IF (NOT DEFINED REST_GARFIELD)
+    set(REST_GARFIELD OFF)
+ENDIF ()
 
 if (${REST_GARFIELD} MATCHES "ON")
     add_definitions(-DUSE_Garfield)
-    include(FindGarfield)
-    message(STATUS "GARFIELD " ${Garfield_INCLUDE_DIRS})
-    set(external_include_dirs ${external_include_dirs} ${Garfield_INCLUDE_DIRS})
-    set(external_libs "${external_libs} ${Garfield_LIBRARIES}")
-    set(external_include_dirs ${external_include_dirs} ${Garfield_DIR}/Heed)
-    message(STATUS "HEED Include " ${Garfield_DIR}/Heed)
-    message(STATUS "ALL INCLUDES: " ${external_include_dirs})
-	set(feature_added "Garfield")
+
+    if (DEFINED ENV{GARFIELD_INSTALL})
+        message(STATUS "Using new Garfield CMake")
+        set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
+        # find_package(Garfield REQUIRED)
+        # recommended CMake way does not work, we need to delete the "FindGarfield.cmake" script4
+    elseif (DEFINED ENV{GARFIELD_HOME})
+        # Old way, for backwards compatibility
+        message(STATUS "Using old Garfield CMake")
+        set(GARFIELD_INSTALL $ENV{GARFIELD_HOME})
+        # include(FindGarfield)
+    else ()
+        message(FATAL_ERROR "Garfield not found")
+    endif ()
+
+    set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
+    message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
+    set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/include/Garfield)
+    set(external_libs ${external_libs} "-L${GARFIELD_INSTALL}/lib -lGarfield")
+
+    set(feature_added "Garfield")
     set(feature_added ${feature_added} PARENT_SCOPE)
 else ()
     set(REST_GARFIELD OFF)
