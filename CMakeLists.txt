@@ -29,6 +29,9 @@ if (${REST_GARFIELD} MATCHES "ON")
         message(FATAL_ERROR "Garfield not found")
     endif ()
 
+    string(STRIP "${external_include_dirs}" external_include_dirs)
+    string(STRIP "${external_libs}" external_libs)
+
     set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
     message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
 
