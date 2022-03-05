@@ -52,8 +52,8 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     TRestDetectorGas* fGas;            //!
     TRestDetectorGeometry* fGeometry;  //!
 
-    Garfield::Sensor* fGfSensor;             //!
-    Garfield::DRIFT_METHOD* fGfDriftMethod;  //!
+    Garfield::Sensor* fGfSensor;   //!
+    DRIFT_METHOD* fGfDriftMethod;  //!
 
     void InitFromConfigFile();
 
