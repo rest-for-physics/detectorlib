@@ -17,9 +17,13 @@
 
 #include <TRestDetectorGas.h>
 
-#if defined USE_Garfield
+#if defined USE_Garfield_OLD
 #include "AvalancheMC.hh"
 #include "ComponentBase.hh"
+#include "Sensor.hh"
+#elif USE_Garfield
+#include "AvalancheMC.hh"
+#include "Component.hh"
 #include "Sensor.hh"
 // TODO Could we have this as an option given through metadata?
 #define DRIFT_METHOD AvalancheMC
@@ -27,11 +31,10 @@
 
 #include <TRandom3.h>
 
-#include <TRestDetectorGeometry.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
-
+#include "TRestDetectorGeometry.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 #include "TRestEventProcess.h"
 
 class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {

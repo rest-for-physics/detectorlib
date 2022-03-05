@@ -18,6 +18,7 @@ if (${REST_GARFIELD} MATCHES "ON")
         # Old way, for backwards compatibility
         message(STATUS "Using old Garfield CMake")
         set(GARFIELD_INSTALL $ENV{GARFIELD_HOME})
+        add_definitions(-DUSE_Garfield_OLD)
         # include(FindGarfield)
     else ()
         message(FATAL_ERROR "Garfield not found")

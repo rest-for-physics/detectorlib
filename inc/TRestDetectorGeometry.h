@@ -16,18 +16,22 @@
 #ifndef RestCore_TRestDetectorGeometry
 #define RestCore_TRestDetectorGeometry
 
+#include <TGeoManager.h>
+#include <TGeoMaterial.h>
+#include <TGeoVolume.h>
+#include <TObject.h>
+
 #include <iostream>
 #include <vector>
 
-#include "TGeoManager.h"
-#include "TGeoMaterial.h"
-#include "TGeoVolume.h"
-#include "TObject.h"
+#include "TRestDetectorGas.h"
 
-#include <TRestDetectorGas.h>
-
-#if defined USE_Garfield
+#if defined USE_Garfield_OLD
 #include "ComponentBase.hh"
+#include "GeometryRoot.hh"
+#include "Sensor.hh"
+#elif USE_Garfield
+#include "Component.hh"
 #include "GeometryRoot.hh"
 #include "Sensor.hh"
 #endif
@@ -55,6 +59,14 @@ class TRestDetectorGeometry : public TGeoManager {
     void InitGfGeometry();
 
 #if defined USE_Garfield
+    typedef Garfield::Component Component;
+#endif
+
+#if defined USE_Garfield_OLD
+    typedef Garfield::ComponentBase Component;
+#endif
+
+#if defined USE_Garfield || defined USE_Garfield_OLD
     /// Return pointer to Garfield::GeometryRoot geometry object
     Garfield::GeometryRoot* GetGfGeometry() { return fGfGeometry; }
 
@@ -64,7 +76,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Set Garfield field component
-    void AddGfComponent(Garfield::ComponentBase* c) {
+    void AddGfComponent(Component* c) {
         c->SetGeometry(fGfGeometry);
         vGfComponent.push_back(c);
     }
@@ -93,7 +105,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Get i^th Gf component
-    Garfield::ComponentBase* GetGfComponent(unsigned int i) {
+    Component* GetGfComponent(unsigned int i) {
         if (i < vGfComponent.size())
             return vGfComponent[i];
         else
