@@ -21,12 +21,13 @@
 #include "AvalancheMC.hh"
 #include "ComponentBase.hh"
 #include "Sensor.hh"
+typedef AvalancheMC DRIFT_METHOD;
 #elif USE_Garfield
 #include "AvalancheMC.hh"
 #include "Component.hh"
 #include "Sensor.hh"
+typedef AvalancheMC DRIFT_METHOD;
 // TODO Could we have this as an option given through metadata?
-#define DRIFT_METHOD AvalancheMC
 #endif
 
 #include <TRandom3.h>
