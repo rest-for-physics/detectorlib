@@ -15,12 +15,12 @@ if (${REST_GARFIELD} MATCHES "ON")
         # find_package(Garfield REQUIRED)
         set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/include/Garfield)
         set(external_libs ${external_libs} "-L${GARFIELD_INSTALL}/lib -lGarfield")
-        # recommended CMake way does not work, we need to delete the "FindGarfield.cmake" script4
+        # recommended CMake way does not work, we need to delete the "FindGarfield.cmake" script
     elseif (DEFINED ENV{GARFIELD_HOME})
         # Old way, for backwards compatibility
         message(STATUS "Using old Garfield CMake")
         set(GARFIELD_INSTALL $ENV{GARFIELD_HOME})
-        include(FindGarfield)
+        include(FindGarfieldOld)
         set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/Include)
         set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/Heed)
         set(external_libs "${external_libs} ${Garfield_LIBRARIES}")
