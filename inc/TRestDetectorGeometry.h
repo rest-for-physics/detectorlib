@@ -16,20 +16,33 @@
 #ifndef RestCore_TRestDetectorGeometry
 #define RestCore_TRestDetectorGeometry
 
+#include <TGeoManager.h>
+#include <TGeoMaterial.h>
+#include <TGeoVolume.h>
+#include <TObject.h>
+
 #include <iostream>
 #include <vector>
 
-#include "TGeoManager.h"
-#include "TGeoMaterial.h"
-#include "TGeoVolume.h"
-#include "TObject.h"
-
-#include <TRestDetectorGas.h>
+#include "TRestDetectorGas.h"
 
 #if defined USE_Garfield
+
+#if defined USE_Garfield_OLD
 #include "ComponentBase.hh"
+#else
+#include "Component.hh"
+#endif
+
 #include "GeometryRoot.hh"
 #include "Sensor.hh"
+
+#if defined USE_Garfield_OLD
+typedef Garfield::ComponentBase Component;
+#else
+typedef Garfield::Component Component;
+#endif
+
 #endif
 
 using namespace std;
@@ -37,12 +50,13 @@ using namespace std;
 class TRestDetectorGeometry : public TGeoManager {
    protected:
 #if defined USE_Garfield
-    Garfield::GeometryRoot* fGfGeometry;            //!///< Pointer to Garfield::GeometryRoot object of the
-                                                    //! geometry
-    vector<Garfield::ComponentBase*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
-    vector<Garfield::Sensor*> vGfSensor;            //!///< Vector of pointers to Garfield Sensor object
-    TGeoNode* fDriftElec;                           //!///< pointer to drift electrode
-    vector<TGeoNode*> vReadoutElec;                 //!///< vector of pointers to readout planes
+    Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the
+                                          //! geometry
+    vector<Component*> vGfComponent;      //!///< Vector of pointers to Garfield Component object
+    vector<Garfield::Sensor*> vGfSensor;  //!///< Vector of pointers to Garfield Sensor object
+    TGeoNode* fDriftElec;                 //!///< pointer to drift electrode
+    vector<TGeoNode*> vReadoutElec;       //!///< vector of pointers to readout planes
+
 #endif
 
    public:
@@ -55,6 +69,7 @@ class TRestDetectorGeometry : public TGeoManager {
     void InitGfGeometry();
 
 #if defined USE_Garfield
+
     /// Return pointer to Garfield::GeometryRoot geometry object
     Garfield::GeometryRoot* GetGfGeometry() { return fGfGeometry; }
 
@@ -64,7 +79,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Set Garfield field component
-    void AddGfComponent(Garfield::ComponentBase* c) {
+    void AddGfComponent(Component* c) {
         c->SetGeometry(fGfGeometry);
         vGfComponent.push_back(c);
     }
@@ -89,15 +104,15 @@ class TRestDetectorGeometry : public TGeoManager {
         if (i < vReadoutElec.size())
             return vReadoutElec[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Get i^th Gf component
-    Garfield::ComponentBase* GetGfComponent(unsigned int i) {
+    Component* GetGfComponent(unsigned int i) {
         if (i < vGfComponent.size())
             return vGfComponent[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Getnumber of Gf components
@@ -108,7 +123,7 @@ class TRestDetectorGeometry : public TGeoManager {
         if (i < vGfSensor.size())
             return vGfSensor[i];
         else
-            return 0;
+            return nullptr;
     }
 
     /// Getnumber of Gf sensors
