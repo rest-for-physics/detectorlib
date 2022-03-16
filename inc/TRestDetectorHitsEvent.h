@@ -32,15 +32,6 @@ class TRestDetectorHitsEvent : public TRestEvent {
     /// An auxiliar TRestHits structure to register hits on XYZ projection
     TRestHits* fXYZHits;  //!
 
-    /// Stores the minimum xyz-position value. It is initialized by SetBoundaries.
-    TVector3 fMin;  //!
-    /// Stores the maximum xyz-position value. It is initialized by SetBoundaries.
-    TVector3 fMax;  //!
-
-    /// Stores the minimum distance in xyz-position hits values. 
-    /// It is initialized by SetBoundaries.
-    TVector3 fMinDiff;  //!
-
    protected:
     // TODO These graphs should be placed in TRestHits?
     // (following similar GetGraph implementation in TRestDetectorSignal)
@@ -73,8 +64,6 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
     void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
-    void SetBoundaries();
-    void GetBoundaries(TVector3 &max, TVector3 &min, TVector3 &nBins, double offset=10);
     void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
     void Shuffle(int NLoop);
 
