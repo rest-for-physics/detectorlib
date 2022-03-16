@@ -579,12 +579,20 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVecto
 ///
 /// The following options are allowed:
 ///
-/// * **graph**:
-/// * **hist**:
-/// * **print**:
+/// 1. **graph**: It draws the hits using a TGraph drawing method.
+///
+/// 2. **hist**: It generates histograms in XY, XZ and YZ projections using the projected
+/// event hits at the corresponding plane, the bins are weighted with their corresponding
+/// energy. Histograms will accept as argument, between parenthesis, a conventional ROOT
+/// option, i.e. `hist(rootOption)`, where rootOption is any valid ROOT option as described
+/// by the [THistPainter](https://root.cern/doc/master/classTHistPainter.html) ROOT class.
+/// The default binning size is defined to be automatic, but the user is able to define a
+/// custom bin size of the histogram using the [ ]. i.e. the following example will define
+/// the bin size to 1mm. Example: `hist(Cont0,colz)[1]`.
+///
+/// 3 **print**: It will print on screen the result of TRestDetectorHitsEvent::PrintEvent.
 ///
 /// The different options must separated by colons, as "option1:option2:option3".
-///
 ///
 /// \return A pointer to the TPad where the event was drawn is returned.
 ///
