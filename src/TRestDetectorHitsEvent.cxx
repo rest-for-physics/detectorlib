@@ -83,9 +83,6 @@ TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fYHisto = NULL;
     fZHisto = NULL;
 
-    fMax.SetXYZ(10,10,10);
-    fMin.SetXYZ(-10,-10,-10);
-    fMinDiff.SetXYZ(3,3,3);
 }
 
 ///////////////////////////////////////////////
@@ -138,9 +135,6 @@ void TRestDetectorHitsEvent::Initialize() {
     fYZHits = new TRestHits();
     fXYZHits = new TRestHits();
 
-    fMax.SetXYZ(0,0,0);
-    fMin.SetXYZ(0,0,0);
-    fMinDiff.SetXYZ(3,3,3);
 }
 
 void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
@@ -599,8 +593,6 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVecto
 TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
     vector<TString> optList = Vector_cast<string, TString>(TRestTools::GetOptions((string)option));
 
-    SetBoundaries();
-
     for (unsigned int n = 0; n < optList.size(); n++) {
         if (optList[n] == "print") this->PrintEvent();
     }
@@ -659,79 +651,6 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
     }
 
     return fPad;
-}
-
-void TRestDetectorHitsEvent::SetBoundaries() {
-
-  std::vector<double> XH;
-  std::vector<double> YH;
-  std::vector<double> ZH;
-
-    for (int nhit = 0; nhit < GetNumberOfHits(); nhit++) {
-       if(fHits->GetType(nhit) % X == 0)XH.emplace_back(fHits->GetX(nhit));
-       if(fHits->GetType(nhit) % Y == 0)YH.emplace_back(fHits->GetY(nhit));
-       if(fHits->GetType(nhit) % Z == 0)ZH.emplace_back(fHits->GetZ(nhit));
-    }
-
-  std::sort(XH.begin(),XH.end());
-  double maxX=XH.back();
-  double minX=XH.front();
-
-  double minDiffX = 1E6;
-  double prevVal=1E6;
-   for (const auto &h : XH){
-     double diff = std::abs( h - prevVal);
-     if(diff>0 && diff<minDiffX )minDiffX=diff;
-     prevVal=h;
-   }
-
-  std::sort(YH.begin(),YH.end());
-  double maxY=YH.back();
-  double minY=YH.front();
-
-  double minDiffY = 1E6;
-  prevVal=1E6;
-   for (const auto &h : YH){
-     double diff = std::abs(h - prevVal);
-     if(diff>0 && diff<minDiffY )minDiffY=diff;
-     prevVal=h;
-   }
-
-  std::sort(ZH.begin(),ZH.end());
-  double minZ = ZH.front();
-  double maxZ = ZH.back();
-
-  double minDiffZ = 1E6;
-  prevVal=1E6;
-   for (const auto &h : ZH){
-     double diff = std::abs(h - prevVal);
-     if(diff>0 && diff<minDiffZ )minDiffZ=diff;
-     prevVal=h;
-   }
-
-  fMax.SetXYZ(maxX,maxY,maxZ);
-  fMin.SetXYZ(minX,minY,minZ);
-  fMinDiff.SetXYZ(minDiffX,minDiffY,minDiffZ);
-
-}
-
-void TRestDetectorHitsEvent::GetBoundaries(TVector3 &max, TVector3 &min, TVector3 &nBins, double offset){
-
-  double maxX = fMax.X() + offset*fMinDiff.X()+fMinDiff.X()/2.;
-  double maxY = fMax.Y() + offset*fMinDiff.Y()+fMinDiff.Y()/2.;
-  double maxZ = fMax.Z() + offset*fMinDiff.Z()+fMinDiff.Z()/2.;
-  double minX = fMin.X() - offset*fMinDiff.X()-fMinDiff.X()/2.;
-  double minY = fMin.Y() - offset*fMinDiff.Y()-fMinDiff.Y()/2.;
-  double minZ = fMin.Z() - offset*fMinDiff.Z()-fMinDiff.Z()/2.;
-
-  int nBinsX = std::round((maxX-minX)/fMinDiff.X());
-  int nBinsY = std::round((maxY-minY)/fMinDiff.Y());
-  int nBinsZ = std::round((maxZ-minZ)/fMinDiff.Z());
-
-  max.SetXYZ(maxX,maxY,maxZ);
-  min.SetXYZ(minX,minY,minZ);
-  nBins.SetXYZ(nBinsX,nBinsY,nBinsZ);
-
 }
 
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
@@ -860,16 +779,26 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption) {
         fZHisto = NULL;
     }
 
-    TVector3 max,min,nBins;
-    GetBoundaries(max,min,nBins);
+   std::vector<double>fX,fY,fZ;
+     for(int i=0; i<GetNumberOfHits();i++){
+       if(GetType(i) % X == 0)fX.emplace_back(GetX(i));
+       if(GetType(i) % Y == 0)fY.emplace_back(GetY(i));
+       if(GetType(i) % Z == 0)fZ.emplace_back(GetZ(i));
+     }
 
-    fXYHisto = new TH2F("XY", "", (int)nBins.X(), min.X(), max.X(), (int)nBins.Y(), min.Y(),max.Y());
-    fXZHisto = new TH2F("XZ", "", (int)nBins.X(), min.X(), max.X(), (int)nBins.Z(), min.Z(),max.Z());
-    fYZHisto = new TH2F("YZ", "", (int)nBins.Y(), min.Y(), max.Y(), (int)nBins.Z(), min.Z(),max.Z());
+    double maxX,minX,maxY,minY,maxZ,minZ;
+    int nBinsX,nBinsY,nBinsZ;
+    TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
+    TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
+    TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
 
-    fXHisto = new TH1F("X", "", nBins.X(), min.X(), max.X());
-    fYHisto = new TH1F("Y", "", nBins.Y(), min.Y(), max.Y());
-    fZHisto = new TH1F("Z", "", nBins.Z(), min.Z(), max.Z());
+    fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+
+    fXHisto = new TH1F("X", "", nBinsX, minX, maxX);
+    fYHisto = new TH1F("Y", "", nBinsY, minY, maxY);
+    fZHisto = new TH1F("Z", "", nBinsZ, minZ, maxZ);
 
     Int_t nYZ = 0, nXZ = 0, nXY = 0;
     Int_t nX = 0, nY = 0, nZ = 0;
