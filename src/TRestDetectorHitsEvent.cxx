@@ -82,7 +82,6 @@ TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fXHisto = NULL;
     fYHisto = NULL;
     fZHisto = NULL;
-
 }
 
 ///////////////////////////////////////////////
@@ -134,7 +133,6 @@ void TRestDetectorHitsEvent::Initialize() {
     fXZHits = new TRestHits();
     fYZHits = new TRestHits();
     fXYZHits = new TRestHits();
-
 }
 
 void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
@@ -751,8 +749,6 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 }
 
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption) {
-  cout<<histOption<<endl;
-
     if (fXYHisto != NULL) {
         delete fXYHisto;
         fXYHisto = NULL;
@@ -779,15 +775,15 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption) {
         fZHisto = NULL;
     }
 
-   std::vector<double>fX,fY,fZ;
-     for(int i=0; i<GetNumberOfHits();i++){
-       if(GetType(i) % X == 0)fX.emplace_back(GetX(i));
-       if(GetType(i) % Y == 0)fY.emplace_back(GetY(i));
-       if(GetType(i) % Z == 0)fZ.emplace_back(GetZ(i));
-     }
+    std::vector<double> fX, fY, fZ;
+    for (int i = 0; i < GetNumberOfHits(); i++) {
+        if (GetType(i) % X == 0) fX.emplace_back(GetX(i));
+        if (GetType(i) % Y == 0) fY.emplace_back(GetY(i));
+        if (GetType(i) % Z == 0) fZ.emplace_back(GetZ(i));
+    }
 
-    double maxX,minX,maxY,minY,maxZ,minZ;
-    int nBinsX,nBinsY,nBinsZ;
+    double maxX, minX, maxY, minY, maxZ, minZ;
+    int nBinsX, nBinsY, nBinsZ;
     TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
     TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
     TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
