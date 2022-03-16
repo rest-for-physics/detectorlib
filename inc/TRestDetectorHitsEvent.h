@@ -160,7 +160,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                       Double_t sizeY, Double_t theta);
 
     TPad* DrawEvent(TString option = "");
-    void DrawHistograms(Int_t& column, TString histOption = "");
+    void DrawHistograms(Int_t& column, TString histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
     // Construtor

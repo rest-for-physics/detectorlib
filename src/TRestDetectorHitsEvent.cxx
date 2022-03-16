@@ -597,8 +597,9 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
     optList.erase(std::remove(optList.begin(), optList.end(), "print"), optList.end());
 
-    /// The default histogram using a pitch of 0.5mm
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
+    /// The default histogram using a pitch of 0 mm,
+    //  which means that it should be extracted from the hit array
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
     if (fPad != NULL) {
         delete fPad;
@@ -637,7 +638,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
         startPos = optionStr.find("[");
         endPos = optionStr.find("]");
-        Double_t pitch = 3;
+        Double_t pitch = 0;
         if (endPos != string::npos) {
             TString pitchOption = optList[n](startPos + 1, endPos - startPos - 1);
             pitch = stod((string)pitchOption);
@@ -645,12 +646,19 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
         if (drawEventOption == "graph") this->DrawGraphs(column);
 
-        if (drawEventOption == "hist") this->DrawHistograms(column, histOption);
+        if (drawEventOption == "hist") this->DrawHistograms(column, histOption, pitch);
     }
 
     return fPad;
 }
 
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as a graph.
+///
+/// This method receives as argument the column to be drawn in the TPad.
+///
+/// The different TGraphs are drawn in a TPad *fPad defined as global variable
+///
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     if (fXYHitGraph != NULL) {
         delete fXYHitGraph;
@@ -748,7 +756,22 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     column++;
 }
 
-void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption) {
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as an histogram
+///
+/// This method receives the following arguments:
+/// -The column to be drawn in the TPad.
+/// -The histOption used as Draw option for the histograms
+/// -The pitch size which defines the number of bins of the histograms,
+/// if the pitch size is zero, the bins are drawn based on the minDiff of a
+/// particular axis. Otherwise, the pitch passed as argument is used to define
+/// the bin size, the histogram boundaries are based on the max/min values of
+/// a particular axis.
+///
+/// The different histograms are drawn in a TPad *fPad defined as global variable
+///
+void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, double pitch) {
+
     if (fXYHisto != NULL) {
         delete fXYHisto;
         fXYHisto = NULL;
@@ -787,6 +810,12 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption) {
     TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
     TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
     TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
+
+      if(pitch >0){
+        nBinsX = std::round((maxX-minX)/pitch);
+        nBinsY = std::round((maxY-minY)/pitch);
+        nBinsZ = std::round((maxZ-minZ)/pitch);
+      }
 
     fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
     fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
