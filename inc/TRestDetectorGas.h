@@ -23,8 +23,8 @@
 #ifndef RestCore_TRestDetectorGas
 #define RestCore_TRestDetectorGas
 #include <TROOT.h>
-#include <stdlib.h>
 
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 
@@ -40,7 +40,6 @@
 #include "TSystem.h"
 #include "TVector3.h"
 
-//#define USE_Garfield
 #if defined USE_Garfield
 #include "ComponentConstant.hh"
 #include "GeometrySimple.hh"

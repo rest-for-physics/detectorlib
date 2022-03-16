@@ -45,7 +45,9 @@ git tag -a v1.1 -m "Fixing release 1.1"
 git push --tags
 ```
 
-As soon as the new release is ready, the most natural is to update the submodule at the main [framework](https://github.com/rest-for-physics/framework) in order to make official the changes in the next framework release.
+IMPORTANT. Go now to the [tags section](https://github.com/rest-for-physics/detectorlib/tags) at the detectorlib repository to describe the changes happening from previous release.
+
+As soon as the new release is ready, the most natural is to update the submodule at the main [framework](https://github.com/rest-for-physics/framework) in order to make the changes official in the next framework release.
 
 If we are the main framework directory this would be achieved by doing
 
