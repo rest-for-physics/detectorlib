@@ -24,9 +24,8 @@
 #define RestCore_TRestDetectorSignalToHitsProcess
 
 #include <TRestDetectorGas.h>
-#include <TRestDetectorReadout.h>
-
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -35,23 +34,22 @@
 class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    private:
     /// A pointer to the specific TRestDetectorHitsEvent output
-    TRestDetectorHitsEvent* fHitsEvent;      //!
+    TRestDetectorHitsEvent* fHitsEvent;  //!
 
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     /// A pointer to the detector readout definition accesible to TRestRun
     TRestDetectorReadout* fReadout;  //!
-    
+
     /// A pointer to the detector gas definition accessible to TRestRun
-    TRestDetectorGas* fGas;          //!
+    TRestDetectorGas* fGas;  //!
 
     void Initialize();
 
     void LoadDefaultConfig();
 
    protected:
-
     /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
     Double_t fElectricField = 100;
 
@@ -64,15 +62,15 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// The method used to transform the signal points to hits.
     TString fMethod = "tripleMax";
 
-    //Time window to integrate in case intwindow method is requested, units (us)
-    Double_t fIntWindow=5;
+    // Time window to integrate in case intwindow method is requested, units (us)
+    Double_t fIntWindow = 5;
 
-    //Threshold value for in case intwindow method is requested
+    // Threshold value for in case intwindow method is requested
     Double_t fThreshold = 100.;
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    any GetInputEvent() const { return fSignalEvent; }
+    any GetOutputEvent() const { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
@@ -87,16 +85,16 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
         metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
         metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
         metadata << "Signal to hits method : " << fMethod << endl;
-        if(fMethod=="intwindow"){
-          metadata << "Threshold : " << fThreshold <<" ADC" <<endl;
-          metadata << "Integral window : " << fIntWindow<<" us" << endl;
+        if (fMethod == "intwindow") {
+            metadata << "Threshold : " << fThreshold << " ADC" << endl;
+            metadata << "Integral window : " << fIntWindow << " us" << endl;
         }
 
         EndPrintProcess();
     }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "signalToHits"; }
+    TString GetProcessName() const { return (TString) "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
     TRestDetectorSignalToHitsProcess(char* cfgFileName);

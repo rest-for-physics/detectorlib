@@ -23,33 +23,33 @@
 //////////////////////////////////////////////////////////////////////////
 ///
 /// TRestDetectorSignalToHitsProcess will use the readout definition to
-/// transform a TRestDetectorSignalEvent into a TRestDetectorHitsEvent. 
+/// transform a TRestDetectorSignalEvent into a TRestDetectorHitsEvent.
 /// The physical time on the input event will be associated with a physical
 /// spatial Z-coordinate using the gas drift velocity given by the user as
-/// the metadata parameter "driftVelocity". If the drift velocity is not 
-/// specified by the user, or it is negative, the process will try to 
-/// retrieve the drift velocity from the TRestDetectorGas metadata 
+/// the metadata parameter "driftVelocity". If the drift velocity is not
+/// specified by the user, or it is negative, the process will try to
+/// retrieve the drift velocity from the TRestDetectorGas metadata
 /// definition that should have been defined, and therefore available to
 /// the TRestRun instance. In the case that the drift velocity is retrieved
 /// from TRestDetectorGas two more parameters become relevant, the detector
-/// pressure, and the drift field, that play a role on the value of the 
+/// pressure, and the drift field, that play a role on the value of the
 /// drift velocity.
 ///
 /// Therefore, relevant parameters (see also the process header) are:
-/// * **driftVelocity**: The value of the electrons drift velocity. 
+/// * **driftVelocity**: The value of the electrons drift velocity.
 /// Typically in mm/us.
-/// * **pressure**: Gas pressure in bar. Relevant only if TRestDetectorGas 
+/// * **pressure**: Gas pressure in bar. Relevant only if TRestDetectorGas
 /// is used.
-/// * **electricField**: Electric field. Typically in V/cm. Relevant only 
+/// * **electricField**: Electric field. Typically in V/cm. Relevant only
 /// if TRestDetectorGas is used.
 /// * **intWindow**: In case intwindow method is selected, it defines the
 /// integral window (us) that will be used to define the window in which
 /// the data points are integrated
 ///
-/// On top of that, this process will need to get access to a 
+/// On top of that, this process will need to get access to a
 /// TRestDetectorReadout definition in order to transform the corresponding
 /// signal id found at each signal in TRestDetectorSignalEvent to a spatial
-/// physical position in the XY plane. The readout plane position at 
+/// physical position in the XY plane. The readout plane position at
 /// TRestDetectorReadout definition is also used as a reference to obtain the
 /// final Z-coordinate in this process.
 ///
@@ -57,28 +57,28 @@
 /// to reality if the physical time given at the TRestDetectorSignalEvent
 /// corresponds with the drift time to the readout plane. This is usually not
 /// the case, since our electronics system does not know the interaction time.
-/// Although, this might be the case if the interaction light is measured 
+/// Although, this might be the case if the interaction light is measured
 /// using a PMT, or the results are coming from Monte Carlo simulated data.
-/// 
-/// In order to transform the points found at each TRestSignal inside a 
+///
+/// In order to transform the points found at each TRestSignal inside a
 /// TRestDetectorSignalEvent, there are different methods that might lead to
 /// different results. Those are defined at the "method" metadata parameter.
 /// If this parameter is not given, its default value will be "tripleMax".
 ///
 /// The possible values for the "method" metadata parameter are:
-/// * **onlyMax**: It will transport to the TRestDetectorHitsProcess only 
+/// * **onlyMax**: It will transport to the TRestDetectorHitsProcess only
 /// the point at the maximum amplitude of each TRestSignal found inside the
-/// TRestDetectorSignalEvent. The Z-coordinate will be directly connected 
+/// TRestDetectorSignalEvent. The Z-coordinate will be directly connected
 /// with the time position at the maximum amplitude of the signal.
-/// * **tripleMax(default)**: It will transport to the 
-/// TRestDetectorHitsProcess only the three points with higher amplitude of 
+/// * **tripleMax(default)**: It will transport to the
+/// TRestDetectorHitsProcess only the three points with higher amplitude of
 /// each TRestSignal found inside the TRestDetectorSignalEvent. In practice
 /// this is very similar to *onlyMax*, but the effective energy is smoothed
 /// by including two additional points.
 /// * **qCenter**: It will consider the shape of the signal to determine the
-/// the time used to transform to a Z-coordinate. The energy is also 
+/// the time used to transform to a Z-coordinate. The energy is also
 /// averaged on all points (Perhaps this is not the most appropiate?).
-/// * **all**: It will simply transport all points found at the TRestSignal 
+/// * **all**: It will simply transport all points found at the TRestSignal
 /// to the TRestDetetorHitsEvent.
 /// * **intwindow**: Splits the time into a window defined by fIntwindow
 /// while performing the average of the data points. Every point corresponds
@@ -86,15 +86,15 @@
 ///
 /// \htmlonly <style>div.image img[src="signalToHits.png"]{width:800px;}</style> \endhtmlonly
 ///
-/// The following figure shows the results of applying the process to a 
+/// The following figure shows the results of applying the process to a
 /// Monte Carlo artificially signal generated, where the energy deposits
 /// are exactly at their corresponding physical drift time values. No shaping or
 /// any other electronic effects were included at the input event (left figure).
 /// The drift time is translated to a Z-coordinate on the output event, where we
-/// show only one readout projection in X (right figure). 
+/// show only one readout projection in X (right figure).
 ///
 /// \image html signalToHits.png
-/// 
+///
 ///--------------------------------------------------------------------------
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
@@ -114,6 +114,7 @@
 #include "TRestDetectorSignalToHitsProcess.h"
 
 #include <TRestDetectorSetup.h>
+
 using namespace std;
 
 ClassImp(TRestDetectorSignalToHitsProcess);
@@ -149,9 +150,7 @@ void TRestDetectorSignalToHitsProcess::LoadDefaultConfig() { SetTitle("Default c
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
-TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() {
-    delete fHitsEvent;
-}
+TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() { delete fHitsEvent; }
 
 ///////////////////////////////////////////////
 /// \brief Function to initialize input/output event members and define the
@@ -164,8 +163,8 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
     fHitsEvent = new TRestDetectorHitsEvent();
     fSignalEvent = 0;
 
-    fGas = NULL;
-    fReadout = NULL;
+    fGas = nullptr;
+    fReadout = nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -174,10 +173,8 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
 /// observables defined in TRestGeant4AnalysisProcess are filled at this stage.
 ///
 void TRestDetectorSignalToHitsProcess::InitProcess() {
-
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
-
+    if (fGas) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;
@@ -226,7 +223,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
 
-    if(numberOfSignals==0)return nullptr;
+    if (numberOfSignals == 0) return nullptr;
 
     Int_t planeID, readoutChannel = -1, readoutModule;
     for (int i = 0; i < numberOfSignals; i++) {
@@ -328,7 +325,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
             Double_t z = zPosition + fieldZDirection * (distanceToPlane / energy_signal);
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
-        } else if (fMethod == "all" ) {
+        } else if (fMethod == "all") {
             for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
                 Double_t energy = sgnl->GetData(j);
 
@@ -347,38 +344,40 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
-        } else if (fMethod == "intwindow" ) {
-          Int_t nPoints = sgnl->GetNumberOfPoints();
-          std::map<int,std::pair<int,double> > windowMap;
-            for(int j= 0; j<nPoints;j++){
-              int index = sgnl->GetTime(j)/fIntWindow;
-              auto it = windowMap.find(index);
-              if (it != windowMap.end()){
-                it->second.first++;
-                it->second.second += sgnl->GetData(j);
-              } else {
-                windowMap[index] = std::make_pair(1,sgnl->GetData(j));
-              }
+        } else if (fMethod == "intwindow") {
+            Int_t nPoints = sgnl->GetNumberOfPoints();
+            std::map<int, std::pair<int, double> > windowMap;
+            for (int j = 0; j < nPoints; j++) {
+                int index = sgnl->GetTime(j) / fIntWindow;
+                auto it = windowMap.find(index);
+                if (it != windowMap.end()) {
+                    it->second.first++;
+                    it->second.second += sgnl->GetData(j);
+                } else {
+                    windowMap[index] = std::make_pair(1, sgnl->GetData(j));
+                }
             }
 
-            for(const auto &[index, pair] : windowMap){
-              Double_t time = index * fIntWindow + fIntWindow/2.;
-              Double_t energy = pair.second/pair.first;
-              if(energy <  fThreshold ) continue;
-              debug<<"TimeBin "<<index<<" Time "<<time<<" Charge: "<<energy <<" Thr: " <<(fThreshold)<<endl;
-              Double_t distanceToPlane = time * fDriftVelocity;
-              Double_t z = zPosition + fieldZDirection * distanceToPlane;
+            for (const auto& [index, pair] : windowMap) {
+                Double_t time = index * fIntWindow + fIntWindow / 2.;
+                Double_t energy = pair.second / pair.first;
+                if (energy < fThreshold) continue;
+                debug << "TimeBin " << index << " Time " << time << " Charge: " << energy
+                      << " Thr: " << (fThreshold) << endl;
+                Double_t distanceToPlane = time * fDriftVelocity;
+                Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
-              debug << "Time : " << time << " Drift velocity : " << fDriftVelocity << "\nDistance to plane : " << distanceToPlane << endl;
-              debug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z <<" type "<<type<<endl;
+                debug << "Time : " << time << " Drift velocity : " << fDriftVelocity
+                      << "\nDistance to plane : " << distanceToPlane << endl;
+                debug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                      << " type " << type << endl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
-	} else
-	{
-		string errMsg = "The method " + (string) fMethod + " is not implemented!";
-		SetError( errMsg );
-	}
+        } else {
+            string errMsg = "The method " + (string)fMethod + " is not implemented!";
+            SetError(errMsg);
+        }
     }
 
     debug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << endl;
@@ -399,4 +398,3 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
     return fHitsEvent;
 }
-

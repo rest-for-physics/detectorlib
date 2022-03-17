@@ -65,23 +65,23 @@ ClassImp(TRestDetectorHitsEvent);
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();
 
-    fPad = NULL;
+    fPad = nullptr;
 
-    fXYHitGraph = NULL;
-    fXZHitGraph = NULL;
-    fYZHitGraph = NULL;
+    fXYHitGraph = nullptr;
+    fXZHitGraph = nullptr;
+    fYZHitGraph = nullptr;
 
-    fXYHisto = NULL;
-    fXZHisto = NULL;
-    fYZHisto = NULL;
+    fXYHisto = nullptr;
+    fXZHisto = nullptr;
+    fYZHisto = nullptr;
 
-    fXZHits = NULL;
-    fYZHits = NULL;
-    fXYZHits = NULL;
+    fXZHits = nullptr;
+    fYZHits = nullptr;
+    fXYZHits = nullptr;
 
-    fXHisto = NULL;
-    fYHisto = NULL;
-    fZHisto = NULL;
+    fXHisto = nullptr;
+    fYHisto = nullptr;
+    fZHisto = nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -119,15 +119,15 @@ void TRestDetectorHitsEvent::Initialize() {
 
     if (fXZHits) {
         delete fXZHits;
-        fXZHits = NULL;
+        fXZHits = nullptr;
     }
     if (fYZHits) {
         delete fYZHits;
-        fYZHits = NULL;
+        fYZHits = nullptr;
     }
     if (fXYZHits) {
         delete fXYZHits;
-        fXYZHits = NULL;
+        fXYZHits = nullptr;
     }
 
     fXZHits = new TRestHits();
@@ -135,16 +135,16 @@ void TRestDetectorHitsEvent::Initialize() {
     fXYZHits = new TRestHits();
 }
 
-void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
+void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
-    if (comparecondition == 0) {
+    if (compareCondition == 0) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
                   [](const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) -> bool {
                       return hit1.z() < hit2.z();
                   });
     } else {
-        std::sort(fHits->begin(), fHits->end(), comparecondition);
+        std::sort(fHits->begin(), fHits->end(), compareCondition);
     }
 }
 
@@ -547,7 +547,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1,
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1,
                                                                           Double_t sizeX, Double_t sizeY,
                                                                           Double_t theta) {
     TVector3 axis = x1 - x0;
@@ -609,9 +609,9 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
     //  which means that it should be extracted from the hit array
     if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
-    if (fPad != NULL) {
+    if (fPad) {
         delete fPad;
-        fPad = NULL;
+        fPad = nullptr;
     }
 
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
@@ -668,17 +668,17 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 /// The different TGraphs are drawn in a TPad *fPad defined as global variable
 ///
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
-    if (fXYHitGraph != NULL) {
+    if (fXYHitGraph) {
         delete fXYHitGraph;
-        fXYHitGraph = NULL;
+        fXYHitGraph = nullptr;
     }
-    if (fXZHitGraph != NULL) {
+    if (fXZHitGraph) {
         delete fXZHitGraph;
-        fXZHitGraph = NULL;
+        fXZHitGraph = nullptr;
     }
-    if (fYZHitGraph != NULL) {
+    if (fYZHitGraph) {
         delete fYZHitGraph;
-        fYZHitGraph = NULL;
+        fYZHitGraph = nullptr;
     }
 
     Double_t xz[2][this->GetNumberOfHits()];
@@ -779,31 +779,30 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 /// The different histograms are drawn in a TPad *fPad defined as global variable
 ///
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, double pitch) {
-
-    if (fXYHisto != NULL) {
+    if (fXYHisto) {
         delete fXYHisto;
-        fXYHisto = NULL;
+        fXYHisto = nullptr;
     }
-    if (fXZHisto != NULL) {
+    if (fXZHisto) {
         delete fXZHisto;
-        fXZHisto = NULL;
+        fXZHisto = nullptr;
     }
-    if (fYZHisto != NULL) {
+    if (fYZHisto) {
         delete fYZHisto;
-        fYZHisto = NULL;
+        fYZHisto = nullptr;
     }
 
-    if (fXHisto != NULL) {
+    if (fXHisto) {
         delete fXHisto;
-        fXHisto = NULL;
+        fXHisto = nullptr;
     }
-    if (fYHisto != NULL) {
+    if (fYHisto) {
         delete fYHisto;
-        fYHisto = NULL;
+        fYHisto = nullptr;
     }
-    if (fZHisto != NULL) {
+    if (fZHisto) {
         delete fZHisto;
-        fZHisto = NULL;
+        fZHisto = nullptr;
     }
 
     std::vector<double> fX, fY, fZ;
@@ -819,11 +818,11 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, d
     TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
     TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
 
-      if(pitch >0){
-        nBinsX = std::round((maxX-minX)/pitch);
-        nBinsY = std::round((maxY-minY)/pitch);
-        nBinsZ = std::round((maxZ-minZ)/pitch);
-      }
+    if (pitch > 0) {
+        nBinsX = std::round((maxX - minX) / pitch);
+        nBinsY = std::round((maxY - minY) / pitch);
+        nBinsZ = std::round((maxZ - minZ) / pitch);
+    }
 
     fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
     fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);

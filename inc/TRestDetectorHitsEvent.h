@@ -2,6 +2,8 @@
 #ifndef TRestSoft_TRestDetectorHitsEvent
 #define TRestSoft_TRestDetectorHitsEvent
 
+#include <TGraph.h>
+
 #include <iostream>
 
 #include "TArrayI.h"
@@ -10,12 +12,6 @@
 #include "TH2F.h"
 #include "TMath.h"
 #include "TObject.h"
-
-#include <TGraph.h>
-#include "TH2F.h"
-
-#include "TVector3.h"
-
 #include "TRestEvent.h"
 #include "TRestHits.h"
 #include "TVector3.h"
@@ -64,12 +60,13 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
     void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
-    void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
+    void Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
+                                     const TRestHits::iterator& hit2) = nullptr);
     void Shuffle(int NLoop);
 
     Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
 
-    TRestHits* GetHits() { return fHits; }
+    TRestHits* GetHits() const { return fHits; }
 
     /// Returns the X-coordinate of hit entry `n` in mm.
     Double_t GetX(int n) { return fHits->GetX(n); }
@@ -122,13 +119,13 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     Double_t GetEnergyX() { return fHits->GetEnergyX(); }
     Double_t GetEnergyY() { return fHits->GetEnergyY(); }
-    Double_t GetTotalDepositedEnergy() { return fHits->fTotEnergy; }
-    Double_t GetTotalEnergy() { return fHits->fTotEnergy; }
+    Double_t GetTotalDepositedEnergy() const { return fHits->fTotEnergy; }
+    Double_t GetTotalEnergy() const { return fHits->fTotEnergy; }
     Double_t GetEnergy() { return fHits->GetEnergy(); }
     Double_t GetEnergy(int n) { return fHits->GetEnergy(n); }
     Double_t GetTime(int n) { return GetHits()->GetTime(n); }  // return value in us
 
-    Int_t GetClosestHit(TVector3 position) { return fHits->GetClosestHit(position); }
+    Int_t GetClosestHit(const TVector3& position) { return fHits->GetClosestHit(position); }
 
     // Inside Cylinder methods
     Bool_t anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
@@ -156,14 +153,14 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                     Double_t theta);
     Double_t GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                    Double_t theta);
-    Double_t GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1, Double_t sizeX,
+    Double_t GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1, Double_t sizeX,
                                                       Double_t sizeY, Double_t theta);
 
-    TPad* DrawEvent(TString option = "");
+    TPad* DrawEvent(TString option = "") override;
     void DrawHistograms(Int_t& column, TString histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
-    // Construtor
+    // Constructor
     TRestDetectorHitsEvent();
     // Destructor
     ~TRestDetectorHitsEvent();
