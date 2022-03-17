@@ -69,8 +69,8 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     Double_t fThreshold = 100.;
 
    public:
-    any GetInputEvent() const { return fSignalEvent; }
-    any GetOutputEvent() const { return fHitsEvent; }
+    any GetInputEvent() { return fSignalEvent; }
+    any GetOutputEvent() { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
