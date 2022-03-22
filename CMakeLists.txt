@@ -33,7 +33,6 @@ if (${REST_GARFIELD} MATCHES "ON")
         message(FATAL_ERROR "Garfield not found")
     endif ()
 
-    #set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
     message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
 
     set(feature_added "Garfield")
