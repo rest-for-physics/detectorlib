@@ -83,8 +83,10 @@
 ///
 /// History of developments:
 ///
-/// 2015-October First implementation of TRestDetectorHitsToSignalProcess
-/// 2022-March   Adding documentation
+/// 2015-October First implementation of TRestDetectorHitsToSignalProcess.
+///			     Javier Galan
+///
+/// 2022-March   Adding documentation.
 ///              Javier Galan
 ///
 /// \class      TRestDetectorHitsToSignalProcess
