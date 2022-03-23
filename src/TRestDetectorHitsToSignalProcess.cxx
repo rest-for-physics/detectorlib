@@ -129,39 +129,42 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
         Int_t moduleId = -1;
         Int_t channelId = -1;
 
-        Int_t daqId = fReadout->GetHitsDaqChannel(TVector3(x, y, z), planeId, moduleId, channelId);
+        for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+            Int_t daqId =
+                fReadout->GetHitsDaqChannelAtReadoutPlane(TVector3(x, y, z), moduleId, channelId, p);
 
-        if (daqId >= 0) {
-            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(planeId);
+            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
 
-            Double_t energy = fHitsEvent->GetEnergy(hit);
+            if (daqId >= 0) {
+                Double_t energy = fHitsEvent->GetEnergy(hit);
 
-            Double_t time = plane->GetDistanceTo(x, y, z) / fDriftVelocity + t;
+                Double_t time = plane->GetDistanceTo(x, y, z) / fDriftVelocity + t;
 
-            if (GetVerboseLevel() >= REST_Debug && hit < 20)
-                cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
-                     << endl;
+                if (GetVerboseLevel() >= REST_Debug && hit < 20)
+                    cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
+                         << endl;
 
-            if (GetVerboseLevel() >= REST_Debug && hit < 20)
-                cout << "Energy : " << energy << " time : " << time << endl;
+                if (GetVerboseLevel() >= REST_Debug && hit < 20)
+                    cout << "Energy : " << energy << " time : " << time << endl;
 
-            if (GetVerboseLevel() >= REST_Extreme && hit < 20)
-                printf(
-                    " TRestDetectorHitsToSignalProcess: x %lf y %lf z %lf energy %lf t %lf "
-                    "fDriftVelocity %lf fSampling %lf time %lf\n",
-                    x, y, z, energy, t, fDriftVelocity, fSampling, time);
+                if (GetVerboseLevel() >= REST_Extreme && hit < 20)
+                    printf(
+                        " TRestDetectorHitsToSignalProcess: x %lf y %lf z %lf energy %lf t %lf "
+                        "fDriftVelocity %lf fSampling %lf time %lf\n",
+                        x, y, z, energy, t, fDriftVelocity, fSampling, time);
 
-            if (GetVerboseLevel() >= REST_Extreme)
-                cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
+                if (GetVerboseLevel() >= REST_Extreme)
+                    cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
 
-            time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
+                time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
-            fSignalEvent->AddChargeToSignal(daqId, time, energy);
+                fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
-        } else {
-            if (GetVerboseLevel() >= REST_Debug)
-                debug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
-                      << ", " << y << ", " << z << ")!" << endl;
+            } else {
+                if (GetVerboseLevel() >= REST_Debug)
+                    debug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
+                          << ", " << y << ", " << z << ")!" << endl;
+            }
         }
     }
 
