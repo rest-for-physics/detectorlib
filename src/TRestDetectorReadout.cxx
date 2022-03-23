@@ -746,17 +746,13 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
 
 Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
-    double x = hitpos.X();
-    double y = hitpos.Y();
-    double z = hitpos.Z();
-
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(x, y, z);
+        int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
         if (m >= 0) {
             // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
             TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            Int_t readoutChannel = mod->FindChannel(x, y);
+            Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
             if (readoutChannel >= 0) {
                 planeID = plane->GetID();
                 moduleID = mod->GetModuleID();
@@ -788,10 +784,6 @@ Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitp
         warning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << endl;
         return -1;
     }
-
-    double x = hitpos.X();
-    double y = hitpos.Y();
-    double z = hitpos.Z();
 
     TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
     int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
