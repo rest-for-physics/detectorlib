@@ -78,6 +78,8 @@ class TRestDetectorReadout : public TRestMetadata {
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
     void GetPlaneModuleChannel(Int_t daqID, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
     Int_t GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+    Int_t GetHitsDaqChannelAtReadoutPlane(TVector3 hitpos, Int_t& moduleID, Int_t& channelID,
+                                          Int_t planeId = 0);
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
     //}
