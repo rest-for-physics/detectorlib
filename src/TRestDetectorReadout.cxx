@@ -744,7 +744,7 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
     }
 }
 
-Int_t TRestDetectorReadout::GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
     double x = hitpos.X();
     double y = hitpos.Y();
@@ -781,7 +781,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, I
 /// \return the value of the daq id corresponding to the readout channel
 //
 ///
-Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(TVector3 hitpos, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID,
                                                             Int_t& channelID, Int_t planeId) {
     if (planeId > GetNumberOfReadoutPlanes()) {
         warning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << endl;
