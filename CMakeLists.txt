@@ -18,7 +18,7 @@ if (REST_GARFIELD)
     set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/include/Garfield)
     set(external_libs ${external_libs} Garfield::Garfield)
 
-    message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
+    message(STATUS "GARFIELD installation found at ${GARFIELD_INSTALL}")
 
     set(feature_added "Garfield")
     set(feature_added ${feature_added} PARENT_SCOPE)
