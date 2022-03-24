@@ -744,25 +744,56 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
     }
 }
 
-Int_t TRestDetectorReadout::GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
-    double x = hitpos.X();
-    double y = hitpos.Y();
-    double z = hitpos.Z();
-
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(x, y, z);
+        int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
         if (m >= 0) {
             // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
             TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            Int_t readoutChannel = mod->FindChannel(x, y);
+            Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
             if (readoutChannel >= 0) {
                 planeID = plane->GetID();
                 moduleID = mod->GetModuleID();
                 channelID = readoutChannel;
                 return mod->GetChannel(readoutChannel)->GetDaqID();
             }
+        }
+    }
+    return -1;
+}
+
+///////////////////////////////////////////////
+/// \brief This method recovers the channel daq id corresponding to the (x,y,z) coordinates
+/// given by argument. It will fill the value the corresponding moduleID, and channelID where
+/// the hit was found, while it will return the value of the daq channel id.
+///
+/// It will search only at the specified readout plane.
+///
+/// This method requires to specify the plane id where the readout channel is to be found. If
+/// not given, the default value will be planeId = 0.
+///
+/// \return the value of the daq id corresponding to the readout channel
+//
+///
+Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID,
+                                                            Int_t& channelID, Int_t planeId) {
+    if (planeId > GetNumberOfReadoutPlanes()) {
+        warning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << endl;
+        warning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << endl;
+        return -1;
+    }
+
+    TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
+    int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+    if (m >= 0) {
+        TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
+        Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
+        if (readoutChannel >= 0) {
+            moduleID = mod->GetModuleID();
+            channelID = readoutChannel;
+            return mod->GetChannel(readoutChannel)->GetDaqID();
         }
     }
     return -1;
