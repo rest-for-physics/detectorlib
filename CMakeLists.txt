@@ -9,7 +9,7 @@ endif ()
 if (REST_GARFIELD)
     message(STATUS "Garfield ENABLED")
 
-    add_definitions(-DUSE_Garfield)
+    add_compile_definitions(REST_GARFIELD)
 
     # Tested for Garfield af4a14516489babbd6e6df780edd58fedf7fa12b
     find_package(Garfield REQUIRED)

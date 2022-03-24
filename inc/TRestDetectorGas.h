@@ -22,6 +22,7 @@
 
 #ifndef RestCore_TRestDetectorGas
 #define RestCore_TRestDetectorGas
+
 #include <TROOT.h>
 
 #include <cstdlib>
@@ -40,7 +41,7 @@
 #include "TSystem.h"
 #include "TVector3.h"
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 #include "ComponentConstant.hh"
 #include "GeometrySimple.hh"
 #include "MediumMagboltz.hh"
@@ -255,7 +256,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Prints the metadata information from the gas
     void PrintMetadata() { PrintGasInfo(); }
 
-    ClassDef(TRestDetectorGas, 3);  // Gas Parameters
+    ClassDef(TRestDetectorGas, 3);
 };
 
 #endif

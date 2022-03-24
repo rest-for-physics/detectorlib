@@ -17,17 +17,11 @@
 
 #include <TRestDetectorGas.h>
 
-#if defined USE_Garfield_OLD
-#include "AvalancheMC.hh"
-#include "ComponentBase.hh"
-#include "Sensor.hh"
-typedef AvalancheMC DRIFT_METHOD;
-#elif USE_Garfield
+#if defined REST_GARFIELD
 #include "AvalancheMC.hh"
 #include "Component.hh"
 #include "Sensor.hh"
 typedef AvalancheMC DRIFT_METHOD;
-// TODO Could we have this as an option given through metadata?
 #endif
 
 #include <TRandom3.h>
@@ -47,7 +41,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     TRestDetectorReadout* fReadout;    //!
     TRestDetectorGas* fGas;            //!
     TRestDetectorGeometry* fGeometry;  //!
@@ -61,9 +55,8 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
     Int_t FindModule(Int_t readoutPlane, Double_t x, Double_t y);
     Int_t FindChannel(Int_t module, Double_t x, Double_t y);
-#endif
+
    protected:
-#if defined USE_Garfield
     Double_t fGasPressure;     // atm
                                //         Double_t fElectricField; // V/cm
     Double_t fDriftPotential;  // V
@@ -79,7 +72,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     void InitProcess();
     void EndProcess();
 
@@ -110,8 +103,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorGarfieldDriftProcess();
 #endif
-    ClassDef(TRestDetectorGarfieldDriftProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorGarfieldDriftProcess, 1);
 };
+
 #endif

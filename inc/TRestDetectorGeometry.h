@@ -26,22 +26,13 @@
 
 #include "TRestDetectorGas.h"
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 
-#if defined USE_Garfield_OLD
-#include "ComponentBase.hh"
-#else
 #include "Component.hh"
-#endif
-
 #include "GeometryRoot.hh"
 #include "Sensor.hh"
 
-#if defined USE_Garfield_OLD
-typedef Garfield::ComponentBase Component;
-#else
 typedef Garfield::Component Component;
-#endif
 
 #endif
 
@@ -49,7 +40,7 @@ using namespace std;
 
 class TRestDetectorGeometry : public TGeoManager {
    protected:
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the
                                           //! geometry
     vector<Component*> vGfComponent;      //!///< Vector of pointers to Garfield Component object
@@ -60,7 +51,7 @@ class TRestDetectorGeometry : public TGeoManager {
 #endif
 
    public:
-    // Construtor
+    // Constructor
     TRestDetectorGeometry();
     // Destructor
     virtual ~TRestDetectorGeometry();
@@ -68,7 +59,7 @@ class TRestDetectorGeometry : public TGeoManager {
     /// initialize Garfield::GeometryRoot geometry object
     void InitGfGeometry();
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 
     /// Return pointer to Garfield::GeometryRoot geometry object
     Garfield::GeometryRoot* GetGfGeometry() { return fGfGeometry; }
@@ -138,7 +129,7 @@ class TRestDetectorGeometry : public TGeoManager {
 
     void PrintGeometry();
 
-    ClassDef(TRestDetectorGeometry, 1);  // REST event superclass
+    ClassDef(TRestDetectorGeometry, 1);
 };
 
 #endif

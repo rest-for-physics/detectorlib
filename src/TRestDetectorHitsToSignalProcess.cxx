@@ -170,8 +170,8 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 ///
 void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
-#ifndef USE_Garfield
+    if (fGas) {
+#ifndef REST_GARFIELD
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
@@ -279,4 +279,3 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
 
     return fSignalEvent;
 }
-
