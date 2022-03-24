@@ -13,9 +13,6 @@
 #define RestCore_TRestDetectorDaqChannelSwitchingProcess
 
 #include <TH1D.h>
-
-//#include <TCanvas.h>
-
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>

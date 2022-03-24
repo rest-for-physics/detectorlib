@@ -48,16 +48,16 @@ class TRestDetectorReadout;
 class TRestDetectorGainMap : public TRestMetadata {
    public:
     bool relative;
-    map<int, double> fChannelGain;  // [channel id, gain]
-    TH2F* f2DGainMapping = 0;       //->
-    TH3F* f3DGainMapping = 0;       //->
+    std::map<int, double> fChannelGain;  // [channel id, gain]
+    TH2F* f2DGainMapping = nullptr;      //->
+    TH3F* f3DGainMapping = nullptr;      //->
 
     void InitFromConfigFile();
 
-    void SaveToText(string filename) {}
-    void ReadGainText(string filename) {}
+    void SaveToText(std::string filename) {}
+    void ReadGainText(std::string filename) {}
 
-    void DrawChannelGainMap(TRestDetectorReadoutModule* mod = 0);
+    void DrawChannelGainMap(TRestDetectorReadoutModule* mod = nullptr);
 
     ClassDef(TRestDetectorGainMap, 1);  // Gas Parameters
 };

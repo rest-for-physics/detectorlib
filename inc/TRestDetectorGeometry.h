@@ -38,10 +38,10 @@ class TRestDetectorGeometry : public TGeoManager {
    protected:
 #if defined REST_GARFIELD
     Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the geometry
-    vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
-    vector<Garfield::Sensor*> vGfSensor;        //!///< Vector of pointers to Garfield Sensor object
+    std::vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
+    std::vector<Garfield::Sensor*> vGfSensor;        //!///< Vector of pointers to Garfield Sensor object
     TGeoNode* fDriftElec;                       //!///< pointer to drift electrode
-    vector<TGeoNode*> vReadoutElec;             //!///< vector of pointers to readout planes
+    std::vector<TGeoNode*> vReadoutElec;             //!///< vector of pointers to readout planes
 #endif
 
    public:
