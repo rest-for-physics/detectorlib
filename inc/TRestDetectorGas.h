@@ -48,7 +48,6 @@
 #include "Sensor.hh"
 #include "SolidBox.hh"
 #include "TrackHeed.hh"
-using namespace Garfield;
 #else
 class MediumMagboltz;
 #endif
@@ -111,13 +110,13 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Bool_t fTest = false;  //!
 
     void InitFromConfigFile();
-    string ConstructFilename();
+    std::string ConstructFilename();
 
     void AddGasComponent(std::string gasName, Double_t fraction);
 
     void GenerateGasFile();
 
-    void UploadGasToServer(string gasFilename);
+    void UploadGasToServer(std::string gasFilename);
 
     Double_t GetDriftVelocity(Double_t E);
     Double_t GetLongitudinalDiffusion(Double_t E);
@@ -127,7 +126,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
    public:
     TRestDetectorGas();
-    TRestDetectorGas(const char* cfgFileName, string name = "", bool gasGeneration = false,
+    TRestDetectorGas(const char* cfgFileName, std::string name = "", bool gasGeneration = false,
                      bool test = false);
     ~TRestDetectorGas();
 
@@ -145,7 +144,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void LoadGasFile();
 
-    string FindGasFile(string name);
+    std::string FindGasFile(std::string name);
 
     void CalcGarField(double Emin, double Emax, int n);
 
@@ -163,8 +162,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas component *n*.
     TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
-            cout << "REST WARNING. Gas name component n=" << n << " requested. But only " << GetNofGases()
-                 << " component(s) in the mixture." << endl;
+            std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only "
+                      << GetNofGases() << " component(s) in the mixture." << std::endl;
             return "";
         }
         return fGasComponentName[n];
@@ -251,7 +250,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PrintGasInfo();
-    void PrintGasFileContent() { cout << fGasFileContent << endl; };
+    void PrintGasFileContent() { std::cout << fGasFileContent << std::endl; };
 
     /// Prints the metadata information from the gas
     void PrintMetadata() { PrintGasInfo(); }
