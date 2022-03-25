@@ -22,10 +22,15 @@ TEST(TRestDetectorGas, TestFiles) {
     EXPECT_TRUE(fs::exists(FILES_PATH / "TRestDetectorGasExample.rml"));
 }
 
-TEST(TRestDetectorGas, Basic) {
+TEST(TRestDetectorGas, Default) {
     TRestDetectorGas gas;
 
     gas.PrintGasInfo();
+
+    // Default parameters
+    EXPECT_TRUE(gas.GetPressure() == 1);
+    EXPECT_TRUE(gas.GetTemperature() == 300);
+    EXPECT_TRUE(gas.GetElectricField() == 0);
 }
 
 TEST(TRestDetectorGas, FromRML) {
