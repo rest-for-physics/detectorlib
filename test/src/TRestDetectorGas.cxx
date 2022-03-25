@@ -17,6 +17,9 @@ TEST(TRestDetectorGas, TestFiles) {
     EXPECT_TRUE(fs::is_directory(FILES_PATH));
     // Check it's not empty
     EXPECT_TRUE(!fs::is_empty(FILES_PATH));
+
+    // All used files in this tests
+    EXPECT_TRUE(fs::exists(FILES_PATH / "TRestDetectorGasExample.rml"));
 }
 
 TEST(TRestDetectorGas, Basic) {
