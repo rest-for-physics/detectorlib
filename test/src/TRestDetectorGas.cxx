@@ -9,6 +9,7 @@ namespace fs = std::filesystem;
 using namespace std;
 
 #define FILES_PATH fs::path(__FILE__).parent_path().parent_path() / "files"
+#define GAS_DEFAULT_RML FILES_PATH / "TRestDetectorGasExample.rml"
 
 TEST(TRestDetectorGas, TestFiles) {
     cout << "FrameworkCore test files path: " << FILES_PATH << endl;
@@ -19,7 +20,7 @@ TEST(TRestDetectorGas, TestFiles) {
     EXPECT_TRUE(!fs::is_empty(FILES_PATH));
 
     // All used files in this tests
-    EXPECT_TRUE(fs::exists(FILES_PATH / "TRestDetectorGasExample.rml"));
+    EXPECT_TRUE(fs::exists(GAS_DEFAULT_RML));
 }
 
 TEST(TRestDetectorGas, Default) {
@@ -33,10 +34,8 @@ TEST(TRestDetectorGas, Default) {
     EXPECT_TRUE(gas.GetElectricField() == 0);
 }
 
-TEST(TRestDetectorGas, FromRML) {
-    GTEST_SKIP_("Currently gas gives error. TODO: fix this");
-
-    const auto gasConfigRml = FILES_PATH / "TRestDetectorGasExample.rml";
+TEST(TRestDetectorGas, FromRml) {
+    const auto gasConfigRml = GAS_DEFAULT_RML;
 
     TRestDetectorGas gas(gasConfigRml.c_str(),  // config file
                          "Xenon 10-10E3Vcm",    // name
@@ -50,6 +49,18 @@ TEST(TRestDetectorGas, FromRML) {
     EXPECT_TRUE(gas.GetNofGases() == 1);
     EXPECT_TRUE(gas.GetGasComponentName(0) == "xe");
     EXPECT_TRUE(gas.GetGasComponentFraction(0) == 1.0);
+}
+
+TEST(TRestDetectorGas, FromRmlAndServer) {
+    GTEST_SKIP_("Currently gas gives error due to not loading from server. TODO: fix this");
+
+    const auto gasConfigRml = GAS_DEFAULT_RML;
+
+    TRestDetectorGas gas(gasConfigRml.c_str(),  // config file
+                         "Xenon 10-10E3Vcm",    // name
+                         false,                 // generation
+                         false                  // test
+    );
 
     gas.PrintGasInfo();
 
