@@ -1,4 +1,4 @@
-set(TESTING_EXECUTABLE testDetector)
+set(TESTING_EXECUTABLE testRestDetector)
 
 enable_testing()
 
