@@ -17,20 +17,12 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorGeometry.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorGeometry);
 
-TRestDetectorGeometry::TRestDetectorGeometry()
-    : TGeoManager()  //, fGfGeometry(0), fDriftElec(0)
-{
-#if defined REST_GARFIELD
-    // TRestDetectorGeometry default constructor
-    vReadoutElec.clear();
-    vGfComponent.clear();
-    vGfSensor.clear();
-#endif
-}
+TRestDetectorGeometry::TRestDetectorGeometry() : TGeoManager() {}
 
 TRestDetectorGeometry::~TRestDetectorGeometry() {
 #if defined REST_GARFIELD
