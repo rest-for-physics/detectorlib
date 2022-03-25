@@ -26,9 +26,19 @@ TRestDetectorGeometry::TRestDetectorGeometry() : TGeoManager() {}
 
 TRestDetectorGeometry::~TRestDetectorGeometry() {
 #if defined REST_GARFIELD
-    // TRestDetectorGeometry destructor
+    for (auto item : vReadoutElec) {
+        delete item;
+    }
     vReadoutElec.clear();
+
+    for (auto item : vGfSensor) {
+        delete item;
+    }
     vGfSensor.clear();
+
+    for (auto item : vGfComponent) {
+        delete item;
+    }
     vGfComponent.clear();
 #endif
 }
