@@ -44,6 +44,13 @@ TEST(TRestDetectorGas, FromRML) {
                          false                  // test
     );
 
+    EXPECT_TRUE(gas.GetW() == 21.9);
+    EXPECT_TRUE(gas.GetTemperature() == 293.15);
+
+    EXPECT_TRUE(gas.GetNofGases() == 1);
+    EXPECT_TRUE(gas.GetGasComponentName(0) == "xe");
+    EXPECT_TRUE(gas.GetGasComponentFraction(0) == 1.0);
+
     gas.PrintGasInfo();
 
     EXPECT_TRUE(!gas.GetError());
