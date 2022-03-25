@@ -110,13 +110,13 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Bool_t fTest = false;  //!
 
     void InitFromConfigFile();
-    string ConstructFilename();
+    std::string ConstructFilename();
 
     void AddGasComponent(std::string gasName, Double_t fraction);
 
     void GenerateGasFile();
 
-    void UploadGasToServer(string gasFilename);
+    void UploadGasToServer(std::string gasFilename);
 
     Double_t GetDriftVelocity(Double_t E);
     Double_t GetLongitudinalDiffusion(Double_t E);
@@ -126,7 +126,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
    public:
     TRestDetectorGas();
-    TRestDetectorGas(const char* cfgFileName, string name = "", bool gasGeneration = false,
+    TRestDetectorGas(const char* cfgFileName, std::string name = "", bool gasGeneration = false,
                      bool test = false);
     ~TRestDetectorGas();
 
@@ -144,7 +144,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void LoadGasFile();
 
-    string FindGasFile(string name);
+    std::string FindGasFile(std::string name);
 
     void CalcGarField(double Emin, double Emax, int n);
 
