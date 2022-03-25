@@ -52,8 +52,6 @@ TEST(TRestDetectorGas, FromRml) {
 }
 
 TEST(TRestDetectorGas, FromRmlAndServer) {
-    GTEST_SKIP_("Currently gas gives error due to not loading from server. TODO: fix this");
-
     const auto gasConfigRml = GAS_DEFAULT_RML;
 
     TRestDetectorGas gas(gasConfigRml.c_str(),  // config file
@@ -63,6 +61,8 @@ TEST(TRestDetectorGas, FromRmlAndServer) {
     );
 
     gas.PrintGasInfo();
+
+    GTEST_SKIP_("Currently gas gives error due to not loading from server. TODO: fix this");
 
     EXPECT_TRUE(!gas.GetError());
 }
