@@ -254,7 +254,7 @@ TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool ga
 
     if (strcmp(cfgFileName, "server") == 0) {
         LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"),
-                              NULL);
+                              nullptr);
     } else {
         fConfigFileName = cfgFileName;
         LoadConfigFromFile(fConfigFileName, name);
@@ -269,7 +269,7 @@ TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool ga
 TRestDetectorGas::~TRestDetectorGas() {
     debug << "Entering ... TRestDetectorGas() destructor." << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     delete fGasMedium;
 #endif
 }
@@ -297,10 +297,10 @@ void TRestDetectorGas::Initialize() {
     fGasFilename = "";
     fGasFileContent = "";
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     fGasMedium = new Garfield::MediumMagboltz();
 #else
-    fGasMedium = NULL;
+    fGasMedium = nullptr;
 #endif
 
     ///////////////////// ///////////////////// /////////////////////
@@ -326,7 +326,7 @@ void TRestDetectorGas::Initialize() {
 void TRestDetectorGas::LoadGasFile() {
     debug << "Entering ... TRestDetectorGas::LoadGasFile()." << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     debug << "fGasFilename = " << fGasFilename << endl;
     if (!TRestTools::fileExists((string)(fGasFilename))) {
         ferr << __PRETTY_FUNCTION__ << endl;
@@ -360,7 +360,7 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
     debug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )"
           << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fEnodes <= 0) {
         cout << "REST ERROR : The number of nodes is not a positive number!!. Gas "
                 "file generation cancelled."
@@ -450,7 +450,7 @@ void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
 // However, I tested with Xe+TMA and I got an error message that TMA
 // photoncrossection database is not available
 void TRestDetectorGas::GetGasWorkFunction() {
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     essential << __PRETTY_FUNCTION__ << endl;
     essential << "This method has never been validated to operate properly" << endl;
     essential << "If we manage to make it work we could use this method to "
@@ -520,7 +520,7 @@ void TRestDetectorGas::InitFromConfigFile() {
 
     // add gas component
     TiXmlElement* gasComponentDefinition = GetElement("gasComponent");
-    while (gasComponentDefinition != NULL) {
+    while (gasComponentDefinition) {
         string gasName = GetFieldValue("name", gasComponentDefinition);
         Double_t gasFraction = StringToDouble(GetFieldValue("fraction", gasComponentDefinition));
         AddGasComponent(gasName, gasFraction);
@@ -593,7 +593,7 @@ void TRestDetectorGas::InitFromConfigFile() {
     }
     fStatus = RESTGAS_CFG_LOADED;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     // calling garfield, either to generate gas file or load existing gas file
     if (fGasGeneration) {
         essential << "Starting gas generation" << endl;
@@ -831,7 +831,7 @@ string TRestDetectorGas::ConstructFilename() {
 void TRestDetectorGas::GenerateGasFile() {
     debug << "Entering ... TRestDetectorGas::GenerateGasFile( )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 
     fGasFilename = ConstructFilename();
     debug << " TRestDetectorGas::GenerateGasFile. fGasFilename = " << fGasFilename << endl;
@@ -876,7 +876,7 @@ void TRestDetectorGas::SetPressure(Double_t pressure) {
     debug << "Entering ... TRestDetectorGas::SetPressure( pressure=" << pressure << " )" << endl;
 
     fPressureInAtm = pressure;
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     fGasMedium->SetPressure(fPressureInAtm * REST_Units::torr);
 #endif
 }
@@ -887,7 +887,7 @@ void TRestDetectorGas::SetTemperature(Double_t temperature) {
     debug << "Entering ... TRestDetectorGas::SetPressure( temperature=" << temperature << " )" << endl;
 
     fTemperatureInK = temperature;
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     fGasMedium->SetTemperature(temperature);
 #endif
 }
@@ -1030,7 +1030,7 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
     debug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
         debug << "-- Error : Gas file was not loaded!" << endl;
@@ -1059,7 +1059,7 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
 Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
     debug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
         debug << "-- Error : Gas file was not loaded!" << endl;
@@ -1088,7 +1088,7 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
 Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
     debug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
         debug << "-- Error : Gas file was not loaded!" << endl;
@@ -1117,7 +1117,7 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
 Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
     debug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
         debug << "-- Error : Gas file was not loaded!" << endl;
@@ -1146,7 +1146,7 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
 Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
     debug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << endl;
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
         debug << "-- Error : Gas file was not loaded!" << endl;
@@ -1188,7 +1188,8 @@ void TRestDetectorGas::PrintGasInfo() {
     metadata << "Temperature : " << fTemperatureInK << " K" << endl;
     metadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << endl;
     metadata << "W-value : " << fW << " eV" << endl;
-    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us") << " mm/us " << endl;
+    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us")
+             << " mm/us " << endl;
     metadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << endl;
     metadata << "Field grid nodes : " << fEnodes << endl;
     metadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << endl;

@@ -26,41 +26,27 @@
 
 #include "TRestDetectorGas.h"
 
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 
-#if defined USE_Garfield_OLD
-#include "ComponentBase.hh"
-#else
-#include "Component.hh"
-#endif
-
-#include "GeometryRoot.hh"
-#include "Sensor.hh"
-
-#if defined USE_Garfield_OLD
-typedef Garfield::ComponentBase Component;
-#else
-typedef Garfield::Component Component;
-#endif
+#include <Component.hh>
+#include <GeometryRoot.hh>
+#include <Sensor.hh>
 
 #endif
-
-using namespace std;
 
 class TRestDetectorGeometry : public TGeoManager {
    protected:
-#if defined USE_Garfield
-    Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the
-                                          //! geometry
-    vector<Component*> vGfComponent;      //!///< Vector of pointers to Garfield Component object
-    vector<Garfield::Sensor*> vGfSensor;  //!///< Vector of pointers to Garfield Sensor object
-    TGeoNode* fDriftElec;                 //!///< pointer to drift electrode
-    vector<TGeoNode*> vReadoutElec;       //!///< vector of pointers to readout planes
-
+#if defined REST_GARFIELD
+    Garfield::GeometryRoot* fGfGeometry =
+        nullptr;  //!///< Pointer to Garfield::GeometryRoot object of the geometry
+    std::vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
+    std::vector<Garfield::Sensor*> vGfSensor;        //!///< Vector of pointers to Garfield Sensor object
+    TGeoNode* fDriftElec = nullptr;                  //!///< pointer to drift electrode
+    std::vector<TGeoNode*> vReadoutElec;             //!///< vector of pointers to readout planes
 #endif
 
    public:
-    // Construtor
+    // Constructor
     TRestDetectorGeometry();
     // Destructor
     virtual ~TRestDetectorGeometry();
@@ -68,8 +54,7 @@ class TRestDetectorGeometry : public TGeoManager {
     /// initialize Garfield::GeometryRoot geometry object
     void InitGfGeometry();
 
-#if defined USE_Garfield
-
+#if defined REST_GARFIELD
     /// Return pointer to Garfield::GeometryRoot geometry object
     Garfield::GeometryRoot* GetGfGeometry() { return fGfGeometry; }
 
@@ -79,7 +64,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Set Garfield field component
-    void AddGfComponent(Component* c) {
+    void AddGfComponent(Garfield::Component* c) {
         c->SetGeometry(fGfGeometry);
         vGfComponent.push_back(c);
     }
@@ -108,14 +93,14 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Get i^th Gf component
-    Component* GetGfComponent(unsigned int i) {
+    Garfield::Component* GetGfComponent(unsigned int i) {
         if (i < vGfComponent.size())
             return vGfComponent[i];
         else
             return nullptr;
     }
 
-    /// Getnumber of Gf components
+    /// Get number of Gf components
     int GetNbOfGfComponent() { return vGfComponent.size(); }
 
     /// Get i^th Gf sensor
@@ -126,7 +111,7 @@ class TRestDetectorGeometry : public TGeoManager {
             return nullptr;
     }
 
-    /// Getnumber of Gf sensors
+    /// Get number of Gf sensors
     int GetNbOfGfSensor() { return vGfSensor.size(); }
 
     /// Get Gf Medium at position
@@ -138,7 +123,7 @@ class TRestDetectorGeometry : public TGeoManager {
 
     void PrintGeometry();
 
-    ClassDef(TRestDetectorGeometry, 1);  // REST event superclass
+    ClassDef(TRestDetectorGeometry, 1);
 };
 
 #endif

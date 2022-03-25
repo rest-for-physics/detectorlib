@@ -23,10 +23,8 @@
 #ifndef RestCore_TRestDetectorHitsAnalysisProcess
 #define RestCore_TRestDetectorHitsAnalysisProcess
 
-#include <TH1D.h>
-
 #include <TCanvas.h>
-
+#include <TH1D.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>

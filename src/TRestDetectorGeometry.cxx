@@ -17,44 +17,38 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorGeometry.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorGeometry);
 
-//______________________________________________________________________________
-
-TRestDetectorGeometry::TRestDetectorGeometry()
-    : TGeoManager()  //, fGfGeometry(0), fDriftElec(0)
-{
-#if defined USE_Garfield
-    // TRestDetectorGeometry default constructor
-    vReadoutElec.clear();
-    vGfComponent.clear();
-    vGfSensor.clear();
-#endif
-}
-
-//______________________________________________________________________________
+TRestDetectorGeometry::TRestDetectorGeometry() : TGeoManager() {}
 
 TRestDetectorGeometry::~TRestDetectorGeometry() {
-#if defined USE_Garfield
-    // TRestDetectorGeometry destructor
+#if defined REST_GARFIELD
+    for (auto item : vReadoutElec) {
+        delete item;
+    }
     vReadoutElec.clear();
+
+    for (auto item : vGfSensor) {
+        delete item;
+    }
     vGfSensor.clear();
+
+    for (auto item : vGfComponent) {
+        delete item;
+    }
     vGfComponent.clear();
 #endif
 }
 
-//------------------------------------------------------------------------------
-
 void TRestDetectorGeometry::InitGfGeometry() {
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     fGfGeometry = new Garfield::GeometryRoot();
     fGfGeometry->SetGeometry(this);
 #endif
 }
-
-//------------------------------------------------------------------------------
 
 void TRestDetectorGeometry::PrintGeometry() {
     cout << "--------------------------------------" << endl;

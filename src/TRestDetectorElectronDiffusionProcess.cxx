@@ -39,7 +39,6 @@ void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
     fGasPressure = 1;
 }
 
-//______________________________________________________________________________
 void TRestDetectorElectronDiffusionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -65,7 +64,6 @@ void TRestDetectorElectronDiffusionProcess::LoadConfig(string cfgFilename, strin
     if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorElectronDiffusionProcess::InitProcess() {
     fRandom = new TRandom3(fSeed);
 
@@ -86,7 +84,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
             exit(-1);
         }
     } else {
-#ifndef USE_Garfield
+#ifndef REST_GARFIELD
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;
         ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
@@ -114,7 +112,6 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
@@ -222,7 +219,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evIn
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -232,7 +228,6 @@ void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
@@ -242,7 +237,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fLonglDiffCoeff == -1)
         fLonglDiffCoeff = StringToDouble(GetParameter("longDiff", "-1"));
     else {
-        warning << "longitudinalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << endl;
+        warning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon disappear." << endl;
         warning << " Please use the shorter form of this parameter : longDiff" << endl;
     }
 
@@ -250,7 +245,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fTransDiffCoeff == -1)
         fTransDiffCoeff = StringToDouble(GetParameter("transDiff", "-1"));
     else {
-        warning << "transversalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << endl;
+        warning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon disappear." << endl;
         warning << " Please use the shorter form of this parameter : transDiff" << endl;
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));

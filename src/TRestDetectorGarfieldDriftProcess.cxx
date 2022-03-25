@@ -14,12 +14,12 @@
 ///             march 2017:   Damien Neyret
 ///_______________________________________________________________________________
 
+#include "TRestDetectorGarfieldDriftProcess.h"
+
 #include <TGeoBBox.h>
 #include <TRandom3.h>
 
-#include "TRestDetectorGarfieldDriftProcess.h"
-
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 #include "ComponentConstant.hh"
 #include "TGDMLParse.h"
 using namespace Garfield;
@@ -31,12 +31,10 @@ using namespace std;
 
 const double cmTomm = 10.;
 
-ClassImp(TRestDetectorGarfieldDriftProcess)
-//______________________________________________________________________________
-#if defined USE_Garfield
-    TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess()
-    : fRandom(0), fGfSensor(0) {
+ClassImp(TRestDetectorGarfieldDriftProcess);
 
+#if defined REST_GARFIELD
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom(0), fGfSensor(0) {
     Initialize();
 }
 
@@ -60,13 +58,10 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
     // TRestDetectorGarfieldDriftProcess default constructor
 }
 
-//______________________________________________________________________________
-
-// TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout != NULL) delete fReadout;
+    if (fReadout) delete fReadout;
     if (fGeometry) delete fGeometry;
-    fGeometry = NULL;
+    fGeometry = nullptr;
 
     delete fOutputHitsEvent;
 }
@@ -89,7 +84,6 @@ void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string na
     }
 }
 
-//______________________________________________________________________________
 #endif
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
@@ -97,20 +91,19 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fRandom = new TRandom3(0);
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 
-#if defined USE_Garfield
-    fReadout = NULL;
-    fGas = NULL;
-    fGeometry = NULL;
+#if defined REST_GARFIELD
+    fReadout = nullptr;
+    fGas = nullptr;
+    fGeometry = nullptr;
     fPEReduction = 1.;
     fStopDistance = 2;  // default distance from readout to stop drift set to 2mm
 #endif
 }
 
-//______________________________________________________________________________
-#if defined USE_Garfield
+#if defined REST_GARFIELD
 void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -344,7 +337,7 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
 #endif
 
 TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
-#if defined USE_Garfield
+#if defined REST_GARFIELD
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
     double x, y, z, energy;
@@ -440,9 +433,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 #endif
 }
 
-#if defined USE_Garfield
-
-//______________________________________________________________________________
+#if defined REST_GARFIELD
 
 void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Function to be executed once at the end of the process
@@ -452,8 +443,6 @@ void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
-//______________________________________________________________________________
 
 void TRestDetectorGarfieldDriftProcess::InitFromConfigFile() {
     fGasPressure = StringToDouble(GetParameter("gasPressure", "-1"));
