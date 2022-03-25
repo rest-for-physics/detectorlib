@@ -28,19 +28,20 @@
 
 #if defined REST_GARFIELD
 
-#include "Component.hh"
-#include "GeometryRoot.hh"
-#include "Sensor.hh"
+#include <Component.hh>
+#include <GeometryRoot.hh>
+#include <Sensor.hh>
 
 #endif
 
 class TRestDetectorGeometry : public TGeoManager {
    protected:
 #if defined REST_GARFIELD
-    Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the geometry
+    Garfield::GeometryRoot* fGfGeometry =
+        nullptr;  //!///< Pointer to Garfield::GeometryRoot object of the geometry
     std::vector<Garfield::Component*> vGfComponent;  //!///< Vector of pointers to Garfield Component object
     std::vector<Garfield::Sensor*> vGfSensor;        //!///< Vector of pointers to Garfield Sensor object
-    TGeoNode* fDriftElec;                       //!///< pointer to drift electrode
+    TGeoNode* fDriftElec = nullptr;                  //!///< pointer to drift electrode
     std::vector<TGeoNode*> vReadoutElec;             //!///< vector of pointers to readout planes
 #endif
 
@@ -63,7 +64,7 @@ class TRestDetectorGeometry : public TGeoManager {
     }
 
     /// Set Garfield field component
-    void AddGfComponent(Component* c) {
+    void AddGfComponent(Garfield::Component* c) {
         c->SetGeometry(fGfGeometry);
         vGfComponent.push_back(c);
     }
@@ -99,7 +100,7 @@ class TRestDetectorGeometry : public TGeoManager {
             return nullptr;
     }
 
-    /// Getnumber of Gf components
+    /// Get number of Gf components
     int GetNbOfGfComponent() { return vGfComponent.size(); }
 
     /// Get i^th Gf sensor
@@ -110,7 +111,7 @@ class TRestDetectorGeometry : public TGeoManager {
             return nullptr;
     }
 
-    /// Getnumber of Gf sensors
+    /// Get number of Gf sensors
     int GetNbOfGfSensor() { return vGfSensor.size(); }
 
     /// Get Gf Medium at position
