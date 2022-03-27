@@ -59,7 +59,7 @@ class TRestDetectorReadoutModule : public TObject {
     Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
-        fReadoutChannel;  ///< A vector of the instances of TRestDetectorReadoutChannel
+        fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
                           ///< containned in the readout module.
 
     TRestDetectorReadoutMapping fMapping;  ///< The readout module uniform grid mapping.

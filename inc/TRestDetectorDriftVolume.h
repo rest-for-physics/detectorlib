@@ -42,7 +42,7 @@
 
 class TRestDetectorDriftVolume : public TRestMetadata {
    protected:
-    string fMaterial;  // material description string
+    std::string fMaterial;  // material description std::string
     Double_t fW;       // Work function for electron extraction, in unit eV.
 
     Double_t fElectricField;          // in unit V/mm
@@ -58,11 +58,11 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
    public:
     TRestDetectorDriftVolume();
-    TRestDetectorDriftVolume(const char* cfgFileName, string name = "");
+    TRestDetectorDriftVolume(const char* cfgFileName, std::string name = "");
     virtual void Initialize();
     virtual void InitFromConfigFile();
 
-    virtual string GetMaterial() { return fMaterial; }
+    virtual std::string GetMaterial() { return fMaterial; }
     virtual Double_t GetW() { return fW; }
     virtual Double_t GetWvalue() { return fW; }
 
@@ -81,7 +81,7 @@ class TRestDetectorDriftVolume : public TRestMetadata {
     virtual Double_t GetPressure() { return fPressureInAtm; }
     virtual Double_t GetTemperature() { return fTemperatureInK; }
 
-    virtual void SetMaterial(string value) { fMaterial = value; }
+    virtual void SetMaterial(std::string value) { fMaterial = value; }
 
     /// Sets the electric field of the drift volume. Given in V/mm.
     virtual void SetW(double value) { fW = value; }

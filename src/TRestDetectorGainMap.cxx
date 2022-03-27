@@ -7,7 +7,11 @@
 #include "TView.h"
 
 #include "TRestDetectorReadout.h"
+
+using namespace std;
+
 ClassImp(TRestDetectorGainMap);
+
 
 void TRestDetectorGainMap::InitFromConfigFile() {
     // read config from rml section

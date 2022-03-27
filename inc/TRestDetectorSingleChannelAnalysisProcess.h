@@ -43,13 +43,13 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     TVector2 fThrIntegralCutRange;
     TVector2 fNGoodSignalsCutRange;
     TVector2 fSpecFitRange;
-    string fCalibSave;
+    std::string fCalibSave;
 
     // analysis result
-    map<int, TH1D*> fChannelThrIntegral;  //-> [channel id, sum]
-    map<int, double> fChannelFitMean;     // [MM id, fitted position]
-    map<int, double> fChannelGain;        // [MM id, channel gain]
-    map<int, double> fChannelGainError;   // [MM id, channel gain error]
+    std::map<int, TH1D*> fChannelThrIntegral;  //-> [channel id, sum]
+    std::map<int, double> fChannelFitMean;     // [MM id, fitted position]
+    std::map<int, double> fChannelGain;        // [MM id, channel gain]
+    std::map<int, double> fChannelGainError;   // [MM id, channel gain error]
 
    public:
     any GetInputEvent() { return fSignalEvent; }
@@ -57,20 +57,20 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
 
     void FitChannelGain();
     // See comments on CXX
-    void SaveGainMetadata(string filename);
+    void SaveGainMetadata(std::string filename);
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
     TH1D* GetChannelSpectrum(int id);
-    void PrintChannelSpectrums(string filename);
+    void PrintChannelSpectrums(std::string filename);
 
     void PrintMetadata() {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply channel correction map for spectrum "
+        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply channel correction std::map for spectrum "
                  << endl;
-        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction map for each channel"
+        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each channel"
                  << endl;
         metadata << "output mapping file: " << fCalibSave << endl;
         metadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << endl;

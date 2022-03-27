@@ -45,17 +45,17 @@ typedef Garfield::Component Component;
 
 #endif
 
-using namespace std;
+
 
 class TRestDetectorGeometry : public TGeoManager {
    protected:
 #if defined USE_Garfield
     Garfield::GeometryRoot* fGfGeometry;  //!///< Pointer to Garfield::GeometryRoot object of the
                                           //! geometry
-    vector<Component*> vGfComponent;      //!///< Vector of pointers to Garfield Component object
-    vector<Garfield::Sensor*> vGfSensor;  //!///< Vector of pointers to Garfield Sensor object
+    std::vector<Component*> vGfComponent;      //!///< Vector of pointers to Garfield Component object
+    std::vector<Garfield::Sensor*> vGfSensor;  //!///< Vector of pointers to Garfield Sensor object
     TGeoNode* fDriftElec;                 //!///< pointer to drift electrode
-    vector<TGeoNode*> vReadoutElec;       //!///< vector of pointers to readout planes
+    std::vector<TGeoNode*> vReadoutElec;       //!///< std::vector of pointers to readout planes
 
 #endif
 

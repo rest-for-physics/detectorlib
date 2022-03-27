@@ -37,7 +37,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     bool fCreateGainMap;
     TVector2 fEnergyCutRange;
     TVector2 fNHitsCutRange;
-    string fMappingSave;
+    std::string fMappingSave;
 
     double fNBinsX;
     double fNBinsY;
@@ -65,9 +65,9 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply position correction map for spectrum "
+        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply position correction std::map for spectrum "
                  << endl;
-        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction map for each position"
+        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each position"
                  << endl;
         metadata << "output mapping file: " << fMappingSave << endl;
         metadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << endl;

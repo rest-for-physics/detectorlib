@@ -74,9 +74,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Double_t fMaxElectronEnergy;  // Maximum electron energy, in eV, used in
                                   // Magboltz gas calculation.
 
-    std::vector<TString> fGasComponentName;       // A string vector storing the names
+    std::vector<TString> fGasComponentName;       // A std::string std::vector storing the names
                                                   // of each of the gas components
-    std::vector<Double_t> fGasComponentFraction;  // A double vector storing the fraction values of
+    std::vector<Double_t> fGasComponentFraction;  // A double std::vector storing the fraction values of
                                                   // each of the gas components
 
     Int_t fEnodes;   // Number of electric field nodes used in the gas calculation.
@@ -98,7 +98,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
                           //!             gas file is not found, it will allow to
                           //!             launch the gas generation.
 
-    TString fGasOutputPath;  //!          A string to store the output path where
+    TString fGasOutputPath;  //!          A std::string to store the output path where
                              //!          a new generated gas file will be written
 
     TString fGasServer;  //!              The remote server from where we retrieve
@@ -110,13 +110,13 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Bool_t fTest = false;  //!
 
     void InitFromConfigFile();
-    string ConstructFilename();
+    std::string ConstructFilename();
 
     void AddGasComponent(std::string gasName, Double_t fraction);
 
     void GenerateGasFile();
 
-    void UploadGasToServer(string gasFilename);
+    void UploadGasToServer(std::string gasFilename);
 
     Double_t GetDriftVelocity(Double_t E);
     Double_t GetLongitudinalDiffusion(Double_t E);
@@ -126,7 +126,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
    public:
     TRestDetectorGas();
-    TRestDetectorGas(const char* cfgFileName, string name = "", bool gasGeneration = false,
+    TRestDetectorGas(const char* cfgFileName, std::string name = "", bool gasGeneration = false,
                      bool test = false);
     ~TRestDetectorGas();
 
@@ -144,7 +144,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void LoadGasFile();
 
-    string FindGasFile(string name);
+    std::string FindGasFile(std::string name);
 
     void CalcGarField(double Emin, double Emax, int n);
 
@@ -162,7 +162,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas component *n*.
     TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
-            cout << "REST WARNING. Gas name component n=" << n << " requested. But only " << GetNofGases()
+            std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only " << GetNofGases()
                  << " component(s) in the mixture." << endl;
             return "";
         }
@@ -223,7 +223,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas fraction in volume for component *n*.
     Double_t GetGasComponentFraction(Int_t n) {
         if (n >= GetNofGases()) {
-            cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
+            std::cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
                  << GetNofGases() << " component(s) in the mixture." << endl;
             return 0.;
         }
@@ -250,7 +250,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PrintGasInfo();
-    void PrintGasFileContent() { cout << fGasFileContent << endl; };
+    void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
 
     /// Prints the metadata information from the gas
     void PrintMetadata() { PrintGasInfo(); }

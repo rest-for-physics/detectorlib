@@ -42,12 +42,12 @@ class TRestDetectorReadout : public TRestMetadata {
 
     Int_t fNReadoutPlanes;  ///< Number of readout planes present on the readout
     std::vector<TRestDetectorReadoutPlane>
-        fReadoutPlanes;  ///< A vector storing the TRestDetectorReadoutPlane definitions.
+        fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
 
 #ifndef __CINT__
     Int_t fMappingNodes;  //!///< Number of nodes per axis used on the readout
                           //! coordinate mapping. See also TRestDetectorReadoutMapping.
-    vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A vector storing the different
+    std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
                                                             //! TRestDetectorReadoutModule definitions.
 #endif
 

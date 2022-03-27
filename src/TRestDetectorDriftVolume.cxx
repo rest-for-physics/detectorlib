@@ -1,7 +1,11 @@
 #include "TRestDetectorDriftVolume.h"
 using namespace REST_Units;
 
-ClassImp(TRestDetectorDriftVolume)
+
+using namespace std;
+
+ClassImp(TRestDetectorDriftVolume);
+
 
     TRestDetectorDriftVolume::TRestDetectorDriftVolume() {
     Initialize();
