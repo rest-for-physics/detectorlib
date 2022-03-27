@@ -23,16 +23,15 @@
 #ifndef RestCore_TRestDetectorReadoutPlane
 #define RestCore_TRestDetectorReadoutPlane
 
+#include <TGraph.h>
+#include <TH2Poly.h>
+
 #include <iostream>
 
 #include "TObject.h"
-
 #include "TRestDetectorReadoutChannel.h"
 #include "TRestDetectorReadoutModule.h"
 #include "TRestMetadata.h"
-
-#include <TGraph.h>
-#include <TH2Poly.h>
 
 /// A class to store the readout plane definition used in TRestDetectorReadout. It
 /// allows to integrate any number of independent readout modules.

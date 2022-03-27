@@ -14,10 +14,10 @@
 ///             march 2017:   Damien Neyret
 ///_______________________________________________________________________________
 
+#include "TRestDetectorGarfieldDriftProcess.h"
+
 #include <TGeoBBox.h>
 #include <TRandom3.h>
-
-#include "TRestDetectorGarfieldDriftProcess.h"
 
 #if defined USE_Garfield
 #include "ComponentConstant.hh"

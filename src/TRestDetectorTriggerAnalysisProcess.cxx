@@ -215,4 +215,3 @@ TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* evInpu
 
     return fSignalEvent;
 }
-

@@ -40,8 +40,6 @@
 #include "TRestStringOutput.h"
 #include "TRestTools.h"
 
-
-
 //! An metadata class to store basic detector information
 class TRestDetector : public TRestMetadata {
    public:

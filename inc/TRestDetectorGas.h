@@ -162,8 +162,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas component *n*.
     TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
-            std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only " << GetNofGases()
-                 << " component(s) in the mixture." << endl;
+            std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only "
+                      << GetNofGases() << " component(s) in the mixture." << endl;
             return "";
         }
         return fGasComponentName[n];
@@ -224,7 +224,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Double_t GetGasComponentFraction(Int_t n) {
         if (n >= GetNofGases()) {
             std::cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
-                 << GetNofGases() << " component(s) in the mixture." << endl;
+                      << GetNofGases() << " component(s) in the mixture." << endl;
             return 0.;
         }
 

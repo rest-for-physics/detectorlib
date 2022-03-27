@@ -43,7 +43,7 @@
 class TRestDetectorDriftVolume : public TRestMetadata {
    protected:
     std::string fMaterial;  // material description std::string
-    Double_t fW;       // Work function for electron extraction, in unit eV.
+    Double_t fW;            // Work function for electron extraction, in unit eV.
 
     Double_t fElectricField;          // in unit V/mm
     Double_t fDriftVelocity;          // in unit mm/us

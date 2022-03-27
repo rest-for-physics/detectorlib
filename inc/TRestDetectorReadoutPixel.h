@@ -23,10 +23,11 @@
 #ifndef RestCore_TRestDetectorReadoutPixel
 #define RestCore_TRestDetectorReadoutPixel
 
-#include <iostream>
-
 #include <TMath.h>
 #include <TVector2.h>
+
+#include <iostream>
+
 #include "TObject.h"
 #include "TRestMetadata.h"
 

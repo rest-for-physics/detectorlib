@@ -26,7 +26,6 @@
 #include <iostream>
 
 #include "TObject.h"
-
 #include "TRestDetectorReadoutPlane.h"
 #include "TRestMetadata.h"
 
@@ -48,7 +47,7 @@ class TRestDetectorReadout : public TRestMetadata {
     Int_t fMappingNodes;  //!///< Number of nodes per axis used on the readout
                           //! coordinate mapping. See also TRestDetectorReadoutMapping.
     std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
-                                                            //! TRestDetectorReadoutModule definitions.
+                                                                 //! TRestDetectorReadoutModule definitions.
 #endif
 
     void ValidateReadout();

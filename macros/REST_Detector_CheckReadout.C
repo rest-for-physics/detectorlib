@@ -1,9 +1,9 @@
 #include <algorithm>
+#include <iostream>
 #include <vector>
+
 #include "TRestDetectorReadout.h"
 #include "TRestTask.h"
-
-#include <iostream>
 using namespace std;
 
 TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t region[4], Int_t N,

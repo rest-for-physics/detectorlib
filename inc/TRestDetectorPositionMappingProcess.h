@@ -13,7 +13,6 @@
 #define RestCore_TRestDetectorPositionMappingProcess
 
 #include <TH1D.h>
-
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -65,8 +64,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply position correction std::map for spectrum "
-                 << endl;
+        metadata << (fApplyGainCorrection ? ">   " : "    ")
+                 << "Apply position correction std::map for spectrum " << endl;
         metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each position"
                  << endl;
         metadata << "output mapping file: " << fMappingSave << endl;

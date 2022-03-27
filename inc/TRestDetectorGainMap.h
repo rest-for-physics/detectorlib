@@ -49,8 +49,8 @@ class TRestDetectorGainMap : public TRestMetadata {
    public:
     bool relative;
     std::map<int, double> fChannelGain;  // [channel id, gain]
-    TH2F* f2DGainMapping = 0;       //->
-    TH3F* f3DGainMapping = 0;       //->
+    TH2F* f2DGainMapping = 0;            //->
+    TH3F* f3DGainMapping = 0;            //->
 
     void InitFromConfigFile();
 

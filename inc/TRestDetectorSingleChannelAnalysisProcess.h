@@ -68,8 +68,8 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply channel correction std::map for spectrum "
-                 << endl;
+        metadata << (fApplyGainCorrection ? ">   " : "    ")
+                 << "Apply channel correction std::map for spectrum " << endl;
         metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each channel"
                  << endl;
         metadata << "output mapping file: " << fCalibSave << endl;

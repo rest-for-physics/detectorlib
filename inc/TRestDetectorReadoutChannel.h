@@ -26,9 +26,8 @@
 #include <iostream>
 
 #include "TObject.h"
-#include "TRestMetadata.h"
-
 #include "TRestDetectorReadoutPixel.h"
+#include "TRestMetadata.h"
 
 enum TRestDetectorReadoutChannelType {
     Channel_NoType = 0,
