@@ -49,20 +49,26 @@ TEST(TRestDetectorGas, FromRml) {
     EXPECT_TRUE(gas.GetNofGases() == 1);
     EXPECT_TRUE(gas.GetGasComponentName(0) == "xe");
     EXPECT_TRUE(gas.GetGasComponentFraction(0) == 1.0);
-}
-
-TEST(TRestDetectorGas, FromRmlAndServer) {
-    const auto gasConfigRml = GAS_DEFAULT_RML;
-
-    TRestDetectorGas gas(gasConfigRml.c_str(),  // config file
-                         "Xenon 10-10E3Vcm",    // name
-                         false,                 // generation
-                         false                  // test
-    );
-
-    gas.PrintGasInfo();
-
-    GTEST_SKIP_("Currently gas gives error due to not loading from server. TODO: fix this");
 
     EXPECT_TRUE(!gas.GetError());
+}
+
+TEST(TRestDetectorGas, FromServer) {
+    GTEST_SKIP_("Not working on test but works on `restRoot` prompt");
+
+    TRestDetectorGas gas("server",            // use gas server
+                         "Xenon 10-10E3Vcm",  // name
+                         false,               // generation
+                         true                 // test
+    );
+    gas.PrintGasInfo();
+
+    EXPECT_TRUE(!gas.GetError());
+
+    EXPECT_TRUE(gas.GetW() == 21.9);
+    EXPECT_TRUE(gas.GetTemperature() == 293.15);
+
+    EXPECT_TRUE(gas.GetNofGases() == 1);
+    EXPECT_TRUE(gas.GetGasComponentName(0) == "xe");
+    EXPECT_TRUE(gas.GetGasComponentFraction(0) == 1.0);
 }
