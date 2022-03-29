@@ -130,7 +130,7 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFile
 /// \brief Default destructor
 ///
 TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
-    if (fReadout != nullptr) delete fReadout;
+    if (fReadout) delete fReadout;
 
     delete fSignalEvent;
 }
@@ -170,7 +170,7 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 ///
 void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != nullptr) {
+    if (fGas) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;

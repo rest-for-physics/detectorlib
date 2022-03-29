@@ -65,7 +65,7 @@ void TRestDetectorSetup::InitFromConfigFile() {
     // Initialize the metadata members from a configfile
     fRunNumber = StringToInteger(GetParameter("runNumber"));
     fSubRunNumber = StringToInteger(GetParameter("subRunNumber"));
-    if (fHostmgr != nullptr && fHostmgr->GetRunInfo() != nullptr) {
+    if (fHostmgr && fHostmgr->GetRunInfo()) {
         TRestRun* r = fHostmgr->GetRunInfo();
         if (r->GetInputFileNumber() > 0) InitFromFileName(r->GetInputFileName(0));
     }

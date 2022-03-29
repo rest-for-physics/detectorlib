@@ -531,7 +531,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
 
     SetObservableValue("MeanAmbiguity", totalambiguity / Nlayers);
     SetObservableValue("DiffRecon", numeric_limits<double>::quiet_NaN());
-    if (fCompareProc != nullptr && fOutputHitsEvent->GetNumberOfHits() > 0 &&
+    if (fCompareProc && fOutputHitsEvent->GetNumberOfHits() > 0 &&
         (fObservablesDefined.count("DiffRecon") != 0 || fDynamicObs)) {
         TRestDetectorHitsEvent* reference = (TRestDetectorHitsEvent*)fCompareProc->GetOutputEvent();
         auto hits1 = *fOutputHitsEvent->GetHits();

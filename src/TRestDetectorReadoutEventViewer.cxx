@@ -18,11 +18,9 @@ using namespace std;
 
 Int_t planeId = 0;
 
-ClassImp(TRestDetectorReadoutEventViewer)
+ClassImp(TRestDetectorReadoutEventViewer);
 
-    TRestDetectorReadoutEventViewer::TRestDetectorReadoutEventViewer() {
-    Initialize();
-}
+TRestDetectorReadoutEventViewer::TRestDetectorReadoutEventViewer() { Initialize(); }
 
 TRestDetectorReadoutEventViewer::~TRestDetectorReadoutEventViewer() {}
 
@@ -65,11 +63,11 @@ void TRestDetectorReadoutEventViewer::AddEvent(TRestEvent* ev) {
     // XY histo is expected to have always same binning => reset it.
     // (X|Y)Z may change from event to event => delete (and later on re-create).
     fHistoXY->Reset(0);
-    if (fHistoXZ != nullptr) {
+    if (fHistoXZ) {
         delete fHistoXZ;
         fHistoXZ = nullptr;
     }
-    if (fHistoYZ != nullptr) {
+    if (fHistoYZ) {
         delete fHistoYZ;
         fHistoYZ = nullptr;
     }

@@ -447,7 +447,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
 #pragma region ParseModuledefinition
     TiXmlElement* moduleDefinition = GetElement("readoutModule");
-    while (moduleDefinition != nullptr) {
+    while (moduleDefinition) {
         if (GetVerboseLevel() >= REST_Debug) {
             cout << "------module-----------------" << endl;
             cout << moduleDefinition << endl;
@@ -465,7 +465,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
     TiXmlElement* planeDefinition = GetElement("readoutPlane");
     vector<TRestDetectorReadoutModule> moduleVector;
     Int_t addedChannels = 0;
-    while (planeDefinition != nullptr) {
+    while (planeDefinition) {
         TRestDetectorReadoutPlane plane;
 
         plane.SetID(GetNumberOfReadoutPlanes());
@@ -481,7 +481,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         moduleVector.clear();
         TiXmlElement* moduleDefinition = GetElement("addReadoutModule", planeDefinition);
-        while (moduleDefinition != nullptr) {
+        while (moduleDefinition) {
             TString modName = GetFieldValue("name", moduleDefinition);
             Int_t mid = GetModuleDefinitionId(modName);
 
@@ -620,7 +620,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     vector<TRestDetectorReadoutChannel> channelVector;
     vector<int> channelIDVector;
     TiXmlElement* channelDefinition = GetElement("readoutChannel", moduleDefinition);
-    while (channelDefinition != nullptr) {
+    while (channelDefinition) {
         TRestDetectorReadoutChannel channel;
 
         Int_t id = StringToInteger(GetFieldValue("id", channelDefinition));
@@ -631,7 +631,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         vector<TRestDetectorReadoutPixel> pixelVector;
         vector<int> pixelIDVector;
         TiXmlElement* pixelDefinition = GetElement("addPixel", channelDefinition);
-        while (pixelDefinition != nullptr) {
+        while (pixelDefinition) {
             TRestDetectorReadoutPixel pixel;
 
             pixel.SetOrigin(StringTo2DVector(GetFieldValue("origin", pixelDefinition)));

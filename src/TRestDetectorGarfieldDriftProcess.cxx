@@ -60,7 +60,7 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout != nullptr) delete fReadout;
+    if (fReadout) delete fReadout;
     if (fGeometry) delete fGeometry;
     fGeometry = nullptr;
 
@@ -115,7 +115,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting gas data
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != nullptr) {
+    if (fGas) {
         if (fGasPressure <= 0)
             fGasPressure = fGas->GetPressure();
         else

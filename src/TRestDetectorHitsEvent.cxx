@@ -618,7 +618,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
     /// The default histogram using a pitch of 0.5mm
     if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
 
-    if (fPad != nullptr) {
+    if (fPad) {
         delete fPad;
         fPad = nullptr;
     }
@@ -696,15 +696,15 @@ void TRestDetectorHitsEvent::SetBoundaries() {
 }
 
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
-    if (fXYHitGraph != nullptr) {
+    if (fXYHitGraph) {
         delete fXYHitGraph;
         fXYHitGraph = nullptr;
     }
-    if (fXZHitGraph != nullptr) {
+    if (fXZHitGraph) {
         delete fXZHitGraph;
         fXZHitGraph = nullptr;
     }
-    if (fYZHitGraph != nullptr) {
+    if (fYZHitGraph) {
         delete fYZHitGraph;
         fYZHitGraph = nullptr;
     }
@@ -793,28 +793,28 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 }
 
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TString histOption) {
-    if (fXYHisto != nullptr) {
+    if (fXYHisto) {
         delete fXYHisto;
         fXYHisto = nullptr;
     }
-    if (fXZHisto != nullptr) {
+    if (fXZHisto) {
         delete fXZHisto;
         fXZHisto = nullptr;
     }
-    if (fYZHisto != nullptr) {
+    if (fYZHisto) {
         delete fYZHisto;
         fYZHisto = nullptr;
     }
 
-    if (fXHisto != nullptr) {
+    if (fXHisto) {
         delete fXHisto;
         fXHisto = nullptr;
     }
-    if (fYHisto != nullptr) {
+    if (fYHisto) {
         delete fYHisto;
         fYHisto = nullptr;
     }
-    if (fZHisto != nullptr) {
+    if (fZHisto) {
         delete fZHisto;
         fZHisto = nullptr;
     }

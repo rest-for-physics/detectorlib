@@ -41,7 +41,7 @@ TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* cfgFileName) 
 }
 
 TRestDetectorAvalancheProcess::~TRestDetectorAvalancheProcess() {
-    if (fGas != nullptr) delete fGas;
+    if (fGas) delete fGas;
 
     delete fHitsOutputEvent;
     // TRestDetectorAvalancheProcess destructor

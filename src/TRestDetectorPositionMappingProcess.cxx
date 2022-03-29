@@ -118,11 +118,11 @@ double TRestDetectorPositionMappingProcess::GetCorrection2(double x, double y) {
 
 double TRestDetectorPositionMappingProcess::GetCorrection3(double x, double y, double z) {
     double result = 1;
-    if (fCalib->f3DGainMapping != nullptr && fCalib->f3DGainMapping->GetEntries() > 0) {
+    if (fCalib->f3DGainMapping && fCalib->f3DGainMapping->GetEntries() > 0) {
         int bin = fCalib->f3DGainMapping->FindBin(x, y, z);
         result *= fCalib->f2DGainMapping->GetBinContent(bin);
     }
-    if (fGas != nullptr && fGas->GetElectronLifeTime() != 0) {
+    if (fGas && fGas->GetElectronLifeTime() != 0) {
         double dt = z / fGas->GetDriftVelocity();
         result *= exp(dt / fGas->GetElectronLifeTime());
     }
@@ -171,7 +171,7 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
         r->AddMetadata(fCalib);
         r->AddMetadata(fReadout);
         r->FormOutputFile();
-        if (fAreaGainMap != nullptr) fAreaGainMap->Write();
+        if (fAreaGainMap) fAreaGainMap->Write();
     }
 }
 
