@@ -45,7 +45,7 @@ void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
     fDrawRefresh = 0;
 

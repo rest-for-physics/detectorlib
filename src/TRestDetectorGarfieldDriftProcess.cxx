@@ -55,7 +55,7 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
 
     PrintMetadata();
 
-    if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(cfgFileName);
 
     // TRestDetectorGarfieldDriftProcess default constructor
 }
@@ -64,9 +64,9 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout != NULL) delete fReadout;
+    if (fReadout != nullptr) delete fReadout;
     if (fGeometry) delete fGeometry;
-    fGeometry = NULL;
+    fGeometry = nullptr;
 
     delete fOutputHitsEvent;
 }
@@ -97,13 +97,13 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fRandom = new TRandom3(0);
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 
 #if defined USE_Garfield
-    fReadout = NULL;
-    fGas = NULL;
-    fGeometry = NULL;
+    fReadout = nullptr;
+    fGas = nullptr;
+    fGeometry = nullptr;
     fPEReduction = 1.;
     fStopDistance = 2;  // default distance from readout to stop drift set to 2mm
 #endif
@@ -121,7 +121,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting gas data
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
+    if (fGas != nullptr) {
         if (fGasPressure <= 0)
             fGasPressure = fGas->GetPressure();
         else
@@ -133,7 +133,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting readout data
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
@@ -146,7 +146,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         exit(-1);
     }
 
-    TGeoVolume* geovol = NULL;
+    TGeoVolume* geovol = nullptr;
     fGeometry = new TRestDetectorGeometry();
     fGeometry->InitGfGeometry();
 
@@ -417,7 +417,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     // fSignalEvent->PrintEvent();
 
@@ -434,7 +434,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 #else
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
     fOutputHitsEvent = fInputHitsEvent;
-    debug << "null process" << endl;
+    debug << "nullptr process" << endl;
     return evInput;
 
 #endif

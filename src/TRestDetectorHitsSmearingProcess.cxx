@@ -60,10 +60,10 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     fEnergyRef = 5.9;
     fResolutionAtEref = 15.0;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 
-    fRandom = NULL;
+    fRandom = nullptr;
 }
 
 void TRestDetectorHitsSmearingProcess::LoadConfig(string cfgFilename, string name) {

@@ -67,7 +67,7 @@ class TRestDetectorReadoutChannel : public TObject {
 
     /// Returns a pointer to the pixel *n* by index.
     TRestDetectorReadoutPixel* GetPixel(int n) {
-        if (n >= GetNumberOfPixels()) return NULL;
+        if (n >= GetNumberOfPixels()) return nullptr;
         return &fReadoutPixel[n];
     }
 

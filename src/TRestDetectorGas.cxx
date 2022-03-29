@@ -237,7 +237,7 @@ TRestDetectorGas::TRestDetectorGas() : TRestDetectorDriftVolume() {
 /// \brief TRestDetectorGas constructor loading data from a config file.
 ///
 /// This constructor will load the gas with properties defined inside the
-/// correspoding TRestDetectorGas section in an RML file. A pre-generated gas file will
+/// corresponding TRestDetectorGas section in an RML file. A pre-generated gas file will
 /// be loaded if found in TRestMetadata::GetSearchPath() which can be defined as
 /// an input parameter in the globals metadata section.
 ///
@@ -254,7 +254,7 @@ TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool ga
 
     if (strcmp(cfgFileName, "server") == 0) {
         LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"),
-                              NULL);
+                              nullptr);
     } else {
         fConfigFileName = cfgFileName;
         LoadConfigFromFile(fConfigFileName, name);
@@ -300,7 +300,7 @@ void TRestDetectorGas::Initialize() {
 #if defined USE_Garfield
     fGasMedium = new Garfield::MediumMagboltz();
 #else
-    fGasMedium = NULL;
+    fGasMedium = nullptr;
 #endif
 
     ///////////////////// ///////////////////// /////////////////////
@@ -520,7 +520,7 @@ void TRestDetectorGas::InitFromConfigFile() {
 
     // add gas component
     TiXmlElement* gasComponentDefinition = GetElement("gasComponent");
-    while (gasComponentDefinition != NULL) {
+    while (gasComponentDefinition != nullptr) {
         string gasName = GetFieldValue("name", gasComponentDefinition);
         Double_t gasFraction = StringToDouble(GetFieldValue("fraction", gasComponentDefinition));
         AddGasComponent(gasName, gasFraction);
@@ -1188,7 +1188,8 @@ void TRestDetectorGas::PrintGasInfo() {
     metadata << "Temperature : " << fTemperatureInK << " K" << endl;
     metadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << endl;
     metadata << "W-value : " << fW << " eV" << endl;
-    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us") << " mm/us " << endl;
+    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us")
+             << " mm/us " << endl;
     metadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << endl;
     metadata << "Field grid nodes : " << fEnodes << endl;
     metadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << endl;

@@ -122,7 +122,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     /// Returns a pointer to a readout module using its vector index
     TRestDetectorReadoutModule* GetModule(int mod) {
-        if (mod >= GetNumberOfModules()) return NULL;
+        if (mod >= GetNumberOfModules()) return nullptr;
         return &fReadoutModules[mod];
     }
 

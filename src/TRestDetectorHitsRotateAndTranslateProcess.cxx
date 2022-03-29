@@ -69,8 +69,8 @@ void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     fBeta = 0.;
     fGamma = 0.;
 
-    fInputHitsEvent = NULL;
-    fOutputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
+    fOutputHitsEvent = nullptr;
 }
 
 void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string cfgFilename) {
@@ -102,7 +102,7 @@ TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent*
         fOutputHitsEvent->GetHits()->Translate(hit, fDeltaX, fDeltaY, fDeltaZ);
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     debug << "Number of hits rotated: " << fInputHitsEvent->GetNumberOfHits() << endl;
     return fOutputHitsEvent;

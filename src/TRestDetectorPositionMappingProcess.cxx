@@ -35,9 +35,9 @@ void TRestDetectorPositionMappingProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fHitsEvent = NULL;
+    fHitsEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
 //______________________________________________________________________________
@@ -45,7 +45,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         if (fCreateGainMap) {
             ferr << "You must set a TRestDetectorReadout metadata object to create gain map!" << endl;
             abort();
@@ -60,7 +60,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     }
 
     if (fApplyGainCorrection) {
-        if (fCalib == NULL || fCalib->f2DGainMapping == NULL) {
+        if (fCalib == nullptr || fCalib->f2DGainMapping == nullptr) {
             ferr << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << endl;
             abort();
         }
@@ -123,11 +123,11 @@ double TRestDetectorPositionMappingProcess::GetCorrection2(double x, double y) {
 
 double TRestDetectorPositionMappingProcess::GetCorrection3(double x, double y, double z) {
     double result = 1;
-    if (fCalib->f3DGainMapping != NULL && fCalib->f3DGainMapping->GetEntries() > 0) {
+    if (fCalib->f3DGainMapping != nullptr && fCalib->f3DGainMapping->GetEntries() > 0) {
         int bin = fCalib->f3DGainMapping->FindBin(x, y, z);
         result *= fCalib->f2DGainMapping->GetBinContent(bin);
     }
-    if (fGas != NULL && fGas->GetElectronLifeTime() != 0) {
+    if (fGas != nullptr && fGas->GetElectronLifeTime() != 0) {
         double dt = z / fGas->GetDriftVelocity();
         result *= exp(dt / fGas->GetElectronLifeTime());
     }
@@ -166,7 +166,7 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
             }
         }
 
-        if (fCalib == NULL) {
+        if (fCalib == nullptr) {
             fCalib = new TRestDetectorGainMap();
         }
         fCalib->f2DGainMapping = fAreaGainMap;
@@ -177,7 +177,7 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
         r->AddMetadata(fCalib);
         r->AddMetadata(fReadout);
         r->FormOutputFile();
-        if (fAreaGainMap != NULL) fAreaGainMap->Write();
+        if (fAreaGainMap != nullptr) fAreaGainMap->Write();
     }
 }
 

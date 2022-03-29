@@ -123,14 +123,14 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFile
 
     if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
 
-    if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(cfgFileName);
 }
 
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
 TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
-    if (fReadout != NULL) delete fReadout;
+    if (fReadout != nullptr) delete fReadout;
 
     delete fSignalEvent;
 }
@@ -157,10 +157,10 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fReadout = NULL;
-    fGas = NULL;
+    fReadout = nullptr;
+    fGas = nullptr;
 
-    fHitsEvent = NULL;
+    fHitsEvent = nullptr;
     fSignalEvent = new TRestDetectorSignalEvent();
 }
 
@@ -170,7 +170,7 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 ///
 void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
+    if (fGas != nullptr) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;

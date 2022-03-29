@@ -65,23 +65,23 @@ ClassImp(TRestDetectorHitsEvent);
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();
 
-    fPad = NULL;
+    fPad = nullptr;
 
-    fXYHitGraph = NULL;
-    fXZHitGraph = NULL;
-    fYZHitGraph = NULL;
+    fXYHitGraph = nullptr;
+    fXZHitGraph = nullptr;
+    fYZHitGraph = nullptr;
 
-    fXYHisto = NULL;
-    fXZHisto = NULL;
-    fYZHisto = NULL;
+    fXYHisto = nullptr;
+    fXZHisto = nullptr;
+    fYZHisto = nullptr;
 
-    fXZHits = NULL;
-    fYZHits = NULL;
-    fXYZHits = NULL;
+    fXZHits = nullptr;
+    fYZHits = nullptr;
+    fXYZHits = nullptr;
 
-    fXHisto = NULL;
-    fYHisto = NULL;
-    fZHisto = NULL;
+    fXHisto = nullptr;
+    fYHisto = nullptr;
+    fZHisto = nullptr;
 
     fMinX = -10;
     fMaxX = 10;
@@ -128,15 +128,15 @@ void TRestDetectorHitsEvent::Initialize() {
 
     if (fXZHits) {
         delete fXZHits;
-        fXZHits = NULL;
+        fXZHits = nullptr;
     }
     if (fYZHits) {
         delete fYZHits;
-        fYZHits = NULL;
+        fYZHits = nullptr;
     }
     if (fXYZHits) {
         delete fXYZHits;
-        fXYZHits = NULL;
+        fXYZHits = nullptr;
     }
 
     fXZHits = new TRestHits();
@@ -618,9 +618,9 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
     /// The default histogram using a pitch of 0.5mm
     if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
 
-    if (fPad != NULL) {
+    if (fPad != nullptr) {
         delete fPad;
-        fPad = NULL;
+        fPad = nullptr;
     }
 
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
@@ -696,17 +696,17 @@ void TRestDetectorHitsEvent::SetBoundaries() {
 }
 
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
-    if (fXYHitGraph != NULL) {
+    if (fXYHitGraph != nullptr) {
         delete fXYHitGraph;
-        fXYHitGraph = NULL;
+        fXYHitGraph = nullptr;
     }
-    if (fXZHitGraph != NULL) {
+    if (fXZHitGraph != nullptr) {
         delete fXZHitGraph;
-        fXZHitGraph = NULL;
+        fXZHitGraph = nullptr;
     }
-    if (fYZHitGraph != NULL) {
+    if (fYZHitGraph != nullptr) {
         delete fYZHitGraph;
-        fYZHitGraph = NULL;
+        fYZHitGraph = nullptr;
     }
 
     Double_t xz[2][this->GetNumberOfHits()];
@@ -793,30 +793,30 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 }
 
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TString histOption) {
-    if (fXYHisto != NULL) {
+    if (fXYHisto != nullptr) {
         delete fXYHisto;
-        fXYHisto = NULL;
+        fXYHisto = nullptr;
     }
-    if (fXZHisto != NULL) {
+    if (fXZHisto != nullptr) {
         delete fXZHisto;
-        fXZHisto = NULL;
+        fXZHisto = nullptr;
     }
-    if (fYZHisto != NULL) {
+    if (fYZHisto != nullptr) {
         delete fYZHisto;
-        fYZHisto = NULL;
+        fYZHisto = nullptr;
     }
 
-    if (fXHisto != NULL) {
+    if (fXHisto != nullptr) {
         delete fXHisto;
-        fXHisto = NULL;
+        fXHisto = nullptr;
     }
-    if (fYHisto != NULL) {
+    if (fYHisto != nullptr) {
         delete fYHisto;
-        fYHisto = NULL;
+        fYHisto = nullptr;
     }
-    if (fZHisto != NULL) {
+    if (fZHisto != nullptr) {
         delete fZHisto;
-        fZHisto = NULL;
+        fZHisto = nullptr;
     }
 
     Int_t nBinsX = (fMaxX - fMinX + 20) / pitch;

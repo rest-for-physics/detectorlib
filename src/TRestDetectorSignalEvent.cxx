@@ -39,7 +39,7 @@ TRestDetectorSignalEvent::~TRestDetectorSignalEvent() {
 void TRestDetectorSignalEvent::Initialize() {
     TRestEvent::Initialize();
     fSignal.clear();
-    fPad = NULL;
+    fPad = nullptr;
     fMinValue = 1E10;
     fMaxValue = -1E10;
     fMinTime = 1E10;
@@ -187,16 +187,16 @@ Double_t TRestDetectorSignalEvent::GetMaxTime() {
 
 // Draw current event in a Tpad
 TPad* TRestDetectorSignalEvent::DrawEvent(TString option) {
-    if (fPad != NULL) {
+    if (fPad != nullptr) {
         delete fPad;
-        fPad = NULL;
+        fPad = nullptr;
     }
 
     int nSignals = this->GetNumberOfSignals();
 
     if (nSignals == 0) {
         cout << "Empty event " << endl;
-        return NULL;
+        return nullptr;
     }
 
     fMinValue = 1E10;

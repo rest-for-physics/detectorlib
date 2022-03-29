@@ -93,7 +93,7 @@ TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID
         if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////

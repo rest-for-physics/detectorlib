@@ -34,7 +34,7 @@ ClassImp(TRestDetectorSignal)
     //______________________________________________________________________________
     TRestDetectorSignal::TRestDetectorSignal() {
     // TRestDetectorSignal default constructor
-    fGraph = NULL;
+    fGraph = nullptr;
     fSignalID = -1;
     fSignalTime.clear();
     fSignalCharge.clear();
@@ -498,9 +498,9 @@ void TRestDetectorSignal::Print() {
 }
 
 TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
-    if (fGraph != NULL) {
+    if (fGraph != nullptr) {
         delete fGraph;
-        fGraph = NULL;
+        fGraph = nullptr;
     }
 
     fGraph = new TGraph();

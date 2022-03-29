@@ -40,9 +40,9 @@ void TRestDetectorFiducializationProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
 void TRestDetectorFiducializationProcess::LoadConfig(string cfgFilename, string name) {
@@ -52,7 +52,7 @@ void TRestDetectorFiducializationProcess::LoadConfig(string cfgFilename, string 
 //______________________________________________________________________________
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
@@ -63,7 +63,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return NULL;
+    if (nHits <= 0) return nullptr;
 
     TRestHits* hits = fInputHitsEvent->GetHits();
     for (int n = 0; n < nHits; n++) {
@@ -84,7 +84,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     if (this->GetVerboseLevel() >= REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()

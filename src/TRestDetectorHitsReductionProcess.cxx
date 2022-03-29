@@ -45,8 +45,8 @@ void TRestDetectorHitsReductionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fInputHitsEvent = NULL;
-    fOutputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
+    fOutputHitsEvent = nullptr;
 }
 
 void TRestDetectorHitsReductionProcess::LoadConfig(std::string cfgFilename, std::string name) {

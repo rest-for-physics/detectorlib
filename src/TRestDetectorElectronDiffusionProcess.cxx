@@ -53,12 +53,12 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fWvalue = 0;
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
 
-    fGas = NULL;
-    fReadout = NULL;
+    fGas = nullptr;
+    fReadout = nullptr;
 
-    fRandom = NULL;
+    fRandom = nullptr;
 }
 
 void TRestDetectorElectronDiffusionProcess::LoadConfig(string cfgFilename, string name) {
@@ -70,7 +70,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     fRandom = new TRandom3(fSeed);
 
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas == NULL) {
+    if (fGas == nullptr) {
         if (fLonglDiffCoeff == -1 || fTransDiffCoeff == -1) {
             warning << "Gas has not been initialized" << endl;
             ferr << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
@@ -108,7 +108,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
@@ -120,7 +120,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evIn
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return NULL;
+    if (nHits <= 0) return nullptr;
 
     Int_t isAttached;
 

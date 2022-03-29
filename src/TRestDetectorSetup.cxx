@@ -67,7 +67,7 @@ void TRestDetectorSetup::InitFromConfigFile() {
     // Initialize the metadata members from a configfile
     fRunNumber = StringToInteger(GetParameter("runNumber"));
     fSubRunNumber = StringToInteger(GetParameter("subRunNumber"));
-    if (fHostmgr != NULL && fHostmgr->GetRunInfo() != NULL) {
+    if (fHostmgr != nullptr && fHostmgr->GetRunInfo() != nullptr) {
         TRestRun* r = fHostmgr->GetRunInfo();
         if (r->GetInputFileNumber() > 0) InitFromFileName(r->GetInputFileName(0));
     }
@@ -112,7 +112,7 @@ void TRestDetectorSetup::InitFromFileName(TString fName) {
     fSamplingTime = name.substr(pos, len);
 
     TString samplingReduced = fSamplingTime(2, fSamplingTime.Length());
-    fSamplingInMicroSec = (Double_t)strtol(samplingReduced.Data(), NULL, 16) / 100.;  // This is only for AGET
+    fSamplingInMicroSec = (Double_t)strtol(samplingReduced.Data(), nullptr, 16) / 100.;  // This is only for AGET
 
     pos = name.find("-") + 1;
     len = name.find(".aqs") - pos;

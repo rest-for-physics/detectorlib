@@ -197,7 +197,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Returns a pointer to a readout channel by index
     TRestDetectorReadoutChannel* GetChannel(int n) {
-        if (n >= GetNumberOfChannels()) return NULL;
+        if (n >= GetNumberOfChannels()) return nullptr;
         return &fReadoutChannel[n];
     }
 

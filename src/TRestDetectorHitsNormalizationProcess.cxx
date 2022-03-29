@@ -58,7 +58,7 @@ void TRestDetectorHitsNormalizationProcess::Initialize() {
 
     fFactor = 1.;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 

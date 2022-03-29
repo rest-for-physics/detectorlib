@@ -36,18 +36,18 @@ void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
 
     fFirstDaqChannelDef.clear();
     fIgnoreUndefinedModules = false;
-    fReadout = NULL;
-    fEvent = NULL;
+    fReadout = nullptr;
+    fEvent = nullptr;
 }
 
 //______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout != NULL) {
+    if (fReadout != nullptr) {
         auto iter = fFirstDaqChannelDef.begin();
         while (iter != fFirstDaqChannelDef.end()) {
             auto mod = fReadout->GetReadoutModuleWithID(iter->first);
-            if (mod == NULL) continue;
+            if (mod == nullptr) continue;
             // finding out the old "firstdaqchannel" value
             int mindaq = 1e9;
             for (int i = 0; i < mod->GetNumberOfChannels(); i++) {
@@ -97,7 +97,7 @@ void TRestDetectorDaqChannelSwitchingProcess::EndProcess() {}
 // <parameter name="ignoreUndefinedModules" value="true" />
 void TRestDetectorDaqChannelSwitchingProcess::InitFromConfigFile() {
     TiXmlElement* ele = fElement->FirstChildElement("module");
-    while (ele != NULL) {
+    while (ele != nullptr) {
         int id = StringToInteger(GetParameter("id", ele));
         int channel = StringToInteger(GetParameter("firstdaqchannel", ele));
         if (id == -1 || channel == -1) continue;
