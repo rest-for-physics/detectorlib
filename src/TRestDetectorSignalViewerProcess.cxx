@@ -83,7 +83,9 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
         if (GetVerboseLevel() >= REST_Debug) {
             GetAnalysisTree()->PrintObservables();
         }
-        for (unsigned int i = 0; i < fDrawingObjects.size(); i++) delete fDrawingObjects[i];
+        for (auto object : fDrawingObjects) {
+            delete object;
+        }
         fDrawingObjects.clear();
 
         TPad* pad2 = DrawSignal(sgnCounter);
@@ -98,7 +100,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
                 "switch signals"
              << endl;
 
-        while (1) {
+        while (true) {
             int a = GetChar("");
             if (a == 10)  // enter
             {

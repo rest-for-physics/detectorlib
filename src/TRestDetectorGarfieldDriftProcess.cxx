@@ -60,8 +60,8 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout) delete fReadout;
-    if (fGeometry) delete fGeometry;
+    delete fReadout;
+    delete fGeometry;
     fGeometry = nullptr;
 
     delete fOutputHitsEvent;

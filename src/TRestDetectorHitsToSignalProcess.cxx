@@ -130,8 +130,7 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFile
 /// \brief Default destructor
 ///
 TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
-    if (fReadout) delete fReadout;
-
+    delete fReadout;
     delete fSignalEvent;
 }
 
