@@ -20,17 +20,15 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorAvalancheProcess.h"
+
 using namespace std;
 
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorAvalancheProcess)
-    //______________________________________________________________________________
-    TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorAvalancheProcess);
 
-//______________________________________________________________________________
+TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() { Initialize(); }
+
 TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* cfgFileName) {
     Initialize();
 
@@ -42,7 +40,6 @@ TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* cfgFileName) 
     // TRestDetectorAvalancheProcess default constructor
 }
 
-//______________________________________________________________________________
 TRestDetectorAvalancheProcess::~TRestDetectorAvalancheProcess() {
     if (fGas != nullptr) delete fGas;
 
@@ -58,7 +55,6 @@ void TRestDetectorAvalancheProcess::LoadDefaultConfig() {
     fDetectorGain = 8000.0;
 }
 
-//______________________________________________________________________________
 void TRestDetectorAvalancheProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -81,7 +77,6 @@ void TRestDetectorAvalancheProcess::LoadConfig(string cfgFilename) {
     fGas->PrintMetadata();
 }
 
-//______________________________________________________________________________
 void TRestDetectorAvalancheProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -93,7 +88,6 @@ void TRestDetectorAvalancheProcess::InitProcess() {
     if (fGas == nullptr) cout << "REST ERRORRRR : Gas has not been initialized" << endl;
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -129,7 +123,6 @@ TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* evInput) {
     return fHitsOutputEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorAvalancheProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -139,7 +132,6 @@ void TRestDetectorAvalancheProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorAvalancheProcess::InitFromConfigFile() {
     fEnergyRef = GetDblParameterWithUnits("energyReference");
     fResolutionAtEref = StringToDouble(GetParameter("resolutionReference"));

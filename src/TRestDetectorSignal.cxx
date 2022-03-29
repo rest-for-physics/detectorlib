@@ -24,15 +24,16 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
+
 using namespace std;
 
 #include <TF1.h>
 #include <TMath.h>
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorSignal)
-    //______________________________________________________________________________
-    TRestDetectorSignal::TRestDetectorSignal() {
+ClassImp(TRestDetectorSignal);
+
+TRestDetectorSignal::TRestDetectorSignal() {
     // TRestDetectorSignal default constructor
     fGraph = nullptr;
     fSignalID = -1;
@@ -42,7 +43,6 @@ ClassImp(TRestDetectorSignal)
     fPointsOverThreshold.clear();
 }
 
-//______________________________________________________________________________
 TRestDetectorSignal::~TRestDetectorSignal() {
     // TRestDetectorSignal destructor
 }

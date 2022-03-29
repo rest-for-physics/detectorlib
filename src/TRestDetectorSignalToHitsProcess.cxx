@@ -105,6 +105,7 @@
 #include "TRestDetectorSignalToHitsProcess.h"
 
 #include <TRestDetectorSetup.h>
+
 using namespace std;
 
 ClassImp(TRestDetectorSignalToHitsProcess);
@@ -356,4 +357,3 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
     return fHitsEvent;
 }
-

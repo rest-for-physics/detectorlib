@@ -1,4 +1,4 @@
-//______________________________________________________________________________
+
 ///______________________________________________________________________________
 ///______________________________________________________________________________
 ///
@@ -19,19 +19,19 @@
 ///		  Javier Gracia
 ///_______________________________________________________________________________
 
+#include "TRestDetectorSignalEvent.h"
+
 #include <TMath.h>
 
-#include "TRestDetectorSignalEvent.h"
 using namespace std;
 
-ClassImp(TRestDetectorSignalEvent)
-    //______________________________________________________________________________
-    TRestDetectorSignalEvent::TRestDetectorSignalEvent() {
+ClassImp(TRestDetectorSignalEvent);
+
+TRestDetectorSignalEvent::TRestDetectorSignalEvent() {
     // TRestDetectorSignalEvent default constructor
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorSignalEvent::~TRestDetectorSignalEvent() {
     // TRestDetectorSignalEvent destructor
 }

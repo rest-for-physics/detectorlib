@@ -15,19 +15,19 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSetup.h"
+
 #include "TRestManager.h"
 #include "TRestRun.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorSetup)
-    //______________________________________________________________________________
-    TRestDetectorSetup::TRestDetectorSetup()
-    : TRestMetadata() {
+ClassImp(TRestDetectorSetup);
+
+TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() {
     // TRestDetectorSetup default constructor
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMetadata(cfgFileName) {
     Initialize();
 
@@ -36,7 +36,6 @@ TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMe
     PrintMetadata();
 }
 
-//______________________________________________________________________________
 TRestDetectorSetup::~TRestDetectorSetup() {
     // TRestDetectorSetup destructor
 }
@@ -60,7 +59,6 @@ void TRestDetectorSetup::Initialize() {
     fSamplingInMicroSec = 0;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSetup::InitFromConfigFile() {
     this->Initialize();
 
@@ -112,7 +110,8 @@ void TRestDetectorSetup::InitFromFileName(TString fName) {
     fSamplingTime = name.substr(pos, len);
 
     TString samplingReduced = fSamplingTime(2, fSamplingTime.Length());
-    fSamplingInMicroSec = (Double_t)strtol(samplingReduced.Data(), nullptr, 16) / 100.;  // This is only for AGET
+    fSamplingInMicroSec =
+        (Double_t)strtol(samplingReduced.Data(), nullptr, 16) / 100.;  // This is only for AGET
 
     pos = name.find("-") + 1;
     len = name.find(".aqs") - pos;

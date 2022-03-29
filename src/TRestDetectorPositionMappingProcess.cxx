@@ -19,18 +19,15 @@
 #include <TLegend.h>
 #include <TPaveText.h>
 #include <TRandom.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorPositionMappingProcess)
-    //______________________________________________________________________________
-    TRestDetectorPositionMappingProcess::TRestDetectorPositionMappingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorPositionMappingProcess);
 
-//______________________________________________________________________________
+TRestDetectorPositionMappingProcess::TRestDetectorPositionMappingProcess() { Initialize(); }
+
 TRestDetectorPositionMappingProcess::~TRestDetectorPositionMappingProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorPositionMappingProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -40,7 +37,6 @@ void TRestDetectorPositionMappingProcess::Initialize() {
     fReadout = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorPositionMappingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
@@ -67,7 +63,6 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -134,7 +129,6 @@ double TRestDetectorPositionMappingProcess::GetCorrection3(double x, double y, d
     return result;
 }
 
-//______________________________________________________________________________
 void TRestDetectorPositionMappingProcess::EndProcess() {
     if (fCreateGainMap) {
         // Calculate the mean of each bin's spectrum
@@ -181,7 +175,6 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
     }
 }
 
-//______________________________________________________________________________
 // setting amplification:
 // <parameter name="modulesAmp" value = "2-1:5-1.2:6-0.8:8-0.9" />
 // setting readout modules to draw:

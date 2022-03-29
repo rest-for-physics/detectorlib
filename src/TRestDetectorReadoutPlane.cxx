@@ -43,6 +43,7 @@
 ///
 
 #include "TRestDetectorReadoutPlane.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutPlane);

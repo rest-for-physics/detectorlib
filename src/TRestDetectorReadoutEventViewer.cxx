@@ -13,6 +13,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorReadoutEventViewer.h"
+
 using namespace std;
 
 Int_t planeId = 0;
@@ -23,10 +24,8 @@ ClassImp(TRestDetectorReadoutEventViewer)
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorReadoutEventViewer::~TRestDetectorReadoutEventViewer() {}
 
-//______________________________________________________________________________
 void TRestDetectorReadoutEventViewer::Initialize() {
     TRestEventViewer::Initialize();
 
@@ -41,7 +40,6 @@ void TRestDetectorReadoutEventViewer::Initialize() {
     SetEvent(fSignalEvent);
 }
 
-//______________________________________________________________________________
 void TRestDetectorReadoutEventViewer::SetReadout(TRestDetectorReadout* readout) {
     // Finalize the instantiation based on argument TRestDetectorReadout
     fReadout = readout;

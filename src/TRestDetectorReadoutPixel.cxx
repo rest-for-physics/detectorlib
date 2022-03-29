@@ -42,6 +42,7 @@
 ///
 
 #include "TRestDetectorReadoutPixel.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutPixel);

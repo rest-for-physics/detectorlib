@@ -14,33 +14,29 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorSignalViewerProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
 
-#include "TRestDetectorSignalViewerProcess.h"
 using namespace std;
 
 int rawCounter3 = 0;
 
-ClassImp(TRestDetectorSignalViewerProcess)
-    //______________________________________________________________________________
-    TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSignalViewerProcess);
 
-//______________________________________________________________________________
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
+
 TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* cfgFileName) {
     Initialize();
 
     if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 TRestDetectorSignalViewerProcess::~TRestDetectorSignalViewerProcess() {}
 
 void TRestDetectorSignalViewerProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -56,10 +52,8 @@ void TRestDetectorSignalViewerProcess::LoadConfig(std::string cfgFilename, std::
     if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitProcess() { this->CreateCanvas(); }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) {
     TString obsName;
 
@@ -146,7 +140,6 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -156,7 +149,6 @@ void TRestDetectorSignalViewerProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitFromConfigFile() {
     fDrawRefresh = StringToDouble(GetParameter("refreshEvery", "0"));
 

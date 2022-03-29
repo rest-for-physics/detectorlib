@@ -26,16 +26,12 @@
 
 using namespace std;
 
-ClassImp(TRestDetectorSingleChannelAnalysisProcess)
-    //______________________________________________________________________________
-    TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSingleChannelAnalysisProcess);
 
-//______________________________________________________________________________
+TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() { Initialize(); }
+
 TRestDetectorSingleChannelAnalysisProcess::~TRestDetectorSingleChannelAnalysisProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -45,7 +41,6 @@ void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
     fReadout = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
@@ -92,7 +87,6 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
     fSignalEvent = (TRestDetectorSignalEvent*)evInput;
 
@@ -165,7 +159,6 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::EndProcess() {
     if (fCreateGainMap) {
         FitChannelGain();
@@ -305,7 +298,6 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
     delete c;
 }
 
-//______________________________________________________________________________
 // setting amplification:
 // <parameter name="modulesAmp" value = "2-1:5-1.2:6-0.8:8-0.9" />
 // setting readout modules to draw:

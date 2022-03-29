@@ -279,4 +279,3 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) 
 
     return fSignalEvent;
 }
-

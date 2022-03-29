@@ -86,6 +86,7 @@
 ///
 
 #include "TRestDetectorTriggerAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorTriggerAnalysisProcess);
@@ -215,4 +216,3 @@ TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* evInpu
 
     return fSignalEvent;
 }
-

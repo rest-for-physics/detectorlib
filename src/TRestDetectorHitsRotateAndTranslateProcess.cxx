@@ -20,17 +20,15 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsRotateAndTranslateProcess.h"
+
 using namespace std;
 
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorHitsRotateAndTranslateProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsRotateAndTranslateProcess);
 
-//______________________________________________________________________________
+TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess() { Initialize(); }
+
 TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(char* cfgFileName) {
     Initialize();
 
@@ -41,7 +39,6 @@ TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateP
     // TRestDetectorHitsRotateAndTranslateProcess default constructor
 }
 
-//______________________________________________________________________________
 TRestDetectorHitsRotateAndTranslateProcess::~TRestDetectorHitsRotateAndTranslateProcess() {
     // TRestDetectorHitsRotateAndTranslateProcess destructor
 }
@@ -57,7 +54,6 @@ void TRestDetectorHitsRotateAndTranslateProcess::LoadDefaultConfig() {
     fGamma = 0.;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -79,7 +75,6 @@ void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string cfgFilename) 
     PrintMetadata();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsRotateAndTranslateProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -89,7 +84,6 @@ void TRestDetectorHitsRotateAndTranslateProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -108,7 +102,6 @@ TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent*
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsRotateAndTranslateProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -118,7 +111,6 @@ void TRestDetectorHitsRotateAndTranslateProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsRotateAndTranslateProcess::InitFromConfigFile() {
     fDeltaX = GetDblParameterWithUnits("deltaX");
     fDeltaY = GetDblParameterWithUnits("deltaY");

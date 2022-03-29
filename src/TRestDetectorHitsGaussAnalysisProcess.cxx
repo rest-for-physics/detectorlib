@@ -53,6 +53,7 @@
 /// <hr>
 ///
 #include "TRestDetectorHitsGaussAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorHitsGaussAnalysisProcess);

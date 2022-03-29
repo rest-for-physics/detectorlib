@@ -14,10 +14,10 @@
 ///             march 2017:   Damien Neyret
 ///_______________________________________________________________________________
 
+#include "TRestDetectorGarfieldDriftProcess.h"
+
 #include <TGeoBBox.h>
 #include <TRandom3.h>
-
-#include "TRestDetectorGarfieldDriftProcess.h"
 
 #if defined USE_Garfield
 #include "ComponentConstant.hh"
@@ -31,12 +31,10 @@ using namespace std;
 
 const double cmTomm = 10.;
 
-ClassImp(TRestDetectorGarfieldDriftProcess)
-//______________________________________________________________________________
-#if defined USE_Garfield
-    TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess()
-    : fRandom(0), fGfSensor(0) {
+ClassImp(TRestDetectorGarfieldDriftProcess);
 
+#if defined USE_Garfield
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom(0), fGfSensor(0) {
     Initialize();
 }
 
@@ -59,8 +57,6 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFi
 
     // TRestDetectorGarfieldDriftProcess default constructor
 }
-
-//______________________________________________________________________________
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
@@ -89,7 +85,6 @@ void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string na
     }
 }
 
-//______________________________________________________________________________
 #endif
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
@@ -109,7 +104,6 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
 #endif
 }
 
-//______________________________________________________________________________
 #if defined USE_Garfield
 void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Function to be executed once at the beginning of process
@@ -340,7 +334,6 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
     return -1;
 }
 
-//______________________________________________________________________________
 #endif
 
 TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
@@ -442,8 +435,6 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
 #if defined USE_Garfield
 
-//______________________________________________________________________________
-
 void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -452,8 +443,6 @@ void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
-//______________________________________________________________________________
 
 void TRestDetectorGarfieldDriftProcess::InitFromConfigFile() {
     fGasPressure = StringToDouble(GetParameter("gasPressure", "-1"));

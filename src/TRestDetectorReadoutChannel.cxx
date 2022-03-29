@@ -42,6 +42,7 @@
 ///
 
 #include "TRestDetectorReadoutChannel.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutChannel);

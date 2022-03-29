@@ -14,27 +14,23 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorFiducializationProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorFiducializationProcess)
-    //______________________________________________________________________________
-    TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorFiducializationProcess);
 
-//______________________________________________________________________________
+TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() { Initialize(); }
+
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* cfgFileName) {
     Initialize();
 
     if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 TRestDetectorFiducializationProcess::~TRestDetectorFiducializationProcess() { delete fOutputHitsEvent; }
 
 void TRestDetectorFiducializationProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -49,7 +45,6 @@ void TRestDetectorFiducializationProcess::LoadConfig(string cfgFilename, string 
     if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
@@ -58,7 +53,6 @@ void TRestDetectorFiducializationProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -96,7 +90,6 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -106,5 +99,4 @@ void TRestDetectorFiducializationProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::InitFromConfigFile() {}

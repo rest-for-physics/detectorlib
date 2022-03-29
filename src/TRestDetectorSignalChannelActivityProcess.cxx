@@ -77,6 +77,7 @@
 /// <hr>
 ///
 #include "TRestDetectorSignalChannelActivityProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorSignalChannelActivityProcess);

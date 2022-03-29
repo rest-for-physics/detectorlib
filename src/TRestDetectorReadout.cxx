@@ -265,7 +265,9 @@
 ///
 
 #include "TRestDetectorReadout.h"
+
 using namespace std;
+
 bool RESTREADOUT_DECODINGFILE_ERROR = false;
 
 ClassImp(TRestDetectorReadout);

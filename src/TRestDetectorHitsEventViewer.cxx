@@ -13,21 +13,18 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsEventViewer.h"
+
 using namespace std;
 using namespace TMath;
 
-ClassImp(TRestDetectorHitsEventViewer)
-    //______________________________________________________________________________
-    TRestDetectorHitsEventViewer::TRestDetectorHitsEventViewer() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsEventViewer);
 
-//______________________________________________________________________________
+TRestDetectorHitsEventViewer::TRestDetectorHitsEventViewer() { Initialize(); }
+
 TRestDetectorHitsEventViewer::~TRestDetectorHitsEventViewer() {
     // TRestDetectorHitsEventViewer destructor
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsEventViewer::Initialize() {
     fHitsEvent = new TRestDetectorHitsEvent();
     fEvent = fHitsEvent;

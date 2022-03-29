@@ -14,22 +14,19 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorDaqChannelSwitchingProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
 
-#include "TRestDetectorDaqChannelSwitchingProcess.h"
 using namespace std;
 
-ClassImp(TRestDetectorDaqChannelSwitchingProcess)
-    //______________________________________________________________________________
-    TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorDaqChannelSwitchingProcess);
 
-//______________________________________________________________________________
+TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() { Initialize(); }
+
 TRestDetectorDaqChannelSwitchingProcess::~TRestDetectorDaqChannelSwitchingProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
     SetSectionName(this->ClassName());
@@ -40,7 +37,6 @@ void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
     fEvent = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout != nullptr) {
@@ -81,16 +77,13 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* eventInput) {
     fEvent = eventInput;
     return eventInput;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::EndProcess() {}
 
-//______________________________________________________________________________
 // redefining module's first daq channel:
 // <module id="1" firstdaqchannel="136*3" />
 // ignore undefined modules modules by setting their channel's daq id to -1e9

@@ -1,11 +1,11 @@
+
 #include "TRestDetectorDriftVolume.h"
+
 using namespace REST_Units;
 
-ClassImp(TRestDetectorDriftVolume)
+ClassImp(TRestDetectorDriftVolume);
 
-    TRestDetectorDriftVolume::TRestDetectorDriftVolume() {
-    Initialize();
-}
+TRestDetectorDriftVolume::TRestDetectorDriftVolume() { Initialize(); }
 TRestDetectorDriftVolume::TRestDetectorDriftVolume(const char* cfgFileName, string name)
     : TRestMetadata(cfgFileName) {
     LoadConfigFromFile(cfgFileName, name);
