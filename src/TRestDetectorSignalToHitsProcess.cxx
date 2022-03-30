@@ -38,7 +38,7 @@
 /// Therefore, relevant parameters (see also the process header) are:
 /// * **driftVelocity**: The value of the electrons drift velocity.
 /// Typically in mm/us.
-/// * **pressure**: Gas pressure in bar. Relevant only if TRestDetectorGas
+/// * **gasPressure**: Gas pressure in bar. Relevant only if TRestDetectorGas
 /// is used.
 /// * **electricField**: Electric field. Typically in V/cm. Relevant only
 /// if TRestDetectorGas is used.

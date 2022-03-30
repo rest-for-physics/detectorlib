@@ -832,6 +832,13 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, d
     fYHisto = new TH1F("Y", "", nBinsY, minY, maxY);
     fZHisto = new TH1F("Z", "", nBinsZ, minZ, maxZ);
 
+    fXYHisto->SetStats(false);
+    fXZHisto->SetStats(false);
+    fYZHisto->SetStats(false);
+    fXHisto->SetStats(false);
+    fYHisto->SetStats(false);
+    fZHisto->SetStats(false);
+
     Int_t nYZ = 0, nXZ = 0, nXY = 0;
     Int_t nX = 0, nY = 0, nZ = 0;
 
@@ -905,6 +912,11 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, d
         fXYHisto->Draw(histOption);
         fXYHisto->GetXaxis()->SetTitle("X-axis (mm)");
         fXYHisto->GetYaxis()->SetTitle("Y-axis (mm)");
+        fXYHisto->GetYaxis()->SetTitleSize(1.4 * fXYHisto->GetYaxis()->GetTitleSize());
+        fXYHisto->GetXaxis()->SetTitleSize(1.4 * fXYHisto->GetXaxis()->GetTitleSize());
+        fXYHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
+        fXYHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
+        fXYHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     column++;
@@ -914,20 +926,35 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, TString histOption, d
         fXHisto->Draw(histOption);
         fXHisto->GetXaxis()->SetTitle("X-axis (mm)");
         fXHisto->GetYaxis()->SetTitle("Number of events");
+        fXHisto->GetYaxis()->SetTitleSize(1.4 * fXHisto->GetYaxis()->GetTitleSize());
+        fXHisto->GetXaxis()->SetTitleSize(1.4 * fXHisto->GetXaxis()->GetTitleSize());
+        fXHisto->GetYaxis()->SetLabelSize(1.25 * fXHisto->GetYaxis()->GetLabelSize());
+        fXHisto->GetXaxis()->SetLabelSize(1.25 * fXHisto->GetXaxis()->GetLabelSize());
+        fXHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     if (nY > 0) {
         fPad->cd(2 + 3 * column);
         fYHisto->Draw(histOption);
-        fYHisto->GetYaxis()->SetTitle("Y-axis (mm)");
+        fYHisto->GetXaxis()->SetTitle("Y-axis (mm)");
         fYHisto->GetYaxis()->SetTitle("Number of events");
+        fYHisto->GetYaxis()->SetTitleSize(1.4 * fYHisto->GetYaxis()->GetTitleSize());
+        fYHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
+        fYHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
+        fYHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
+        fYHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     if (nZ > 0) {
         fPad->cd(3 + 3 * column);
         fZHisto->Draw(histOption);
-        fZHisto->GetZaxis()->SetTitle("Z-axis (mm)");
+        fZHisto->GetXaxis()->SetTitle("Z-axis (mm)");
         fZHisto->GetYaxis()->SetTitle("Number of events");
+        fZHisto->GetYaxis()->SetTitleSize(1.4 * fYHisto->GetYaxis()->GetTitleSize());
+        fZHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
+        fZHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
+        fZHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
+        fZHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     column++;
