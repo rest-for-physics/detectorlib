@@ -39,13 +39,13 @@ Int_t REST_Detector_ViewReadoutEvent(TString fName, TString readoutFilename = "d
         // - Search KEY of TRestDetectorReadout class.
         TIter nextkey(fFile->GetListOfKeys());
         TKey* key;
-        while ((key = (TKey*)nextkey()) != NULL) {
+        while ((key = (TKey*)nextkey()) != nullptr) {
             if (key->GetClassName() == (TString) "TRestDetectorReadout") {
-                if (readout == NULL) readout = (TRestDetectorReadout*)fFile->Get(key->GetName());
+                if (readout == nullptr) readout = (TRestDetectorReadout*)fFile->Get(key->GetName());
             }
         }
         delete key;
-        if (readout == NULL) {
+        if (readout == nullptr) {
             printf(
                 "\n** REST_ViewReadoutEvent: <readoutFilename> argument (=\"%s\") contains no "
                 "TRestDetectorReadout\n",
