@@ -15,15 +15,15 @@
 #ifndef RestCore_TRestDetectorSetup
 #define RestCore_TRestDetectorSetup
 
+#include <TRestMetadata.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <vector>
-
-#include <TRestMetadata.h>
 
 class TRestDetectorSetup : public TRestMetadata {
    private:

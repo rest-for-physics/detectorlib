@@ -2,6 +2,8 @@
 #ifndef TRestSoft_TRestDetectorHitsEvent
 #define TRestSoft_TRestDetectorHitsEvent
 
+#include <TGraph.h>
+
 #include <iostream>
 
 #include "TArrayI.h"
@@ -10,17 +12,11 @@
 #include "TH2F.h"
 #include "TMath.h"
 #include "TObject.h"
-
-#include <TGraph.h>
-#include "TH2F.h"
-
-#include "TVector3.h"
-
 #include "TRestEvent.h"
 #include "TRestHits.h"
 #include "TVector3.h"
 
-//! An event data type that register a vector of TRestHits,
+//! An event data type that register a std::vector of TRestHits,
 //! allowing us to save a 3-coordinate position and energy.
 class TRestDetectorHitsEvent : public TRestEvent {
    private:

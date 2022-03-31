@@ -13,7 +13,6 @@
 #define RestCore_TRestDetectorSignalViewerProcess
 
 #include <TH1D.h>
-
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -25,8 +24,8 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
    private:
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    vector<TObject*> fDrawingObjects;  //!
-    Double_t fDrawRefresh;             //!
+    std::vector<TObject*> fDrawingObjects;  //!
+    Double_t fDrawRefresh;                  //!
 
     TVector2 fBaseLineRange;  //!
 
@@ -55,7 +54,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     void PrintMetadata() {
         BeginPrintProcess();
 
-        cout << "Refresh value : " << fDrawRefresh << endl;
+        std::cout << "Refresh value : " << fDrawRefresh << endl;
 
         EndPrintProcess();
     }

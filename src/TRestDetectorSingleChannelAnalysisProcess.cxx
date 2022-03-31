@@ -268,7 +268,6 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     delete r;
 }
 
-
 TH1D* TRestDetectorSingleChannelAnalysisProcess::GetChannelSpectrum(int id) {
     if (fChannelThrIntegral.count(id) != 0) return fChannelThrIntegral[id];
     return NULL;

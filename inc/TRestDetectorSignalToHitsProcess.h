@@ -24,9 +24,8 @@
 #define RestCore_TRestDetectorSignalToHitsProcess
 
 #include <TRestDetectorGas.h>
-#include <TRestDetectorReadout.h>
-
 #include <TRestDetectorHitsEvent.h>
+#include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 
 #include "TRestEventProcess.h"
@@ -35,23 +34,22 @@
 class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    private:
     /// A pointer to the specific TRestDetectorHitsEvent output
-    TRestDetectorHitsEvent* fHitsEvent;      //!
+    TRestDetectorHitsEvent* fHitsEvent;  //!
 
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     /// A pointer to the detector readout definition accesible to TRestRun
     TRestDetectorReadout* fReadout;  //!
-    
+
     /// A pointer to the detector gas definition accessible to TRestRun
-    TRestDetectorGas* fGas;          //!
+    TRestDetectorGas* fGas;  //!
 
     void Initialize();
 
     void LoadDefaultConfig();
 
    protected:
-
     /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
     Double_t fElectricField = 100;
 

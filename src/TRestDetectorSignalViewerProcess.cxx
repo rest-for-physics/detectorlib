@@ -14,10 +14,10 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorSignalViewerProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
-
-#include "TRestDetectorSignalViewerProcess.h"
 using namespace std;
 
 int rawCounter3 = 0;

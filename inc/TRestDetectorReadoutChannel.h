@@ -26,9 +26,8 @@
 #include <iostream>
 
 #include "TObject.h"
-#include "TRestMetadata.h"
-
 #include "TRestDetectorReadoutPixel.h"
+#include "TRestMetadata.h"
 
 enum TRestDetectorReadoutChannelType {
     Channel_NoType = 0,
@@ -46,7 +45,7 @@ class TRestDetectorReadoutChannel : public TObject {
    private:
     Int_t fDaqID;  ///< Defines the corresponding daq channel id. See decoding
                    ///< details at TRestDetectorReadout.
-    std::vector<TRestDetectorReadoutPixel> fReadoutPixel;  ///< A vector storing the different
+    std::vector<TRestDetectorReadoutPixel> fReadoutPixel;  ///< A std::vector storing the different
                                                            ///< TRestDetectorReadoutPixel definitions.
 
     Short_t fChannelId = -1;  ///< It stores the corresponding physical readout channel

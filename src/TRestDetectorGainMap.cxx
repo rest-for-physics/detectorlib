@@ -3,10 +3,12 @@
 #include "TGraph2D.h"
 #include "TLegend.h"
 #include "TRandom.h"
+#include "TRestDetectorReadout.h"
 #include "TStyle.h"
 #include "TView.h"
 
-#include "TRestDetectorReadout.h"
+using namespace std;
+
 ClassImp(TRestDetectorGainMap);
 
 void TRestDetectorGainMap::InitFromConfigFile() {

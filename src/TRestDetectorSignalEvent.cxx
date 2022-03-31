@@ -19,9 +19,9 @@
 ///		  Javier Gracia
 ///_______________________________________________________________________________
 
-#include <TMath.h>
-
 #include "TRestDetectorSignalEvent.h"
+
+#include <TMath.h>
 using namespace std;
 
 ClassImp(TRestDetectorSignalEvent)
