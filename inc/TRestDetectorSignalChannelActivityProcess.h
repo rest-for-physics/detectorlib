@@ -24,7 +24,6 @@
 #define RestCore_TRestDetectorSignalChannelActivityProcess
 
 #include <TH1D.h>
-
 #include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
 

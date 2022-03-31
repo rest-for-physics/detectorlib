@@ -19,14 +19,14 @@
 #ifndef RestDAQ_TRestDetectorSignalEvent
 #define RestDAQ_TRestDetectorSignalEvent
 
-#include <iostream>
-
 #include <TArrayD.h>
 #include <TAxis.h>
 #include <TGraph.h>
 #include <TMultiGraph.h>
 #include <TObject.h>
 #include <TPad.h>
+
+#include <iostream>
 
 #include "TRestDetectorSignal.h"
 #include "TRestEvent.h"

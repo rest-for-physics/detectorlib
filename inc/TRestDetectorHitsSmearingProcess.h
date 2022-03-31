@@ -16,10 +16,9 @@
 #ifndef RestCore_TRestDetectorHitsSmearingProcess
 #define RestCore_TRestDetectorHitsSmearingProcess
 
+#include <TRandom3.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
-
-#include <TRandom3.h>
 
 #include "TRestEventProcess.h"
 

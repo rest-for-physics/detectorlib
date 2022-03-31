@@ -33,10 +33,10 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// A pointer to the specific TRestSignalEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    /// A vector to temporary store the name of threshold observables
+    /// A std::vector to temporary store the name of threshold observables
     std::vector<std::string> fIntegralObservables;  //!
 
-    /// A vector to temporary the extracted threshold value from the corresponding observable
+    /// A std::vector to temporary the extracted threshold value from the corresponding observable
     std::vector<double> fThreshold;  //!
 
     void Initialize();
@@ -72,7 +72,7 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    /// Returns a string with the process name
+    /// Returns a std::string with the process name
     TString GetProcessName() { return (TString) "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();

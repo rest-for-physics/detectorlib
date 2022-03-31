@@ -74,9 +74,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     Double_t fMaxElectronEnergy;  // Maximum electron energy, in eV, used in
                                   // Magboltz gas calculation.
 
-    std::vector<TString> fGasComponentName;       // A string vector storing the names
+    std::vector<TString> fGasComponentName;       // A std::string std::vector storing the names
                                                   // of each of the gas components
-    std::vector<Double_t> fGasComponentFraction;  // A double vector storing the fraction values of
+    std::vector<Double_t> fGasComponentFraction;  // A double std::vector storing the fraction values of
                                                   // each of the gas components
 
     Int_t fEnodes;   // Number of electric field nodes used in the gas calculation.
@@ -98,7 +98,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
                           //!             gas file is not found, it will allow to
                           //!             launch the gas generation.
 
-    TString fGasOutputPath;  //!          A string to store the output path where
+    TString fGasOutputPath;  //!          A std::string to store the output path where
                              //!          a new generated gas file will be written
 
     TString fGasServer;  //!              The remote server from where we retrieve
@@ -162,8 +162,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas component *n*.
     TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
-            cout << "REST WARNING. Gas name component n=" << n << " requested. But only " << GetNofGases()
-                 << " component(s) in the mixture." << endl;
+            std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only "
+                      << GetNofGases() << " component(s) in the mixture." << endl;
             return "";
         }
         return fGasComponentName[n];
@@ -223,8 +223,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the gas fraction in volume for component *n*.
     Double_t GetGasComponentFraction(Int_t n) {
         if (n >= GetNofGases()) {
-            cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
-                 << GetNofGases() << " component(s) in the mixture." << endl;
+            std::cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
+                      << GetNofGases() << " component(s) in the mixture." << endl;
             return 0.;
         }
 
@@ -250,7 +250,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PrintGasInfo();
-    void PrintGasFileContent() { cout << fGasFileContent << endl; };
+    void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
 
     /// Prints the metadata information from the gas
     void PrintMetadata() { PrintGasInfo(); }

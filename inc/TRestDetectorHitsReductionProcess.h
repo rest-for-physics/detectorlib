@@ -12,6 +12,7 @@
 #define RestCore_TRestDetectorHitsReductionProcess
 
 #include <TRestDetectorHitsEvent.h>
+
 #include "TRestEventProcess.h"
 
 class TRestDetectorHitsReductionProcess : public TRestEventProcess {

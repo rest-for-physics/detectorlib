@@ -8,6 +8,8 @@
 #include "TStyle.h"
 #include "TView.h"
 
+using namespace std;
+
 ClassImp(TRestDetectorGainMap);
 
 void TRestDetectorGainMap::InitFromConfigFile() {
