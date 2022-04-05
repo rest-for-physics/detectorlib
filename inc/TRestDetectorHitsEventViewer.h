@@ -15,9 +15,8 @@
 #ifndef RestCore_TRestDetectorHitsEventViewer
 #define RestCore_TRestDetectorHitsEventViewer
 
-#include "TRestEveEventViewer.h"
-
 #include "TRestDetectorHitsEvent.h"
+#include "TRestEveEventViewer.h"
 
 class TRestDetectorHitsEventViewer : public TRestEveEventViewer {
    private:

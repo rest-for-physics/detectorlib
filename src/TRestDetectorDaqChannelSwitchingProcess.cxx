@@ -14,10 +14,10 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorDaqChannelSwitchingProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
-
-#include "TRestDetectorDaqChannelSwitchingProcess.h"
 using namespace std;
 
 ClassImp(TRestDetectorDaqChannelSwitchingProcess)

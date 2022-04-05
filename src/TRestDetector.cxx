@@ -74,4 +74,6 @@ void TRestDetector::UpdateMetadataMembers() {
     }
 }
 
+using namespace std;
+
 ClassImp(TRestDetector);

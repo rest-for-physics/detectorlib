@@ -23,14 +23,14 @@
 #ifndef RestCore_TRestDetectorReadoutModule
 #define RestCore_TRestDetectorReadoutModule
 
-#include <iostream>
-
 #include <TMath.h>
-#include "TObject.h"
-
 #include <TRestDetectorReadoutChannel.h>
 #include <TRestDetectorReadoutMapping.h>
 #include <TVector2.h>
+
+#include <iostream>
+
+#include "TObject.h"
 
 /// A class to store the readout module definition used in TRestDetectorReadoutPlane. It
 /// allows to integrate any number of independent readout channels.
@@ -59,7 +59,7 @@ class TRestDetectorReadoutModule : public TObject {
     Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
-        fReadoutChannel;  ///< A vector of the instances of TRestDetectorReadoutChannel
+        fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
                           ///< containned in the readout module.
 
     TRestDetectorReadoutMapping fMapping;  ///< The readout module uniform grid mapping.

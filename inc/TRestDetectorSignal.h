@@ -22,12 +22,12 @@
 #ifndef RestCore_TRestDetectorSignal
 #define RestCore_TRestDetectorSignal
 
-#include <iostream>
-
 #include <TGraph.h>
 #include <TObject.h>
 #include <TString.h>
 #include <TVector2.h>
+
+#include <iostream>
 
 class TRestDetectorSignal : public TObject {
    private:
@@ -82,7 +82,7 @@ class TRestDetectorSignal : public TObject {
     Int_t GetNumberOfPoints() {
         if (fSignalTime.size() != fSignalCharge.size()) {
             std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-            std::cout << "WARNING, the two vector sizes did not match" << std::endl;
+            std::cout << "WARNING, the two std::vector sizes did not match" << std::endl;
             std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
         }
         return fSignalTime.size();

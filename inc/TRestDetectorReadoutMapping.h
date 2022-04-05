@@ -23,10 +23,10 @@
 #ifndef RestCore_TRestDetectorReadoutMapping
 #define RestCore_TRestDetectorReadoutMapping
 
-#include <iostream>
-
 #include <TMatrixD.h>
 #include <TObject.h>
+
+#include <iostream>
 
 /// This class defines a uniform 2-dimensional grid relating its nodes to the
 /// pixels of a readout.
