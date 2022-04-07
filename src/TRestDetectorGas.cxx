@@ -905,7 +905,8 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
           << ", nSteps=" << nSteps << " )" << endl;
 
     vector<Double_t> eField(nSteps), driftVel(nSteps);
-
+    this->SetPressure(fPressureInAtm);
+    
     for (int i = 0; i < nSteps; i++) {
         eField[i] = (eMin + (double)i * (eMax - eMin) / nSteps);
 
@@ -938,7 +939,8 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
           << ", nSteps=" << nSteps << " )" << endl;
 
     vector<Double_t> eField(nSteps), longDiff(nSteps);
-
+    this->SetPressure(fPressureInAtm);
+    
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
@@ -971,7 +973,8 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
           << ", nSteps=" << nSteps << " )" << endl;
 
     vector<Double_t> eField(nSteps), transDiff(nSteps);
-
+    this->SetPressure(fPressureInAtm);
+    
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
@@ -1004,7 +1007,8 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
           << ", nSteps=" << nSteps << " )" << endl;
 
     vector<Double_t> eField(nSteps), townsendCoeff(nSteps);
-
+    this->SetPressure(fPressureInAtm);
+    
     for (int i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
@@ -1172,6 +1176,7 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
 /// \brief Prints the metadata information from the gas
 ///
 void TRestDetectorGas::PrintGasInfo() {
+    this->SetPressure(fPressureInAtm);
     debug << "Entering ... TRestDetectorGas::PrintGasInfo( )" << endl;
 
     TRestMetadata::PrintMetadata();
