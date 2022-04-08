@@ -156,8 +156,8 @@ class TRestDetectorHitsEvent : public TRestEvent {
     Double_t GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1, Double_t sizeX,
                                                       Double_t sizeY, Double_t theta);
 
-    TPad* DrawEvent(TString option = "") override;
-    void DrawHistograms(Int_t& column, TString histOption = "", double pitch = 0);
+    TPad* DrawEvent(const TString& option = "");
+    void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
     void DrawGraphs(Int_t& column);
 
     // Constructor
