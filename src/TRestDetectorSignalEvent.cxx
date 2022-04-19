@@ -47,7 +47,7 @@ void TRestDetectorSignalEvent::Initialize() {
 }
 
 void TRestDetectorSignalEvent::AddSignal(TRestDetectorSignal signal) {
-    if (signalIDExists(s.GetSignalID())) {
+    if (signalIDExists(signal.GetSignalID())) {
         cout << "Warning. Signal ID : " << signal.GetSignalID()
              << " already exists. Signal will not be added to signal event" << endl;
         return;
@@ -94,8 +94,8 @@ Double_t TRestDetectorSignalEvent::GetIntegralWithThreshold(Int_t from, Int_t to
 Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endBin) {
     Double_t baseLineMean = 0;
 
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++) {
-        Double_t baseline = GetSignal(sgnl)->GetBaseLine(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
+        Double_t baseline = GetSignal(signal)->GetBaseLine(startBin, endBin);
         baseLineMean += baseline;
     }
 
@@ -105,8 +105,8 @@ Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endB
 Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin) {
     Double_t baseLineSigmaMean = 0;
 
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++) {
-        Double_t baselineSigma = GetSignal(sgnl)->GetBaseLineSigma(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
+        Double_t baselineSigma = GetSignal(signal)->GetBaseLineSigma(startBin, endBin);
         baseLineSigmaMean += baselineSigma;
     }
 
@@ -114,21 +114,21 @@ Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t
 }
 
 void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) {
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++)
-        GetSignal(sgnl)->SubstractBaseline(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++)
+        GetSignal(signal)->SubstractBaseline(startBin, endBin);
 }
 
 void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge) {
-    Int_t sgnlIndex = GetSignalIndex(signalID);
-    if (sgnlIndex == -1) {
-        sgnlIndex = GetNumberOfSignals();
+    Int_t signalIndex = GetSignalIndex(signalID);
+    if (signalIndex == -1) {
+        signalIndex = GetNumberOfSignals();
 
-        TRestDetectorSignal sgnl;
-        sgnl.SetSignalID(signalID);
-        AddSignal(sgnl);
+        TRestDetectorSignal signal;
+        signal.SetSignalID(signalID);
+        AddSignal(signal);
     }
 
-    fSignal[sgnlIndex].AddDeposit(time, charge);
+    fSignal[signalIndex].AddDeposit(time, charge);
 }
 
 void TRestDetectorSignalEvent::PrintEvent() {
