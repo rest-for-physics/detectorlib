@@ -604,7 +604,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVecto
 ///
 /// \return A pointer to the TPad where the event was drawn is returned.
 ///
-TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
+TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
     vector<TString> optList = Vector_cast<string, TString>(TRestTools::GetOptions((string)option));
 
     SetBoundaries();

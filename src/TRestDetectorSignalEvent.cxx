@@ -46,14 +46,14 @@ void TRestDetectorSignalEvent::Initialize() {
     fMaxTime = -1E10;
 }
 
-void TRestDetectorSignalEvent::AddSignal(TRestDetectorSignal s) {
+void TRestDetectorSignalEvent::AddSignal(TRestDetectorSignal signal) {
     if (signalIDExists(s.GetSignalID())) {
-        cout << "Warning. Signal ID : " << s.GetSignalID()
+        cout << "Warning. Signal ID : " << signal.GetSignalID()
              << " already exists. Signal will not be added to signal event" << endl;
         return;
     }
 
-    fSignal.push_back(s);
+    fSignal.push_back(signal);
 }
 
 Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
@@ -118,17 +118,17 @@ void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) 
         GetSignal(sgnl)->SubstractBaseline(startBin, endBin);
 }
 
-void TRestDetectorSignalEvent::AddChargeToSignal(Int_t sgnlID, Double_t tm, Double_t chrg) {
-    Int_t sgnlIndex = GetSignalIndex(sgnlID);
+void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge) {
+    Int_t sgnlIndex = GetSignalIndex(signalID);
     if (sgnlIndex == -1) {
         sgnlIndex = GetNumberOfSignals();
 
         TRestDetectorSignal sgnl;
-        sgnl.SetSignalID(sgnlID);
+        sgnl.SetSignalID(signalID);
         AddSignal(sgnl);
     }
 
-    fSignal[sgnlIndex].AddDeposit(tm, chrg);
+    fSignal[sgnlIndex].AddDeposit(time, charge);
 }
 
 void TRestDetectorSignalEvent::PrintEvent() {
@@ -144,8 +144,7 @@ void TRestDetectorSignalEvent::PrintEvent() {
     }
 }
 
-// TODO: GetMaxTimeFast, GetMinTimeFast, GetMaxValueFast that return the value
-// of fMinTime, fMaxTime, etc
+// TODO: GetMaxTimeFast, GetMinTimeFast, GetMaxValueFast that return the value of fMinTime, fMaxTime, etc.
 void TRestDetectorSignalEvent::SetMaxAndMin() {
     fMinValue = 1E10;
     fMaxValue = -1E10;
@@ -185,9 +184,9 @@ Double_t TRestDetectorSignalEvent::GetMaxTime() {
     return maxTime;
 }
 
-// Draw current event in a Tpad
-TPad* TRestDetectorSignalEvent::DrawEvent(TString option) {
-    if (fPad) {
+// Draw current event in a TPad
+TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
+    if (fPad != nullptr) {
         delete fPad;
         fPad = nullptr;
     }
