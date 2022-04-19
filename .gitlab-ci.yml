@@ -32,7 +32,7 @@ clang-format:
     - echo "**$CI_SERVER_HOST**"
     - cd ${CI_PROJECT_DIR}/pipeline/clang-format/
     - ./clangformattest.sh
-    # We execute only at a schedulled pipeline that defines CRONJOB variable
+    # We execute only at a scheduled pipeline that defines CRONJOB variable
   only:
     variables:
       - $CRONJOB
