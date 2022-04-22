@@ -521,7 +521,7 @@ void TRestDetectorGas::InitFromConfigFile() {
 
     // add gas component
     TiXmlElement* gasComponentDefinition = GetElement("gasComponent");
-    while (gasComponentDefinition) {
+    while (gasComponentDefinition != nullptr) {
         string gasName = GetFieldValue("name", gasComponentDefinition);
         Double_t gasFraction = StringToDouble(GetFieldValue("fraction", gasComponentDefinition));
         AddGasComponent(gasName, gasFraction);

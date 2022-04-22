@@ -169,7 +169,7 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 ///
 void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas) {
+    if (fGas != nullptr) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;

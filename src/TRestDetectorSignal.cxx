@@ -498,7 +498,7 @@ void TRestDetectorSignal::Print() {
 }
 
 TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
-    if (fGraph) {
+    if (fGraph != nullptr) {
         delete fGraph;
         fGraph = nullptr;
     }

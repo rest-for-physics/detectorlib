@@ -63,7 +63,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 
     if (fApplyGainCorrection) {
-        if (fCalib) {
+        if (fCalib != nullptr) {
             for (auto iter = fChannelGain.begin(); iter != fChannelGain.end(); iter++) {
                 if (fCalib->fChannelGain.count(iter->first) == 0) {
                     ferr << "in consistent gain mapping and readout definition!" << endl;
@@ -280,7 +280,7 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
 
     c->Print((filename + ".pdf[").c_str());
     for (auto iter = fChannelThrIntegral.begin(); iter != fChannelThrIntegral.end(); iter++) {
-        if (iter->second && iter->second->GetEntries() > 0) {
+        if (iter->second != nullptr && iter->second->GetEntries() > 0) {
             cout << "Drawing: " << iter->first << endl;
             c->Clear();
             iter->second->Draw();
