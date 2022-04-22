@@ -24,12 +24,11 @@
 #define RestCore_TRestDetectorReadoutPixel
 
 #include <TMath.h>
+#include <TObject.h>
+#include <TRestMetadata.h>
 #include <TVector2.h>
 
 #include <iostream>
-
-#include "TObject.h"
-#include "TRestMetadata.h"
 
 /// A class to store the readout pixel definition used in TRestDetectorReadoutChannel.
 class TRestDetectorReadoutPixel : public TObject {
@@ -66,10 +65,10 @@ class TRestDetectorReadoutPixel : public TObject {
     Double_t GetRotation() const { return fRotation; }
 
     /// Returns the pixel size in X
-    Double_t GetSizeX() { return fPixelSizeX; }
+    inline Double_t GetSizeX() const { return fPixelSizeX; }
 
     /// Returns the pixel size in Y
-    Double_t GetSizeY() { return fPixelSizeY; }
+    inline Double_t GetSizeY() const { return fPixelSizeY; }
 
     /// Returns a TVector2 with the pixel size.
     TVector2 GetSize() { return TVector2(fPixelSizeX, fPixelSizeY); }

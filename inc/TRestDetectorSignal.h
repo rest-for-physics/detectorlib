@@ -67,8 +67,8 @@ class TRestDetectorSignal : public TObject {
         return vector2;
     }
 
-    Int_t GetSignalID() { return fSignalID; }
-    Int_t GetID() { return fSignalID; }
+    inline Int_t GetSignalID() const { return fSignalID; }
+    inline Int_t GetID() const { return fSignalID; }
 
     void IncreaseTimeBinBy(Int_t bin, Double_t data) {
         if (bin >= GetNumberOfPoints()) {

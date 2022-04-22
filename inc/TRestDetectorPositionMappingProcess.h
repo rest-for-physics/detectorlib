@@ -13,13 +13,13 @@
 #define RestCore_TRestDetectorPositionMappingProcess
 
 #include <TH1D.h>
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
 #include "TRestDetectorGainMap.h"
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 class TRestDetectorPositionMappingProcess : public TRestEventProcess {
    private:
@@ -50,8 +50,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TH2F* fAreaGainMap;  //!
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    inline any GetInputEvent() const { return fHitsEvent; }
+    inline any GetOutputEvent() const { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

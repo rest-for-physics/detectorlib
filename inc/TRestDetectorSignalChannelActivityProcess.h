@@ -24,10 +24,10 @@
 #define RestCore_TRestDetectorSignalChannelActivityProcess
 
 #include <TH1D.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A pure analysis process to generate histograms with detector channels activity
 class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
@@ -100,8 +100,8 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     TH1D* fReadoutChannelsHisto_MultiSignals_High;  //!
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    inline any GetInputEvent() const { return fSignalEvent; }
+    inline any GetOutputEvent() const { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

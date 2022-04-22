@@ -24,13 +24,13 @@
 #define RestCore_TRestDetectorReadoutModule
 
 #include <TMath.h>
-#include <TRestDetectorReadoutChannel.h>
-#include <TRestDetectorReadoutMapping.h>
+#include <TObject.h>
 #include <TVector2.h>
 
 #include <iostream>
 
-#include "TObject.h"
+#include "TRestDetectorReadoutChannel.h"
+#include "TRestDetectorReadoutMapping.h"
 
 /// A class to store the readout module definition used in TRestDetectorReadoutPlane. It
 /// allows to integrate any number of independent readout channels.
@@ -139,13 +139,13 @@ class TRestDetectorReadoutModule : public TObject {
     void SetTolerance(Double_t tol) { fTolerance = tol; }
 
     /// Gets the tolerance for independent pixel overlaps
-    Double_t GetTolerance() { return fTolerance; }
+    inline Double_t GetTolerance() const { return fTolerance; }
 
     /// Returns the minimum daq id number
-    Int_t GetMinDaqID() { return fMininimumDaqId; }
+    inline Int_t GetMinDaqID() const { return fMininimumDaqId; }
 
     /// Returns the maximum daq id number
-    Int_t GetMaxDaqID() { return fMaximumDaqId; }
+    inline Int_t GetMaxDaqID() const { return fMaximumDaqId; }
 
     /// Returns the physical readout channel index for a given daq id channel
     /// number
@@ -156,28 +156,28 @@ class TRestDetectorReadoutModule : public TObject {
     }
 
     /// Returns the module id
-    Int_t GetModuleID() { return fModuleID; }
+    inline Int_t GetModuleID() const { return fModuleID; }
 
     /// Returns the module x-coordinate origin
-    Double_t GetModuleOriginX() { return fModuleOriginX; }
+    inline Double_t GetModuleOriginX() const { return fModuleOriginX; }
 
     /// Returns the module y-coordinate origin
-    Double_t GetModuleOriginY() { return fModuleOriginY; }
+    inline Double_t GetModuleOriginY() const { return fModuleOriginY; }
 
     /// Returns the module x-coordinate origin
-    Double_t GetOriginX() { return fModuleOriginX; }
+    inline Double_t GetOriginX() const { return fModuleOriginX; }
 
     /// Returns the module y-coordinate origin
-    Double_t GetOriginY() { return fModuleOriginY; }
+    inline Double_t GetOriginY() const { return fModuleOriginY; }
 
     /// Returns the module size x-coordinate
-    Double_t GetModuleSizeX() { return fModuleSizeX; }
+    inline Double_t GetModuleSizeX() const { return fModuleSizeX; }
 
     /// Returns the module size y-coordinate
-    Double_t GetModuleSizeY() { return fModuleSizeY; }
+    inline Double_t GetModuleSizeY() const { return fModuleSizeY; }
 
     /// Returns the module rotation in degrees
-    Double_t GetModuleRotation() { return fModuleRotation; }
+    inline Double_t GetModuleRotation() const { return fModuleRotation; }
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
@@ -188,7 +188,7 @@ class TRestDetectorReadoutModule : public TObject {
     TVector2 GetPhysicalCoordinates(TVector2 p) { return TransformToPhysicalCoordinates(p.X(), p.Y()); }
 
     /// Returns the module name
-    TString GetName() { return fModuleName; }
+    inline char* GetName() const { return const_cast<char*>(fModuleName.Data()); }
 
     /// Returns a pointer to the readout mapping
     TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }

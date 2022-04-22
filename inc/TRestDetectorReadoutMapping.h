@@ -46,10 +46,10 @@ class TRestDetectorReadoutMapping : public TObject {
    public:
     // Getters
     /// Returns the number of nodes in X.
-    Int_t GetNumberOfNodesX() { return fNodesX; }
+    inline Int_t GetNumberOfNodesX() const { return fNodesX; }
 
     /// Returns the number of nodes in Y.
-    Int_t GetNumberOfNodesY() { return fNodesY; }
+    inline Int_t GetNumberOfNodesY() const { return fNodesY; }
 
     /// Gets the channel id correspoding to a given node (i,j)
     Int_t GetChannelByNode(Int_t i, Int_t j) { return fChannel[i][j]; }

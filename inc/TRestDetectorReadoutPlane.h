@@ -25,13 +25,13 @@
 
 #include <TGraph.h>
 #include <TH2Poly.h>
+#include <TObject.h>
+#include <TRestMetadata.h>
 
 #include <iostream>
 
-#include "TObject.h"
 #include "TRestDetectorReadoutChannel.h"
 #include "TRestDetectorReadoutModule.h"
-#include "TRestMetadata.h"
 
 /// A class to store the readout plane definition used in TRestDetectorReadout. It
 /// allows to integrate any number of independent readout modules.
@@ -86,22 +86,22 @@ class TRestDetectorReadoutPlane : public TObject {
 
     // Getters
     /// Returns an integer with the plane id number.
-    Int_t GetID() { return fPlaneID; }
+    inline Int_t GetID() const { return fPlaneID; }
 
     /// Returns a TVector3 with the readout plane position
-    TVector3 GetPosition() { return fPosition; }
+    inline TVector3 GetPosition() const { return fPosition; }
 
     /// Returns a TVector3 with the cathode position
-    TVector3 GetCathodePosition() { return fCathodePosition; }
+    inline TVector3 GetCathodePosition() const { return fCathodePosition; }
 
     /// Returns a TVector3 with a std::vector normal to the readout plane
-    TVector3 GetPlaneVector() { return fPlaneVector; }
+    inline TVector3 GetPlaneVector() const { return fPlaneVector; }
 
     /// Returns the charge collection ratio at this readout plane
-    Double_t GetChargeCollection() { return fChargeCollection; }
+    inline Double_t GetChargeCollection() const { return fChargeCollection; }
 
     /// Returns the total drift distance
-    Double_t GetTotalDriftDistance() { return fTotalDriftDistance; }
+    inline Double_t GetTotalDriftDistance() const { return fTotalDriftDistance; }
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.

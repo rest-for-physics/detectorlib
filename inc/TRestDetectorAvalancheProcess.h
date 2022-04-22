@@ -39,8 +39,8 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     TRestDetectorGas* fGas;  //!
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    inline any GetInputEvent() const { return fHitsInputEvent; }
+    inline any GetOutputEvent() const { return fHitsOutputEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
@@ -62,9 +62,9 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "avalancheProcess"; }
 
-    Double_t GetEnergyReference() { return fEnergyRef; }
-    Double_t GetResolutionReference() { return fResolutionAtEref; }
-    Double_t GetDetectorGain() { return fDetectorGain; }
+    inline Double_t GetEnergyReference() const { return fEnergyRef; }
+    inline Double_t GetResolutionReference() const { return fResolutionAtEref; }
+    inline Double_t GetDetectorGain() const { return fDetectorGain; }
 
     // Constructor
     TRestDetectorAvalancheProcess();

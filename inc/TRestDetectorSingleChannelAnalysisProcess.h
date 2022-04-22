@@ -13,16 +13,13 @@
 #define RestCore_TRestDetectorSingleChannelAnalysisProcess
 
 #include <TH1D.h>
-
-//#include <TCanvas.h>
-
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
 #include "TRestDetectorGainMap.h"
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
    private:
@@ -52,8 +49,8 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     std::map<int, double> fChannelGainError;   // [MM id, channel gain error]
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    inline any GetInputEvent() const { return fSignalEvent; }
+    inline any GetOutputEvent() const { return fSignalEvent; }
 
     void FitChannelGain();
     // See comments on CXX

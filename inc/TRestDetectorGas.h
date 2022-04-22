@@ -154,10 +154,10 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     /// Returns the maximum electron energy used by Magboltz for the gas
     /// properties calculation
-    Double_t GetMaxElectronEnergy() { return fMaxElectronEnergy; }
+    inline Double_t GetMaxElectronEnergy() const { return fMaxElectronEnergy; }
 
     /// Returns the number of gas elements/compounds present in the gas mixture.
-    Int_t GetNofGases() { return fNofGases; }
+    inline Int_t GetNofGases() const { return fNofGases; }
 
     /// Returns the gas component *n*.
     TString GetGasComponentName(Int_t n) {

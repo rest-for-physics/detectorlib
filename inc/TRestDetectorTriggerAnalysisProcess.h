@@ -23,9 +23,9 @@
 #ifndef RestCore_TRestDetectorTriggerAnalysisProcess
 #define RestCore_TRestDetectorTriggerAnalysisProcess
 
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A process to generate integral observables for signal ADC windows found above the defined energy threshold
 class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
@@ -52,10 +52,10 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
    public:
     /// Returns a pointer to the input signal event
-    any GetInputEvent() { return fSignalEvent; }
+    inline any GetInputEvent() const { return fSignalEvent; }
 
     /// Returns a pointer to the input signal event
-    any GetOutputEvent() { return fSignalEvent; }
+    inline any GetOutputEvent() const { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

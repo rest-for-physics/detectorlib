@@ -16,10 +16,10 @@
 #ifndef RestCore_TRestDetectorHitsRotateAndTranslateProcess
 #define RestCore_TRestDetectorHitsRotateAndTranslateProcess
 
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
 
 class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
    private:
@@ -42,8 +42,8 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     // add here the members of your event process
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    inline any GetInputEvent() const { return fInputHitsEvent; }
+    inline any GetOutputEvent() const { return fOutputHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
@@ -66,13 +66,13 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "rotateAndTraslate"; }
 
-    Double_t GetDeltaX() { return fDeltaX; }
-    Double_t GetDeltaY() { return fDeltaY; }
-    Double_t GetDeltaZ() { return fDeltaZ; }
+    inline Double_t GetDeltaX() const { return fDeltaX; }
+    inline Double_t GetDeltaY() const { return fDeltaY; }
+    inline Double_t GetDeltaZ() const { return fDeltaZ; }
 
-    Double_t GetAlpha() { return fAlpha; }
-    Double_t GetBeta() { return fBeta; }
-    Double_t GetGamma() { return fGamma; }
+    inline Double_t GetAlpha() const { return fAlpha; }
+    inline Double_t GetBeta() const { return fBeta; }
+    inline Double_t GetGamma() const { return fGamma; }
 
     // Constructor
     TRestDetectorHitsRotateAndTranslateProcess();

@@ -30,7 +30,9 @@ TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initializ
 TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* cfgFileName) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(cfgFileName)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
 
@@ -46,7 +48,7 @@ void TRestDetectorHitsSmearingProcess::LoadDefaultConfig() {
     SetTitle("Default config");
 
     fEnergyRef = 5.9;
-    fResolutionAtEref = 15.0;
+    fResolutionAtERef = 15.0;
 }
 
 void TRestDetectorHitsSmearingProcess::Initialize() {
@@ -54,7 +56,7 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fEnergyRef = 5.9;
-    fResolutionAtEref = 15.0;
+    fResolutionAtERef = 15.0;
 
     fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
@@ -62,8 +64,10 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorHitsSmearingProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsSmearingProcess::LoadConfig(const string& cfgFilename, const string& name) {
+    if (LoadConfigFromFile(cfgFilename, name)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
 
@@ -84,7 +88,7 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) 
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
 
     Double_t eDep = fHitsInputEvent->GetTotalEnergy();
-    Double_t eRes = fResolutionAtEref * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
+    Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
 
     Double_t gain = fRandom->Gaus(1.0, eRes);
     for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
@@ -106,6 +110,6 @@ void TRestDetectorHitsSmearingProcess::EndProcess() {
 
 void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {
     fEnergyRef = GetDblParameterWithUnits("energyReference");
-    fResolutionAtEref = StringToDouble(GetParameter("resolutionReference"));
+    fResolutionAtERef = StringToDouble(GetParameter("resolutionReference"));
     fRandom = new TRandom3(StringToDouble(GetParameter("seed", "0")));
 }

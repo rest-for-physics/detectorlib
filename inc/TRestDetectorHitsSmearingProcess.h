@@ -17,10 +17,10 @@
 #define RestCore_TRestDetectorHitsSmearingProcess
 
 #include <TRandom3.h>
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
 
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
    private:
@@ -39,23 +39,23 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     // add here the members of your event process
 
     Double_t fEnergyRef;         ///< reference energy for the FWHM
-    Double_t fResolutionAtEref;  ///< FWHM at Energy of reference
+    Double_t fResolutionAtERef;  ///< FWHM at Energy of reference
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    inline any GetInputEvent() const { return fHitsInputEvent; }
+    inline any GetOutputEvent() const { return fHitsOutputEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& cfgFilename, const std::string& name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
 
-        metadata << " reference energy (Eref): " << fEnergyRef << endl;
-        metadata << " resolution at Eref : " << fResolutionAtEref << endl;
+        metadata << " reference energy (ERef): " << fEnergyRef << endl;
+        metadata << " resolution at ERef : " << fResolutionAtERef << endl;
 
         EndPrintProcess();
     }
@@ -64,14 +64,14 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "smearingProcess"; }
 
-    Double_t GetEnergyReference() { return fEnergyRef; }
-    Double_t GetResolutionReference() { return fResolutionAtEref; }
+    inline Double_t GetEnergyReference() const { return fEnergyRef; }
+    inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
     TRestDetectorHitsSmearingProcess(char* cfgFileName);
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDef(TRestDetectorHitsSmearingProcess, 1);
+    ClassDef(TRestDetectorHitsSmearingProcess, 2);
 };
 #endif
