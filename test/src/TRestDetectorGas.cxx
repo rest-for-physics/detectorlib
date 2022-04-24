@@ -53,6 +53,7 @@ TEST(TRestDetectorGas, FromRml) {
     EXPECT_TRUE(!gas.GetError());
 }
 
+/*
 TEST(TRestDetectorGas, FromServer) {
     GTEST_SKIP_("Not working on test but works on `restRoot` prompt");
 
@@ -72,3 +73,4 @@ TEST(TRestDetectorGas, FromServer) {
     EXPECT_TRUE(gas.GetGasComponentName(0) == "xe");
     EXPECT_TRUE(gas.GetGasComponentFraction(0) == 1.0);
 }
+*/

@@ -403,7 +403,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
     return nullptr;
 }
 
-TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithdaqID(int daqId) {
+TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithDaqID(int daqId) {
     int planeID = -1, moduleID = -1, channelID = -1;
 
     GetPlaneModuleChannel(daqId, planeID, moduleID, channelID);

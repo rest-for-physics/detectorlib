@@ -23,12 +23,9 @@ using namespace std;
 
 ClassImp(TRestDetectorSetup);
 
-TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() {
-    // TRestDetectorSetup default constructor
-    Initialize();
-}
+TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() { Initialize(); }
 
-TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMetadata(cfgFileName) {
+TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, const string& name) : TRestMetadata(cfgFileName) {
     Initialize();
 
     LoadConfigFromFile(fConfigFileName, name);

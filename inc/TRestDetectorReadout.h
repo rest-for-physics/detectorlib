@@ -23,11 +23,12 @@
 #ifndef RestCore_TRestDetectorReadout
 #define RestCore_TRestDetectorReadout
 
+#include <TObject.h>
+#include <TRestMetadata.h>
+
 #include <iostream>
 
-#include "TObject.h"
 #include "TRestDetectorReadoutPlane.h"
-#include "TRestMetadata.h"
 
 /// A metadata class to generate/store a readout description.
 class TRestDetectorReadout : public TRestMetadata {
@@ -59,11 +60,9 @@ class TRestDetectorReadout : public TRestMetadata {
     void AddReadoutPlane(TRestDetectorReadoutPlane plane);
 
     /////////////////////////////////////
-    //{
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
     TRestDetectorReadoutModule* GetReadoutModuleWithID(int id);
-    TRestDetectorReadoutChannel* GetReadoutChannelWithdaqID(int daqId);
-    //}
+    TRestDetectorReadoutChannel* GetReadoutChannelWithDaqID(int daqId);
     /////////////////////////////////////
 
     Int_t GetNumberOfReadoutPlanes();
@@ -73,32 +72,30 @@ class TRestDetectorReadout : public TRestMetadata {
     Int_t GetModuleDefinitionId(TString name);
 
     /////////////////////////////////////
-    //{
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
     void GetPlaneModuleChannel(Int_t daqID, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID, Int_t& channelID,
+    Int_t GetHitsDaqChannel(const TVector3& hitPosition, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+    Int_t GetHitsDaqChannelAtReadoutPlane(const TVector3& hitPosition, Int_t& moduleID, Int_t& channelID,
                                           Int_t planeId = 0);
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
-    //}
     /////////////////////////////////////
 
     Double_t GetX(Int_t planeID, Int_t modID, Int_t chID);
     Double_t GetY(Int_t planeID, Int_t modID, Int_t chID);
 
-    // Detal Level:
+    // Detail Level:
     // 0->this readout
     // 1->+all readout plane
     // 2->+all readout module
     // 3->+all readout channel
     // 4->+all readout pixel
-    void PrintMetadata() { PrintMetadata(1); }
+    inline void PrintMetadata() { PrintMetadata(1); }
     void PrintMetadata(Int_t DetailLevel);
 
     void Draw();
 
-    // Construtor
+    // Constructor
     TRestDetectorReadout();
     TRestDetectorReadout(const char* cfgFileName);
     TRestDetectorReadout(const char* cfgFileName, std::string name);

@@ -65,7 +65,7 @@ class TRestDetectorSetup : public TRestMetadata {
 
     // Constructors
     TRestDetectorSetup();
-    TRestDetectorSetup(char* cfgFileName, std::string name = "");
+    TRestDetectorSetup(char* cfgFileName, const std::string& name = "");
     // Destructor
     ~TRestDetectorSetup();
 
