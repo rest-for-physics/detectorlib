@@ -104,7 +104,7 @@
 ///
 #include "TRestDetectorSignalToHitsProcess.h"
 
-#include <TRestDetectorSetup.h>
+#include "TRestDetectorSetup.h"
 
 using namespace std;
 

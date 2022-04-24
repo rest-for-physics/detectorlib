@@ -215,15 +215,15 @@
 
 #include "TRestDetectorGas.h"
 
-#include <algorithm>
+#include <TRestDataBase.h>
 
-#include "TRestDataBase.h"
+#include <algorithm>
 
 using namespace std;
 
-// const char* defaultServer = "https://sultan.unizar.es/gasFiles/";
-
 ClassImp(TRestDetectorGas);
+
+// const char* defaultServer = "https://sultan.unizar.es/gasFiles/";
 
 /////////////////////////////////////////////
 /// \brief TRestDetectorGas default constructor

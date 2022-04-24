@@ -46,14 +46,14 @@ void TRestDetectorSignalEvent::Initialize() {
     fMaxTime = -1E10;
 }
 
-void TRestDetectorSignalEvent::AddSignal(TRestDetectorSignal signal) {
+void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
     if (signalIDExists(signal.GetSignalID())) {
         cout << "Warning. Signal ID : " << signal.GetSignalID()
              << " already exists. Signal will not be added to signal event" << endl;
         return;
     }
 
-    fSignal.push_back(signal);
+    fSignal.emplace_back(signal);
 }
 
 Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
