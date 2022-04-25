@@ -62,24 +62,24 @@ class TRestDetectorDriftVolume : public TRestMetadata {
     virtual void Initialize();
     virtual void InitFromConfigFile();
 
-    inline virtual std::string GetMaterial() const { return fMaterial; }
-    inline virtual Double_t GetW() const { return fW; }
-    inline virtual Double_t GetWvalue() const { return fW; }
+    virtual std::string GetMaterial() const { return fMaterial; }
+    virtual Double_t GetW() const { return fW; }
+    virtual Double_t GetWvalue() const { return fW; }
 
     /// Returns the electric field in V/mm.
-    inline virtual Double_t GetElectricField() const { return fElectricField; }
+    virtual Double_t GetElectricField() const { return fElectricField; }
 
     /// Returns the drift velocity in mm/us.
-    inline virtual Double_t GetDriftVelocity() const { return fDriftVelocity; }
+    virtual Double_t GetDriftVelocity() const { return fDriftVelocity; }
 
-    inline virtual Double_t GetElectronLifeTime() const { return fElectronLifeTime; }
-    inline virtual Double_t GetLongitudinalDiffusion() const { return fLongitudinalDiffusion; }
-    inline virtual Double_t GetTransversalDiffusion() const { return fTransversalDiffusion; }
-    inline virtual Double_t GetTownsendCoefficient() const { return fTownsendCoefficient; }
-    inline virtual Double_t GetAttachmentCoefficient() const { return fAttachmentCoefficient; }
+    virtual Double_t GetElectronLifeTime() const { return fElectronLifeTime; }
+    virtual Double_t GetLongitudinalDiffusion() const { return fLongitudinalDiffusion; }
+    virtual Double_t GetTransversalDiffusion() const { return fTransversalDiffusion; }
+    virtual Double_t GetTownsendCoefficient() const { return fTownsendCoefficient; }
+    virtual Double_t GetAttachmentCoefficient() const { return fAttachmentCoefficient; }
 
-    inline virtual Double_t GetPressure() const { return fPressureInAtm; }
-    inline virtual Double_t GetTemperature() const { return fTemperatureInK; }
+    virtual Double_t GetPressure() const { return fPressureInAtm; }
+    virtual Double_t GetTemperature() const { return fTemperatureInK; }
 
     virtual void SetMaterial(std::string value) { fMaterial = value; }
 
