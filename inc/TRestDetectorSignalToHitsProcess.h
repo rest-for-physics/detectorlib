@@ -63,8 +63,8 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     TString fMethod = "tripleMax";
 
    public:
-    inline any GetInputEvent() const { return fSignalEvent; }
-    inline any GetOutputEvent() const { return fHitsEvent; }
+    any GetInputEvent() { return fSignalEvent; }
+    any GetOutputEvent() { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

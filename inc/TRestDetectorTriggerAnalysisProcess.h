@@ -52,10 +52,10 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
    public:
     /// Returns a pointer to the input signal event
-    inline any GetInputEvent() const { return fSignalEvent; }
+    any GetInputEvent() { return fSignalEvent; }
 
     /// Returns a pointer to the input signal event
-    inline any GetOutputEvent() const { return fSignalEvent; }
+    any GetOutputEvent() { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

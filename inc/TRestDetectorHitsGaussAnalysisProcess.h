@@ -53,11 +53,8 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     Double_t fPitch;
 
    public:
-    inline any GetInputEvent() const { return fInputHitsEvent; }
-    inline any GetOutputEvent() const { return fOutputHitsEvent; }
-    // TODO: TRestEventProcess methods should be made const to avoid this replication!
-    inline any GetInputEvent() { return GetInputEvent(); }
-    inline any GetOutputEvent() { return GetOutputEvent(); }
+    any GetInputEvent() { return fInputHitsEvent; }
+    any GetOutputEvent() { return fOutputHitsEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* evInput);
 

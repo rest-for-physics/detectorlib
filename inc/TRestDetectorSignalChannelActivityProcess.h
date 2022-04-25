@@ -100,8 +100,8 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     TH1D* fReadoutChannelsHisto_MultiSignals_High;  //!
 
    public:
-    inline any GetInputEvent() const { return fSignalEvent; }
-    inline any GetOutputEvent() const { return fSignalEvent; }
+    any GetInputEvent() { return fSignalEvent; }
+    any GetOutputEvent() { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

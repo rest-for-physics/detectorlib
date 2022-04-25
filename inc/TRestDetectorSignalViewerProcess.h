@@ -42,8 +42,8 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     // add here the members of your event process
 
    public:
-    inline any GetInputEvent() const { return fSignalEvent; }
-    inline any GetOutputEvent() const { return fSignalEvent; }
+    any GetInputEvent() { return fSignalEvent; }
+    any GetOutputEvent() { return fSignalEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
