@@ -62,6 +62,12 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// The method used to transform the signal points to hits.
     TString fMethod = "tripleMax";
 
+    // Time window to integrate in case intwindow method is requested, units (us)
+    Double_t fIntWindow = 5;
+
+    // Threshold value for in case intwindow method is requested
+    Double_t fThreshold = 100.;
+
    public:
     any GetInputEvent() { return fSignalEvent; }
     any GetOutputEvent() { return fHitsEvent; }
@@ -78,19 +84,22 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
         metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
         metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
         metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
-
         metadata << "Signal to hits method : " << fMethod << endl;
+        if (fMethod == "intwindow") {
+            metadata << "Threshold : " << fThreshold << " ADC" << endl;
+            metadata << "Integral window : " << fIntWindow << " us" << endl;
+        }
 
         EndPrintProcess();
     }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "signalToHits"; }
+    TString GetProcessName() const { return (TString) "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
     TRestDetectorSignalToHitsProcess(char* cfgFileName);
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 3);
+    ClassDef(TRestDetectorSignalToHitsProcess, 4);
 };
 #endif
