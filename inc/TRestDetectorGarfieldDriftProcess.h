@@ -74,8 +74,8 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
 #endif
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    inline any GetInputEvent() const { return fInputHitsEvent; }
+    inline any GetOutputEvent() const { return fOutputHitsEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
 

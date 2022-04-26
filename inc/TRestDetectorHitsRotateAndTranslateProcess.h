@@ -42,8 +42,8 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     // add here the members of your event process
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    inline any GetInputEvent() const { return fInputHitsEvent; }
+    inline any GetOutputEvent() const { return fOutputHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

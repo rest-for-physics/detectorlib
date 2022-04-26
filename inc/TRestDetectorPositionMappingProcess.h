@@ -50,8 +50,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TH2F* fAreaGainMap;  //!
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    inline any GetInputEvent() const { return fHitsEvent; }
+    inline any GetOutputEvent() const { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

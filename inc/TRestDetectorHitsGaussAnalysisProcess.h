@@ -53,8 +53,8 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     Double_t fPitch;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    inline any GetInputEvent() const { return fInputHitsEvent; }
+    inline any GetOutputEvent() const { return fOutputHitsEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* evInput);
 

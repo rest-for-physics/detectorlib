@@ -52,8 +52,8 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fSeed = 0;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    inline any GetInputEvent() const { return fInputHitsEvent; }
+    inline any GetOutputEvent() const { return fOutputHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
