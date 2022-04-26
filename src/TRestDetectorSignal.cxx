@@ -42,7 +42,6 @@ ClassImp(TRestDetectorSignal)
     fPointsOverThreshold.clear();
 }
 
-
 TRestDetectorSignal::~TRestDetectorSignal() {
     // TRestDetectorSignal destructor
 }

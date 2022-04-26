@@ -20,13 +20,11 @@ ClassImp(TRestDetectorHitsReductionProcess)
     Initialize();
 }
 
-
 TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
-
 
 TRestDetectorHitsReductionProcess::~TRestDetectorHitsReductionProcess() {}
 
@@ -40,7 +38,6 @@ void TRestDetectorHitsReductionProcess::LoadDefaultConfig() {
     fMaxNodes = 30;
 }
 
-
 void TRestDetectorHitsReductionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -53,9 +50,7 @@ void TRestDetectorHitsReductionProcess::LoadConfig(std::string configFilename, s
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
-
 void TRestDetectorHitsReductionProcess::InitProcess() {}
-
 
 TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
@@ -104,9 +99,7 @@ TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput)
     return fOutputHitsEvent;
 }
 
-
 void TRestDetectorHitsReductionProcess::EndProcess() {}
-
 
 void TRestDetectorHitsReductionProcess::InitFromConfigFile() {
     fStartingDistance = GetDblParameterWithUnits("startingDistance");

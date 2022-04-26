@@ -28,7 +28,6 @@ ClassImp(TRestDetectorHitsSmearingProcess)
     Initialize();
 }
 
-
 TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* configFilename) {
     Initialize();
 
@@ -38,7 +37,6 @@ TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* configF
 
     // TRestDetectorHitsSmearingProcess default constructor
 }
-
 
 TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
     delete fHitsOutputEvent;
@@ -51,7 +49,6 @@ void TRestDetectorHitsSmearingProcess::LoadDefaultConfig() {
     fEnergyRef = 5.9;
     fResolutionAtEref = 15.0;
 }
-
 
 void TRestDetectorHitsSmearingProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -74,7 +71,6 @@ void TRestDetectorHitsSmearingProcess::LoadConfig(string configFilename, string 
     fGas = GetMetadata<TRestDetectorGas>();
 }
 
-
 void TRestDetectorHitsSmearingProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -83,7 +79,6 @@ void TRestDetectorHitsSmearingProcess::InitProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::InitProcess();
 }
-
 
 TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
@@ -101,7 +96,6 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) 
     return fHitsOutputEvent;
 }
 
-
 void TRestDetectorHitsSmearingProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -110,7 +104,6 @@ void TRestDetectorHitsSmearingProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
 
 void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {
     fEnergyRef = GetDblParameterWithUnits("energyReference");

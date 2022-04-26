@@ -21,8 +21,6 @@ using namespace std;
 
 ClassImp(TRestDetectorGeometry);
 
-
-
 TRestDetectorGeometry::TRestDetectorGeometry()
     : TGeoManager()  //, fGfGeometry(0), fDriftElec(0)
 {
@@ -33,8 +31,6 @@ TRestDetectorGeometry::TRestDetectorGeometry()
     vGfSensor.clear();
 #endif
 }
-
-
 
 TRestDetectorGeometry::~TRestDetectorGeometry() {
 #if defined USE_Garfield

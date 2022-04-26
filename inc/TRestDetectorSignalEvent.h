@@ -92,7 +92,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
     void Initialize();
     void PrintEvent();
 
-    TPad* DrawEvent(const TString &option = "");
+    TPad* DrawEvent(const TString& option = "");
 
     // Construtor
     TRestDetectorSignalEvent();

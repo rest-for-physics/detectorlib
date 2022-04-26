@@ -18,16 +18,13 @@ using namespace std;
 
 ClassImp(TRestDetectorElectronDiffusionProcess);
 
-
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess() { Initialize(); }
-
 
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 }
-
 
 TRestDetectorElectronDiffusionProcess::~TRestDetectorElectronDiffusionProcess() { delete fOutputHitsEvent; }
 
@@ -38,7 +35,6 @@ void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
     fAttachment = 0;
     fGasPressure = 1;
 }
-
 
 void TRestDetectorElectronDiffusionProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -64,7 +60,6 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
 void TRestDetectorElectronDiffusionProcess::LoadConfig(string configFilename, string name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
-
 
 void TRestDetectorElectronDiffusionProcess::InitProcess() {
     fRandom = new TRandom3(fSeed);
@@ -113,7 +108,6 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
         exit(-1);
     }
 }
-
 
 TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
@@ -222,7 +216,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evIn
     return fOutputHitsEvent;
 }
 
-
 void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -231,7 +224,6 @@ void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
 
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);

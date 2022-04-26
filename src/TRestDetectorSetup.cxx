@@ -28,7 +28,6 @@ ClassImp(TRestDetectorSetup)
     Initialize();
 }
 
-
 TRestDetectorSetup::TRestDetectorSetup(char* configFilename, string name) : TRestMetadata(configFilename) {
     Initialize();
 
@@ -36,7 +35,6 @@ TRestDetectorSetup::TRestDetectorSetup(char* configFilename, string name) : TRes
 
     PrintMetadata();
 }
-
 
 TRestDetectorSetup::~TRestDetectorSetup() {
     // TRestDetectorSetup destructor
@@ -60,7 +58,6 @@ void TRestDetectorSetup::Initialize() {
 
     fSamplingInMicroSec = 0;
 }
-
 
 void TRestDetectorSetup::InitFromConfigFile() {
     this->Initialize();

@@ -23,9 +23,7 @@ ClassImp(TRestDetectorReadoutEventViewer)
     Initialize();
 }
 
-
 TRestDetectorReadoutEventViewer::~TRestDetectorReadoutEventViewer() {}
-
 
 void TRestDetectorReadoutEventViewer::Initialize() {
     TRestEventViewer::Initialize();
@@ -40,7 +38,6 @@ void TRestDetectorReadoutEventViewer::Initialize() {
     fSignalEvent = new TRestDetectorSignalEvent();
     SetEvent(fSignalEvent);
 }
-
 
 void TRestDetectorReadoutEventViewer::SetReadout(TRestDetectorReadout* readout) {
     // Finalize the instantiation based on argument TRestDetectorReadout

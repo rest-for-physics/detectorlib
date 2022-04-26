@@ -26,9 +26,7 @@ ClassImp(TRestDetectorDaqChannelSwitchingProcess)
     Initialize();
 }
 
-
 TRestDetectorDaqChannelSwitchingProcess::~TRestDetectorDaqChannelSwitchingProcess() {}
-
 
 void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);

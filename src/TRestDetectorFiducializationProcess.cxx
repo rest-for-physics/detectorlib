@@ -22,18 +22,15 @@ ClassImp(TRestDetectorFiducializationProcess)
     Initialize();
 }
 
-
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 }
 
-
 TRestDetectorFiducializationProcess::~TRestDetectorFiducializationProcess() { delete fOutputHitsEvent; }
 
 void TRestDetectorFiducializationProcess::LoadDefaultConfig() { SetTitle("Default config"); }
-
 
 void TRestDetectorFiducializationProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -49,7 +46,6 @@ void TRestDetectorFiducializationProcess::LoadConfig(string configFilename, stri
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
-
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
@@ -57,7 +53,6 @@ void TRestDetectorFiducializationProcess::InitProcess() {
         exit(-1);
     }
 }
-
 
 TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
@@ -96,7 +91,6 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     return fOutputHitsEvent;
 }
 
-
 void TRestDetectorFiducializationProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -105,6 +99,5 @@ void TRestDetectorFiducializationProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
 
 void TRestDetectorFiducializationProcess::InitFromConfigFile() {}

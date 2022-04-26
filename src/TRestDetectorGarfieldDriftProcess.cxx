@@ -32,7 +32,6 @@ using namespace std;
 const double cmTomm = 10.;
 
 ClassImp(TRestDetectorGarfieldDriftProcess)
-
 #if defined USE_Garfield
     TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess()
     : fRandom(0), fGfSensor(0) {
@@ -59,8 +58,6 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* confi
 
     // TRestDetectorGarfieldDriftProcess default constructor
 }
-
-
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
@@ -89,7 +86,6 @@ void TRestDetectorGarfieldDriftProcess::LoadConfig(string configFilename, string
     }
 }
 
-
 #endif
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
@@ -108,7 +104,6 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
     fStopDistance = 2;  // default distance from readout to stop drift set to 2mm
 #endif
 }
-
 
 #if defined USE_Garfield
 void TRestDetectorGarfieldDriftProcess::InitProcess() {
@@ -340,7 +335,6 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
     return -1;
 }
 
-
 #endif
 
 TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
@@ -442,8 +436,6 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
 #if defined USE_Garfield
 
-
-
 void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -452,8 +444,6 @@ void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
-
 
 void TRestDetectorGarfieldDriftProcess::InitFromConfigFile() {
     fGasPressure = StringToDouble(GetParameter("gasPressure", "-1"));

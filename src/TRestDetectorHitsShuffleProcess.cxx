@@ -17,13 +17,11 @@ ClassImp(TRestDetectorHitsShuffleProcess)
     Initialize();
 }
 
-
 TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
-
 
 TRestDetectorHitsShuffleProcess::~TRestDetectorHitsShuffleProcess() {
     // delete fHitsEvent;
@@ -35,7 +33,6 @@ void TRestDetectorHitsShuffleProcess::LoadDefaultConfig() {
 
     fIterations = 100;
 }
-
 
 void TRestDetectorHitsShuffleProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -50,9 +47,7 @@ void TRestDetectorHitsShuffleProcess::LoadConfig(std::string configFilename, std
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
-
 void TRestDetectorHitsShuffleProcess::InitProcess() {}
-
 
 TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsEvent = (TRestDetectorHitsEvent*)evInput;
@@ -71,9 +66,7 @@ TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
     return fHitsEvent;
 }
 
-
 void TRestDetectorHitsShuffleProcess::EndProcess() {}
-
 
 void TRestDetectorHitsShuffleProcess::InitFromConfigFile() {
     fIterations = StringToInteger(GetParameter("iterations"));

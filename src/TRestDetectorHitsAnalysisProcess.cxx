@@ -127,18 +127,15 @@ ClassImp(TRestDetectorHitsAnalysisProcess);
 
 TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess() { Initialize(); }
 
-
 TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
 
-
 TRestDetectorHitsAnalysisProcess::~TRestDetectorHitsAnalysisProcess() { delete fOutputHitsEvent; }
 
 void TRestDetectorHitsAnalysisProcess::LoadDefaultConfig() { SetTitle("Default config"); }
-
 
 void TRestDetectorHitsAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
@@ -155,9 +152,7 @@ void TRestDetectorHitsAnalysisProcess::LoadConfig(std::string configFilename, st
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
-
 void TRestDetectorHitsAnalysisProcess::InitProcess() { TRestEventProcess::ReadObservables(); }
-
 
 TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
@@ -333,7 +328,6 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* evInput) 
     return fOutputHitsEvent;
 }
 
-
 void TRestDetectorHitsAnalysisProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -342,7 +336,6 @@ void TRestDetectorHitsAnalysisProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
 
 void TRestDetectorHitsAnalysisProcess::InitFromConfigFile() {
     fFid_x0 = Get3DVectorParameterWithUnits("fiducial_x0", TVector3(0, 0, 0));

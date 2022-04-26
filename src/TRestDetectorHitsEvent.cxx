@@ -547,9 +547,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1,
-                                                                          Double_t sizeX, Double_t sizeY,
-                                                                          Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0,
+                                                                          const TVector3& x1, Double_t sizeX,
+                                                                          Double_t sizeY, Double_t theta) {
     TVector3 axis = x1 - x0;
     Double_t prismLength = axis.Mag();
 
@@ -596,7 +596,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const 
 ///
 /// \return A pointer to the TPad where the event was drawn is returned.
 ///
-TPad* TRestDetectorHitsEvent::DrawEvent(const TString &option) {
+TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
     vector<TString> optList = Vector_cast<string, TString>(TRestTools::GetOptions((string)option));
 
     for (unsigned int n = 0; n < optList.size(); n++) {
