@@ -126,7 +126,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
    public:
     TRestDetectorGas();
-    TRestDetectorGas(const char* cfgFileName, std::string name = "", bool gasGeneration = false,
+    TRestDetectorGas(const char* configFilename, std::string name = "", bool gasGeneration = false,
                      bool test = false);
     ~TRestDetectorGas();
 

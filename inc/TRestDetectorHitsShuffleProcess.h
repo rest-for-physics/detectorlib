@@ -41,7 +41,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     void EndProcess();
     void LoadDefaultConfig();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -51,11 +51,11 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsShuffle"; }
+    inline TString GetProcessName() const { return (TString) "hitsShuffle"; }
 
     // Constructor
     TRestDetectorHitsShuffleProcess();
-    TRestDetectorHitsShuffleProcess(char* cfgFileName);
+    TRestDetectorHitsShuffleProcess(char* configFilename);
     // Destructor
     ~TRestDetectorHitsShuffleProcess();
 

@@ -1,4 +1,4 @@
-//______________________________________________________________________________
+
 ///______________________________________________________________________________
 ///______________________________________________________________________________
 ///
@@ -31,7 +31,7 @@ ClassImp(TRestDetectorSignalEvent)
     Initialize();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorSignalEvent::~TRestDetectorSignalEvent() {
     // TRestDetectorSignalEvent destructor
 }
@@ -187,7 +187,7 @@ Double_t TRestDetectorSignalEvent::GetMaxTime() {
 
 // Draw current event in a Tpad
 TPad* TRestDetectorSignalEvent::DrawEvent(const TString &option) {
-    if (fPad != NULL) {
+    if (fPad != nullptr) {
         delete fPad;
         fPad = NULL;
     }

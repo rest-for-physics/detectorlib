@@ -42,7 +42,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -52,12 +52,12 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return NULL; }
+    TRestMetadata* GetProcessMetadata() const { return NULL; }
 
-    TString GetProcessName() { return (TString) "hitsNormalizationProcess"; }
+    inline TString GetProcessName() const { return (TString) "hitsNormalizationProcess"; }
 
     TRestDetectorHitsNormalizationProcess();
-    TRestDetectorHitsNormalizationProcess(char* cfgFileName);
+    TRestDetectorHitsNormalizationProcess(char* configFilename);
 
     ~TRestDetectorHitsNormalizationProcess();
 

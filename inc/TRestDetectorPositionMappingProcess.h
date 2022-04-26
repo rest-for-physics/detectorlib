@@ -76,10 +76,10 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "readoutAnalysis"; }
+    inline TString GetProcessName() const { return (TString) "readoutAnalysis"; }
 
     TRestDetectorPositionMappingProcess();
-    TRestDetectorPositionMappingProcess(char* cfgFileName);
+    TRestDetectorPositionMappingProcess(char* configFilename);
 
     ~TRestDetectorPositionMappingProcess();
 

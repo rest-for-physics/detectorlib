@@ -49,7 +49,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -61,10 +61,10 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     TPad* DrawSignal(Int_t signal);
 
-    TString GetProcessName() { return (TString) "rawSignalViewer"; }
+    inline TString GetProcessName() const { return (TString) "rawSignalViewer"; }
 
     TRestDetectorSignalViewerProcess();
-    TRestDetectorSignalViewerProcess(char* cfgFileName);
+    TRestDetectorSignalViewerProcess(char* configFilename);
 
     ~TRestDetectorSignalViewerProcess();
 

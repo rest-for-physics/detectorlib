@@ -134,12 +134,12 @@ TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess() { Initializ
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(char* cfgFileName) {
+TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////

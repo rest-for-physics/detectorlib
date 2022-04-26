@@ -116,21 +116,21 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess() { Initializ
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFileName) {
+TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 
-    if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 }
 
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
 TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
-    if (fReadout != NULL) delete fReadout;
+    if (fReadout != nullptr) delete fReadout;
 
     delete fSignalEvent;
 }
@@ -170,7 +170,7 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
 ///
 void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
+    if (fGas != nullptr) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;

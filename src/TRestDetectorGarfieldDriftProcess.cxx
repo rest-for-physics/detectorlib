@@ -32,7 +32,7 @@ using namespace std;
 const double cmTomm = 10.;
 
 ClassImp(TRestDetectorGarfieldDriftProcess)
-//______________________________________________________________________________
+
 #if defined USE_Garfield
     TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess()
     : fRandom(0), fGfSensor(0) {
@@ -47,24 +47,24 @@ ClassImp(TRestDetectorGarfieldDriftProcess)
 //            process stand alone but even then we could just call LoadConfig
 //            __________________________________________________________
 
-TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFileName)
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* configFilename)
     : fRandom(0), fGfSensor(0) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 
     PrintMetadata();
 
-    if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 
     // TRestDetectorGarfieldDriftProcess default constructor
 }
 
-//______________________________________________________________________________
+
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout != NULL) delete fReadout;
+    if (fReadout != nullptr) delete fReadout;
     if (fGeometry) delete fGeometry;
     fGeometry = NULL;
 
@@ -81,15 +81,15 @@ void TRestDetectorGarfieldDriftProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorGarfieldDriftProcess::LoadConfig(string configFilename, string name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     if (fDriftPotential == PARAMETER_NOT_FOUND_DBL) {
         fDriftPotential = 1000;  // V
     }
 }
 
-//______________________________________________________________________________
+
 #endif
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
@@ -109,7 +109,7 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
 #endif
 }
 
-//______________________________________________________________________________
+
 #if defined USE_Garfield
 void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Function to be executed once at the beginning of process
@@ -121,7 +121,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting gas data
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
+    if (fGas != nullptr) {
         if (fGasPressure <= 0)
             fGasPressure = fGas->GetPressure();
         else
@@ -133,7 +133,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting readout data
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
@@ -340,7 +340,7 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
     return -1;
 }
 
-//______________________________________________________________________________
+
 #endif
 
 TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
@@ -442,7 +442,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
 #if defined USE_Garfield
 
-//______________________________________________________________________________
+
 
 void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Function to be executed once at the end of the process
@@ -453,7 +453,7 @@ void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
+
 
 void TRestDetectorGarfieldDriftProcess::InitFromConfigFile() {
     fGasPressure = StringToDouble(GetParameter("gasPressure", "-1"));

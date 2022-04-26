@@ -81,13 +81,13 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fReadout; }
+    TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "hitsToSignal"; }
+    inline TString GetProcessName() const { return (TString) "hitsToSignal"; }
 
     TRestDetectorHitsToSignalProcess();
-    TRestDetectorHitsToSignalProcess(char* cfgFileName);
+    TRestDetectorHitsToSignalProcess(char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
     ClassDef(TRestDetectorHitsToSignalProcess, 1);

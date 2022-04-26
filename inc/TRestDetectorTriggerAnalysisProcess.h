@@ -60,7 +60,7 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     /// Prints on screen the metadata information registered by this process
     void PrintMetadata() {
@@ -73,10 +73,10 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     }
 
     /// Returns a std::string with the process name
-    TString GetProcessName() { return (TString) "triggerAnalysis"; }
+    inline TString GetProcessName() const { return (TString) "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
-    TRestDetectorTriggerAnalysisProcess(char* cfgFileName);
+    TRestDetectorTriggerAnalysisProcess(char* configFilename);
 
     ~TRestDetectorTriggerAnalysisProcess();
 

@@ -20,14 +20,14 @@ ClassImp(TRestDetectorHitsReductionProcess)
     Initialize();
 }
 
-//______________________________________________________________________________
-TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* cfgFileName) {
+
+TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorHitsReductionProcess::~TRestDetectorHitsReductionProcess() {}
 
 void TRestDetectorHitsReductionProcess::LoadDefaultConfig() {
@@ -40,7 +40,7 @@ void TRestDetectorHitsReductionProcess::LoadDefaultConfig() {
     fMaxNodes = 30;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsReductionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -49,14 +49,14 @@ void TRestDetectorHitsReductionProcess::Initialize() {
     fOutputHitsEvent = NULL;
 }
 
-void TRestDetectorHitsReductionProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name) == -1) LoadDefaultConfig();
+void TRestDetectorHitsReductionProcess::LoadConfig(std::string configFilename, std::string name) {
+    if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsReductionProcess::InitProcess() {}
 
-//______________________________________________________________________________
+
 TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
     fOutputHitsEvent = fInputHitsEvent;
@@ -104,10 +104,10 @@ TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput)
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsReductionProcess::EndProcess() {}
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsReductionProcess::InitFromConfigFile() {
     fStartingDistance = GetDblParameterWithUnits("startingDistance");
     fMinimumDistance = GetDblParameterWithUnits("minimumDistance");

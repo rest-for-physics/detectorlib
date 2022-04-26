@@ -60,7 +60,7 @@ ClassImp(TRestDetectorHitsEvent);
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();

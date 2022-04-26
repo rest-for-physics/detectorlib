@@ -39,7 +39,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -47,10 +47,10 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "fiducialization"; }
+    inline TString GetProcessName() const { return (TString) "fiducialization"; }
 
     TRestDetectorFiducializationProcess();
-    TRestDetectorFiducializationProcess(char* cfgFileName);
+    TRestDetectorFiducializationProcess(char* configFilename);
 
     ~TRestDetectorFiducializationProcess();
 

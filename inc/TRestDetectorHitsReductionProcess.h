@@ -39,7 +39,7 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
     void EndProcess();
     void LoadDefaultConfig();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -52,10 +52,10 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsReduction"; }
+    inline TString GetProcessName() const { return (TString) "hitsReduction"; }
 
     TRestDetectorHitsReductionProcess();
-    TRestDetectorHitsReductionProcess(char* cfgFileName);
+    TRestDetectorHitsReductionProcess(char* configFilename);
 
     ~TRestDetectorHitsReductionProcess();
 

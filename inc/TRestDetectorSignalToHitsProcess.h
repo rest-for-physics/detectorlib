@@ -75,7 +75,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     /// It prints out the process parameters stored in the metadata structure
     void PrintMetadata() {
@@ -97,7 +97,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     TString GetProcessName() const { return (TString) "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
-    TRestDetectorSignalToHitsProcess(char* cfgFileName);
+    TRestDetectorSignalToHitsProcess(char* configFilename);
     ~TRestDetectorSignalToHitsProcess();
 
     ClassDef(TRestDetectorSignalToHitsProcess, 4);

@@ -22,12 +22,12 @@ ClassImp(TRestDetectorHitsEventViewer)
     Initialize();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorHitsEventViewer::~TRestDetectorHitsEventViewer() {
     // TRestDetectorHitsEventViewer destructor
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsEventViewer::Initialize() {
     fHitsEvent = new TRestDetectorHitsEvent();
     fEvent = fHitsEvent;

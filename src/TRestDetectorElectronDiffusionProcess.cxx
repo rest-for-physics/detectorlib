@@ -18,17 +18,17 @@ using namespace std;
 
 ClassImp(TRestDetectorElectronDiffusionProcess);
 
-//______________________________________________________________________________
+
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess() { Initialize(); }
 
-//______________________________________________________________________________
-TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* cfgFileName) {
+
+TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorElectronDiffusionProcess::~TRestDetectorElectronDiffusionProcess() { delete fOutputHitsEvent; }
 
 void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
@@ -39,7 +39,7 @@ void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
     fGasPressure = 1;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorElectronDiffusionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -61,16 +61,16 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fRandom = NULL;
 }
 
-void TRestDetectorElectronDiffusionProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorElectronDiffusionProcess::LoadConfig(string configFilename, string name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorElectronDiffusionProcess::InitProcess() {
     fRandom = new TRandom3(fSeed);
 
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas == NULL) {
+    if (fGas == nullptr) {
         if (fLonglDiffCoeff == -1 || fTransDiffCoeff == -1) {
             warning << "Gas has not been initialized" << endl;
             ferr << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
@@ -108,13 +108,13 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
 }
 
-//______________________________________________________________________________
+
 TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
@@ -222,7 +222,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evIn
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -232,7 +232,7 @@ void TRestDetectorElectronDiffusionProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);

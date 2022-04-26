@@ -15,7 +15,7 @@
 #ifndef RestCore_TRestDetectorGarfieldDriftProcess
 #define RestCore_TRestDetectorGarfieldDriftProcess
 
-#include <TRestDetectorGas.h>
+#include "TRestDetectorGas.h"
 
 #if defined USE_Garfield_OLD
 #include "AvalancheMC.hh"
@@ -83,7 +83,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     void InitProcess();
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -98,15 +98,15 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fReadout; }
+    TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
-    TString GetProcessName() { return (TString) "garfieldDrift"; }
+    inline TString GetProcessName() const { return (TString) "garfieldDrift"; }
 
     Garfield::Sensor* GetGfSensor() { return fGfSensor; }
 
     // Constructor
     TRestDetectorGarfieldDriftProcess();
-    TRestDetectorGarfieldDriftProcess(char* cfgFileName);
+    TRestDetectorGarfieldDriftProcess(char* configFilename);
     // Destructor
     ~TRestDetectorGarfieldDriftProcess();
 #endif

@@ -49,7 +49,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -60,15 +60,15 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return NULL; }
+    TRestMetadata* GetProcessMetadata() const { return NULL; }
 
-    TString GetProcessName() { return (TString) "smearingProcess"; }
+    inline TString GetProcessName() const { return (TString) "smearingProcess"; }
 
     Double_t GetEnergyReference() { return fEnergyRef; }
     Double_t GetResolutionReference() { return fResolutionAtEref; }
 
     TRestDetectorHitsSmearingProcess();
-    TRestDetectorHitsSmearingProcess(char* cfgFileName);
+    TRestDetectorHitsSmearingProcess(char* configFilename);
 
     ~TRestDetectorHitsSmearingProcess();
 

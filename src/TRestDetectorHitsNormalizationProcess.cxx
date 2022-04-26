@@ -29,10 +29,10 @@ ClassImp(TRestDetectorHitsNormalizationProcess)
 }
 
 //______________________________________________________________________________
-TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* cfgFileName) {
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
 
@@ -62,8 +62,8 @@ void TRestDetectorHitsNormalizationProcess::Initialize() {
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
-void TRestDetectorHitsNormalizationProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsNormalizationProcess::LoadConfig(string configFilename, string name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     PrintMetadata();
 }

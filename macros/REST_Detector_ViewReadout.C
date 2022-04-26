@@ -24,9 +24,9 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
     TRestDetectorReadout* readout = NULL;
     TIter nextkey(fFile->GetListOfKeys());
     TKey* key;
-    while ((key = (TKey*)nextkey()) != NULL) {
+    while ((key = (TKey*)nextkey()) != nullptr) {
         if (key->GetClassName() == (TString) "TRestDetectorReadout") {
-            if (readout == NULL)
+            if (readout == nullptr)
                 readout = (TRestDetectorReadout*)fFile->Get(key->GetName());
             else if (key->GetName() == name)
                 readout = (TRestDetectorReadout*)fFile->Get(key->GetName());

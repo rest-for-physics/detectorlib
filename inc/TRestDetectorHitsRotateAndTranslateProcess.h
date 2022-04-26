@@ -49,7 +49,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename);
+    void LoadConfig(std::string configFilename);
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -64,7 +64,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "rotateAndTraslate"; }
+    inline TString GetProcessName() const { return (TString) "rotateAndTraslate"; }
 
     Double_t GetDeltaX() { return fDeltaX; }
     Double_t GetDeltaY() { return fDeltaY; }
@@ -76,7 +76,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorHitsRotateAndTranslateProcess();
-    TRestDetectorHitsRotateAndTranslateProcess(char* cfgFileName);
+    TRestDetectorHitsRotateAndTranslateProcess(char* configFilename);
     // Destructor
     ~TRestDetectorHitsRotateAndTranslateProcess();
 

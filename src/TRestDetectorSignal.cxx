@@ -42,7 +42,7 @@ ClassImp(TRestDetectorSignal)
     fPointsOverThreshold.clear();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorSignal::~TRestDetectorSignal() {
     // TRestDetectorSignal destructor
 }
@@ -498,7 +498,7 @@ void TRestDetectorSignal::Print() {
 }
 
 TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
-    if (fGraph != NULL) {
+    if (fGraph != nullptr) {
         delete fGraph;
         fGraph = NULL;
     }

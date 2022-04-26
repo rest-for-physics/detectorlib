@@ -28,18 +28,18 @@ ClassImp(TRestDetectorHitsSmearingProcess)
     Initialize();
 }
 
-//______________________________________________________________________________
-TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* cfgFileName) {
+
+TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
 
     // TRestDetectorHitsSmearingProcess default constructor
 }
 
-//______________________________________________________________________________
+
 TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
     delete fHitsOutputEvent;
     // TRestDetectorHitsSmearingProcess destructor
@@ -52,7 +52,7 @@ void TRestDetectorHitsSmearingProcess::LoadDefaultConfig() {
     fResolutionAtEref = 15.0;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsSmearingProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -66,15 +66,15 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     fRandom = NULL;
 }
 
-void TRestDetectorHitsSmearingProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsSmearingProcess::LoadConfig(string configFilename, string name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     PrintMetadata();
 
     fGas = GetMetadata<TRestDetectorGas>();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsSmearingProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -84,7 +84,7 @@ void TRestDetectorHitsSmearingProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-//______________________________________________________________________________
+
 TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
@@ -101,7 +101,7 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) 
     return fHitsOutputEvent;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsSmearingProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -111,7 +111,7 @@ void TRestDetectorHitsSmearingProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {
     fEnergyRef = GetDblParameterWithUnits("energyReference");
     fResolutionAtEref = StringToDouble(GetParameter("resolutionReference"));

@@ -31,10 +31,10 @@ ClassImp(TRestDetectorHitsRotateAndTranslateProcess)
 }
 
 //______________________________________________________________________________
-TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(char* cfgFileName) {
+TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
 
@@ -73,8 +73,8 @@ void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     fOutputHitsEvent = NULL;
 }
 
-void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string cfgFilename) {
-    if (LoadConfigFromFile(cfgFilename)) LoadDefaultConfig();
+void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string configFilename) {
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
 }

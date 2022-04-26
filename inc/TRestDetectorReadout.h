@@ -100,8 +100,8 @@ class TRestDetectorReadout : public TRestMetadata {
 
     // Construtor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* cfgFileName);
-    TRestDetectorReadout(const char* cfgFileName, std::string name);
+    TRestDetectorReadout(const char* configFilename);
+    TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
     virtual ~TRestDetectorReadout();
 

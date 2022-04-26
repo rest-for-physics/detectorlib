@@ -23,10 +23,10 @@ ClassImp(TRestDetectorReadoutEventViewer)
     Initialize();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorReadoutEventViewer::~TRestDetectorReadoutEventViewer() {}
 
-//______________________________________________________________________________
+
 void TRestDetectorReadoutEventViewer::Initialize() {
     TRestEventViewer::Initialize();
 
@@ -41,7 +41,7 @@ void TRestDetectorReadoutEventViewer::Initialize() {
     SetEvent(fSignalEvent);
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorReadoutEventViewer::SetReadout(TRestDetectorReadout* readout) {
     // Finalize the instantiation based on argument TRestDetectorReadout
     fReadout = readout;
@@ -60,18 +60,18 @@ void TRestDetectorReadoutEventViewer::AddEvent(TRestEvent* ev) {
     // the XY, XZ and YZ projections.
     TRestEventViewer::AddEvent(ev);
 
-    if (fPad == NULL) return;
+    if (fPad == nullptr) return;
 
     fSignalEvent = (TRestDetectorSignalEvent*)ev;
 
     // XY histo is expected to have always same binning => reset it.
     // (X|Y)Z may change from event to event => delete (and later on re-create).
     fHistoXY->Reset(0);
-    if (fHistoXZ != NULL) {
+    if (fHistoXZ != nullptr) {
         delete fHistoXZ;
         fHistoXZ = NULL;
     }
-    if (fHistoYZ != NULL) {
+    if (fHistoYZ != nullptr) {
         delete fHistoYZ;
         fHistoYZ = NULL;
     }
@@ -129,7 +129,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
         readoutChannel = module->DaqToReadoutChannel(daqChannel);
         cout << "daqChannel " << daqChannel << " readoutChannel " << readoutChannel << endl;
         // if((module = GetModule(readoutChannel))==NULL)continue;
-        if ((channel = GetChannel(readoutChannel)) == NULL) continue;
+        if ((channel = GetChannel(readoutChannel)) == nullptr) continue;
 
         int nPixels = channel->GetNumberOfPixels();
 
@@ -180,7 +180,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
     for (int n = 0; n < plane->GetNumberOfModules(); n++) {
-        if ((*plane)[n].GetChannel(readoutChannel) == NULL) continue;
+        if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return (*plane)[n].GetChannel(readoutChannel);
     }
 
@@ -191,7 +191,7 @@ TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int rea
 TRestDetectorReadoutModule* TRestDetectorReadoutEventViewer::GetModule(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
     for (int n = 0; n < fReadout->GetNumberOfModules(); n++) {
-        if ((*plane)[n].GetChannel(readoutChannel) == NULL) continue;
+        if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return &(*plane)[n];
     }
 

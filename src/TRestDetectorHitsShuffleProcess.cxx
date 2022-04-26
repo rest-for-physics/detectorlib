@@ -17,14 +17,14 @@ ClassImp(TRestDetectorHitsShuffleProcess)
     Initialize();
 }
 
-//______________________________________________________________________________
-TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* cfgFileName) {
+
+TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorHitsShuffleProcess::~TRestDetectorHitsShuffleProcess() {
     // delete fHitsEvent;
 }
@@ -36,7 +36,7 @@ void TRestDetectorHitsShuffleProcess::LoadDefaultConfig() {
     fIterations = 100;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsShuffleProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -46,14 +46,14 @@ void TRestDetectorHitsShuffleProcess::Initialize() {
     fRandom = NULL;
 }
 
-void TRestDetectorHitsShuffleProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name) == -1) LoadDefaultConfig();
+void TRestDetectorHitsShuffleProcess::LoadConfig(std::string configFilename, std::string name) {
+    if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsShuffleProcess::InitProcess() {}
 
-//______________________________________________________________________________
+
 TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -71,10 +71,10 @@ TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
     return fHitsEvent;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsShuffleProcess::EndProcess() {}
 
-//______________________________________________________________________________
+
 void TRestDetectorHitsShuffleProcess::InitFromConfigFile() {
     fIterations = StringToInteger(GetParameter("iterations"));
     fRandom = new TRandom3(StringToDouble(GetParameter("seed", "0")));

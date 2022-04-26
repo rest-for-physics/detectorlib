@@ -28,8 +28,8 @@ ClassImp(TRestDetectorSetup)
     Initialize();
 }
 
-//______________________________________________________________________________
-TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMetadata(cfgFileName) {
+
+TRestDetectorSetup::TRestDetectorSetup(char* configFilename, string name) : TRestMetadata(configFilename) {
     Initialize();
 
     LoadConfigFromFile(fConfigFileName, name);
@@ -37,7 +37,7 @@ TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMe
     PrintMetadata();
 }
 
-//______________________________________________________________________________
+
 TRestDetectorSetup::~TRestDetectorSetup() {
     // TRestDetectorSetup destructor
 }
@@ -61,14 +61,14 @@ void TRestDetectorSetup::Initialize() {
     fSamplingInMicroSec = 0;
 }
 
-//______________________________________________________________________________
+
 void TRestDetectorSetup::InitFromConfigFile() {
     this->Initialize();
 
     // Initialize the metadata members from a configfile
     fRunNumber = StringToInteger(GetParameter("runNumber"));
     fSubRunNumber = StringToInteger(GetParameter("subRunNumber"));
-    if (fHostmgr != NULL && fHostmgr->GetRunInfo() != NULL) {
+    if (fHostmgr != nullptr && fHostmgr->GetRunInfo() != nullptr) {
         TRestRun* r = fHostmgr->GetRunInfo();
         if (r->GetInputFileNumber() > 0) InitFromFileName(r->GetInputFileName(0));
     }

@@ -80,11 +80,11 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "readoutAnalysis"; }
+    inline TString GetProcessName() const { return (TString) "readoutAnalysis"; }
 
     // Constructor
     TRestDetectorSingleChannelAnalysisProcess();
-    TRestDetectorSingleChannelAnalysisProcess(char* cfgFileName);
+    TRestDetectorSingleChannelAnalysisProcess(char* configFilename);
     // Destructor
     ~TRestDetectorSingleChannelAnalysisProcess();
 

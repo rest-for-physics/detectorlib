@@ -23,6 +23,7 @@
 
 #ifndef RestCore_TRestDetectorDriftVolume
 #define RestCore_TRestDetectorDriftVolume
+
 #include <TROOT.h>
 #include <stdlib.h>
 
@@ -58,7 +59,7 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
    public:
     TRestDetectorDriftVolume();
-    TRestDetectorDriftVolume(const char* cfgFileName, std::string name = "");
+    TRestDetectorDriftVolume(const char* configFilename, std::string name = "");
     virtual void Initialize();
     virtual void InitFromConfigFile();
 

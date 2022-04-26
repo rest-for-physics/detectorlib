@@ -46,7 +46,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename);
+    void LoadConfig(std::string configFilename);
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -58,9 +58,9 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fGas; }
+    TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    TString GetProcessName() { return (TString) "avalancheProcess"; }
+    inline TString GetProcessName() const { return (TString) "avalancheProcess"; }
 
     Double_t GetEnergyReference() { return fEnergyRef; }
     Double_t GetResolutionReference() { return fResolutionAtEref; }
@@ -68,7 +68,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorAvalancheProcess();
-    TRestDetectorAvalancheProcess(char* cfgFileName);
+    TRestDetectorAvalancheProcess(char* configFilename);
     // Destructor
     ~TRestDetectorAvalancheProcess();
 

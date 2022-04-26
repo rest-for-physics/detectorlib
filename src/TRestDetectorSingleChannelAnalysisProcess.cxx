@@ -48,7 +48,7 @@ void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
 void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
     } else {
         for (int i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
             auto plane = fReadout->GetReadoutPlane(i);
@@ -67,7 +67,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 
     if (fApplyGainCorrection) {
-        if (fCalib != NULL) {
+        if (fCalib != nullptr) {
             for (auto iter = fChannelGain.begin(); iter != fChannelGain.end(); iter++) {
                 if (fCalib->fChannelGain.count(iter->first) == 0) {
                     ferr << "in consistent gain mapping and readout definition!" << endl;
@@ -82,7 +82,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
         }
     }
 
-    if (GetFriend("TRestRawSignalAnalysisProcess") == NULL) {
+    if (GetFriend("TRestRawSignalAnalysisProcess") == nullptr) {
         ferr << "please add friend process TRestRawSignalAnalysisProcess and "
                 "TRestRawReadoutAnalysisProcess "
                 "and turn on all their observables!"
@@ -117,7 +117,7 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
             // if within energy cut range
 
             for (auto iter = sAna_thr_integral_map.begin(); iter != sAna_thr_integral_map.end(); iter++) {
-                if (fChannelThrIntegral[iter->first] == NULL) {
+                if (fChannelThrIntegral[iter->first] == nullptr) {
                     fChannelThrIntegral[iter->first] = new TH1D(
                         Form("h%i", iter->first), Form("h%i", iter->first), 100, 0, fSpecFitRange.Y() * 1.5);
                 }
@@ -286,7 +286,7 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
 
     c->Print((filename + ".pdf[").c_str());
     for (auto iter = fChannelThrIntegral.begin(); iter != fChannelThrIntegral.end(); iter++) {
-        if (iter->second != NULL && iter->second->GetEntries() > 0) {
+        if (iter->second != nullptr && iter->second->GetEntries() > 0) {
             cout << "Drawing: " << iter->first << endl;
             c->Clear();
             iter->second->Draw();

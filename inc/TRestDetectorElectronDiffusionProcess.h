@@ -59,7 +59,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
     void EndProcess();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(std::string configFilename, std::string name = "");
 
     void PrintMetadata() {
         BeginPrintProcess();
@@ -78,9 +78,9 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fGas; }
+    TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    TString GetProcessName() { return (TString) "electronDiffusion"; }
+    inline TString GetProcessName() const { return (TString) "electronDiffusion"; }
 
     Double_t GetElectricField() { return fElectricField; }
     Double_t GetAttachmentCoefficient() { return fAttachment; }
@@ -88,7 +88,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorElectronDiffusionProcess();
-    TRestDetectorElectronDiffusionProcess(char* cfgFileName);
+    TRestDetectorElectronDiffusionProcess(char* configFilename);
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
