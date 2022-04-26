@@ -779,32 +779,6 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 /// The different histograms are drawn in a TPad *fPad defined as global variable
 ///
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOption, double pitch) {
-    if (fXYHisto != nullptr) {
-        delete fXYHisto;
-        fXYHisto = nullptr;
-    }
-    if (fXZHisto != nullptr) {
-        delete fXZHisto;
-        fXZHisto = nullptr;
-    }
-    if (fYZHisto != nullptr) {
-        delete fYZHisto;
-        fYZHisto = nullptr;
-    }
-
-    if (fXHisto != nullptr) {
-        delete fXHisto;
-        fXHisto = nullptr;
-    }
-    if (fYHisto != nullptr) {
-        delete fYHisto;
-        fYHisto = nullptr;
-    }
-    if (fZHisto != nullptr) {
-        delete fZHisto;
-        fZHisto = nullptr;
-    }
-
     std::vector<double> fX, fY, fZ;
     for (int i = 0; i < GetNumberOfHits(); i++) {
         if (GetType(i) % X == 0) fX.emplace_back(GetX(i));
@@ -824,6 +798,14 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         nBinsZ = std::round((maxZ - minZ) / pitch);
     }
 
+    delete fXYHisto;
+    delete fXZHisto;
+    delete fYZHisto;
+
+    delete fXHisto;
+    delete fYHisto;
+    delete fZHisto;
+
     fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
     fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
     fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
@@ -835,6 +817,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
     fXYHisto->SetStats(false);
     fXZHisto->SetStats(false);
     fYZHisto->SetStats(false);
+
     fXHisto->SetStats(false);
     fYHisto->SetStats(false);
     fZHisto->SetStats(false);
