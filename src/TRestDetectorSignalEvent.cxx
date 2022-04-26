@@ -225,7 +225,6 @@ TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
 
     for (int n = 0; n < nSignals; n++) {
         TGraph* gr = fSignal[n].GetGraph(n + 1);
-
         mg->Add(gr);
     }
 

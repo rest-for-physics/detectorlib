@@ -20,52 +20,37 @@
 //! allowing us to save a 3-coordinate position and energy.
 class TRestDetectorHitsEvent : public TRestEvent {
    private:
-    /// An auxiliar TRestHits structure to register hits on XZ projection
+    /// An auxiliary TRestHits structure to register hits on XZ projection
     TRestHits* fXZHits;  //!
-    /// An auxiliar TRestHits structure to register hits on YZ projection
+    /// An auxiliary TRestHits structure to register hits on YZ projection
     TRestHits* fYZHits;  //!
 
-    /// An auxiliar TRestHits structure to register hits on XYZ projection
+    /// An auxiliary TRestHits structure to register hits on XYZ projection
     TRestHits* fXYZHits;  //!
-
-    /// Stores the minimum x-position value. It is initialized by SetBoundaries.
-    Double_t fMinX;  //!
-    /// Stores the maximum x-position value. It is initialized by SetBoundaries.
-    Double_t fMaxX;  //!
-
-    /// Stores the minimum y-position value. It is initialized by SetBoundaries.
-    Double_t fMinY;  //!
-    /// Stores the maximum y-position value. It is initialized by SetBoundaries.
-    Double_t fMaxY;  //!
-
-    /// Stores the minimum z-position value. It is initialized by SetBoundaries.
-    Double_t fMinZ;  //!
-    /// Stores the maximum z-position value. It is initialized by SetBoundaries.
-    Double_t fMaxZ;  //!
 
    protected:
     // TODO These graphs should be placed in TRestHits?
     // (following similar GetGraph implementation in TRestDetectorSignal)
 
-    /// An auxiliar TGraph pointer to visualize hits on XY-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XY-projection.
     TGraph* fXYHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on XZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XZ-projection.
     TGraph* fXZHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on YZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on YZ-projection.
     TGraph* fYZHitGraph;  //!
 
-    /// An auxiliar TH2F histogram to visualize hits on XY-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XY-projection.
     TH2F* fXYHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on YZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on YZ-projection.
     TH2F* fYZHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on XZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XZ-projection.
     TH2F* fXZHisto;  //!
 
-    /// An auxiliar TH1F histogram to visualize hits on X-projection.
+    /// An auxiliary TH1F histogram to visualize hits on X-projection.
     TH1F* fXHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Y-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Y-projection.
     TH1F* fYHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Z-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Z-projection.
     TH1F* fZHisto;  //!
 
     /// The hits structure that is is saved to disk.
@@ -75,13 +60,13 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
     void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
-    void SetBoundaries();
-    void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
+    void Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
+                                     const TRestHits::iterator& hit2) = nullptr);
     void Shuffle(int NLoop);
 
     Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
 
-    TRestHits* GetHits() { return fHits; }
+    TRestHits* GetHits() const { return fHits; }
 
     /// Returns the X-coordinate of hit entry `n` in mm.
     Double_t GetX(int n) { return fHits->GetX(n); }
@@ -134,13 +119,13 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     Double_t GetEnergyX() { return fHits->GetEnergyX(); }
     Double_t GetEnergyY() { return fHits->GetEnergyY(); }
-    Double_t GetTotalDepositedEnergy() { return fHits->fTotEnergy; }
-    Double_t GetTotalEnergy() { return fHits->fTotEnergy; }
+    Double_t GetTotalDepositedEnergy() const { return fHits->fTotEnergy; }
+    Double_t GetTotalEnergy() const { return fHits->fTotEnergy; }
     Double_t GetEnergy() { return fHits->GetEnergy(); }
     Double_t GetEnergy(int n) { return fHits->GetEnergy(n); }
     Double_t GetTime(int n) { return GetHits()->GetTime(n); }  // return value in us
 
-    Int_t GetClosestHit(TVector3 position) { return fHits->GetClosestHit(position); }
+    Int_t GetClosestHit(const TVector3& position) { return fHits->GetClosestHit(position); }
 
     // Inside Cylinder methods
     Bool_t anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
@@ -168,11 +153,11 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                     Double_t theta);
     Double_t GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                    Double_t theta);
-    Double_t GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1, Double_t sizeX,
+    Double_t GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1, Double_t sizeX,
                                                       Double_t sizeY, Double_t theta);
 
     TPad* DrawEvent(const TString& option = "");
-    void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
+    void DrawHistograms(Int_t& column, const TString& histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
     // Constructor

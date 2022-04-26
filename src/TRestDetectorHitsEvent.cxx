@@ -82,15 +82,6 @@ TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fXHisto = nullptr;
     fYHisto = nullptr;
     fZHisto = nullptr;
-
-    fMinX = -10;
-    fMaxX = 10;
-
-    fMinY = -10;
-    fMaxY = 10;
-
-    fMinZ = -10;
-    fMaxZ = 10;
 }
 
 ///////////////////////////////////////////////
@@ -142,25 +133,18 @@ void TRestDetectorHitsEvent::Initialize() {
     fXZHits = new TRestHits();
     fYZHits = new TRestHits();
     fXYZHits = new TRestHits();
-
-    fMinX = 0;
-    fMaxX = 0;
-    fMinY = 0;
-    fMaxY = 0;
-    fMinZ = 0;
-    fMaxZ = 0;
 }
 
-void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
+void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
-    if (comparecondition == 0) {
+    if (compareCondition == 0) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
                   [](const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) -> bool {
                       return hit1.z() < hit2.z();
                   });
     } else {
-        std::sort(fHits->begin(), fHits->end(), comparecondition);
+        std::sort(fHits->begin(), fHits->end(), compareCondition);
     }
 }
 
@@ -563,9 +547,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1,
-                                                                          Double_t sizeX, Double_t sizeY,
-                                                                          Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0,
+                                                                          const TVector3& x1, Double_t sizeX,
+                                                                          Double_t sizeY, Double_t theta) {
     TVector3 axis = x1 - x0;
     Double_t prismLength = axis.Mag();
 
@@ -595,19 +579,25 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVecto
 ///
 /// The following options are allowed:
 ///
-/// * **graph**:
-/// * **hist**:
-/// * **print**:
+/// 1. **graph**: It draws the hits using a TGraph drawing method.
+///
+/// 2. **hist**: It generates histograms in XY, XZ and YZ projections using the projected
+/// event hits at the corresponding plane, the bins are weighted with their corresponding
+/// energy. Histograms will accept as argument, between parenthesis, a conventional ROOT
+/// option, i.e. `hist(rootOption)`, where rootOption is any valid ROOT option as described
+/// by the [THistPainter](https://root.cern/doc/master/classTHistPainter.html) ROOT class.
+/// The default binning size is defined to be automatic, but the user is able to define a
+/// custom bin size of the histogram using the [ ]. i.e. the following example will define
+/// the bin size to 1mm. Example: `hist(Cont0,colz)[1]`.
+///
+/// 3 **print**: It will print on screen the result of TRestDetectorHitsEvent::PrintEvent.
 ///
 /// The different options must separated by colons, as "option1:option2:option3".
-///
 ///
 /// \return A pointer to the TPad where the event was drawn is returned.
 ///
 TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
     vector<TString> optList = Vector_cast<string, TString>(TRestTools::GetOptions((string)option));
-
-    SetBoundaries();
 
     for (unsigned int n = 0; n < optList.size(); n++) {
         if (optList[n] == "print") this->PrintEvent();
@@ -615,8 +605,9 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
 
     optList.erase(std::remove(optList.begin(), optList.end(), "print"), optList.end());
 
-    /// The default histogram using a pitch of 0.5mm
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
+    /// The default histogram using a pitch of 0 mm,
+    //  which means that it should be extracted from the hit array
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
     if (fPad != nullptr) {
         delete fPad;
@@ -655,7 +646,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
 
         startPos = optionStr.find("[");
         endPos = optionStr.find("]");
-        Double_t pitch = 3;
+        Double_t pitch = 0;
         if (endPos != string::npos) {
             TString pitchOption = optList[n](startPos + 1, endPos - startPos - 1);
             pitch = stod((string)pitchOption);
@@ -663,38 +654,19 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
 
         if (drawEventOption == "graph") this->DrawGraphs(column);
 
-        if (drawEventOption == "hist") this->DrawHistograms(column, pitch, histOption);
+        if (drawEventOption == "hist") this->DrawHistograms(column, histOption, pitch);
     }
 
     return fPad;
 }
 
-void TRestDetectorHitsEvent::SetBoundaries() {
-    Double_t maxX = -1e10, minX = 1e10, maxZ = -1e10, minZ = 1e10, maxY = -1e10, minY = 1e10;
-
-    for (int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
-        Double_t x = fHits->GetX(nhit);
-        Double_t y = fHits->GetY(nhit);
-        Double_t z = fHits->GetZ(nhit);
-
-        if (x > maxX) maxX = x;
-        if (x < minX) minX = x;
-        if (y > maxY) maxY = y;
-        if (y < minY) minY = y;
-        if (z > maxZ) maxZ = z;
-        if (z < minZ) minZ = z;
-    }
-
-    fMinX = minX;
-    fMaxX = maxX;
-
-    fMinY = minY;
-    fMaxY = maxY;
-
-    fMinZ = minZ;
-    fMaxZ = maxZ;
-}
-
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as a graph.
+///
+/// This method receives as argument the column to be drawn in the TPad.
+///
+/// The different TGraphs are drawn in a TPad *fPad defined as global variable
+///
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     if (fXYHitGraph != nullptr) {
         delete fXYHitGraph;
@@ -792,7 +764,21 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     column++;
 }
 
-void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TString histOption) {
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as an histogram
+///
+/// This method receives the following arguments:
+/// -The column to be drawn in the TPad.
+/// -The histOption used as Draw option for the histograms
+/// -The pitch size which defines the number of bins of the histograms,
+/// if the pitch size is zero, the bins are drawn based on the minDiff of a
+/// particular axis. Otherwise, the pitch passed as argument is used to define
+/// the bin size, the histogram boundaries are based on the max/min values of
+/// a particular axis.
+///
+/// The different histograms are drawn in a TPad *fPad defined as global variable
+///
+void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOption, double pitch) {
     if (fXYHisto != nullptr) {
         delete fXYHisto;
         fXYHisto = nullptr;
@@ -819,20 +805,32 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
         fZHisto = nullptr;
     }
 
-    Int_t nBinsX = (fMaxX - fMinX + 20) / pitch;
-    Int_t nBinsY = (fMaxY - fMinY + 20) / pitch;
-    Int_t nBinsZ = (fMaxZ - fMinZ + 20) * 3 / pitch;
+    std::vector<double> fX, fY, fZ;
+    for (int i = 0; i < GetNumberOfHits(); i++) {
+        if (GetType(i) % X == 0) fX.emplace_back(GetX(i));
+        if (GetType(i) % Y == 0) fY.emplace_back(GetY(i));
+        if (GetType(i) % Z == 0) fZ.emplace_back(GetZ(i));
+    }
 
-    fXYHisto = new TH2F("XY", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX, nBinsY, fMinY - 10,
-                        fMinY + pitch * nBinsY);
-    fXZHisto = new TH2F("XZ", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX, nBinsZ, fMinZ - 10,
-                        fMinZ + (pitch / 3) * nBinsZ);
-    fYZHisto = new TH2F("YZ", "", nBinsY, fMinY - 10, fMinY + pitch * nBinsY, nBinsZ, fMinZ - 10,
-                        fMinZ + (pitch / 3) * nBinsZ);
+    double maxX, minX, maxY, minY, maxZ, minZ;
+    int nBinsX, nBinsY, nBinsZ;
+    TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
+    TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
+    TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
 
-    fXHisto = new TH1F("X", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX);
-    fYHisto = new TH1F("Y", "", nBinsY, fMinY - 10, fMinY + pitch * nBinsY);
-    fZHisto = new TH1F("Z", "", nBinsZ, fMinZ - 10, fMinZ + pitch * nBinsZ);
+    if (pitch > 0) {
+        nBinsX = std::round((maxX - minX) / pitch);
+        nBinsY = std::round((maxY - minY) / pitch);
+        nBinsZ = std::round((maxZ - minZ) / pitch);
+    }
+
+    fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+
+    fXHisto = new TH1F("X", "", nBinsX, minX, maxX);
+    fYHisto = new TH1F("Y", "", nBinsY, minY, maxY);
+    fZHisto = new TH1F("Z", "", nBinsZ, minZ, maxZ);
 
     fXYHisto->SetStats(false);
     fXZHisto->SetStats(false);
@@ -848,20 +846,21 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
         Double_t x = fHits->GetX(nhit);
         Double_t y = fHits->GetY(nhit);
         Double_t z = fHits->GetZ(nhit);
+        Double_t en = fHits->GetEnergy(nhit);
         int type = fHits->GetType(nhit);
 
         if (type % XZ == 0) {
-            fXZHisto->Fill(x, z);
+            fXZHisto->Fill(x, z, en);
             nXZ++;
         }
 
         if (type % YZ == 0) {
-            fYZHisto->Fill(y, z);
+            fYZHisto->Fill(y, z, en);
             nYZ++;
         }
 
         if (type % XY == 0) {
-            fXYHisto->Fill(x, y);
+            fXYHisto->Fill(x, y, en);
             nXY++;
         }
 

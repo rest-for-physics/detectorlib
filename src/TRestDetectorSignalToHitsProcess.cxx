@@ -42,6 +42,9 @@
 /// is used.
 /// * **electricField**: Electric field. Typically in V/cm. Relevant only
 /// if TRestDetectorGas is used.
+/// * **intWindow**: In case intwindow method is selected, it defines the
+/// integral window (us) that will be used to define the window in which
+/// the data points are integrated
 ///
 /// On top of that, this process will need to get access to a
 /// TRestDetectorReadout definition in order to transform the corresponding
@@ -77,6 +80,9 @@
 /// averaged on all points (Perhaps this is not the most appropiate?).
 /// * **all**: It will simply transport all points found at the TRestSignal
 /// to the TRestDetetorHitsEvent.
+/// * **intwindow**: Splits the time into a window defined by fIntwindow
+/// while performing the average of the data points. Every point corresponds
+/// to a Hit
 ///
 /// \htmlonly <style>div.image img[src="signalToHits.png"]{width:800px;}</style> \endhtmlonly
 ///
@@ -97,6 +103,9 @@
 ///
 /// 2016-January: First concept and implementation.
 /// \author     Javier Galan
+///
+/// 2022-January: Implementing new method intwindod
+/// \author     JuanAn Garcia
 ///
 /// \class TRestDetectorSignalToHitsProcess
 ///
@@ -152,7 +161,7 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = new TRestDetectorHitsEvent();
-    fSignalEvent = 0;
+    fSignalEvent = nullptr;
 
     fGas = nullptr;
     fReadout = nullptr;
@@ -210,9 +219,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
     fHitsEvent->SetSubEventTag(fSignalEvent->GetSubEventTag());
 
     debug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << endl;
-    if (GetVerboseLevel() >= REST_Debug) fSignalEvent->PrintEvent();
+    if (GetVerboseLevel() >= REST_Extreme) fSignalEvent->PrintEvent();
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
+
+    if (numberOfSignals == 0) return nullptr;
 
     Int_t planeID, readoutChannel = -1, readoutModule;
     for (int i = 0; i < numberOfSignals; i++) {
@@ -330,6 +341,36 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
                 if (GetVerboseLevel() >= REST_Debug)
                     cout << "Adding hit. Time : " << sgnl->GetTime(j) << " x : " << x << " y : " << y
                          << " z : " << z << endl;
+
+                fHitsEvent->AddHit(x, y, z, energy, 0, type);
+            }
+        } else if (fMethod == "intwindow") {
+            Int_t nPoints = sgnl->GetNumberOfPoints();
+            std::map<int, std::pair<int, double> > windowMap;
+            for (int j = 0; j < nPoints; j++) {
+                int index = sgnl->GetTime(j) / fIntWindow;
+                auto it = windowMap.find(index);
+                if (it != windowMap.end()) {
+                    it->second.first++;
+                    it->second.second += sgnl->GetData(j);
+                } else {
+                    windowMap[index] = std::make_pair(1, sgnl->GetData(j));
+                }
+            }
+
+            for (const auto& [index, pair] : windowMap) {
+                Double_t time = index * fIntWindow + fIntWindow / 2.;
+                Double_t energy = pair.second / pair.first;
+                if (energy < fThreshold) continue;
+                debug << "TimeBin " << index << " Time " << time << " Charge: " << energy
+                      << " Thr: " << (fThreshold) << endl;
+                Double_t distanceToPlane = time * fDriftVelocity;
+                Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+                debug << "Time : " << time << " Drift velocity : " << fDriftVelocity
+                      << "\nDistance to plane : " << distanceToPlane << endl;
+                debug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                      << " type " << type << endl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
