@@ -52,7 +52,7 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline const char* GetProcessName() const { return "hitsReduction"; }
+    const char* GetProcessName() const override { return "hitsReduction"; }
 
     TRestDetectorHitsReductionProcess();
     TRestDetectorHitsReductionProcess(const char* configFilename);

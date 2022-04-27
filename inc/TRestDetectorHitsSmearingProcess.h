@@ -62,7 +62,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     inline TRestMetadata* GetProcessMetadata() const { return nullptr; }
 
-    inline const char* GetProcessName() const { return "smearingProcess"; }
+    const char* GetProcessName() const override { return "smearingProcess"; }
 
     inline Double_t GetEnergyReference() const { return fEnergyRef; }
     inline Double_t GetResolutionReference() const { return fResolutionAtERef; }

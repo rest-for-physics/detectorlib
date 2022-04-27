@@ -61,7 +61,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     TPad* DrawSignal(Int_t signal);
 
-    inline const char* GetProcessName() const { return "rawSignalViewer"; }
+    const char* GetProcessName() const override { return "rawSignalViewer"; }
 
     TRestDetectorSignalViewerProcess();
     TRestDetectorSignalViewerProcess(const char* configFilename);

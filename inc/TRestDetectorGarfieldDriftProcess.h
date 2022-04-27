@@ -100,7 +100,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
     TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
-    inline const char* GetProcessName() const { return "garfieldDrift"; }
+    const char* GetProcessName() const override { return "garfieldDrift"; }
 
     Garfield::Sensor* GetGfSensor() { return fGfSensor; }
 

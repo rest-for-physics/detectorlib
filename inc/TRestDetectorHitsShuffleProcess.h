@@ -51,7 +51,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline const char* GetProcessName() const { return "hitsShuffle"; }
+    const char* GetProcessName() const override { return "hitsShuffle"; }
 
     // Constructor
     TRestDetectorHitsShuffleProcess();

@@ -86,7 +86,7 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline const char* GetProcessName() const { return "hitsAnalysis"; }
+    const char* GetProcessName() const override { return "hitsAnalysis"; }
 
     TRestDetectorHitsAnalysisProcess();
     TRestDetectorHitsAnalysisProcess(const char* configFilename);

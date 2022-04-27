@@ -77,7 +77,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline const char* GetProcessName() const { return "readoutAnalysis"; }
+    const char* GetProcessName() const override { return "readoutAnalysis"; }
 
     // Constructor
     TRestDetectorSingleChannelAnalysisProcess();

@@ -94,7 +94,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     }
 
     /// Returns the name of this process
-    inline const char* GetProcessName() const { return "signalToHits"; }
+    const char* GetProcessName() const override { return "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
     TRestDetectorSignalToHitsProcess(const char* configFilename);

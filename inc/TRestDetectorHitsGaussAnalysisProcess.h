@@ -66,7 +66,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     TRestEventProcess* Maker() { return new TRestDetectorHitsGaussAnalysisProcess; }
 
     /// Returns the name of this process
-    inline const char* GetProcessName() const { return "hitsGaussAnalysis"; }
+    const char* GetProcessName() const override { return "hitsGaussAnalysis"; }
 
     TRestDetectorHitsGaussAnalysisProcess();
     TRestDetectorHitsGaussAnalysisProcess(const char* configFilename);
