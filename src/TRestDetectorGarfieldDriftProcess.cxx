@@ -75,7 +75,7 @@ void TRestDetectorGarfieldDriftProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorGarfieldDriftProcess::LoadConfig(string configFilename, string name) {
+void TRestDetectorGarfieldDriftProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     if (fDriftPotential == PARAMETER_NOT_FOUND_DBL) {

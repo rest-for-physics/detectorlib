@@ -58,7 +58,7 @@ void TRestDetectorHitsNormalizationProcess::Initialize() {
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
-void TRestDetectorHitsNormalizationProcess::LoadConfig(string configFilename, string name) {
+void TRestDetectorHitsNormalizationProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     PrintMetadata();

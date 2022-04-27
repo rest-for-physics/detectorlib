@@ -59,7 +59,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorElectronDiffusionProcess::LoadConfig(string configFilename, string name) {
+void TRestDetectorElectronDiffusionProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 

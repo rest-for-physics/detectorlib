@@ -46,7 +46,7 @@ void TRestDetectorHitsReductionProcess::Initialize() {
     fOutputHitsEvent = nullptr;
 }
 
-void TRestDetectorHitsReductionProcess::LoadConfig(std::string configFilename, std::string name) {
+void TRestDetectorHitsReductionProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 

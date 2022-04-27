@@ -44,7 +44,7 @@ void TRestDetectorHitsShuffleProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorHitsShuffleProcess::LoadConfig(std::string configFilename, std::string name) {
+void TRestDetectorHitsShuffleProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 

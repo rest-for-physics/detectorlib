@@ -150,7 +150,7 @@ void TRestDetectorHitsAnalysisProcess::Initialize() {
     fCylinderFiducial = false;
 }
 
-void TRestDetectorHitsAnalysisProcess::LoadConfig(std::string configFilename, std::string name) {
+void TRestDetectorHitsAnalysisProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 

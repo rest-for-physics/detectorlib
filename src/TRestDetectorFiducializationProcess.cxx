@@ -42,7 +42,7 @@ void TRestDetectorFiducializationProcess::Initialize() {
     fReadout = nullptr;
 }
 
-void TRestDetectorFiducializationProcess::LoadConfig(string configFilename, string name) {
+void TRestDetectorFiducializationProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 

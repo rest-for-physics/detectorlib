@@ -49,7 +49,7 @@ void TRestDetectorSignalViewerProcess::Initialize() {
     fSingleThreadOnly = true;
 }
 
-void TRestDetectorSignalViewerProcess::LoadConfig(std::string configFilename, std::string name) {
+void TRestDetectorSignalViewerProcess::LoadConfig(const string& configFilename, const string& name) {
     if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
