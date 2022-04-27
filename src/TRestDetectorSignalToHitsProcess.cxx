@@ -113,7 +113,7 @@
 ///
 #include "TRestDetectorSignalToHitsProcess.h"
 
-#include <TRestDetectorSetup.h>
+#include "TRestDetectorSetup.h"
 
 using namespace std;
 
@@ -161,7 +161,7 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = new TRestDetectorHitsEvent();
-    fSignalEvent = 0;
+    fSignalEvent = nullptr;
 
     fGas = nullptr;
     fReadout = nullptr;
@@ -174,7 +174,7 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
 ///
 void TRestDetectorSignalToHitsProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas) {
+    if (fGas != nullptr) {
 #ifndef USE_Garfield
         ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << endl;

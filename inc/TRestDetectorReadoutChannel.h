@@ -23,11 +23,12 @@
 #ifndef RestCore_TRestDetectorReadoutChannel
 #define RestCore_TRestDetectorReadoutChannel
 
+#include <TObject.h>
+#include <TRestMetadata.h>
+
 #include <iostream>
 
-#include "TObject.h"
 #include "TRestDetectorReadoutPixel.h"
-#include "TRestMetadata.h"
 
 enum TRestDetectorReadoutChannelType {
     Channel_NoType = 0,
@@ -54,10 +55,10 @@ class TRestDetectorReadoutChannel : public TObject {
 
    public:
     /// Returns the corresponding daq channel id
-    Int_t GetDaqID() { return fDaqID; }
+    inline Int_t GetDaqID() const { return fDaqID; }
 
     /// Returns the corresponding channel id
-    Int_t GetChannelId() { return fChannelId; }
+    inline Int_t GetChannelId() const { return fChannelId; }
 
     /// Returns the total number of pixels inside the readout channel
     Int_t GetNumberOfPixels() { return fReadoutPixel.size(); }
@@ -66,7 +67,7 @@ class TRestDetectorReadoutChannel : public TObject {
 
     /// Returns a pointer to the pixel *n* by index.
     TRestDetectorReadoutPixel* GetPixel(int n) {
-        if (n >= GetNumberOfPixels()) return NULL;
+        if (n >= GetNumberOfPixels()) return nullptr;
         return &fReadoutPixel[n];
     }
 

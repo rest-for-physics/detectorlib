@@ -47,13 +47,14 @@
 ///
 
 #include "TRestDetectorReadoutMapping.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorReadoutMapping)
-    ///////////////////////////////////////////////
-    /// \brief TRestDetectorReadoutMapping constructor
-    ///
-    TRestDetectorReadoutMapping::TRestDetectorReadoutMapping() {}
+ClassImp(TRestDetectorReadoutMapping);
+///////////////////////////////////////////////
+/// \brief TRestDetectorReadoutMapping constructor
+///
+TRestDetectorReadoutMapping::TRestDetectorReadoutMapping() {}
 
 ///////////////////////////////////////////////
 /// \brief TRestDetectorReadoutMapping destructor

@@ -162,22 +162,20 @@ struct stripehit {
 };
 
 ClassImp(TRestDetectorHits3DReconstructionProcess)
-    //______________________________________________________________________________
+
     TRestDetectorHits3DReconstructionProcess::TRestDetectorHits3DReconstructionProcess() {
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorHits3DReconstructionProcess::~TRestDetectorHits3DReconstructionProcess() {
     delete fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 }
 
@@ -190,7 +188,6 @@ void TRestDetectorHits3DReconstructionProcess::PrintMetadata() {
     EndPrintProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::InitProcess() {
     if (fDraw) {
         htemp = new TH2D("hhits", "hhits", 100, -PlaneMaxX, PlaneMaxX, 100, -PlaneMaxY, PlaneMaxY);
@@ -201,7 +198,6 @@ void TRestDetectorHits3DReconstructionProcess::InitProcess() {
 #endif
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
@@ -535,7 +531,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
 
     SetObservableValue("MeanAmbiguity", totalambiguity / Nlayers);
     SetObservableValue("DiffRecon", numeric_limits<double>::quiet_NaN());
-    if (fCompareProc != NULL && fOutputHitsEvent->GetNumberOfHits() > 0 &&
+    if (fCompareProc != nullptr && fOutputHitsEvent->GetNumberOfHits() > 0 &&
         (fObservablesDefined.count("DiffRecon") != 0 || fDynamicObs)) {
         TRestDetectorHitsEvent* reference = (TRestDetectorHitsEvent*)fCompareProc->GetOutputEvent();
         auto hits1 = *fOutputHitsEvent->GetHits();
@@ -596,7 +592,6 @@ int TRestDetectorHits3DReconstructionProcess::Factorial(const int& n) {
     return result;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::EndProcess() {
     if (fDraw) {
         delete htemp;
@@ -604,7 +599,6 @@ void TRestDetectorHits3DReconstructionProcess::EndProcess() {
     }
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::InitFromConfigFile() {
     fZRange = StringToDouble(GetParameter("zRange", "5"));
     fDraw = StringToBool(GetParameter("draw", "false"));

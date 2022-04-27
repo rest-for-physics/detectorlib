@@ -55,6 +55,10 @@
 ///
 #include "TRestDetector.h"
 
+using namespace std;
+
+ClassImp(TRestDetector);
+
 void TRestDetector::PrintMetadata() {
     TRestMetadata::PrintMetadata();
     any cl = any(this, this->ClassName());
@@ -73,7 +77,3 @@ void TRestDetector::UpdateMetadataMembers() {
         fElectronicsSamplingTime = StringToInteger(fElectronicsClock) / 100.;
     }
 }
-
-using namespace std;
-
-ClassImp(TRestDetector);

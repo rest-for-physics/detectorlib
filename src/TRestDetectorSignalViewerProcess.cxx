@@ -18,34 +18,30 @@
 
 #include <TLegend.h>
 #include <TPaveText.h>
+
 using namespace std;
 
 int rawCounter3 = 0;
 
-ClassImp(TRestDetectorSignalViewerProcess)
-    //______________________________________________________________________________
-    TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSignalViewerProcess);
 
-//______________________________________________________________________________
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
+
 TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* cfgFileName) {
     Initialize();
 
     if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 TRestDetectorSignalViewerProcess::~TRestDetectorSignalViewerProcess() {}
 
 void TRestDetectorSignalViewerProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
     fDrawRefresh = 0;
 
@@ -56,10 +52,8 @@ void TRestDetectorSignalViewerProcess::LoadConfig(std::string cfgFilename, std::
     if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitProcess() { this->CreateCanvas(); }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) {
     TString obsName;
 
@@ -89,7 +83,9 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
         if (GetVerboseLevel() >= REST_Debug) {
             GetAnalysisTree()->PrintObservables();
         }
-        for (unsigned int i = 0; i < fDrawingObjects.size(); i++) delete fDrawingObjects[i];
+        for (auto object : fDrawingObjects) {
+            delete object;
+        }
         fDrawingObjects.clear();
 
         TPad* pad2 = DrawSignal(sgnCounter);
@@ -104,7 +100,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
                 "switch signals"
              << endl;
 
-        while (1) {
+        while (true) {
             int a = GetChar("");
             if (a == 10)  // enter
             {
@@ -146,7 +142,6 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -156,7 +151,6 @@ void TRestDetectorSignalViewerProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitFromConfigFile() {
     fDrawRefresh = StringToDouble(GetParameter("refreshEvery", "0"));
 

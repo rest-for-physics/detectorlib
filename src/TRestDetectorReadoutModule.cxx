@@ -45,6 +45,7 @@
 #include "TRestDetectorReadoutModule.h"
 
 #include "unistd.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutModule);

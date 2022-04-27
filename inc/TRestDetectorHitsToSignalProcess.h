@@ -23,12 +23,12 @@
 #ifndef RestCore_TRestDetectorHitsToSignalProcess
 #define RestCore_TRestDetectorHitsToSignalProcess
 
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A process to transform a x,y,z coordinate hits into daq identified physical time signals
 class TRestDetectorHitsToSignalProcess : public TRestEventProcess {

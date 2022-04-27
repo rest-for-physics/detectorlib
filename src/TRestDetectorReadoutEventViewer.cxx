@@ -13,6 +13,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorReadoutEventViewer.h"
+
 using namespace std;
 
 Int_t planeId = 0;
@@ -23,10 +24,8 @@ ClassImp(TRestDetectorReadoutEventViewer)
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorReadoutEventViewer::~TRestDetectorReadoutEventViewer() {}
 
-//______________________________________________________________________________
 void TRestDetectorReadoutEventViewer::Initialize() {
     TRestEventViewer::Initialize();
 
@@ -34,14 +33,13 @@ void TRestDetectorReadoutEventViewer::Initialize() {
     fCanvasXZYZ = new TCanvas("XZYZ", "XZYZ");
     fCanvasXZYZ->Divide(2, 1);
 
-    fHistoXZ = NULL;
-    fHistoYZ = NULL;
+    fHistoXZ = nullptr;
+    fHistoYZ = nullptr;
 
     fSignalEvent = new TRestDetectorSignalEvent();
     SetEvent(fSignalEvent);
 }
 
-//______________________________________________________________________________
 void TRestDetectorReadoutEventViewer::SetReadout(TRestDetectorReadout* readout) {
     // Finalize the instantiation based on argument TRestDetectorReadout
     fReadout = readout;
@@ -60,20 +58,20 @@ void TRestDetectorReadoutEventViewer::AddEvent(TRestEvent* ev) {
     // the XY, XZ and YZ projections.
     TRestEventViewer::AddEvent(ev);
 
-    if (fPad == NULL) return;
+    if (fPad == nullptr) return;
 
     fSignalEvent = (TRestDetectorSignalEvent*)ev;
 
     // XY histo is expected to have always same binning => reset it.
     // (X|Y)Z may change from event to event => delete (and later on re-create).
     fHistoXY->Reset(0);
-    if (fHistoXZ != NULL) {
+    if (fHistoXZ != nullptr) {
         delete fHistoXZ;
-        fHistoXZ = NULL;
+        fHistoXZ = nullptr;
     }
-    if (fHistoYZ != NULL) {
+    if (fHistoYZ != nullptr) {
         delete fHistoYZ;
-        fHistoYZ = NULL;
+        fHistoYZ = nullptr;
     }
 
     DrawReadoutPulses();
@@ -93,7 +91,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
     double charge;
 
     Int_t modId;
-    TRestDetectorReadoutModule* module = NULL;
+    TRestDetectorReadoutModule* module = nullptr;
     TRestDetectorReadoutChannel* channel;
 
     int maxIndex;
@@ -128,8 +126,8 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
         readoutChannel = module->DaqToReadoutChannel(daqChannel);
         cout << "daqChannel " << daqChannel << " readoutChannel " << readoutChannel << endl;
-        // if((module = GetModule(readoutChannel))==NULL)continue;
-        if ((channel = GetChannel(readoutChannel)) == NULL) continue;
+        // if((module = GetModule(readoutChannel))==nullptr)continue;
+        if ((channel = GetChannel(readoutChannel)) == nullptr) continue;
 
         int nPixels = channel->GetNumberOfPixels();
 
@@ -180,21 +178,21 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
     for (int n = 0; n < plane->GetNumberOfModules(); n++) {
-        if ((*plane)[n].GetChannel(readoutChannel) == NULL) continue;
+        if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return (*plane)[n].GetChannel(readoutChannel);
     }
 
     cout << "Readout channel " << readoutChannel << " not found" << endl;
-    return NULL;
+    return nullptr;
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadoutEventViewer::GetModule(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
     for (int n = 0; n < fReadout->GetNumberOfModules(); n++) {
-        if ((*plane)[n].GetChannel(readoutChannel) == NULL) continue;
+        if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return &(*plane)[n];
     }
 
     cout << "Readout channel " << readoutChannel << " not found" << endl;
-    return NULL;
+    return nullptr;
 }

@@ -14,56 +14,50 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorFiducializationProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorFiducializationProcess)
-    //______________________________________________________________________________
-    TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorFiducializationProcess);
 
-//______________________________________________________________________________
+TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() { Initialize(); }
+
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* cfgFileName) {
     Initialize();
 
     if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 TRestDetectorFiducializationProcess::~TRestDetectorFiducializationProcess() { delete fOutputHitsEvent; }
 
 void TRestDetectorFiducializationProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
 void TRestDetectorFiducializationProcess::LoadConfig(string cfgFilename, string name) {
     if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
         cout << "REST ERRORRRR : Readout has not been initialized" << endl;
         exit(-1);
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInput) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return NULL;
+    if (nHits <= 0) return nullptr;
 
     TRestHits* hits = fInputHitsEvent->GetHits();
     for (int n = 0; n < nHits; n++) {
@@ -84,7 +78,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     if (this->GetVerboseLevel() >= REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
@@ -96,7 +90,6 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     return fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -106,5 +99,4 @@ void TRestDetectorFiducializationProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorFiducializationProcess::InitFromConfigFile() {}

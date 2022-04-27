@@ -82,9 +82,9 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     TString GetProcessName() { return (TString) "electronDiffusion"; }
 
-    Double_t GetElectricField() { return fElectricField; }
-    Double_t GetAttachmentCoefficient() { return fAttachment; }
-    Double_t GetGasPressure() { return fGasPressure; }
+    inline Double_t GetElectricField() const { return fElectricField; }
+    inline Double_t GetAttachmentCoefficient() const { return fAttachment; }
+    inline Double_t GetGasPressure() const { return fGasPressure; }
 
     // Constructor
     TRestDetectorElectronDiffusionProcess();

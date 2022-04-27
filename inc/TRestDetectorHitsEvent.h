@@ -20,37 +20,37 @@
 //! allowing us to save a 3-coordinate position and energy.
 class TRestDetectorHitsEvent : public TRestEvent {
    private:
-    /// An auxiliar TRestHits structure to register hits on XZ projection
+    /// An auxiliary TRestHits structure to register hits on XZ projection
     TRestHits* fXZHits;  //!
-    /// An auxiliar TRestHits structure to register hits on YZ projection
+    /// An auxiliary TRestHits structure to register hits on YZ projection
     TRestHits* fYZHits;  //!
 
-    /// An auxiliar TRestHits structure to register hits on XYZ projection
+    /// An auxiliary TRestHits structure to register hits on XYZ projection
     TRestHits* fXYZHits;  //!
 
    protected:
     // TODO These graphs should be placed in TRestHits?
     // (following similar GetGraph implementation in TRestDetectorSignal)
 
-    /// An auxiliar TGraph pointer to visualize hits on XY-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XY-projection.
     TGraph* fXYHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on XZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XZ-projection.
     TGraph* fXZHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on YZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on YZ-projection.
     TGraph* fYZHitGraph;  //!
 
-    /// An auxiliar TH2F histogram to visualize hits on XY-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XY-projection.
     TH2F* fXYHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on YZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on YZ-projection.
     TH2F* fYZHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on XZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XZ-projection.
     TH2F* fXZHisto;  //!
 
-    /// An auxiliar TH1F histogram to visualize hits on X-projection.
+    /// An auxiliary TH1F histogram to visualize hits on X-projection.
     TH1F* fXHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Y-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Y-projection.
     TH1F* fYHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Z-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Z-projection.
     TH1F* fZHisto;  //!
 
     /// The hits structure that is is saved to disk.
@@ -156,8 +156,8 @@ class TRestDetectorHitsEvent : public TRestEvent {
     Double_t GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1, Double_t sizeX,
                                                       Double_t sizeY, Double_t theta);
 
-    TPad* DrawEvent(const TString &option = "");
-    void DrawHistograms(Int_t& column, TString histOption = "", double pitch = 0);
+    TPad* DrawEvent(const TString& option = "");
+    void DrawHistograms(Int_t& column, const TString& histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
     // Constructor

@@ -20,15 +20,13 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsNormalizationProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorHitsNormalizationProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsNormalizationProcess);
 
-//______________________________________________________________________________
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() { Initialize(); }
+
 TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* cfgFileName) {
     Initialize();
 
@@ -39,7 +37,6 @@ TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(cha
     // TRestDetectorHitsNormalizationProcess default constructor
 }
 
-//______________________________________________________________________________
 TRestDetectorHitsNormalizationProcess::~TRestDetectorHitsNormalizationProcess() {
     delete fHitsOutputEvent;
     // TRestDetectorHitsNormalizationProcess destructor
@@ -51,14 +48,13 @@ void TRestDetectorHitsNormalizationProcess::LoadDefaultConfig() {
     fFactor = 5.9;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
     fFactor = 1.;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
@@ -68,7 +64,6 @@ void TRestDetectorHitsNormalizationProcess::LoadConfig(string cfgFilename, strin
     PrintMetadata();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -78,7 +73,6 @@ void TRestDetectorHitsNormalizationProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evInput) {
     fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
@@ -98,7 +92,6 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evIn
     return fHitsOutputEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -108,7 +101,6 @@ void TRestDetectorHitsNormalizationProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::InitFromConfigFile() {
     fFactor = StringToDouble(GetParameter("normFactor", "1"));
 }
