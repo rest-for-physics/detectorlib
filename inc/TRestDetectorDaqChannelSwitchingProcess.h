@@ -33,8 +33,8 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     void Initialize();
 
    public:
-    inline any GetInputEvent() const { return fEvent; }
-    inline any GetOutputEvent() const { return fEvent; }
+    any GetInputEvent() const override { return fEvent; }
+    any GetOutputEvent() const override { return fEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

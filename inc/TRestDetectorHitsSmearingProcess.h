@@ -42,8 +42,8 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     Double_t fResolutionAtERef;  ///< FWHM at Energy of reference
 
    public:
-    inline any GetInputEvent() const { return fHitsInputEvent; }
-    inline any GetOutputEvent() const { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

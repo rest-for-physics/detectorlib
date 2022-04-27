@@ -39,8 +39,8 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     TRestDetectorGas* fGas;  //!
 
    public:
-    inline any GetInputEvent() const { return fHitsInputEvent; }
-    inline any GetOutputEvent() const { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

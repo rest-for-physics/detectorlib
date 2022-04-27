@@ -32,8 +32,8 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
    protected:
    public:
-    inline any GetInputEvent() const { return fInputHitsEvent; }
-    inline any GetOutputEvent() const { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);

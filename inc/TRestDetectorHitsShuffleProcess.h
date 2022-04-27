@@ -33,8 +33,8 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     Int_t fIterations;
 
    public:
-    inline any GetInputEvent() const { return fHitsEvent; }
-    inline any GetOutputEvent() const { return fHitsEvent; }
+    any GetInputEvent() const override { return fHitsEvent; }
+    any GetOutputEvent() const override { return fHitsEvent; }
 
     void InitProcess();
     TRestEvent* ProcessEvent(TRestEvent* eventInput);
