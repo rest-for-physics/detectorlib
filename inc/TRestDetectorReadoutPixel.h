@@ -120,7 +120,7 @@ class TRestDetectorReadoutPixel : public TObject {
 
     void Print();
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutPixel();
     // Destructor
     virtual ~TRestDetectorReadoutPixel();

@@ -83,7 +83,7 @@ class TRestDetectorReadoutMapping : public TObject {
 
     void Initialize(Int_t nX, Int_t nY, Double_t sX, Double_t sY);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutMapping();
     // Destructor
     ~TRestDetectorReadoutMapping();

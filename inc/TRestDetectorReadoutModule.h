@@ -245,7 +245,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     void Print(Int_t DetailLevel = 0);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutModule();
     // Destructor
     virtual ~TRestDetectorReadoutModule();
