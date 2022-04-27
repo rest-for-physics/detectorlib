@@ -60,7 +60,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    inline TString GetProcessName() const { return (TString) "avalancheProcess"; }
+    inline const char* GetProcessName() const { return "avalancheProcess"; }
 
     inline Double_t GetEnergyReference() const { return fEnergyRef; }
     inline Double_t GetResolutionReference() const { return fResolutionAtEref; }

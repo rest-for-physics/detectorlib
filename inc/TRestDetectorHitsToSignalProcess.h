@@ -84,7 +84,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
     /// Returns the name of this process
-    inline TString GetProcessName() const { return (TString) "hitsToSignal"; }
+    inline const char* GetProcessName() const { return "hitsToSignal"; }
 
     TRestDetectorHitsToSignalProcess();
     TRestDetectorHitsToSignalProcess(char* configFilename);

@@ -73,7 +73,7 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     }
 
     /// Returns a std::string with the process name
-    inline TString GetProcessName() const { return (TString) "triggerAnalysis"; }
+    inline const char* GetProcessName() const { return "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
     TRestDetectorTriggerAnalysisProcess(char* configFilename);

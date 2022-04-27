@@ -80,7 +80,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    inline TString GetProcessName() const { return (TString) "electronDiffusion"; }
+    inline const char* GetProcessName() const { return "electronDiffusion"; }
 
     inline Double_t GetElectricField() const { return fElectricField; }
     inline Double_t GetAttachmentCoefficient() const { return fAttachment; }

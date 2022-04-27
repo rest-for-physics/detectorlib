@@ -64,7 +64,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline TString GetProcessName() const { return (TString) "rotateAndTraslate"; }
+    inline const char* GetProcessName() const { return "rotateAndTraslate"; }
 
     inline Double_t GetDeltaX() const { return fDeltaX; }
     inline Double_t GetDeltaY() const { return fDeltaY; }

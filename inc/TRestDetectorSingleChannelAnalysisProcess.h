@@ -72,12 +72,12 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         metadata << "output mapping file: " << fCalibSave << endl;
         metadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << endl;
         metadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << endl;
-        metadata << "Fit range for the spectrums: " << any(fSpecFitRange) << endl;
+        metadata << "Fit range for the spectra: " << any(fSpecFitRange) << endl;
 
         EndPrintProcess();
     }
 
-    inline TString GetProcessName() const { return (TString) "readoutAnalysis"; }
+    inline const char* GetProcessName() const { return "readoutAnalysis"; }
 
     // Constructor
     TRestDetectorSingleChannelAnalysisProcess();
@@ -85,8 +85,6 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorSingleChannelAnalysisProcess();
 
-    ClassDef(TRestDetectorSingleChannelAnalysisProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDef(TRestDetectorSingleChannelAnalysisProcess, 1);
 };
 #endif

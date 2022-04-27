@@ -47,7 +47,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    inline TString GetProcessName() const { return (TString) "fiducialization"; }
+    inline const char* GetProcessName() const { return "fiducialization"; }
 
     TRestDetectorFiducializationProcess();
     TRestDetectorFiducializationProcess(char* configFilename);
