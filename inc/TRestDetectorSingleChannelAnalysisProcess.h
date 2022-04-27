@@ -31,7 +31,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     TRestDetectorGainMap* fCalib;  //!
 #endif
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
     // parameters
@@ -55,9 +55,9 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     void FitChannelGain();
     // See comments on CXX
     void SaveGainMetadata(std::string filename);
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
     TH1D* GetChannelSpectrum(int id);
     void PrintChannelSpectrums(std::string filename);
 

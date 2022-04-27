@@ -72,8 +72,8 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fSignalEvent; }
     any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

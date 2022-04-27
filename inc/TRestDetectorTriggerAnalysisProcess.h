@@ -57,8 +57,8 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// Returns a pointer to the input signal event
     any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

@@ -90,7 +90,7 @@ class TRestDetector : public TRestMetadata {
 
     void InitFromConfigFile() { ReadAllParameters(); }
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     void UpdateMetadataMembers();
 

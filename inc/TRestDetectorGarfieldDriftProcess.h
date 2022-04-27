@@ -55,7 +55,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     Garfield::Sensor* fGfSensor;   //!
     DRIFT_METHOD* fGfDriftMethod;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void LoadDefaultConfig();
 
@@ -77,11 +77,11 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
 #if defined USE_Garfield
-    void InitProcess();
-    void EndProcess();
+    void InitProcess() override;
+    void EndProcess() override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

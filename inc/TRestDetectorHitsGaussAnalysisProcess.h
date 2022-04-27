@@ -40,9 +40,9 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-    void InitProcess();
+    void InitProcess() override;
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
 
@@ -56,11 +56,11 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     /// Returns a new instance of this class
     TRestEventProcess* Maker() { return new TRestDetectorHitsGaussAnalysisProcess; }

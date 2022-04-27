@@ -31,7 +31,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     TRestDetectorGas* fGas;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
     void Initialize();
     void LoadDefaultConfig();
 
@@ -45,9 +45,9 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fHitsInputEvent; }
     any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

@@ -41,7 +41,7 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Bool_t fCylinderFiducial;  //!
     Bool_t fPrismFiducial;     //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
 
@@ -61,9 +61,9 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

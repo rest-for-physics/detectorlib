@@ -30,7 +30,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     Double_t fResolutionAtEref;  ///< FWHM at Energy of reference
     Double_t fDetectorGain;      ///< Detector's gain.
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
     void Initialize();
     void LoadDefaultConfig();
 
@@ -42,9 +42,9 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fHitsInputEvent; }
     any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     void LoadConfig(std::string configFilename);
 

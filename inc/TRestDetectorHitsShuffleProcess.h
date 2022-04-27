@@ -25,7 +25,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     TRandom3* fRandom;  //!
 #endif
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
 
@@ -36,9 +36,9 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fHitsEvent; }
     any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
     void LoadDefaultConfig();
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");

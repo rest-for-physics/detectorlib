@@ -33,23 +33,23 @@ class TRestDetectorHits3DReconstructionProcess : public TRestEventProcess {
     bool fDoEnergyScaling;
 
    protected:
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
     void Initialize();
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     double LogAmbiguity(const int& n, const int& m) { return log(Ambiguity(n, m)); }
     int Ambiguity(const int& n, const int& m);
     int Factorial(const int& n);
 
     // Process Information Printer
-    void PrintMetadata();
+    void PrintMetadata() override;
     // Constructor
     TRestDetectorHits3DReconstructionProcess();
     // Destructor

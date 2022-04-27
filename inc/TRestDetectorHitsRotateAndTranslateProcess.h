@@ -34,7 +34,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     Double_t fBeta;   ///< rotation angle around y-axis
     Double_t fGamma;  ///< rotation angle around x-axis
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
     void Initialize();
     void LoadDefaultConfig();
 
@@ -45,9 +45,9 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     void LoadConfig(std::string configFilename);
 

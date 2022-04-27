@@ -188,7 +188,7 @@ class TRestDetectorReadoutModule : public TObject {
     TVector2 GetPhysicalCoordinates(TVector2 p) { return TransformToPhysicalCoordinates(p.X(), p.Y()); }
 
     /// Returns the module name
-    inline char* GetName() const { return const_cast<char*>(fModuleName.Data()); }
+    char* GetName() const override { return const_cast<char*>(fModuleName.Data()); }
 
     /// Returns a pointer to the readout mapping
     TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }

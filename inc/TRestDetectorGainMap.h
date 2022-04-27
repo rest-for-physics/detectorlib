@@ -52,7 +52,7 @@ class TRestDetectorGainMap : public TRestMetadata {
     TH2F* f2DGainMapping = 0;            //->
     TH3F* f3DGainMapping = 0;            //->
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void SaveToText(std::string filename) {}
     void ReadGainText(std::string filename) {}

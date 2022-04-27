@@ -104,7 +104,7 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
     virtual void UpdateCondition() {}
 
-    virtual void PrintMetadata();
+    void PrintMetadata() override;
 
     ClassDef(TRestDetectorDriftVolume, 1);  // Gas Parameters
 };

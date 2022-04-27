@@ -28,7 +28,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TRestDetectorGainMap* fCalib;        //!
     TRestDetectorGas* fGas;              //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
     // parameters
@@ -53,9 +53,9 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fHitsEvent; }
     any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     double GetCorrection2(double x, double y);
     double GetCorrection3(double x, double y, double z);

@@ -33,7 +33,7 @@
 /// A metadata class to generate/store a readout description.
 class TRestDetectorReadout : public TRestMetadata {
    private:
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void Initialize();
 

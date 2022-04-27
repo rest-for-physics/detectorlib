@@ -29,7 +29,7 @@ class TRestDetectorSetup : public TRestMetadata {
    private:
     void Initialize();
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     Int_t fRunNumber;
     Int_t fSubRunNumber;
@@ -61,7 +61,7 @@ class TRestDetectorSetup : public TRestMetadata {
 
     void InitFromFileName(TString fName);
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     // Constructors
     TRestDetectorSetup();
