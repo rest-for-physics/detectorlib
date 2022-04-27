@@ -53,6 +53,7 @@
 /// <hr>
 ///
 #include "TRestDetectorHitsGaussAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorHitsGaussAnalysisProcess);
@@ -132,7 +133,7 @@ void TRestDetectorHitsGaussAnalysisProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     // fHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 }
 

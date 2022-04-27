@@ -14,18 +14,18 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorFiducializationProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorFiducializationProcess)
-    //______________________________________________________________________________
-    TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorFiducializationProcess);
+
+TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() { Initialize(); }
 
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorFiducializationProcess::~TRestDetectorFiducializationProcess() { delete fOutputHitsEvent; }
@@ -37,9 +37,9 @@ void TRestDetectorFiducializationProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
 void TRestDetectorFiducializationProcess::LoadConfig(string configFilename, string name) {
@@ -58,7 +58,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
     fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return NULL;
+    if (nHits <= 0) return nullptr;
 
     TRestHits* hits = fInputHitsEvent->GetHits();
     for (int n = 0; n < nHits; n++) {
@@ -79,7 +79,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInpu
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     if (this->GetVerboseLevel() >= REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()

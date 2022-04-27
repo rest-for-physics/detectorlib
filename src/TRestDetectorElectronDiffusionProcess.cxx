@@ -14,6 +14,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorElectronDiffusionProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorElectronDiffusionProcess);
@@ -22,8 +23,9 @@ TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess() {
 
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorElectronDiffusionProcess::~TRestDetectorElectronDiffusionProcess() { delete fOutputHitsEvent; }
@@ -49,12 +51,12 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fWvalue = 0;
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
 
-    fGas = NULL;
-    fReadout = NULL;
+    fGas = nullptr;
+    fReadout = nullptr;
 
-    fRandom = NULL;
+    fRandom = nullptr;
 }
 
 void TRestDetectorElectronDiffusionProcess::LoadConfig(string configFilename, string name) {
@@ -114,7 +116,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evIn
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return NULL;
+    if (nHits <= 0) return nullptr;
 
     Int_t isAttached;
 

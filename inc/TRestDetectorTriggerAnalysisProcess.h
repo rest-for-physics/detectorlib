@@ -23,9 +23,9 @@
 #ifndef RestCore_TRestDetectorTriggerAnalysisProcess
 #define RestCore_TRestDetectorTriggerAnalysisProcess
 
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A process to generate integral observables for signal ADC windows found above the defined energy threshold
 class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {

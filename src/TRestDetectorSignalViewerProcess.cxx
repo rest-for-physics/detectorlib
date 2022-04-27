@@ -18,19 +18,20 @@
 
 #include <TLegend.h>
 #include <TPaveText.h>
+
 using namespace std;
 
 int rawCounter3 = 0;
 
-ClassImp(TRestDetectorSignalViewerProcess)
-    //______________________________________________________________________________
-    TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSignalViewerProcess);
+
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
 
 TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* configFilename) {
     Initialize();
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorSignalViewerProcess::~TRestDetectorSignalViewerProcess() {}
@@ -41,7 +42,7 @@ void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
     fDrawRefresh = 0;
 
@@ -83,7 +84,9 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
         if (GetVerboseLevel() >= REST_Debug) {
             GetAnalysisTree()->PrintObservables();
         }
-        for (unsigned int i = 0; i < fDrawingObjects.size(); i++) delete fDrawingObjects[i];
+        for (auto object : fDrawingObjects) {
+            delete object;
+        }
         fDrawingObjects.clear();
 
         TPad* pad2 = DrawSignal(sgnCounter);
@@ -98,7 +101,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
                 "switch signals"
              << endl;
 
-        while (1) {
+        while (true) {
             int a = GetChar("");
             if (a == 10)  // enter
             {

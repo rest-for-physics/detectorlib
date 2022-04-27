@@ -22,11 +22,12 @@
 #include "TRestDetectorSignalEvent.h"
 
 #include <TMath.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorSignalEvent)
-    //______________________________________________________________________________
-    TRestDetectorSignalEvent::TRestDetectorSignalEvent() {
+ClassImp(TRestDetectorSignalEvent);
+
+TRestDetectorSignalEvent::TRestDetectorSignalEvent() {
     // TRestDetectorSignalEvent default constructor
     Initialize();
 }
@@ -38,21 +39,21 @@ TRestDetectorSignalEvent::~TRestDetectorSignalEvent() {
 void TRestDetectorSignalEvent::Initialize() {
     TRestEvent::Initialize();
     fSignal.clear();
-    fPad = NULL;
+    fPad = nullptr;
     fMinValue = 1E10;
     fMaxValue = -1E10;
     fMinTime = 1E10;
     fMaxTime = -1E10;
 }
 
-void TRestDetectorSignalEvent::AddSignal(TRestDetectorSignal s) {
-    if (signalIDExists(s.GetSignalID())) {
-        cout << "Warning. Signal ID : " << s.GetSignalID()
+void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
+    if (signalIDExists(signal.GetSignalID())) {
+        cout << "Warning. Signal ID : " << signal.GetSignalID()
              << " already exists. Signal will not be added to signal event" << endl;
         return;
     }
 
-    fSignal.push_back(s);
+    fSignal.emplace_back(signal);
 }
 
 Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
@@ -93,8 +94,8 @@ Double_t TRestDetectorSignalEvent::GetIntegralWithThreshold(Int_t from, Int_t to
 Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endBin) {
     Double_t baseLineMean = 0;
 
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++) {
-        Double_t baseline = GetSignal(sgnl)->GetBaseLine(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
+        Double_t baseline = GetSignal(signal)->GetBaseLine(startBin, endBin);
         baseLineMean += baseline;
     }
 
@@ -104,8 +105,8 @@ Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endB
 Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin) {
     Double_t baseLineSigmaMean = 0;
 
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++) {
-        Double_t baselineSigma = GetSignal(sgnl)->GetBaseLineSigma(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
+        Double_t baselineSigma = GetSignal(signal)->GetBaseLineSigma(startBin, endBin);
         baseLineSigmaMean += baselineSigma;
     }
 
@@ -113,21 +114,21 @@ Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t
 }
 
 void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) {
-    for (int sgnl = 0; sgnl < GetNumberOfSignals(); sgnl++)
-        GetSignal(sgnl)->SubstractBaseline(startBin, endBin);
+    for (int signal = 0; signal < GetNumberOfSignals(); signal++)
+        GetSignal(signal)->SubstractBaseline(startBin, endBin);
 }
 
-void TRestDetectorSignalEvent::AddChargeToSignal(Int_t sgnlID, Double_t tm, Double_t chrg) {
-    Int_t sgnlIndex = GetSignalIndex(sgnlID);
-    if (sgnlIndex == -1) {
-        sgnlIndex = GetNumberOfSignals();
+void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge) {
+    Int_t signalIndex = GetSignalIndex(signalID);
+    if (signalIndex == -1) {
+        signalIndex = GetNumberOfSignals();
 
-        TRestDetectorSignal sgnl;
-        sgnl.SetSignalID(sgnlID);
-        AddSignal(sgnl);
+        TRestDetectorSignal signal;
+        signal.SetSignalID(signalID);
+        AddSignal(signal);
     }
 
-    fSignal[sgnlIndex].AddDeposit(tm, chrg);
+    fSignal[signalIndex].AddDeposit(time, charge);
 }
 
 void TRestDetectorSignalEvent::PrintEvent() {
@@ -143,8 +144,7 @@ void TRestDetectorSignalEvent::PrintEvent() {
     }
 }
 
-// TODO: GetMaxTimeFast, GetMinTimeFast, GetMaxValueFast that return the value
-// of fMinTime, fMaxTime, etc
+// TODO: GetMaxTimeFast, GetMinTimeFast, GetMaxValueFast that return the value of fMinTime, fMaxTime, etc.
 void TRestDetectorSignalEvent::SetMaxAndMin() {
     fMinValue = 1E10;
     fMaxValue = -1E10;
@@ -184,18 +184,15 @@ Double_t TRestDetectorSignalEvent::GetMaxTime() {
     return maxTime;
 }
 
-// Draw current event in a Tpad
+// Draw current event in a TPad
 TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
-    if (fPad != nullptr) {
-        delete fPad;
-        fPad = NULL;
-    }
+    delete fPad;
 
     int nSignals = this->GetNumberOfSignals();
 
     if (nSignals == 0) {
         cout << "Empty event " << endl;
-        return NULL;
+        return nullptr;
     }
 
     fMinValue = 1E10;
@@ -225,7 +222,6 @@ TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
 
     for (int n = 0; n < nSignals; n++) {
         TGraph* gr = fSignal[n].GetGraph(n + 1);
-
         mg->Add(gr);
     }
 

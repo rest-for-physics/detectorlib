@@ -86,6 +86,7 @@
 ///
 
 #include "TRestDetectorTriggerAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorTriggerAnalysisProcess);

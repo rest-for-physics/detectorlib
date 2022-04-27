@@ -20,22 +20,21 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsSmearingProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorHitsSmearingProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsSmearingProcess);
+
+TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initialize(); }
 
 TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
-
-    // TRestDetectorHitsSmearingProcess default constructor
 }
 
 TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
@@ -47,7 +46,7 @@ void TRestDetectorHitsSmearingProcess::LoadDefaultConfig() {
     SetTitle("Default config");
 
     fEnergyRef = 5.9;
-    fResolutionAtEref = 15.0;
+    fResolutionAtERef = 15.0;
 }
 
 void TRestDetectorHitsSmearingProcess::Initialize() {
@@ -55,16 +54,18 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fEnergyRef = 5.9;
-    fResolutionAtEref = 15.0;
+    fResolutionAtERef = 15.0;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 
-    fRandom = NULL;
+    fRandom = nullptr;
 }
 
-void TRestDetectorHitsSmearingProcess::LoadConfig(string configFilename, string name) {
-    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsSmearingProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
 
@@ -85,7 +86,7 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) 
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
 
     Double_t eDep = fHitsInputEvent->GetTotalEnergy();
-    Double_t eRes = fResolutionAtEref * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
+    Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
 
     Double_t gain = fRandom->Gaus(1.0, eRes);
     for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
@@ -107,6 +108,6 @@ void TRestDetectorHitsSmearingProcess::EndProcess() {
 
 void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {
     fEnergyRef = GetDblParameterWithUnits("energyReference");
-    fResolutionAtEref = StringToDouble(GetParameter("resolutionReference"));
+    fResolutionAtERef = StringToDouble(GetParameter("resolutionReference"));
     fRandom = new TRandom3(StringToDouble(GetParameter("seed", "0")));
 }

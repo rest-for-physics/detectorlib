@@ -24,17 +24,18 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
+
 using namespace std;
 
 #include <TF1.h>
 #include <TMath.h>
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorSignal)
-    //______________________________________________________________________________
-    TRestDetectorSignal::TRestDetectorSignal() {
+ClassImp(TRestDetectorSignal);
+
+TRestDetectorSignal::TRestDetectorSignal() {
     // TRestDetectorSignal default constructor
-    fGraph = NULL;
+    fGraph = nullptr;
     fSignalID = -1;
     fSignalTime.clear();
     fSignalCharge.clear();
@@ -499,7 +500,7 @@ void TRestDetectorSignal::Print() {
 TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
     if (fGraph != nullptr) {
         delete fGraph;
-        fGraph = NULL;
+        fGraph = nullptr;
     }
 
     fGraph = new TGraph();

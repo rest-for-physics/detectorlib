@@ -265,7 +265,9 @@
 ///
 
 #include "TRestDetectorReadout.h"
+
 using namespace std;
+
 bool RESTREADOUT_DECODINGFILE_ERROR = false;
 
 ClassImp(TRestDetectorReadout);
@@ -380,7 +382,7 @@ TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlaneWithID(int id) {
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -398,10 +400,10 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
-TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithdaqID(int daqId) {
+TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithDaqID(int daqId) {
     int planeID = -1, moduleID = -1, channelID = -1;
 
     GetPlaneModuleChannel(daqId, planeID, moduleID, channelID);
@@ -409,7 +411,7 @@ TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithdaqID(in
         return &fReadoutPlanes[planeID][moduleID][channelID];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -425,7 +427,7 @@ TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlane(int p) {
         warning << "Number of readout planes defined : " << fNReadoutPlanes << endl;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////

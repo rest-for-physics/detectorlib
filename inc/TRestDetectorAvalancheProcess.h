@@ -62,9 +62,9 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     inline TString GetProcessName() const { return (TString) "avalancheProcess"; }
 
-    Double_t GetEnergyReference() { return fEnergyRef; }
-    Double_t GetResolutionReference() { return fResolutionAtEref; }
-    Double_t GetDetectorGain() { return fDetectorGain; }
+    inline Double_t GetEnergyReference() const { return fEnergyRef; }
+    inline Double_t GetResolutionReference() const { return fResolutionAtEref; }
+    inline Double_t GetDetectorGain() const { return fDetectorGain; }
 
     // Constructor
     TRestDetectorAvalancheProcess();

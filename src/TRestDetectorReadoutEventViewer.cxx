@@ -13,6 +13,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorReadoutEventViewer.h"
+
 using namespace std;
 
 Int_t planeId = 0;
@@ -32,8 +33,8 @@ void TRestDetectorReadoutEventViewer::Initialize() {
     fCanvasXZYZ = new TCanvas("XZYZ", "XZYZ");
     fCanvasXZYZ->Divide(2, 1);
 
-    fHistoXZ = NULL;
-    fHistoYZ = NULL;
+    fHistoXZ = nullptr;
+    fHistoYZ = nullptr;
 
     fSignalEvent = new TRestDetectorSignalEvent();
     SetEvent(fSignalEvent);
@@ -66,11 +67,11 @@ void TRestDetectorReadoutEventViewer::AddEvent(TRestEvent* ev) {
     fHistoXY->Reset(0);
     if (fHistoXZ != nullptr) {
         delete fHistoXZ;
-        fHistoXZ = NULL;
+        fHistoXZ = nullptr;
     }
     if (fHistoYZ != nullptr) {
         delete fHistoYZ;
-        fHistoYZ = NULL;
+        fHistoYZ = nullptr;
     }
 
     DrawReadoutPulses();
@@ -90,7 +91,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
     double charge;
 
     Int_t modId;
-    TRestDetectorReadoutModule* module = NULL;
+    TRestDetectorReadoutModule* module = nullptr;
     TRestDetectorReadoutChannel* channel;
 
     int maxIndex;
@@ -125,8 +126,10 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
         readoutChannel = module->DaqToReadoutChannel(daqChannel);
         cout << "daqChannel " << daqChannel << " readoutChannel " << readoutChannel << endl;
-        // if((module = GetModule(readoutChannel))==NULL)continue;
-        if ((channel = GetChannel(readoutChannel)) == nullptr) continue;
+
+        if ((channel = GetChannel(readoutChannel)) == nullptr) {
+            continue;
+        }
 
         int nPixels = channel->GetNumberOfPixels();
 
@@ -182,7 +185,7 @@ TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int rea
     }
 
     cout << "Readout channel " << readoutChannel << " not found" << endl;
-    return NULL;
+    return nullptr;
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadoutEventViewer::GetModule(int readoutChannel) {
@@ -193,5 +196,5 @@ TRestDetectorReadoutModule* TRestDetectorReadoutEventViewer::GetModule(int reado
     }
 
     cout << "Readout channel " << readoutChannel << " not found" << endl;
-    return NULL;
+    return nullptr;
 }

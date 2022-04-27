@@ -23,9 +23,8 @@ class TRestDetectorHits3DReconstructionProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
     // unsaved parameters, temporary data members
-    TH2D* htemp = NULL;                      //!
-    TRestEventProcess* fCompareProc = NULL;  //!
-    int* testmember;                         //!
+    TH2D* htemp = nullptr;                      //!
+    TRestEventProcess* fCompareProc = nullptr;  //!
 
     // process parameters
     Double_t fZRange;

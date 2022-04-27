@@ -20,32 +20,29 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorAvalancheProcess.h"
+
 using namespace std;
 
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorAvalancheProcess)
-    //______________________________________________________________________________
-    TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorAvalancheProcess);
+
+TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() { Initialize(); }
 
 TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
     fGas = new TRestDetectorGas(configFilename);
-
-    // TRestDetectorAvalancheProcess default constructor
 }
 
 TRestDetectorAvalancheProcess::~TRestDetectorAvalancheProcess() {
-    if (fGas != nullptr) delete fGas;
-
+    delete fGas;
     delete fHitsOutputEvent;
-    // TRestDetectorAvalancheProcess destructor
 }
 
 void TRestDetectorAvalancheProcess::LoadDefaultConfig() {
@@ -60,13 +57,13 @@ void TRestDetectorAvalancheProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fGas = NULL;
+    fGas = nullptr;
 
     fEnergyRef = 5.9;
     fResolutionAtEref = 15.0;
     fDetectorGain = 8000.0;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
@@ -117,7 +114,7 @@ TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* evInput) {
 
     delete rnd;
 
-    if (fHitsOutputEvent->GetNumberOfHits() == 0) return NULL;
+    if (fHitsOutputEvent->GetNumberOfHits() == 0) return nullptr;
 
     cout << "Initial: " << fHitsInputEvent->GetNumberOfHits() << "e-s, and amplified: " << totelectrons
          << " e-s : " << endl;

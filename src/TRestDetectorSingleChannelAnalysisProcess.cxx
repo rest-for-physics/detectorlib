@@ -23,28 +23,24 @@
 #include <TPaveText.h>
 #include <TRandom.h>
 #include <TSpectrum.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorSingleChannelAnalysisProcess)
-    //______________________________________________________________________________
-    TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSingleChannelAnalysisProcess);
 
-//______________________________________________________________________________
+TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() { Initialize(); }
+
 TRestDetectorSingleChannelAnalysisProcess::~TRestDetectorSingleChannelAnalysisProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
@@ -91,7 +87,6 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
     fSignalEvent = (TRestDetectorSignalEvent*)evInput;
 
@@ -164,7 +159,6 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::EndProcess() {
     if (fCreateGainMap) {
         FitChannelGain();
@@ -270,7 +264,7 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
 
 TH1D* TRestDetectorSingleChannelAnalysisProcess::GetChannelSpectrum(int id) {
     if (fChannelThrIntegral.count(id) != 0) return fChannelThrIntegral[id];
-    return NULL;
+    return nullptr;
 }
 
 void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string filename) {
@@ -304,7 +298,6 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
     delete c;
 }
 
-//______________________________________________________________________________
 // setting amplification:
 // <parameter name="modulesAmp" value = "2-1:5-1.2:6-0.8:8-0.9" />
 // setting readout modules to draw:

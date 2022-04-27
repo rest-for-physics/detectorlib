@@ -46,18 +46,18 @@ class TRestDetectorSetup : public TRestMetadata {
     Double_t fSamplingInMicroSec;
 
    public:
-    Int_t GetRunNumber() { return fRunNumber; }
-    Int_t GetSubRunNumber() { return fSubRunNumber; }
-    TString GetRunTag() { return fRunTag; }
+    inline Int_t GetRunNumber() const { return fRunNumber; }
+    inline Int_t GetSubRunNumber() const { return fSubRunNumber; }
+    inline TString GetRunTag() const { return fRunTag; }
 
     void SetRunNumber(Int_t runNumber) { fRunNumber = runNumber; }
     void SetSubRunNumber(Int_t subRunNumber) { fSubRunNumber = subRunNumber; }
 
-    Double_t GetSamplingInMicroSeconds() { return fSamplingInMicroSec; }
+    inline Double_t GetSamplingInMicroSeconds() const { return fSamplingInMicroSec; }
 
     Double_t GetFieldInVPerCm() { return fDriftField * fDetectorPressure; }
 
-    Double_t GetPressureInBar() { return fDetectorPressure; }
+    inline Double_t GetPressureInBar() const { return fDetectorPressure; }
 
     void InitFromFileName(TString fName);
 
@@ -65,7 +65,8 @@ class TRestDetectorSetup : public TRestMetadata {
 
     // Constructors
     TRestDetectorSetup();
-    TRestDetectorSetup(char* configFilename, std::string name = "");
+    TRestDetectorSetup(char* configFilename, const std::string& name = "");
+
     // Destructor
     ~TRestDetectorSetup();
 

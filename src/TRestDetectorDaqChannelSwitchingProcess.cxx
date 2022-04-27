@@ -18,13 +18,12 @@
 
 #include <TLegend.h>
 #include <TPaveText.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorDaqChannelSwitchingProcess)
-    //______________________________________________________________________________
-    TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorDaqChannelSwitchingProcess);
+
+TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() { Initialize(); }
 
 TRestDetectorDaqChannelSwitchingProcess::~TRestDetectorDaqChannelSwitchingProcess() {}
 
@@ -34,11 +33,10 @@ void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
 
     fFirstDaqChannelDef.clear();
     fIgnoreUndefinedModules = false;
-    fReadout = NULL;
-    fEvent = NULL;
+    fReadout = nullptr;
+    fEvent = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout != nullptr) {
@@ -79,16 +77,13 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
 TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* eventInput) {
     fEvent = eventInput;
     return eventInput;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::EndProcess() {}
 
-//______________________________________________________________________________
 // redefining module's first daq channel:
 // <module id="1" firstdaqchannel="136*3" />
 // ignore undefined modules modules by setting their channel's daq id to -1e9

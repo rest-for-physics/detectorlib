@@ -22,31 +22,32 @@
 
 #ifndef RestCore_TRestDetectorGas
 #define RestCore_TRestDetectorGas
+
+#include <TApplication.h>
+#include <TArrayI.h>
+#include <TAxis.h>
+#include <TCanvas.h>
+#include <TGraph.h>
+#include <TNamed.h>
 #include <TROOT.h>
+#include <TRestMetadata.h>
+#include <TString.h>
+#include <TSystem.h>
+#include <TVector3.h>
 
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
 
-#include "TApplication.h"
-#include "TArrayI.h"
-#include "TAxis.h"
-#include "TCanvas.h"
-#include "TGraph.h"
-#include "TNamed.h"
 #include "TRestDetectorDriftVolume.h"
-#include "TRestMetadata.h"
-#include "TString.h"
-#include "TSystem.h"
-#include "TVector3.h"
 
 #if defined USE_Garfield
-#include "ComponentConstant.hh"
-#include "GeometrySimple.hh"
-#include "MediumMagboltz.hh"
-#include "Sensor.hh"
-#include "SolidBox.hh"
-#include "TrackHeed.hh"
+#include <ComponentConstant.hh>
+#include <GeometrySimple.hh>
+#include <MediumMagboltz.hh>
+#include <Sensor.hh>
+#include <SolidBox.hh>
+#include <TrackHeed.hh>
 using namespace Garfield;
 #else
 class MediumMagboltz;
@@ -132,13 +133,13 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     /// This enables the generation of the gas file if a non existing gas file is
     /// found.
-    void EnableGasGeneration() { fGasGeneration = true; }
+    inline void EnableGasGeneration() { fGasGeneration = true; }
 
     /// Returns true if the file generation is enabled. False otherwise.
-    bool GasFileGenerationEnabled() { return fGasGeneration; }
+    inline bool GasFileGenerationEnabled() const { return fGasGeneration; }
 
     /// Returns true if the gas file has been properly loaded. False otherwise.
-    bool GasFileLoaded() { return fStatus == RESTGAS_GASFILE_LOADED; }
+    inline bool GasFileLoaded() const { return fStatus == RESTGAS_GASFILE_LOADED; }
 
     void Initialize();
 
@@ -154,13 +155,13 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     /// Returns the maximum electron energy used by Magboltz for the gas
     /// properties calculation
-    Double_t GetMaxElectronEnergy() { return fMaxElectronEnergy; }
+    inline Double_t GetMaxElectronEnergy() const { return fMaxElectronEnergy; }
 
     /// Returns the number of gas elements/compounds present in the gas mixture.
-    Int_t GetNofGases() { return fNofGases; }
+    inline Int_t GetNofGases() const { return fNofGases; }
 
     /// Returns the gas component *n*.
-    TString GetGasComponentName(Int_t n) {
+    inline TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
             std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only "
                       << GetNofGases() << " component(s) in the mixture." << endl;
@@ -171,7 +172,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     TString GetGasMixture();
 
-    Double_t GetDriftVelocity() {
+    inline Double_t GetDriftVelocity() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -181,7 +182,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }  // in standard unit mm/us
 
     /// Returns the longitudinal diffusion in (cm)^1/2
-    Double_t GetLongitudinalDiffusion() {
+    inline Double_t GetLongitudinalDiffusion() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -191,7 +192,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }
 
     /// Returns the transversal diffusion in (cm)^1/2
-    Double_t GetTransversalDiffusion() {
+    inline Double_t GetTransversalDiffusion() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -200,7 +201,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
     }
 
-    Double_t GetTownsendCoefficient() {
+    inline Double_t GetTownsendCoefficient() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -209,7 +210,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTownsendCoefficient(fElectricField * units("V/cm"));
     }
 
-    Double_t GetAttachmentCoefficient() {
+    inline Double_t GetAttachmentCoefficient() {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -221,7 +222,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void GetGasWorkFunction();
 
     /// Returns the gas fraction in volume for component *n*.
-    Double_t GetGasComponentFraction(Int_t n) {
+    inline Double_t GetGasComponentFraction(Int_t n) {
         if (n >= GetNofGases()) {
             std::cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
                       << GetNofGases() << " component(s) in the mixture." << endl;
@@ -233,24 +234,24 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
 #ifndef __CINT__
     /// Return pointer to Garfield::MediumGas for gas properties
-    MediumMagboltz* GetGasMedium() { return fGasMedium; };
+    inline MediumMagboltz* GetGasMedium() const { return fGasMedium; };
 #endif
 
     /// Return reference name of the corresponding material in GDML file
-    TString GetGDMLMaterialRef() { return fGDMLMaterialRef; };
+    inline TString GetGDMLMaterialRef() const { return fGDMLMaterialRef; };
 
     void SetPressure(Double_t pressure);
     void SetTemperature(Double_t temperature);
 
     /// Sets the maximum electron energy to be used in gas generation.
-    void SetMaxElectronEnergy(Double_t energy) { fMaxElectronEnergy = energy; }
+    inline void SetMaxElectronEnergy(Double_t energy) { fMaxElectronEnergy = energy; }
 
     void PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PrintGasInfo();
-    void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
+    inline void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
 
     /// Prints the metadata information from the gas
     void PrintMetadata() { PrintGasInfo(); }

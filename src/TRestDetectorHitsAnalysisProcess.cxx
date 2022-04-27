@@ -121,6 +121,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "TRestDetectorHitsAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorHitsAnalysisProcess);
@@ -129,8 +130,9 @@ TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess() { Initializ
 
 TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsAnalysisProcess::~TRestDetectorHitsAnalysisProcess() { delete fOutputHitsEvent; }
@@ -141,7 +143,7 @@ void TRestDetectorHitsAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 
     fPrismFiducial = false;
@@ -323,7 +325,7 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* evInput) 
         GetChar();
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     return fOutputHitsEvent;
 }

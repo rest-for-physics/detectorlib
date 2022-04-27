@@ -9,18 +9,19 @@
 //////////////////////////////////////////////////////////////////////////
 
 #include "TRestDetectorHitsShuffleProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorHitsShuffleProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsShuffleProcess);
+
+TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess() { Initialize(); }
 
 TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsShuffleProcess::~TRestDetectorHitsShuffleProcess() {
@@ -38,9 +39,9 @@ void TRestDetectorHitsShuffleProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fHitsEvent = NULL;
+    fHitsEvent = nullptr;
 
-    fRandom = NULL;
+    fRandom = nullptr;
 }
 
 void TRestDetectorHitsShuffleProcess::LoadConfig(std::string configFilename, std::string name) {

@@ -1,4 +1,4 @@
-set( LibraryVersion "1.6" )
+set(LibraryVersion "1.6")
 add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
 
 #find garfield libs and includes
@@ -49,3 +49,5 @@ COMPILELIB("")
 
 file(GLOB_RECURSE MAC "${CMAKE_CURRENT_SOURCE_DIR}/macros/*")
 INSTALL(FILES ${MAC} DESTINATION ./macros/detector)
+
+ADD_LIBRARY_TEST()

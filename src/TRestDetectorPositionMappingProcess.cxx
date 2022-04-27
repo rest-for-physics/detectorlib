@@ -19,13 +19,12 @@
 #include <TLegend.h>
 #include <TPaveText.h>
 #include <TRandom.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorPositionMappingProcess)
-    //______________________________________________________________________________
-    TRestDetectorPositionMappingProcess::TRestDetectorPositionMappingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorPositionMappingProcess);
+
+TRestDetectorPositionMappingProcess::TRestDetectorPositionMappingProcess() { Initialize(); }
 
 TRestDetectorPositionMappingProcess::~TRestDetectorPositionMappingProcess() {}
 
@@ -33,9 +32,9 @@ void TRestDetectorPositionMappingProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fHitsEvent = NULL;
+    fHitsEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
 void TRestDetectorPositionMappingProcess::InitProcess() {

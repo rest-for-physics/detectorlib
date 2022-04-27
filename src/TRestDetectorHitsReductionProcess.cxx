@@ -12,18 +12,18 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsReductionProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorHitsReductionProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsReductionProcess);
+
+TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess() { Initialize(); }
 
 TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsReductionProcess::~TRestDetectorHitsReductionProcess() {}
@@ -42,8 +42,8 @@ void TRestDetectorHitsReductionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fInputHitsEvent = NULL;
-    fOutputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
+    fOutputHitsEvent = nullptr;
 }
 
 void TRestDetectorHitsReductionProcess::LoadConfig(std::string configFilename, std::string name) {

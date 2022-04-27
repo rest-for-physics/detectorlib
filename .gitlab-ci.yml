@@ -7,46 +7,46 @@ stages:
   - process
 
 before_script:
-    - export USER="detector"
-    - pwd
-    - echo $CI_SERVER_HOST
-    - echo $CRONJOB
-    - export HOME=${CI_PROJECT_DIR}/install/
-    - if [ -d $HOME/.rest ]; then rm -Rf $HOME/.rest; fi
-    - if [ -f "/opt/root/install/bin/thisroot.sh" ]; then source /opt/root/install/bin/thisroot.sh; fi
-    - root-config --version
-    - if [ -f "/opt/geant4/install/bin/geant4.sh" ]; then source /opt/geant4/install/bin/geant4.sh; fi
-    - geant4-config --version
-    - if [ -d "/opt/garfieldpp/install" ]; then export GARFIELD_HOME=/opt/garfieldpp/install; fi
-    - if [ -d "/opt/garfieldpp/install" ]; then export HEED_DATABASE=$GARFIELD_HOME/Heed/heed++/database; fi
-    - if [ -d "/opt/garfieldpp/install" ]; then export LD_LIBRARY_PATH=$GARFIELD_HOME/lib:$LD_LIBRARY_PATH; fi
-    - ls $GARFIELD_HOME
-    - python3 --version
-    - apt update && apt install -y wget
+  - export USER="detector"
+  - pwd
+  - echo $CI_SERVER_HOST
+  - echo $CRONJOB
+  - export HOME=${CI_PROJECT_DIR}/install/
+  - if [ -d $HOME/.rest ]; then rm -Rf $HOME/.rest; fi
+  - if [ -f "/opt/root/install/bin/thisroot.sh" ]; then source /opt/root/install/bin/thisroot.sh; fi
+  - root-config --version
+  - if [ -f "/opt/geant4/install/bin/geant4.sh" ]; then source /opt/geant4/install/bin/geant4.sh; fi
+  - geant4-config --version
+  - if [ -d "/opt/garfieldpp/install" ]; then export GARFIELD_HOME=/opt/garfieldpp/install; fi
+  - if [ -d "/opt/garfieldpp/install" ]; then export HEED_DATABASE=$GARFIELD_HOME/Heed/heed++/database; fi
+  - if [ -d "/opt/garfieldpp/install" ]; then export LD_LIBRARY_PATH=$GARFIELD_HOME/lib:$LD_LIBRARY_PATH; fi
+  - ls $GARFIELD_HOME
+  - python3 --version
+  - apt update && apt install -y wget
 
 
 clang-format:
-    stage: pre-build
-    script:
-        - echo "**$CRONJOB**"
-        - echo "**$CI_SERVER_HOST**"
-        - cd ${CI_PROJECT_DIR}/pipeline/clang-format/
-        - ./clangformattest.sh
-          # We execute only at a schedulled pipeline that defines CRONJOB variable
-    only:
-        variables:
-            - $CRONJOB
+  stage: pre-build
+  script:
+    - echo "**$CRONJOB**"
+    - echo "**$CI_SERVER_HOST**"
+    - cd ${CI_PROJECT_DIR}/pipeline/clang-format/
+    - ./clangformattest.sh
+    # We execute only at a scheduled pipeline that defines CRONJOB variable
+  only:
+    variables:
+      - $CRONJOB
 
-validateLibrary:
-    stage: pre-build
-    script:
-        - python3 pipeline/validateLibrary.py .
-    except:
-        variables:
-            - $CRONJOB == "YES"
+Validate Library:
+  stage: pre-build
+  script:
+    - python3 pipeline/validateLibrary.py .
+  except:
+    variables:
+      - $CRONJOB == "YES"
 
-build:
-  type: build
+Build:
+  stage: build
   script:
     - echo "**${CI_PROJECT_DIR}**"
     - rm -rf ${CI_PROJECT_DIR}/install
@@ -72,8 +72,8 @@ build:
       - ${CI_PROJECT_DIR}/framework/build
     expire_in: 1 day
 
-loadRESTLibs:
-  type: loadRESTLibs
+Load REST Libraries:
+  stage: loadRESTLibs
   script:
     - . ${CI_PROJECT_DIR}/install/thisREST.sh
     - restRoot -b -q
@@ -81,12 +81,4 @@ loadRESTLibs:
     variables:
       - $CRONJOB
 
-#addSignalNoise: 
-#  type: process
-#  script:
-#    - . ${CI_PROJECT_DIR}/install/thisREST.sh
-#    - cd ${CI_PROJECT_DIR}/pipeline/processes/
-#    - ./addNoise.py
-#  except:
-#      variables:
-#        - $CRONJOB
+

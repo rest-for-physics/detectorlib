@@ -18,17 +18,15 @@
 
 #include "TRestManager.h"
 #include "TRestRun.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorSetup)
-    //______________________________________________________________________________
-    TRestDetectorSetup::TRestDetectorSetup()
-    : TRestMetadata() {
-    // TRestDetectorSetup default constructor
-    Initialize();
-}
+ClassImp(TRestDetectorSetup);
 
-TRestDetectorSetup::TRestDetectorSetup(char* configFilename, string name) : TRestMetadata(configFilename) {
+TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() { Initialize(); }
+
+TRestDetectorSetup::TRestDetectorSetup(char* configFilename, const string& name)
+    : TRestMetadata(configFilename) {
     Initialize();
 
     LoadConfigFromFile(fConfigFileName, name);
@@ -110,7 +108,8 @@ void TRestDetectorSetup::InitFromFileName(TString fName) {
     fSamplingTime = name.substr(pos, len);
 
     TString samplingReduced = fSamplingTime(2, fSamplingTime.Length());
-    fSamplingInMicroSec = (Double_t)strtol(samplingReduced.Data(), NULL, 16) / 100.;  // This is only for AGET
+    fSamplingInMicroSec =
+        (Double_t)strtol(samplingReduced.Data(), nullptr, 16) / 100.;  // This is only for AGET
 
     pos = name.find("-") + 1;
     len = name.find(".aqs") - pos;

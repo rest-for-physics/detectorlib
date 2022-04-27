@@ -25,11 +25,11 @@
 #include <TMultiGraph.h>
 #include <TObject.h>
 #include <TPad.h>
+#include <TRestEvent.h>
 
 #include <iostream>
 
 #include "TRestDetectorSignal.h"
-#include "TRestEvent.h"
 
 class TRestDetectorSignalEvent : public TRestEvent {
    protected:
@@ -46,27 +46,31 @@ class TRestDetectorSignalEvent : public TRestEvent {
     void SetMaxAndMin();
 
    public:
-    Bool_t signalIDExists(Int_t sID) {
-        if (GetSignalIndex(sID) == -1) return false;
+    inline Bool_t signalIDExists(Int_t sID) {
+        if (GetSignalIndex(sID) == -1) {
+            return false;
+        }
         return true;
     }
 
-    void SortSignals() {
-        for (int n = 0; n < GetNumberOfSignals(); n++) fSignal[n].Sort();
+    inline void SortSignals() {
+        for (int n = 0; n < GetNumberOfSignals(); n++) {
+            fSignal[n].Sort();
+        }
     }
 
     // Setters
-    void AddSignal(TRestDetectorSignal s);
-
-    void AddChargeToSignal(Int_t sgnlID, Double_t tm, Double_t chrg);
+    void AddSignal(const TRestDetectorSignal& signal);
+    void SubstractBaselines(Int_t startBin, Int_t endBin);
+    void AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge);
 
     // Getters
-    Int_t GetNumberOfSignals() { return fSignal.size(); }
-    TRestDetectorSignal* GetSignal(Int_t n) { return &fSignal[n]; }
+    inline Int_t GetNumberOfSignals() const { return fSignal.size(); }
+    inline TRestDetectorSignal* GetSignal(Int_t n) { return &fSignal[n]; }
 
-    TRestDetectorSignal* GetSignalById(Int_t sid) {
+    inline TRestDetectorSignal* GetSignalById(Int_t sid) {
         Int_t index = GetSignalIndex(sid);
-        if (index < 0) return NULL;
+        if (index < 0) return nullptr;
 
         return &fSignal[index];
     }
@@ -75,12 +79,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     Double_t GetBaseLineAverage(Int_t startBin, Int_t endBin);
     Double_t GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin);
-    void SubstractBaselines(Int_t startBin, Int_t endBin);
     Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0);
-    //   Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline, Int_t endBaseline,
-    //                                     Double_t nSigmas, Int_t nPointsOverThreshold,
-    //                                     Double_t minPeakAmplitude);
-
     Double_t GetMaxValue();
     Double_t GetMinValue();
     Double_t GetMinTime();
@@ -94,7 +93,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     TPad* DrawEvent(const TString& option = "");
 
-    // Construtor
+    // Constructor
     TRestDetectorSignalEvent();
     // Destructor
     virtual ~TRestDetectorSignalEvent();

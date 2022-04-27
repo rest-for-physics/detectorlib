@@ -121,7 +121,9 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess() { Initializ
 TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 
     if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 }
@@ -130,8 +132,7 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* configF
 /// \brief Default destructor
 ///
 TRestDetectorHitsToSignalProcess::~TRestDetectorHitsToSignalProcess() {
-    if (fReadout != nullptr) delete fReadout;
-
+    delete fReadout;
     delete fSignalEvent;
 }
 
@@ -157,10 +158,10 @@ void TRestDetectorHitsToSignalProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fReadout = NULL;
-    fGas = NULL;
+    fReadout = nullptr;
+    fGas = nullptr;
 
-    fHitsEvent = NULL;
+    fHitsEvent = nullptr;
     fSignalEvent = new TRestDetectorSignalEvent();
 }
 

@@ -13,13 +13,13 @@
 #define RestCore_TRestDetectorPositionMappingProcess
 
 #include <TH1D.h>
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
 #include "TRestDetectorGainMap.h"
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 class TRestDetectorPositionMappingProcess : public TRestEventProcess {
    private:
