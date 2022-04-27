@@ -97,7 +97,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
-    TRestDetectorSignalToHitsProcess(char* configFilename);
+    TRestDetectorSignalToHitsProcess(const char* configFilename);
     ~TRestDetectorSignalToHitsProcess();
 
     ClassDef(TRestDetectorSignalToHitsProcess, 4);

@@ -106,7 +106,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorGarfieldDriftProcess();
-    TRestDetectorGarfieldDriftProcess(char* configFilename);
+    TRestDetectorGarfieldDriftProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorGarfieldDriftProcess();
 #endif

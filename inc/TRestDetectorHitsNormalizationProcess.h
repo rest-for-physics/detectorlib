@@ -57,7 +57,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "hitsNormalizationProcess"; }
 
     TRestDetectorHitsNormalizationProcess();
-    TRestDetectorHitsNormalizationProcess(char* configFilename);
+    TRestDetectorHitsNormalizationProcess(const char* configFilename);
 
     ~TRestDetectorHitsNormalizationProcess();
 

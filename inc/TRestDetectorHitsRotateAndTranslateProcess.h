@@ -76,7 +76,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorHitsRotateAndTranslateProcess();
-    TRestDetectorHitsRotateAndTranslateProcess(char* configFilename);
+    TRestDetectorHitsRotateAndTranslateProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorHitsRotateAndTranslateProcess();
 

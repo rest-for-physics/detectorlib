@@ -29,7 +29,7 @@ ClassImp(TRestDetectorAvalancheProcess);
 
 TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() { Initialize(); }
 
-TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* configFilename) {
+TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) {

@@ -21,7 +21,7 @@ ClassImp(TRestDetectorElectronDiffusionProcess);
 
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess() { Initialize(); }
 
-TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* configFilename) {
+TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(const char* configFilename) {
     Initialize();
     if (LoadConfigFromFile(configFilename)) {
         LoadDefaultConfig();

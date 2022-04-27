@@ -81,7 +81,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorSingleChannelAnalysisProcess();
-    TRestDetectorSingleChannelAnalysisProcess(char* configFilename);
+    TRestDetectorSingleChannelAnalysisProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorSingleChannelAnalysisProcess();
 

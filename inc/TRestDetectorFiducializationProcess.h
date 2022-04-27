@@ -50,7 +50,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "fiducialization"; }
 
     TRestDetectorFiducializationProcess();
-    TRestDetectorFiducializationProcess(char* configFilename);
+    TRestDetectorFiducializationProcess(const char* configFilename);
 
     ~TRestDetectorFiducializationProcess();
 

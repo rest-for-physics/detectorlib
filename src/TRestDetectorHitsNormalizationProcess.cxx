@@ -27,7 +27,7 @@ ClassImp(TRestDetectorHitsNormalizationProcess);
 
 TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() { Initialize(); }
 
-TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* configFilename) {
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) {

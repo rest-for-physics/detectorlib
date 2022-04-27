@@ -16,7 +16,7 @@ ClassImp(TRestDetectorHitsShuffleProcess);
 
 TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess() { Initialize(); }
 
-TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* configFilename) {
+TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename) == -1) {

@@ -77,7 +77,7 @@ TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess() {
 ///
 /// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess(char* configFilename) {
+TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess(const char* configFilename) {
     Initialize();
 
     LoadConfig(configFilename);

@@ -136,7 +136,7 @@ TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess() { Initializ
 ///
 /// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(char* configFilename) {
+TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();

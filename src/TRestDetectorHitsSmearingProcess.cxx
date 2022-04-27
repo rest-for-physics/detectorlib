@@ -27,7 +27,7 @@ ClassImp(TRestDetectorHitsSmearingProcess);
 
 TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initialize(); }
 
-TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* configFilename) {
+TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) {

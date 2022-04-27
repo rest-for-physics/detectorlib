@@ -99,7 +99,8 @@ TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityPro
 ///
 /// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityProcess(char* configFilename) {
+TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityProcess(
+    const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();

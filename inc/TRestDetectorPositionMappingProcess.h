@@ -79,7 +79,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "readoutAnalysis"; }
 
     TRestDetectorPositionMappingProcess();
-    TRestDetectorPositionMappingProcess(char* configFilename);
+    TRestDetectorPositionMappingProcess(const char* configFilename);
 
     ~TRestDetectorPositionMappingProcess();
 

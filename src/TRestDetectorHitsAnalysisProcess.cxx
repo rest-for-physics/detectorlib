@@ -128,7 +128,7 @@ ClassImp(TRestDetectorHitsAnalysisProcess);
 
 TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess() { Initialize(); }
 
-TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(char* configFilename) {
+TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(const char* configFilename) {
     Initialize();
     if (LoadConfigFromFile(configFilename) == -1) {
         LoadDefaultConfig();

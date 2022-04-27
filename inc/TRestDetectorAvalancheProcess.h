@@ -68,7 +68,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorAvalancheProcess();
-    TRestDetectorAvalancheProcess(char* configFilename);
+    TRestDetectorAvalancheProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorAvalancheProcess();
 

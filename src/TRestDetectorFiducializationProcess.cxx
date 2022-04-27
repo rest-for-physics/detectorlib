@@ -21,7 +21,7 @@ ClassImp(TRestDetectorFiducializationProcess);
 
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() { Initialize(); }
 
-TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* configFilename) {
+TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(const char* configFilename) {
     Initialize();
     if (LoadConfigFromFile(configFilename)) {
         LoadDefaultConfig();

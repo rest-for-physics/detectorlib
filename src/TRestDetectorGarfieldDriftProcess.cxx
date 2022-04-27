@@ -47,7 +47,7 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom
 //            process stand alone but even then we could just call LoadConfig
 //            __________________________________________________________
 
-TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* configFilename)
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(const char* configFilename)
     : fRandom(0), fGfSensor(0) {
     Initialize();
 

@@ -19,7 +19,7 @@ ClassImp(TRestDetectorHitsReductionProcess);
 
 TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess() { Initialize(); }
 
-TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* configFilename) {
+TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(const char* configFilename) {
     Initialize();
     if (LoadConfigFromFile(configFilename) == -1) {
         LoadDefaultConfig();

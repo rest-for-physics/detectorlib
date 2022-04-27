@@ -69,7 +69,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "hitsGaussAnalysis"; }
 
     TRestDetectorHitsGaussAnalysisProcess();
-    TRestDetectorHitsGaussAnalysisProcess(char* configFilename);
+    TRestDetectorHitsGaussAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorHitsGaussAnalysisProcess();
 

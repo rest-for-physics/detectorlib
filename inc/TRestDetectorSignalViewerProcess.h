@@ -64,7 +64,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "rawSignalViewer"; }
 
     TRestDetectorSignalViewerProcess();
-    TRestDetectorSignalViewerProcess(char* configFilename);
+    TRestDetectorSignalViewerProcess(const char* configFilename);
 
     ~TRestDetectorSignalViewerProcess();
 

@@ -55,7 +55,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorHitsShuffleProcess();
-    TRestDetectorHitsShuffleProcess(char* configFilename);
+    TRestDetectorHitsShuffleProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorHitsShuffleProcess();
 

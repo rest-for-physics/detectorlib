@@ -27,7 +27,7 @@ ClassImp(TRestDetectorSignalViewerProcess);
 
 TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
 
-TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* configFilename) {
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(const char* configFilename) {
     Initialize();
     if (LoadConfigFromFile(configFilename)) {
         LoadDefaultConfig();

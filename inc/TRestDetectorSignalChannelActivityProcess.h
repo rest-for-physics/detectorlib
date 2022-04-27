@@ -132,7 +132,7 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorSignalChannelActivityProcess();
-    TRestDetectorSignalChannelActivityProcess(char* configFilename);
+    TRestDetectorSignalChannelActivityProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorSignalChannelActivityProcess();
 

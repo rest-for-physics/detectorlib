@@ -76,7 +76,7 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     inline const char* GetProcessName() const { return "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
-    TRestDetectorTriggerAnalysisProcess(char* configFilename);
+    TRestDetectorTriggerAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorTriggerAnalysisProcess();
 

@@ -29,7 +29,8 @@ ClassImp(TRestDetectorHitsRotateAndTranslateProcess);
 
 TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess() { Initialize(); }
 
-TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(char* configFilename) {
+TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(
+    const char* configFilename) {
     Initialize();
 
     if (LoadConfigFromFile(configFilename)) {

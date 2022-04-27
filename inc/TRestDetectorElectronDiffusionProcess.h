@@ -88,7 +88,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorElectronDiffusionProcess();
-    TRestDetectorElectronDiffusionProcess(char* configFilename);
+    TRestDetectorElectronDiffusionProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 

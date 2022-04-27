@@ -68,7 +68,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
-    TRestDetectorHitsSmearingProcess(char* configFilename);
+    TRestDetectorHitsSmearingProcess(const char* configFilename);
 
     ~TRestDetectorHitsSmearingProcess();
 
