@@ -43,7 +43,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fHitsOutputEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
 
     void LoadConfig(std::string configFilename);

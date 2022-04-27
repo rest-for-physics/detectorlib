@@ -56,7 +56,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     any GetInputEvent() const override { return fInputHitsEvent; }
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    TRestEvent* ProcessEvent(TRestEvent* evInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 

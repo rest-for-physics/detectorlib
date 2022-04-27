@@ -86,8 +86,8 @@ void TRestDetectorAvalancheProcess::InitProcess() {
     if (fGas == nullptr) cout << "REST ERRORRRR : Gas has not been initialized" << endl;
 }
 
-TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     Double_t fW = fGas->GetWvalue();
     Double_t gain, totelectrons = 0;

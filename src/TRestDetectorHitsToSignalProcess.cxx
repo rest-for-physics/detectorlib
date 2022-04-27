@@ -204,8 +204,8 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fHitsEvent);
 
     if (!fReadout) return nullptr;

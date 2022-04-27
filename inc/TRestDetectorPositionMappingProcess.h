@@ -54,7 +54,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fHitsEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
 
     double GetCorrection2(double x, double y);

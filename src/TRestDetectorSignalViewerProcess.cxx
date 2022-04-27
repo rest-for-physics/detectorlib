@@ -55,10 +55,10 @@ void TRestDetectorSignalViewerProcess::LoadConfig(const string& configFilename, 
 
 void TRestDetectorSignalViewerProcess::InitProcess() { this->CreateCanvas(); }
 
-TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEvent) {
     TString obsName;
 
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     /// Copying the signal event to the output event
     fSignalEvent = fInputSignalEvent;

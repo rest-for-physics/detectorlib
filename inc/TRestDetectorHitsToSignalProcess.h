@@ -67,7 +67,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fSignalEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
 
     /// It prints out the process parameters stored in the metadata structure
     void PrintMetadata() {

@@ -50,8 +50,8 @@ void TRestDetectorHitsShuffleProcess::LoadConfig(const string& configFilename, c
 
 void TRestDetectorHitsShuffleProcess::InitProcess() {}
 
-TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TRestHits* hits = fHitsEvent->GetHits();
 

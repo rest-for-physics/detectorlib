@@ -63,8 +63,8 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     }
 }
 
-TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     double nan = numeric_limits<double>::quiet_NaN();
 

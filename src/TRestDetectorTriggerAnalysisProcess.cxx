@@ -170,8 +170,8 @@ void TRestDetectorTriggerAnalysisProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fInputSignalEvent);
     for (int sgnl = 0; sgnl < fInputSignalEvent->GetNumberOfSignals(); sgnl++)
         fSignalEvent->AddSignal(*fInputSignalEvent->GetSignal(sgnl));

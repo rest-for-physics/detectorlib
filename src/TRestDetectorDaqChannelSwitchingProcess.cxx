@@ -77,9 +77,9 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     }
 }
 
-TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* eventInput) {
-    fEvent = eventInput;
-    return eventInput;
+TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fEvent = inputEvent;
+    return inputEvent;
 }
 
 void TRestDetectorDaqChannelSwitchingProcess::EndProcess() {}

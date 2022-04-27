@@ -111,8 +111,8 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     }
 }
 
-TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();

@@ -196,10 +196,10 @@ void TRestDetectorSignalChannelActivityProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* inputEvent) {
     TString obsName;
 
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     /// Copying the signal event to the output event
 

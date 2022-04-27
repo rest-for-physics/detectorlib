@@ -39,7 +39,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fHitsOutputEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");

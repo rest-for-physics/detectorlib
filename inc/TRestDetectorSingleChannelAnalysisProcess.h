@@ -56,7 +56,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     // See comments on CXX
     void SaveGainMetadata(std::string filename);
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
     TH1D* GetChannelSpectrum(int id);
     void PrintChannelSpectrums(std::string filename);

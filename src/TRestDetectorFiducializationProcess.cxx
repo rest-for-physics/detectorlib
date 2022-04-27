@@ -54,8 +54,8 @@ void TRestDetectorFiducializationProcess::InitProcess() {
     }
 }
 
-TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
     if (nHits <= 0) return nullptr;

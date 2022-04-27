@@ -36,7 +36,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");

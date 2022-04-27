@@ -156,8 +156,8 @@ void TRestDetectorHitsAnalysisProcess::LoadConfig(const string& configFilename, 
 
 void TRestDetectorHitsAnalysisProcess::InitProcess() { TRestEventProcess::ReadObservables(); }
 
-TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TString obsName;
 

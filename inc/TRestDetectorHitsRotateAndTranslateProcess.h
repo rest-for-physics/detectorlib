@@ -46,7 +46,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     any GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent);
     void EndProcess();
 
     void LoadConfig(std::string configFilename);

@@ -87,8 +87,8 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 }
 
-TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    fSignalEvent = (TRestDetectorSignalEvent*)evInput;
+TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     double nan = numeric_limits<double>::quiet_NaN();
 

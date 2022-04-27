@@ -334,9 +334,9 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
 
 #endif
 
-TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEvent) {
 #if defined USE_Garfield
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     double x, y, z, energy;
     double xi, yi, zi, ti, xf, yf, zf, tf, energyf;
@@ -423,10 +423,10 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
     return fOutputHitsEvent;
 #else
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
     debug << "nullptr process" << endl;
-    return evInput;
+    return inputEvent;
 
 #endif
 }

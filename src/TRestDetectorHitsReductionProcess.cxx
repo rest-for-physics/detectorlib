@@ -52,8 +52,8 @@ void TRestDetectorHitsReductionProcess::LoadConfig(const string& configFilename,
 
 void TRestDetectorHitsReductionProcess::InitProcess() {}
 
-TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
 
     Int_t initialHits = fOutputHitsEvent->GetNumberOfHits();
