@@ -8,19 +8,19 @@ namespace fs = std::filesystem;
 
 using namespace std;
 
-#define FILES_PATH fs::path(__FILE__).parent_path().parent_path() / "files"
-#define GAS_DEFAULT_RML FILES_PATH / "TRestDetectorGasExample.rml"
+const auto filesPath = fs::path(__FILE__).parent_path().parent_path() / "files";
+const auto gasDefaultRml = filesPath / "TRestDetectorGasExample.rml";
 
 TEST(TRestDetectorGas, TestFiles) {
-    cout << "FrameworkCore test files path: " << FILES_PATH << endl;
+    cout << "FrameworkCore test files path: " << filesPath << endl;
 
     // Check dir exists and is a directory
-    EXPECT_TRUE(fs::is_directory(FILES_PATH));
+    EXPECT_TRUE(fs::is_directory(filesPath));
     // Check it's not empty
-    EXPECT_TRUE(!fs::is_empty(FILES_PATH));
+    EXPECT_TRUE(!fs::is_empty(filesPath));
 
     // All used files in this tests
-    EXPECT_TRUE(fs::exists(GAS_DEFAULT_RML));
+    EXPECT_TRUE(fs::exists(gasDefaultRml));
 }
 
 TEST(TRestDetectorGas, Default) {
@@ -35,12 +35,10 @@ TEST(TRestDetectorGas, Default) {
 }
 
 TEST(TRestDetectorGas, FromRml) {
-    const auto gasConfigRml = GAS_DEFAULT_RML;
-
-    TRestDetectorGas gas(gasConfigRml.c_str(),  // config file
-                         "Xenon 10-10E3Vcm",    // name
-                         false,                 // generation
-                         false                  // test
+    TRestDetectorGas gas(gasDefaultRml.c_str(),  // config file
+                         "Xenon 10-10E3Vcm",     // name
+                         false,                  // generation
+                         false                   // test
     );
 
     EXPECT_TRUE(gas.GetW() == 21.9);
