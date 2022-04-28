@@ -111,7 +111,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     ~TRestDetectorGarfieldDriftProcess();
 #endif
     ClassDefOverride(TRestDetectorGarfieldDriftProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+                     1);  // Template for a REST "event process" class inherited from
+                          // TRestEventProcess
 };
 #endif

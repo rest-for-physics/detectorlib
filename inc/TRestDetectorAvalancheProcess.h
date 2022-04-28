@@ -48,7 +48,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     void LoadConfig(std::string configFilename);
 
-    void PrintMetadata() override{
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " reference energy (Eref): " << fEnergyRef << endl;
@@ -73,6 +73,6 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     ~TRestDetectorAvalancheProcess();
 
     ClassDefOverride(TRestDetectorAvalancheProcess, 1);  // Template for a REST "event process"
-                                                 // class inherited from TRestEventProcess
+                                                         // class inherited from TRestEventProcess
 };
 #endif

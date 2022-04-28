@@ -93,6 +93,6 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     ~TRestDetectorElectronDiffusionProcess();
 
     ClassDefOverride(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
-                                                         // inherited from TRestEventProcess
+                                                                 // inherited from TRestEventProcess
 };
 #endif

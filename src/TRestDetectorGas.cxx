@@ -1046,8 +1046,8 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
     return vz * 1000.;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Drift Velocity "
-            "from TRestDetectorGas!"
-         << std::endl;
+                 "from TRestDetectorGas!"
+              << std::endl;
     std::cout << "Please define the Drift Velocity in each process!" << std::endl;
     return 0.001;
 #endif
@@ -1075,8 +1075,8 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
     return dl;
 #else
     std::cout << "This REST is not compiled with garfield, Do not use Longitudinal "
-            "Diffusion from TRestDetectorGas!"
-         << std::endl;
+                 "Diffusion from TRestDetectorGas!"
+              << std::endl;
     std::cout << "Please define the Longitudinal Diffusion in each process!" << std::endl;
     return 0;
 #endif
@@ -1104,8 +1104,8 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
     return dt;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Transversal "
-            "Diffusion from TRestDetectorGas!"
-         << std::endl;
+                 "Diffusion from TRestDetectorGas!"
+              << std::endl;
     std::cout << "Please define the Transversal Diffusion in each process!" << std::endl;
     return 0;
 #endif
@@ -1133,8 +1133,8 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
     return alpha;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Townsend "
-            "Coefficient from TRestDetectorGas!"
-         << std::endl;
+                 "Coefficient from TRestDetectorGas!"
+              << std::endl;
     std::cout << "Please define the Townsend Coefficient in each process!" << std::endl;
     return 0;
 #endif
@@ -1162,8 +1162,8 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
     return eta;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Attachment "
-            "Coefficient from TRestDetectorGas!"
-         << std::endl;
+                 "Coefficient from TRestDetectorGas!"
+              << std::endl;
     std::cout << "Please define the Attachment Coefficient in each process!" << std::endl;
     return 0;
 #endif

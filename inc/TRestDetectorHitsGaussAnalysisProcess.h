@@ -44,7 +44,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize()  override;
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
