@@ -35,7 +35,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     Double_t fGamma;  ///< rotation angle around x-axis
 
     void InitFromConfigFile() override;
-    void Initialize();
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -51,7 +51,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
 
     void LoadConfig(std::string configFilename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " delta x : " << fDeltaX << endl;
@@ -80,7 +80,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorHitsRotateAndTranslateProcess();
 
-    ClassDef(TRestDetectorHitsRotateAndTranslateProcess,
+    ClassDefOverride(TRestDetectorHitsRotateAndTranslateProcess,
              1);  // Template for a REST "event process" class inherited from
                   // TRestEventProcess
 };

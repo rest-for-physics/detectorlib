@@ -30,7 +30,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
     // parameters
     bool fApplyGainCorrection;
     bool fCreateGainMap;
@@ -60,7 +60,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     double GetCorrection2(double x, double y);
     double GetCorrection3(double x, double y, double z);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
@@ -83,6 +83,6 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
 
     ~TRestDetectorPositionMappingProcess();
 
-    ClassDef(TRestDetectorPositionMappingProcess, 1);
+    ClassDefOverride(TRestDetectorPositionMappingProcess, 1);
 };
 #endif

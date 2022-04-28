@@ -22,7 +22,7 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    protected:
     Double_t fStartingDistance;
@@ -41,7 +41,7 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " Starting distance : " << fStartingDistance << endl;
@@ -59,6 +59,6 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsReductionProcess();
 
-    ClassDef(TRestDetectorHitsReductionProcess, 1);
+    ClassDefOverride(TRestDetectorHitsReductionProcess, 1);
 };
 #endif

@@ -26,7 +26,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fHitsOutputEvent;  //!
 
     void InitFromConfigFile() override;
-    void Initialize();
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -44,7 +44,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " Renormalization factor : " << fFactor << endl;
@@ -61,6 +61,6 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsNormalizationProcess();
 
-    ClassDef(TRestDetectorHitsNormalizationProcess, 1);
+    ClassDefOverride(TRestDetectorHitsNormalizationProcess, 1);
 };
 #endif

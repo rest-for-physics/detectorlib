@@ -31,7 +31,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     Double_t fDetectorGain;      ///< Detector's gain.
 
     void InitFromConfigFile() override;
-    void Initialize();
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -48,7 +48,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
 
     void LoadConfig(std::string configFilename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override{
         BeginPrintProcess();
 
         metadata << " reference energy (Eref): " << fEnergyRef << endl;
@@ -72,7 +72,7 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorAvalancheProcess();
 
-    ClassDef(TRestDetectorAvalancheProcess, 1);  // Template for a REST "event process"
+    ClassDefOverride(TRestDetectorAvalancheProcess, 1);  // Template for a REST "event process"
                                                  // class inherited from TRestEventProcess
 };
 #endif

@@ -44,7 +44,7 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize()  override;
 
     void LoadDefaultConfig();
 
@@ -74,6 +74,6 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     ~TRestDetectorHitsGaussAnalysisProcess();
 
     // If new members are added, removed or modified in this class version number must be increased!
-    ClassDef(TRestDetectorHitsGaussAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorHitsGaussAnalysisProcess, 2);
 };
 #endif

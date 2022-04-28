@@ -26,7 +26,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -41,7 +41,7 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         EndPrintProcess();
@@ -54,6 +54,6 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
     ~TRestDetectorFiducializationProcess();
 
-    ClassDef(TRestDetectorFiducializationProcess, 1);
+    ClassDefOverride(TRestDetectorFiducializationProcess, 1);
 };
 #endif

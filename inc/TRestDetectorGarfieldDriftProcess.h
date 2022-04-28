@@ -40,7 +40,7 @@ typedef AvalancheMC DRIFT_METHOD;
 
 class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
    private:
-    void Initialize();
+    void Initialize() override;
 
     TRandom3* fRandom;
 
@@ -85,7 +85,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         //             std::cout << "Electric field : " << fElectricField << " V/cm"
@@ -110,7 +110,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorGarfieldDriftProcess();
 #endif
-    ClassDef(TRestDetectorGarfieldDriftProcess,
+    ClassDefOverride(TRestDetectorGarfieldDriftProcess,
              1);  // Template for a REST "event process" class inherited from
                   // TRestEventProcess
 };

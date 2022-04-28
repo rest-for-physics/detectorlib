@@ -40,7 +40,7 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -110,7 +110,7 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Low signal threshold activity : " << fLowThreshold << endl;
@@ -136,6 +136,6 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorSignalChannelActivityProcess();
 
-    ClassDef(TRestDetectorSignalChannelActivityProcess, 3);
+    ClassDefOverride(TRestDetectorSignalChannelActivityProcess, 3);
 };
 #endif

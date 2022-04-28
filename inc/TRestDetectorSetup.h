@@ -27,7 +27,7 @@
 
 class TRestDetectorSetup : public TRestMetadata {
    private:
-    void Initialize();
+    void Initialize() override;
 
     void InitFromConfigFile() override;
 
@@ -70,6 +70,6 @@ class TRestDetectorSetup : public TRestMetadata {
     // Destructor
     ~TRestDetectorSetup();
 
-    ClassDef(TRestDetectorSetup, 1);
+    ClassDefOverride(TRestDetectorSetup, 1);
 };
 #endif

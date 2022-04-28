@@ -33,7 +33,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
     // parameters
     bool fApplyGainCorrection;
     bool fCreateGainMap;
@@ -61,7 +61,7 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     TH1D* GetChannelSpectrum(int id);
     void PrintChannelSpectrums(std::string filename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
@@ -85,6 +85,6 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorSingleChannelAnalysisProcess();
 
-    ClassDef(TRestDetectorSingleChannelAnalysisProcess, 1);
+    ClassDefOverride(TRestDetectorSingleChannelAnalysisProcess, 1);
 };
 #endif

@@ -45,7 +45,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     /// A pointer to the detector gas definition accessible to TRestRun
     TRestDetectorGas* fGas;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -70,7 +70,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Sampling : " << fSampling << " us" << endl;
@@ -90,6 +90,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestDetectorHitsToSignalProcess(const char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDef(TRestDetectorHitsToSignalProcess, 1);
+    ClassDefOverride(TRestDetectorHitsToSignalProcess, 1);
 };
 #endif

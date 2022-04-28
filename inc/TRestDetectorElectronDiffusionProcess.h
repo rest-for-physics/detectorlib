@@ -33,7 +33,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -61,7 +61,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << endl;
@@ -92,7 +92,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
-    ClassDef(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
+    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
                                                          // inherited from TRestEventProcess
 };
 #endif

@@ -34,7 +34,7 @@ class TRestDetectorHits3DReconstructionProcess : public TRestEventProcess {
 
    protected:
     void InitFromConfigFile() override;
-    void Initialize();
+    void Initialize() override;
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }
@@ -55,6 +55,6 @@ class TRestDetectorHits3DReconstructionProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorHits3DReconstructionProcess();
 
-    ClassDef(TRestDetectorHits3DReconstructionProcess, 1);
+    ClassDefOverride(TRestDetectorHits3DReconstructionProcess, 1);
 };
 #endif

@@ -32,7 +32,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     TRestDetectorGas* fGas;  //!
 
     void InitFromConfigFile() override;
-    void Initialize();
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -51,7 +51,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " reference energy (ERef): " << fEnergyRef << endl;
@@ -72,6 +72,6 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDef(TRestDetectorHitsSmearingProcess, 2);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 2);
 };
 #endif

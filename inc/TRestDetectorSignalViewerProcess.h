@@ -34,7 +34,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -51,7 +51,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         std::cout << "Refresh value : " << fDrawRefresh << endl;
@@ -68,6 +68,6 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
 
     ~TRestDetectorSignalViewerProcess();
 
-    ClassDef(TRestDetectorSignalViewerProcess, 1);
+    ClassDefOverride(TRestDetectorSignalViewerProcess, 1);
 };
 #endif
