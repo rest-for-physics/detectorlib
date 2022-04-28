@@ -30,7 +30,7 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    public:
     any GetInputEvent() const override { return fEvent; }
@@ -40,7 +40,7 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
     void EndProcess() override;
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "module's daq channel re-definition: " << endl;
@@ -57,6 +57,6 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     TRestDetectorDaqChannelSwitchingProcess();
     ~TRestDetectorDaqChannelSwitchingProcess();
 
-    ClassDef(TRestDetectorDaqChannelSwitchingProcess, 1);
+    ClassDefOverride(TRestDetectorDaqChannelSwitchingProcess, 1);
 };
 #endif

@@ -27,7 +27,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    protected:
     Int_t fIterations;
@@ -43,7 +43,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " Iterations : " << fIterations << endl;
@@ -59,7 +59,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorHitsShuffleProcess();
 
-    ClassDef(TRestDetectorHitsShuffleProcess, 1);  // Template for a REST "event process" class inherited from
+    ClassDefOverride(TRestDetectorHitsShuffleProcess, 1);  // Template for a REST "event process" class inherited from
                                                    // TRestEventProcess
 };
 #endif

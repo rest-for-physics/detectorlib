@@ -60,8 +60,8 @@ class TRestDetectorDriftVolume : public TRestMetadata {
    public:
     TRestDetectorDriftVolume();
     TRestDetectorDriftVolume(const char* configFilename, std::string name = "");
-    virtual void Initialize();
-    virtual void InitFromConfigFile();
+    void Initialize() override;
+    void InitFromConfigFile() override;
 
     virtual std::string GetMaterial() const { return fMaterial; }
     virtual Double_t GetW() const { return fW; }
@@ -106,7 +106,7 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
     void PrintMetadata() override;
 
-    ClassDef(TRestDetectorDriftVolume, 1);  // Gas Parameters
+    ClassDefOverride(TRestDetectorDriftVolume, 1);  // Gas Parameters
 };
 
 #endif

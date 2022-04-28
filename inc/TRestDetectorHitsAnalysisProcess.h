@@ -43,7 +43,7 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -67,7 +67,7 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         if (fCylinderFiducial) metadata << "Cylinder fiducial active" << endl;
@@ -93,6 +93,6 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsAnalysisProcess();
 
-    ClassDef(TRestDetectorHitsAnalysisProcess, 1);
+    ClassDefOverride(TRestDetectorHitsAnalysisProcess, 1);
 };
 #endif

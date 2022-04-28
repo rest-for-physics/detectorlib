@@ -45,7 +45,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// A pointer to the detector gas definition accessible to TRestRun
     TRestDetectorGas* fGas;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -78,7 +78,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
@@ -100,6 +100,6 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     TRestDetectorSignalToHitsProcess(const char* configFilename);
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 4);
+    ClassDefOverride(TRestDetectorSignalToHitsProcess, 4);
 };
 #endif

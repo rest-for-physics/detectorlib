@@ -88,18 +88,18 @@ class TRestDetector : public TRestMetadata {
     /// The electronics shaping in raw configuration format (hexadecimal)
     std::string fElectronicsShaping = "-1";
 
-    void InitFromConfigFile() { ReadAllParameters(); }
+    void InitFromConfigFile() override { ReadAllParameters(); }
 
     void PrintMetadata() override;
 
-    void UpdateMetadataMembers();
+    void UpdateMetadataMembers() override;
 
     // Constructors
     TRestDetector() {}
     // Destructor
     ~TRestDetector() {}
 
-    ClassDef(TRestDetector, 4);
+    ClassDefOverride(TRestDetector, 4);
 };
 
 #endif

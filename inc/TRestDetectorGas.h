@@ -119,11 +119,11 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void UploadGasToServer(std::string gasFilename);
 
-    Double_t GetDriftVelocity(Double_t E);
-    Double_t GetLongitudinalDiffusion(Double_t E);
-    Double_t GetTransversalDiffusion(Double_t E);
-    Double_t GetTownsendCoefficient(Double_t E);
-    Double_t GetAttachmentCoefficient(Double_t E);
+    Double_t GetDriftVelocity(Double_t E) const;
+    Double_t GetLongitudinalDiffusion(Double_t E) const;
+    Double_t GetTransversalDiffusion(Double_t E) const;
+    Double_t GetTownsendCoefficient(Double_t E) const;
+    Double_t GetAttachmentCoefficient(Double_t E) const;
 
    public:
     TRestDetectorGas();
@@ -141,7 +141,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns true if the gas file has been properly loaded. False otherwise.
     inline bool GasFileLoaded() const { return fStatus == RESTGAS_GASFILE_LOADED; }
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadGasFile();
 
@@ -149,9 +149,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void CalcGarField(double Emin, double Emax, int n);
 
-    Int_t Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0);
+    Int_t Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0) override;
 
-    void InitFromRootFile();
+    void InitFromRootFile() override;
 
     /// Returns the maximum electron energy used by Magboltz for the gas
     /// properties calculation
@@ -172,7 +172,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     TString GetGasMixture();
 
-    inline Double_t GetDriftVelocity() {
+    Double_t GetDriftVelocity() const override {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -182,7 +182,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }  // in standard unit mm/us
 
     /// Returns the longitudinal diffusion in (cm)^1/2
-    inline Double_t GetLongitudinalDiffusion() {
+    Double_t GetLongitudinalDiffusion() const override {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -192,7 +192,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }
 
     /// Returns the transversal diffusion in (cm)^1/2
-    inline Double_t GetTransversalDiffusion() {
+    Double_t GetTransversalDiffusion() const override {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -201,7 +201,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
     }
 
-    inline Double_t GetTownsendCoefficient() {
+    Double_t GetTownsendCoefficient() const override {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -210,7 +210,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTownsendCoefficient(fElectricField * units("V/cm"));
     }
 
-    inline Double_t GetAttachmentCoefficient() {
+    Double_t GetAttachmentCoefficient() const override {
         if (fElectricField == 0) {
             warning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!" << endl;
             warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -240,8 +240,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Return reference name of the corresponding material in GDML file
     inline TString GetGDMLMaterialRef() const { return fGDMLMaterialRef; };
 
-    void SetPressure(Double_t pressure);
-    void SetTemperature(Double_t temperature);
+    void SetPressure(Double_t pressure) override;
+    void SetTemperature(Double_t temperature) override;
 
     /// Sets the maximum electron energy to be used in gas generation.
     inline void SetMaxElectronEnergy(Double_t energy) { fMaxElectronEnergy = energy; }
@@ -254,9 +254,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     inline void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
 
     /// Prints the metadata information from the gas
-    void PrintMetadata() { PrintGasInfo(); }
+    void PrintMetadata() override { PrintGasInfo(); }
 
-    ClassDef(TRestDetectorGas, 3);  // Gas Parameters
+    ClassDefOverride(TRestDetectorGas, 3);  // Gas Parameters
 };
 
 #endif
