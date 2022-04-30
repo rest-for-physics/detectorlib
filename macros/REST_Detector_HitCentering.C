@@ -6,6 +6,8 @@
 #include <TRestTask.h>
 #include <TSystem.h>
 
+#include "TRestDetectorHitsEvent.h"
+
 #ifndef RestTask_HitCentering
 #define RestTask_HitCentering
 
