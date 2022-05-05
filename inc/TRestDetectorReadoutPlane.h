@@ -57,7 +57,7 @@ class TRestDetectorReadoutPlane : public TObject {
                       ///< readout plane
     std::vector<TRestDetectorReadoutModule>
         fReadoutModules;  ///< A std::vector of the instances of TRestDetectorReadoutModule
-                          ///< containned in the readout plane.
+                          ///< contained in the readout plane.
 
     void Initialize();
 
