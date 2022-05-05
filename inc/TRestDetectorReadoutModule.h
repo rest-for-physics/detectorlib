@@ -46,9 +46,9 @@ class TRestDetectorReadoutModule : public TObject {
                               ///< relative to the readout plane position.
 
     Double_t fModuleSizeX;  ///< X-size of the module. All pixels should be
-                            ///< containned within this size.
+                            ///< contained within this size.
     Double_t fModuleSizeY;  ///< Y-size of the module. All pixels should be
-                            ///< containned within this size.
+                            ///< contained within this size.
 
     Double_t fModuleRotation;  ///< The rotation of the module around the
                                ///< position=(fModuleOriginX, fModuleOriginY) in
@@ -60,7 +60,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     std::vector<TRestDetectorReadoutChannel>
         fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
-                          ///< containned in the readout module.
+                          ///< contained in the readout module.
 
     TRestDetectorReadoutMapping fMapping;  ///< The readout module uniform grid mapping.
 
@@ -76,11 +76,13 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 TransformToModuleCoordinates(TVector2 p) { return TransformToModuleCoordinates(p.X(), p.Y()); }
+    inline TVector2 TransformToModuleCoordinates(const TVector2& p) {
+        return TransformToModuleCoordinates(p.X(), p.Y());
+    }
 
     /// Converts the coordinates (xPhys,yPhys) in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) {
+    inline TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) {
         TVector2 coords(xPhys - fModuleOriginX, yPhys - fModuleOriginY);
         TVector2 rot = coords.Rotate(-fModuleRotation * TMath::Pi() / 180.);
 
@@ -89,7 +91,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Converts the coordinates (xMod,yMod) in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) {
+    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) {
         TVector2 coords(xMod, yMod);
 
         coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
@@ -103,40 +105,34 @@ class TRestDetectorReadoutModule : public TObject {
     // Setters
 
     ///  Sets the module by id definition
-    void SetModuleID(Int_t modID) { fModuleID = modID; }
-
-    /// Sets the module size by definition using (sX, sY) coordinates
-    void SetSize(Double_t sX, Double_t sY) {
-        fModuleSizeX = sX;
-        fModuleSizeY = sY;
-    }
+    inline void SetModuleID(Int_t modID) { fModuleID = modID; }
 
     /// Sets the module size by definition using TVector2 input
-    void SetSize(TVector2 s) {
+    inline void SetSize(const TVector2& s) {
         fModuleSizeX = s.X();
         fModuleSizeY = s.Y();
     }
 
-    /// Sets the module origin by definition using (x,y) coordinates
-    void SetOrigin(Double_t x, Double_t y) {
-        fModuleOriginX = x;
-        fModuleOriginY = y;
-    }
+    /// Sets the module size by definition using (sX, sY) coordinates
+    inline void SetSize(Double_t sX, Double_t sY) { SetSize({sX, sY}); }
 
     /// Sets the module origin by definition using TVector2 input
-    void SetOrigin(TVector2 c) {
+    inline void SetOrigin(const TVector2& c) {
         fModuleOriginX = c.X();
         fModuleOriginY = c.Y();
     }
 
+    /// Sets the module origin by definition using (x,y) coordinates
+    inline void SetOrigin(Double_t x, Double_t y) { SetOrigin({x, y}); }
+
     /// Sets the module rotation in degrees
-    void SetRotation(Double_t rot) { fModuleRotation = rot; }
+    inline void SetRotation(Double_t rotation) { fModuleRotation = rotation; }
 
     /// Sets the name of the readout module
-    void SetName(TString name) { fModuleName = name; }
+    inline void SetName(const TString& name) { fModuleName = name; }
 
     /// Sets the tolerance for independent pixel overlaps
-    void SetTolerance(Double_t tol) { fTolerance = tol; }
+    inline void SetTolerance(Double_t tolerance) { fTolerance = tolerance; }
 
     /// Gets the tolerance for independent pixel overlaps
     inline Double_t GetTolerance() const { return fTolerance; }
@@ -149,7 +145,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Returns the physical readout channel index for a given daq id channel
     /// number
-    Int_t DaqToReadoutChannel(Int_t daqChannel) {
+    inline Int_t DaqToReadoutChannel(Int_t daqChannel) {
         for (int n = 0; n < GetNumberOfChannels(); n++)
             if (GetChannel(n)->GetDaqID() == daqChannel) return n;
         return -1;
@@ -181,49 +177,56 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 GetModuleCoordinates(TVector2 p) { return TransformToModuleCoordinates(p); }
+    TVector2 GetModuleCoordinates(const TVector2& p) { return TransformToModuleCoordinates(p); }
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 GetPhysicalCoordinates(TVector2 p) { return TransformToPhysicalCoordinates(p.X(), p.Y()); }
+    TVector2 GetPhysicalCoordinates(const TVector2& p) {
+        return TransformToPhysicalCoordinates(p.X(), p.Y());
+    }
 
     /// Returns the module name
-    const char* GetName() const override { return const_cast<char*>(fModuleName.Data()); }
+    inline const char* GetName() const override { return fModuleName.Data(); }
 
     /// Returns a pointer to the readout mapping
-    TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
+    inline TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
 
-    TRestDetectorReadoutChannel& operator[](int n) { return fReadoutChannel[n]; }
+    inline TRestDetectorReadoutChannel& operator[](int n) { return fReadoutChannel[n]; }
 
     /// Returns a pointer to a readout channel by index
-    TRestDetectorReadoutChannel* GetChannel(int n) {
+    inline TRestDetectorReadoutChannel* GetChannel(int n) {
         if (n >= GetNumberOfChannels()) return nullptr;
         return &fReadoutChannel[n];
     }
 
     /// Returns the total number of channels defined inside the module
-    Int_t GetNumberOfChannels() { return fReadoutChannel.size(); }
+    inline Int_t GetNumberOfChannels() const { return fReadoutChannel.size(); }
 
     /// Enables warning output
-    void EnableWarnings() { showWarnings = true; }
+    inline void EnableWarnings() { showWarnings = true; }
 
     /// Disables warning output
-    void DisableWarnings() { showWarnings = false; }
+    inline void DisableWarnings() { showWarnings = false; }
 
     void DoReadoutMapping(Int_t nodes = 0);
 
-    Bool_t isInside(Double_t x, Double_t y);
-    Bool_t isInside(TVector2 pos);
+    Bool_t isInside(const TVector2& position);
+
+    ///////////////////////////////////////////////
+    /// \brief Determines if the position *x,y* relative to the readout
+    /// plane are inside this readout module.
+    ///
+    inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
 
     Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
-    Bool_t isInsideChannel(Int_t channel, TVector2 pos);
+    Bool_t isInsideChannel(Int_t channel, const TVector2& position);
 
     Bool_t isInsidePixel(Int_t channel, Int_t pixel, Double_t x, Double_t y);
-    Bool_t isInsidePixel(Int_t channel, Int_t pixel, TVector2 pos);
+    Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
 
     Bool_t isDaqIDInside(Int_t daqID);
     Int_t FindChannel(Double_t x, Double_t y);
-    TVector2 GetDistanceToModule(TVector2 pos);
+    TVector2 GetDistanceToModule(const TVector2& position);
 
     TVector2 GetPixelOrigin(Int_t channel, Int_t pixel);
     TVector2 GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex);

@@ -316,20 +316,11 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if the position *x,y* relative to the readout
-/// plane are inside this readout module.
-///
-Bool_t TRestDetectorReadoutModule::isInside(Double_t x, Double_t y) {
-    TVector2 v(x, y);
-    return isInside(v);
-}
-
-///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* relative to the readout
 /// plane are inside this readout module.
 ///
-Bool_t TRestDetectorReadoutModule::isInside(TVector2 pos) {
-    TVector2 rotPos = TransformToModuleCoordinates(pos);
+Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
+    TVector2 rotPos = TransformToModuleCoordinates(position);
 
     if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX)
         if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) return true;
@@ -342,17 +333,15 @@ Bool_t TRestDetectorReadoutModule::isInside(TVector2 pos) {
 /// of the readout *channel* index given.
 ///
 Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-
-    return isInsideChannel(channel, pos);
+    return isInsideChannel(channel, {x, y});
 }
 
 ///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* is found in any of the
 /// pixels of the readout *channel* index given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, TVector2 pos) {
-    pos = TransformToModuleCoordinates(pos);
+Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2& position) {
+    TVector2 pos = TransformToModuleCoordinates(position);
     for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++)
         if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) return true;
     return false;
@@ -363,21 +352,20 @@ Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, TVector2 pos) 
 /// inside the readout *channel* given.
 ///
 Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-
-    if (channel < 0 || pixel < 0) return false;
-
-    return isInsidePixel(channel, pixel, pos);
+    if (channel < 0 || pixel < 0) {
+        return false;
+    }
+    return isInsidePixel(channel, pixel, {x, y});
 }
 
 ///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* is found at a specific
 /// *pixel* id inside the readout *channel* given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, TVector2 pos) {
+Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position) {
     if (channel < 0 || pixel < 0) return false;
 
-    pos = TransformToModuleCoordinates(pos);
+    TVector2 pos = TransformToModuleCoordinates(position);
     if (GetChannel(channel)->GetPixel(pixel)->isInside(pos)) return true;
     return false;
 }
@@ -388,8 +376,8 @@ Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, TVe
 ///  It can be seen as the vector to add to move from the position to the
 ///  closest border of the module.
 ///
-TVector2 TRestDetectorReadoutModule::GetDistanceToModule(TVector2 pos) {
-    TVector2 newPos = TransformToModuleCoordinates(pos);
+TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& position) {
+    TVector2 newPos = TransformToModuleCoordinates(position);
 
     Double_t dx = 0, dy = 0;
     if (newPos.X() < 0)
