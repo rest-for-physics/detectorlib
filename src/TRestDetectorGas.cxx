@@ -64,7 +64,7 @@
 ///
 /// The calculation of the gas properties is computationally expensive and time
 /// consuming. In order to avoid this calculation, we keep some gas files
-/// containning the summary of the gas properties inside the directory
+/// containing the summary of the gas properties inside the directory
 /// inputdata/gasFiles. These files cover different conditions of gas and can be
 /// used if a new TRestDetectorGas object meets the condition among one of them. The
 /// TRestDetectorGas sections that were used to generate those gas files can be found at
@@ -242,7 +242,7 @@ TRestDetectorGas::TRestDetectorGas() : TRestDetectorDriftVolume() {
 /// be loaded if found in TRestMetadata::GetSearchPath() which can be defined as
 /// an input parameter in the globals metadata section.
 ///
-/// \param configFilename It defines the path to an RML file containning a TRestDetectorGas
+/// \param configFilename It defines the path to an RML file containing a TRestDetectorGas
 /// section. \param name The name of the TRestDetectorGas section to be read. \param
 /// gasGeneration Parameter allowing to activate the gas generation.
 ///

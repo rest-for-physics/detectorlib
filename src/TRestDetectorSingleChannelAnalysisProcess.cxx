@@ -238,7 +238,7 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
  * instance, then it should be added to the run, and it will be written to disk with it.
  * If we want just to have a method to export data, in principe it is possible. But
  * better without using a new TRestRun instance. TRestRun should only be created for
- * writting the standard processing scheme.
+ * writing the standard processing scheme.
  ***/
 void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename) {
     cout << "TRestDetectorSingleChannelAnalysisProcess: saving result..." << endl;
