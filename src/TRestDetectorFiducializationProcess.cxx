@@ -49,7 +49,7 @@ void TRestDetectorFiducializationProcess::LoadConfig(const string& configFilenam
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 }

@@ -83,7 +83,7 @@ void TRestDetectorAvalancheProcess::InitProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::InitProcess();
 
-    if (fGas == nullptr) cout << "REST ERRORRRR : Gas has not been initialized" << endl;
+    if (fGas == nullptr) cout << "REST ERROR: Gas has not been initialized" << endl;
 }
 
 TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* inputEvent) {

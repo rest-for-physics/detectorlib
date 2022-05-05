@@ -126,7 +126,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Getting readout data
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 
