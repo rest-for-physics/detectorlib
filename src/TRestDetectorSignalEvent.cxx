@@ -113,7 +113,7 @@ Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t
     return baseLineSigmaMean / GetNumberOfSignals();
 }
 
-void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) {
+void TRestDetectorSignalEvent::SubtractBaselines(Int_t startBin, Int_t endBin) {
     for (int signal = 0; signal < GetNumberOfSignals(); signal++)
         GetSignal(signal)->SubstractBaseline(startBin, endBin);
 }

@@ -61,7 +61,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     // Setters
     void AddSignal(const TRestDetectorSignal& signal);
-    void SubstractBaselines(Int_t startBin, Int_t endBin);
+    void SubtractBaselines(Int_t startBin, Int_t endBin);
     void AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge);
 
     // Getters
