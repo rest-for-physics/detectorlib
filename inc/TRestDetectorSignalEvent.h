@@ -46,7 +46,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
     void SetMaxAndMin();
 
    public:
-    inline Bool_t signalIDExists(Int_t sID) {
+    inline Bool_t SignalIDExists(Int_t sID) {
         if (GetSignalIndex(sID) == -1) {
             return false;
         }

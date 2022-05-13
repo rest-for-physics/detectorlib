@@ -53,7 +53,7 @@ void TRestDetectorSignalEvent::SortSignals() {
 }
 
 void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
-    if (signalIDExists(signal.GetSignalID())) {
+    if (SignalIDExists(signal.GetSignalID())) {
         cout << "Warning. Signal ID : " << signal.GetSignalID()
              << " already exists. Signal will not be added to signal event" << endl;
         return;
