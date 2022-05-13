@@ -60,7 +60,7 @@ ClassImp(TRestDetectorHitsEvent);
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();
@@ -227,7 +227,7 @@ Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Do
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns true if all hits are containned inside the cylinder volume given by argument.
+/// \brief This method returns true if all hits are contained inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
 /// \param x1 The center of the top face of the cylinder.
@@ -353,7 +353,7 @@ TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder wall from the closest hit containned inside the
+/// \brief This method returns the distance to the cylinder wall from the closest hit contained inside the
 /// cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -391,7 +391,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderWall(TVect
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder **top** face from the closest hit containned
+/// \brief This method returns the distance to the cylinder **top** face from the closest hit contained
 /// inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -425,7 +425,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVecto
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder **bottom** face from the closest hit containned
+/// \brief This method returns the distance to the cylinder **bottom** face from the closest hit contained
 /// inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -459,7 +459,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderBottom(TVe
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **wall** from the closest hit containned
+/// \brief This method returns the distance to the prism **wall** from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.
@@ -499,7 +499,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **top** face from the closest hit containned
+/// \brief This method returns the distance to the prism **top** face from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.
@@ -536,7 +536,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **bottom** face from the closest hit containned
+/// \brief This method returns the distance to the prism **bottom** face from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.

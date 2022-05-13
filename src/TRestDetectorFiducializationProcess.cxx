@@ -21,10 +21,11 @@ ClassImp(TRestDetectorFiducializationProcess);
 
 TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess() { Initialize(); }
 
-TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(char* cfgFileName) {
+TRestDetectorFiducializationProcess::TRestDetectorFiducializationProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorFiducializationProcess::~TRestDetectorFiducializationProcess() { delete fOutputHitsEvent; }
@@ -41,20 +42,20 @@ void TRestDetectorFiducializationProcess::Initialize() {
     fReadout = nullptr;
 }
 
-void TRestDetectorFiducializationProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorFiducializationProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 void TRestDetectorFiducializationProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 }
 
-TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
     if (nHits <= 0) return nullptr;

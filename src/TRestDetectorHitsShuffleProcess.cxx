@@ -16,10 +16,12 @@ ClassImp(TRestDetectorHitsShuffleProcess);
 
 TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess() { Initialize(); }
 
-TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(char* cfgFileName) {
+TRestDetectorHitsShuffleProcess::TRestDetectorHitsShuffleProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsShuffleProcess::~TRestDetectorHitsShuffleProcess() {
@@ -42,14 +44,14 @@ void TRestDetectorHitsShuffleProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorHitsShuffleProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name) == -1) LoadDefaultConfig();
+void TRestDetectorHitsShuffleProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
 void TRestDetectorHitsShuffleProcess::InitProcess() {}
 
-TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TRestHits* hits = fHitsEvent->GetHits();
 

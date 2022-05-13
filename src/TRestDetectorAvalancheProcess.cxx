@@ -29,15 +29,15 @@ ClassImp(TRestDetectorAvalancheProcess);
 
 TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess() { Initialize(); }
 
-TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(char* cfgFileName) {
+TRestDetectorAvalancheProcess::TRestDetectorAvalancheProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
-    fGas = new TRestDetectorGas(cfgFileName);
-
-    // TRestDetectorAvalancheProcess default constructor
+    fGas = new TRestDetectorGas(configFilename);
 }
 
 TRestDetectorAvalancheProcess::~TRestDetectorAvalancheProcess() {
@@ -67,11 +67,11 @@ void TRestDetectorAvalancheProcess::Initialize() {
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
-void TRestDetectorAvalancheProcess::LoadConfig(string cfgFilename) {
-    if (LoadConfigFromFile(cfgFilename)) LoadDefaultConfig();
+void TRestDetectorAvalancheProcess::LoadConfig(string configFilename) {
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
-    fGas = new TRestDetectorGas(cfgFilename.c_str());
+    fGas = new TRestDetectorGas(configFilename.c_str());
     fGas->PrintMetadata();
 }
 
@@ -83,11 +83,11 @@ void TRestDetectorAvalancheProcess::InitProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::InitProcess();
 
-    if (fGas == nullptr) cout << "REST ERRORRRR : Gas has not been initialized" << endl;
+    if (fGas == nullptr) cout << "REST ERROR: Gas has not been initialized" << endl;
 }
 
-TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     Double_t fW = fGas->GetWvalue();
     Double_t gain, totelectrons = 0;

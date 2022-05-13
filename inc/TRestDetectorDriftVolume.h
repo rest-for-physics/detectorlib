@@ -23,6 +23,7 @@
 
 #ifndef RestCore_TRestDetectorDriftVolume
 #define RestCore_TRestDetectorDriftVolume
+
 #include <TROOT.h>
 #include <stdlib.h>
 
@@ -58,9 +59,9 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
    public:
     TRestDetectorDriftVolume();
-    TRestDetectorDriftVolume(const char* cfgFileName, std::string name = "");
-    virtual void Initialize();
-    virtual void InitFromConfigFile();
+    TRestDetectorDriftVolume(const char* configFilename, std::string name = "");
+    void Initialize() override;
+    void InitFromConfigFile() override;
 
     virtual std::string GetMaterial() const { return fMaterial; }
     virtual Double_t GetW() const { return fW; }
@@ -103,9 +104,9 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
     virtual void UpdateCondition() {}
 
-    virtual void PrintMetadata();
+    void PrintMetadata() override;
 
-    ClassDef(TRestDetectorDriftVolume, 1);  // Gas Parameters
+    ClassDefOverride(TRestDetectorDriftVolume, 1);  // Gas Parameters
 };
 
 #endif

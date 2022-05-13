@@ -41,9 +41,9 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Bool_t fCylinderFiducial;  //!
     Bool_t fPrismFiducial;     //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -58,16 +58,16 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Double_t fFid_theta;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         if (fCylinderFiducial) metadata << "Cylinder fiducial active" << endl;
@@ -86,13 +86,13 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsAnalysis"; }
+    const char* GetProcessName() const override { return "hitsAnalysis"; }
 
     TRestDetectorHitsAnalysisProcess();
-    TRestDetectorHitsAnalysisProcess(char* cfgFileName);
+    TRestDetectorHitsAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorHitsAnalysisProcess();
 
-    ClassDef(TRestDetectorHitsAnalysisProcess, 1);
+    ClassDefOverride(TRestDetectorHitsAnalysisProcess, 1);
 };
 #endif

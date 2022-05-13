@@ -33,9 +33,9 @@
 /// A metadata class to generate/store a readout description.
 class TRestDetectorReadout : public TRestMetadata {
    private:
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
                        ///< between a physical readout channel id and a signal daq id
@@ -90,18 +90,18 @@ class TRestDetectorReadout : public TRestMetadata {
     // 2->+all readout module
     // 3->+all readout channel
     // 4->+all readout pixel
-    inline void PrintMetadata() { PrintMetadata(1); }
+    inline void PrintMetadata() override { PrintMetadata(1); }
     void PrintMetadata(Int_t DetailLevel);
 
     void Draw();
 
     // Constructor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* cfgFileName);
-    TRestDetectorReadout(const char* cfgFileName, std::string name);
+    TRestDetectorReadout(const char* configFilename);
+    TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
     virtual ~TRestDetectorReadout();
 
-    ClassDef(TRestDetectorReadout, 1);
+    ClassDefOverride(TRestDetectorReadout, 1);
 };
 #endif

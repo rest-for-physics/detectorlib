@@ -64,7 +64,7 @@
 ///
 /// The calculation of the gas properties is computationally expensive and time
 /// consuming. In order to avoid this calculation, we keep some gas files
-/// containning the summary of the gas properties inside the directory
+/// containing the summary of the gas properties inside the directory
 /// inputdata/gasFiles. These files cover different conditions of gas and can be
 /// used if a new TRestDetectorGas object meets the condition among one of them. The
 /// TRestDetectorGas sections that were used to generate those gas files can be found at
@@ -242,22 +242,22 @@ TRestDetectorGas::TRestDetectorGas() : TRestDetectorDriftVolume() {
 /// be loaded if found in TRestMetadata::GetSearchPath() which can be defined as
 /// an input parameter in the globals metadata section.
 ///
-/// \param cfgFileName It defines the path to an RML file containning a TRestDetectorGas
+/// \param configFilename It defines the path to an RML file containing a TRestDetectorGas
 /// section. \param name The name of the TRestDetectorGas section to be read. \param
 /// gasGeneration Parameter allowing to activate the gas generation.
 ///
-TRestDetectorGas::TRestDetectorGas(const char* cfgFileName, string name, bool gasGeneration, bool test)
+TRestDetectorGas::TRestDetectorGas(const char* configFilename, string name, bool gasGeneration, bool test)
     : TRestDetectorDriftVolume() {
     Initialize();
     fGasGeneration = gasGeneration;
 
     fTest = test;
 
-    if (strcmp(cfgFileName, "server") == 0) {
+    if (strcmp(configFilename, "server") == 0) {
         LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"),
                               nullptr);
     } else {
-        fConfigFileName = cfgFileName;
+        fConfigFileName = configFilename;
         LoadConfigFromFile(fConfigFileName, name);
     }
 
@@ -1028,7 +1028,7 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 /// \brief It returns the drift velocity in cm/us for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
+Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
     debug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << endl;
 
 #if defined USE_Garfield
@@ -1045,10 +1045,10 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
     fGasMedium->ElectronVelocity(0., 0, -E, 0, 0, 0, vx, vy, vz);
     return vz * 1000.;
 #else
-    cout << "This REST is not complied with garfield, Do not use Drift Velocity "
-            "from TRestDetectorGas!"
-         << endl;
-    cout << "Please define the Drift Velocity in each process!" << endl;
+    std::cout << "This REST is not complied with garfield, Do not use Drift Velocity "
+                 "from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Drift Velocity in each process!" << std::endl;
     return 0.001;
 #endif
 }
@@ -1057,7 +1057,7 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
 /// \brief It returns the longitudinal diffusion in (cm)^1/2 for a given
 /// electric field in V/cm.
 ///
-Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
+Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
     debug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << endl;
 
 #if defined USE_Garfield
@@ -1074,10 +1074,10 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
     return dl;
 #else
-    cout << "This REST is not compiled with garfield, Do not use Longitudinal "
-            "Diffusion from TRestDetectorGas!"
-         << endl;
-    cout << "Please define the Longitudinal Diffusion in each process!" << endl;
+    std::cout << "This REST is not compiled with garfield, Do not use Longitudinal "
+                 "Diffusion from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Longitudinal Diffusion in each process!" << std::endl;
     return 0;
 #endif
 }
@@ -1086,7 +1086,7 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
 /// \brief It returns the transversal diffusion in (cm)^1/2 for a given electric
 /// field in V/cm.
 ///
-Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
+Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
     debug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << endl;
 
 #if defined USE_Garfield
@@ -1103,10 +1103,10 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
     return dt;
 #else
-    cout << "This REST is not complied with garfield, Do not use Transversal "
-            "Diffusion from TRestDetectorGas!"
-         << endl;
-    cout << "Please define the Transversal Diffusion in each process!" << endl;
+    std::cout << "This REST is not complied with garfield, Do not use Transversal "
+                 "Diffusion from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Transversal Diffusion in each process!" << std::endl;
     return 0;
 #endif
 }
@@ -1115,7 +1115,7 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
 /// \brief It returns the townsend coefficient for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
+Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
     debug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << endl;
 
 #if defined USE_Garfield
@@ -1132,10 +1132,10 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
     fGasMedium->ElectronTownsend(0., 0, -E, 0, 0, 0, alpha);
     return alpha;
 #else
-    cout << "This REST is not complied with garfield, Do not use Townsend "
-            "Coefficient from TRestDetectorGas!"
-         << endl;
-    cout << "Please define the Townsend Coefficient in each process!" << endl;
+    std::cout << "This REST is not complied with garfield, Do not use Townsend "
+                 "Coefficient from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Townsend Coefficient in each process!" << std::endl;
     return 0;
 #endif
 }
@@ -1144,7 +1144,7 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
 /// \brief It returns the attachment coefficient for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
+Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
     debug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << endl;
 
 #if defined USE_Garfield
@@ -1161,10 +1161,10 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
     fGasMedium->ElectronAttachment(0., 0, -E, 0, 0, 0, eta);
     return eta;
 #else
-    cout << "This REST is not complied with garfield, Do not use Attachment "
-            "Coefficient from TRestDetectorGas!"
-         << endl;
-    cout << "Please define the Attachment Coefficient in each process!" << endl;
+    std::cout << "This REST is not complied with garfield, Do not use Attachment "
+                 "Coefficient from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Attachment Coefficient in each process!" << std::endl;
     return 0;
 #endif
 }

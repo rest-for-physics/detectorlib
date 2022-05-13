@@ -45,7 +45,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// A pointer to the detector gas definition accessible to TRestRun
     TRestDetectorGas* fGas;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -69,16 +69,16 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     Double_t fThreshold = 100.;
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
+    any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
@@ -94,12 +94,12 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     }
 
     /// Returns the name of this process
-    TString GetProcessName() const { return (TString) "signalToHits"; }
+    const char* GetProcessName() const override { return "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
-    TRestDetectorSignalToHitsProcess(char* cfgFileName);
+    TRestDetectorSignalToHitsProcess(const char* configFilename);
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 4);
+    ClassDefOverride(TRestDetectorSignalToHitsProcess, 4);
 };
 #endif

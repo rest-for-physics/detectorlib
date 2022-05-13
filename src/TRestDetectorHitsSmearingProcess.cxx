@@ -27,16 +27,14 @@ ClassImp(TRestDetectorHitsSmearingProcess);
 
 TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initialize(); }
 
-TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(char* cfgFileName) {
+TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) {
+    if (LoadConfigFromFile(configFilename)) {
         LoadDefaultConfig();
     }
 
     PrintMetadata();
-
-    // TRestDetectorHitsSmearingProcess default constructor
 }
 
 TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
@@ -64,8 +62,8 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorHitsSmearingProcess::LoadConfig(const string& cfgFilename, const string& name) {
-    if (LoadConfigFromFile(cfgFilename, name)) {
+void TRestDetectorHitsSmearingProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) {
         LoadDefaultConfig();
     }
 
@@ -83,8 +81,8 @@ void TRestDetectorHitsSmearingProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
 
     Double_t eDep = fHitsInputEvent->GetTotalEnergy();

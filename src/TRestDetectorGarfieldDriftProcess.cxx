@@ -19,10 +19,13 @@
 #include <TGeoBBox.h>
 #include <TRandom3.h>
 
+ClassImp(TRestDetectorGarfieldDriftProcess);
+
 #if defined USE_Garfield
-#include "ComponentConstant.hh"
-#include "TGDMLParse.h"
 using namespace Garfield;
+#include <ComponentConstant.hh>
+
+#include "TGDMLParse.h"
 #endif
 
 #include <stdio.h>
@@ -31,9 +34,8 @@ using namespace std;
 
 const double cmTomm = 10.;
 
-ClassImp(TRestDetectorGarfieldDriftProcess);
-
 #if defined USE_Garfield
+
 TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom(0), fGfSensor(0) {
     Initialize();
 }
@@ -45,17 +47,15 @@ TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom
 //            process stand alone but even then we could just call LoadConfig
 //            __________________________________________________________
 
-TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFileName)
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(const char* configFilename)
     : fRandom(0), fGfSensor(0) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 
     PrintMetadata();
 
-    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(cfgFileName);
-
-    // TRestDetectorGarfieldDriftProcess default constructor
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 }
 
 // TRestDetectorGarfieldDriftProcess destructor
@@ -75,8 +75,8 @@ void TRestDetectorGarfieldDriftProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorGarfieldDriftProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     if (fDriftPotential == PARAMETER_NOT_FOUND_DBL) {
         fDriftPotential = 1000;  // V
@@ -126,7 +126,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Getting readout data
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 
@@ -334,9 +334,9 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
 
 #endif
 
-TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEvent) {
 #if defined USE_Garfield
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     double x, y, z, energy;
     double xi, yi, zi, ti, xf, yf, zf, tf, energyf;
@@ -423,10 +423,10 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
     return fOutputHitsEvent;
 #else
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
     debug << "nullptr process" << endl;
-    return evInput;
+    return inputEvent;
 
 #endif
 }

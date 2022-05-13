@@ -31,8 +31,8 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     TRestDetectorGas* fGas;  //!
 
-    void InitFromConfigFile();
-    void Initialize();
+    void InitFromConfigFile() override;
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -42,16 +42,16 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     Double_t fResolutionAtERef;  ///< FWHM at Energy of reference
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(const std::string& cfgFilename, const std::string& name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " reference energy (ERef): " << fEnergyRef << endl;
@@ -60,18 +60,18 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return nullptr; }
+    inline TRestMetadata* GetProcessMetadata() const { return nullptr; }
 
-    TString GetProcessName() { return (TString) "smearingProcess"; }
+    const char* GetProcessName() const override { return "smearingProcess"; }
 
     inline Double_t GetEnergyReference() const { return fEnergyRef; }
     inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
-    TRestDetectorHitsSmearingProcess(char* cfgFileName);
+    TRestDetectorHitsSmearingProcess(const char* configFilename);
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDef(TRestDetectorHitsSmearingProcess, 2);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 2);
 };
 #endif

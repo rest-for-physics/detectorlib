@@ -116,14 +116,16 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess() { Initializ
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(char* cfgFileName) {
+TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 
-    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(cfgFileName);
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 }
 
 ///////////////////////////////////////////////
@@ -202,8 +204,8 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fHitsEvent);
 
     if (!fReadout) return nullptr;

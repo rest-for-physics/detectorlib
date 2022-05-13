@@ -34,24 +34,24 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     Double_t fBeta;   ///< rotation angle around y-axis
     Double_t fGamma;  ///< rotation angle around x-axis
 
-    void InitFromConfigFile();
-    void Initialize();
+    void InitFromConfigFile() override;
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
     // add here the members of your event process
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename);
+    void LoadConfig(std::string configFilename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " delta x : " << fDeltaX << endl;
@@ -64,7 +64,7 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "rotateAndTraslate"; }
+    const char* GetProcessName() const override { return "rotateAndTraslate"; }
 
     inline Double_t GetDeltaX() const { return fDeltaX; }
     inline Double_t GetDeltaY() const { return fDeltaY; }
@@ -76,12 +76,12 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
 
     // Constructor
     TRestDetectorHitsRotateAndTranslateProcess();
-    TRestDetectorHitsRotateAndTranslateProcess(char* cfgFileName);
+    TRestDetectorHitsRotateAndTranslateProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorHitsRotateAndTranslateProcess();
 
-    ClassDef(TRestDetectorHitsRotateAndTranslateProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDefOverride(TRestDetectorHitsRotateAndTranslateProcess,
+                     1);  // Template for a REST "event process" class inherited from
+                          // TRestEventProcess
 };
 #endif

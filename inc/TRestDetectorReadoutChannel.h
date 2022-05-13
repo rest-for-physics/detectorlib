@@ -93,7 +93,7 @@ class TRestDetectorReadoutChannel : public TObject {
 
     void Print(int DetailLevel = 0);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutChannel();
     // Destructor
     virtual ~TRestDetectorReadoutChannel();

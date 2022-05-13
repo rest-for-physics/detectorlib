@@ -24,36 +24,36 @@ class TRestDetectorFiducializationProcess : public TRestEventProcess {
 
     TRestDetectorReadout* fReadout;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
    protected:
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "fiducialization"; }
+    const char* GetProcessName() const override { return "fiducialization"; }
 
     TRestDetectorFiducializationProcess();
-    TRestDetectorFiducializationProcess(char* cfgFileName);
+    TRestDetectorFiducializationProcess(const char* configFilename);
 
     ~TRestDetectorFiducializationProcess();
 
-    ClassDef(TRestDetectorFiducializationProcess, 1);
+    ClassDefOverride(TRestDetectorFiducializationProcess, 1);
 };
 #endif

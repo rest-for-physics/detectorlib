@@ -128,10 +128,11 @@ ClassImp(TRestDetectorHitsAnalysisProcess);
 
 TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess() { Initialize(); }
 
-TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(char* cfgFileName) {
+TRestDetectorHitsAnalysisProcess::TRestDetectorHitsAnalysisProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsAnalysisProcess::~TRestDetectorHitsAnalysisProcess() { delete fOutputHitsEvent; }
@@ -149,14 +150,14 @@ void TRestDetectorHitsAnalysisProcess::Initialize() {
     fCylinderFiducial = false;
 }
 
-void TRestDetectorHitsAnalysisProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name) == -1) LoadDefaultConfig();
+void TRestDetectorHitsAnalysisProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
 void TRestDetectorHitsAnalysisProcess::InitProcess() { TRestEventProcess::ReadObservables(); }
 
-TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TString obsName;
 

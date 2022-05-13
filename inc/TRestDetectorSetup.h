@@ -27,9 +27,9 @@
 
 class TRestDetectorSetup : public TRestMetadata {
    private:
-    void Initialize();
+    void Initialize() override;
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     Int_t fRunNumber;
     Int_t fSubRunNumber;
@@ -61,14 +61,15 @@ class TRestDetectorSetup : public TRestMetadata {
 
     void InitFromFileName(TString fName);
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     // Constructors
     TRestDetectorSetup();
-    TRestDetectorSetup(char* cfgFileName, const std::string& name = "");
+    TRestDetectorSetup(const char* configFilename, const std::string& name = "");
+
     // Destructor
     ~TRestDetectorSetup();
 
-    ClassDef(TRestDetectorSetup, 1);
+    ClassDefOverride(TRestDetectorSetup, 1);
 };
 #endif

@@ -28,19 +28,19 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     std::map<int, int> fFirstDaqChannelDef;  //[module id, first daq id]
     bool fIgnoreUndefinedModules;
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    public:
-    any GetInputEvent() { return fEvent; }
-    any GetOutputEvent() { return fEvent; }
+    any GetInputEvent() const override { return fEvent; }
+    any GetOutputEvent() const override { return fEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "module's daq channel re-definition: " << endl;
@@ -57,6 +57,6 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     TRestDetectorDaqChannelSwitchingProcess();
     ~TRestDetectorDaqChannelSwitchingProcess();
 
-    ClassDef(TRestDetectorDaqChannelSwitchingProcess, 1);
+    ClassDefOverride(TRestDetectorDaqChannelSwitchingProcess, 1);
 };
 #endif

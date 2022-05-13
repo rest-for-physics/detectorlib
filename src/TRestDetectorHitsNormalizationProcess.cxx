@@ -27,14 +27,14 @@ ClassImp(TRestDetectorHitsNormalizationProcess);
 
 TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() { Initialize(); }
 
-TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* cfgFileName) {
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
-
-    // TRestDetectorHitsNormalizationProcess default constructor
 }
 
 TRestDetectorHitsNormalizationProcess::~TRestDetectorHitsNormalizationProcess() {
@@ -58,8 +58,8 @@ void TRestDetectorHitsNormalizationProcess::Initialize() {
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
-void TRestDetectorHitsNormalizationProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsNormalizationProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     PrintMetadata();
 }
@@ -73,8 +73,8 @@ void TRestDetectorHitsNormalizationProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
 
     for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)

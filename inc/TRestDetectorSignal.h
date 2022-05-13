@@ -167,7 +167,7 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
 
     TGraph* GetGraph(Int_t color = 1);
 
-    // Construtor
+    // Constructor
     TRestDetectorSignal();
     // Destructor
     ~TRestDetectorSignal();

@@ -25,8 +25,8 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fHitsInputEvent;   //!
     TRestDetectorHitsEvent* fHitsOutputEvent;  //!
 
-    void InitFromConfigFile();
-    void Initialize();
+    void InitFromConfigFile() override;
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -35,16 +35,16 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     Double_t fFactor;
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " Renormalization factor : " << fFactor << endl;
@@ -52,15 +52,15 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return nullptr; }
+    inline TRestMetadata* GetProcessMetadata() const { return nullptr; }
 
-    TString GetProcessName() { return (TString) "hitsNormalizationProcess"; }
+    const char* GetProcessName() const override { return "hitsNormalizationProcess"; }
 
     TRestDetectorHitsNormalizationProcess();
-    TRestDetectorHitsNormalizationProcess(char* cfgFileName);
+    TRestDetectorHitsNormalizationProcess(const char* configFilename);
 
     ~TRestDetectorHitsNormalizationProcess();
 
-    ClassDef(TRestDetectorHitsNormalizationProcess, 1);
+    ClassDefOverride(TRestDetectorHitsNormalizationProcess, 1);
 };
 #endif

@@ -19,10 +19,11 @@ ClassImp(TRestDetectorHitsReductionProcess);
 
 TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess() { Initialize(); }
 
-TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(char* cfgFileName) {
+TRestDetectorHitsReductionProcess::TRestDetectorHitsReductionProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorHitsReductionProcess::~TRestDetectorHitsReductionProcess() {}
@@ -45,14 +46,14 @@ void TRestDetectorHitsReductionProcess::Initialize() {
     fOutputHitsEvent = nullptr;
 }
 
-void TRestDetectorHitsReductionProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name) == -1) LoadDefaultConfig();
+void TRestDetectorHitsReductionProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name) == -1) LoadDefaultConfig();
 }
 
 void TRestDetectorHitsReductionProcess::InitProcess() {}
 
-TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
 
     Int_t initialHits = fOutputHitsEvent->GetNumberOfHits();

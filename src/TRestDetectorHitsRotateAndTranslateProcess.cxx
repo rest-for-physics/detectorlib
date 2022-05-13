@@ -29,14 +29,15 @@ ClassImp(TRestDetectorHitsRotateAndTranslateProcess);
 
 TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess() { Initialize(); }
 
-TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(char* cfgFileName) {
+TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess(
+    const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
-
-    // TRestDetectorHitsRotateAndTranslateProcess default constructor
 }
 
 TRestDetectorHitsRotateAndTranslateProcess::~TRestDetectorHitsRotateAndTranslateProcess() {
@@ -69,8 +70,8 @@ void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     fOutputHitsEvent = nullptr;
 }
 
-void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string cfgFilename) {
-    if (LoadConfigFromFile(cfgFilename)) LoadDefaultConfig();
+void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string configFilename) {
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 
     PrintMetadata();
 }
@@ -84,8 +85,8 @@ void TRestDetectorHitsRotateAndTranslateProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     fOutputHitsEvent = fInputHitsEvent;
     // fInputHitsEvent->CloneTo(fOutputHitsEvent);

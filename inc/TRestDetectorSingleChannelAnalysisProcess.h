@@ -31,9 +31,9 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     TRestDetectorGainMap* fCalib;  //!
 #endif
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
     // parameters
     bool fApplyGainCorrection;
     bool fCreateGainMap;
@@ -49,19 +49,19 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     std::map<int, double> fChannelGainError;   // [MM id, channel gain error]
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
     void FitChannelGain();
     // See comments on CXX
     void SaveGainMetadata(std::string filename);
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
     TH1D* GetChannelSpectrum(int id);
     void PrintChannelSpectrums(std::string filename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "the mode is:" << endl;
@@ -72,21 +72,19 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         metadata << "output mapping file: " << fCalibSave << endl;
         metadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << endl;
         metadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << endl;
-        metadata << "Fit range for the spectrums: " << any(fSpecFitRange) << endl;
+        metadata << "Fit range for the spectra: " << any(fSpecFitRange) << endl;
 
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "readoutAnalysis"; }
+    const char* GetProcessName() const override { return "readoutAnalysis"; }
 
     // Constructor
     TRestDetectorSingleChannelAnalysisProcess();
-    TRestDetectorSingleChannelAnalysisProcess(char* cfgFileName);
+    TRestDetectorSingleChannelAnalysisProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorSingleChannelAnalysisProcess();
 
-    ClassDef(TRestDetectorSingleChannelAnalysisProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDefOverride(TRestDetectorSingleChannelAnalysisProcess, 1);
 };
 #endif

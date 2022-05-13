@@ -38,9 +38,9 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     /// A pointer to the readout metadata information accessible to TRestRun
     TRestDetectorReadout* fReadout;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -100,17 +100,17 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     TH1D* fReadoutChannelsHisto_MultiSignals_High;  //!
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Low signal threshold activity : " << fLowThreshold << endl;
@@ -128,14 +128,14 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "SignalChannelActivity"; }
+    const char* GetProcessName() const override { return "SignalChannelActivity"; }
 
     // Constructor
     TRestDetectorSignalChannelActivityProcess();
-    TRestDetectorSignalChannelActivityProcess(char* cfgFileName);
+    TRestDetectorSignalChannelActivityProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorSignalChannelActivityProcess();
 
-    ClassDef(TRestDetectorSignalChannelActivityProcess, 3);
+    ClassDefOverride(TRestDetectorSignalChannelActivityProcess, 3);
 };
 #endif

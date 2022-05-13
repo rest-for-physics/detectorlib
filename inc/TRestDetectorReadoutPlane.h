@@ -57,7 +57,7 @@ class TRestDetectorReadoutPlane : public TObject {
                       ///< readout plane
     std::vector<TRestDetectorReadoutModule>
         fReadoutModules;  ///< A std::vector of the instances of TRestDetectorReadoutModule
-                          ///< containned in the readout plane.
+                          ///< contained in the readout plane.
 
     void Initialize();
 
@@ -165,7 +165,7 @@ class TRestDetectorReadoutPlane : public TObject {
     TH2Poly* GetReadoutHistogram();
     void GetBoundaries(double& xmin, double& xmax, double& ymin, double& ymax);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutPlane();
     // Destructor
     virtual ~TRestDetectorReadoutPlane();

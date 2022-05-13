@@ -25,7 +25,8 @@ ClassImp(TRestDetectorSetup);
 
 TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() { Initialize(); }
 
-TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, const string& name) : TRestMetadata(cfgFileName) {
+TRestDetectorSetup::TRestDetectorSetup(const char* configFilename, const string& name)
+    : TRestMetadata(configFilename) {
     Initialize();
 
     LoadConfigFromFile(fConfigFileName, name);

@@ -58,7 +58,7 @@ class TRestDetectorGeometry : public TGeoManager {
 #endif
 
    public:
-    // Construtor
+    // Constructor
     TRestDetectorGeometry();
     // Destructor
     virtual ~TRestDetectorGeometry();

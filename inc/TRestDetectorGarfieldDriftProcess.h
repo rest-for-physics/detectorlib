@@ -15,7 +15,7 @@
 #ifndef RestCore_TRestDetectorGarfieldDriftProcess
 #define RestCore_TRestDetectorGarfieldDriftProcess
 
-#include <TRestDetectorGas.h>
+#include "TRestDetectorGas.h"
 
 #if defined USE_Garfield_OLD
 #include "AvalancheMC.hh"
@@ -40,7 +40,7 @@ typedef AvalancheMC DRIFT_METHOD;
 
 class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
    private:
-    void Initialize();
+    void Initialize() override;
 
     TRandom3* fRandom;
 
@@ -55,7 +55,7 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
     Garfield::Sensor* fGfSensor;   //!
     DRIFT_METHOD* fGfDriftMethod;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     void LoadDefaultConfig();
 
@@ -74,18 +74,18 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
 #endif
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
 #if defined USE_Garfield
-    void InitProcess();
-    void EndProcess();
+    void InitProcess() override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         //             std::cout << "Electric field : " << fElectricField << " V/cm"
@@ -98,20 +98,20 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fReadout; }
+    TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
-    TString GetProcessName() { return (TString) "garfieldDrift"; }
+    const char* GetProcessName() const override { return "garfieldDrift"; }
 
     Garfield::Sensor* GetGfSensor() { return fGfSensor; }
 
     // Constructor
     TRestDetectorGarfieldDriftProcess();
-    TRestDetectorGarfieldDriftProcess(char* cfgFileName);
+    TRestDetectorGarfieldDriftProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorGarfieldDriftProcess();
 #endif
-    ClassDef(TRestDetectorGarfieldDriftProcess,
-             1);  // Template for a REST "event process" class inherited from
-                  // TRestEventProcess
+    ClassDefOverride(TRestDetectorGarfieldDriftProcess,
+                     1);  // Template for a REST "event process" class inherited from
+                          // TRestEventProcess
 };
 #endif

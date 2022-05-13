@@ -39,7 +39,7 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// A std::vector to temporary the extracted threshold value from the corresponding observable
     std::vector<double> fThreshold;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -52,18 +52,18 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
    public:
     /// Returns a pointer to the input signal event
-    any GetInputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
 
     /// Returns a pointer to the input signal event
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// Prints on screen the metadata information registered by this process
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Sampling : " << fSampling << " us" << endl;
@@ -73,13 +73,13 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     }
 
     /// Returns a std::string with the process name
-    TString GetProcessName() { return (TString) "triggerAnalysis"; }
+    const char* GetProcessName() const override { return "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
-    TRestDetectorTriggerAnalysisProcess(char* cfgFileName);
+    TRestDetectorTriggerAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorTriggerAnalysisProcess();
 
-    ClassDef(TRestDetectorTriggerAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorTriggerAnalysisProcess, 2);
 };
 #endif

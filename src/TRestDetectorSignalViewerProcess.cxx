@@ -27,10 +27,11 @@ ClassImp(TRestDetectorSignalViewerProcess);
 
 TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
 
-TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* cfgFileName) {
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorSignalViewerProcess::~TRestDetectorSignalViewerProcess() {}
@@ -48,16 +49,16 @@ void TRestDetectorSignalViewerProcess::Initialize() {
     fSingleThreadOnly = true;
 }
 
-void TRestDetectorSignalViewerProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorSignalViewerProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 void TRestDetectorSignalViewerProcess::InitProcess() { this->CreateCanvas(); }
 
-TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEvent) {
     TString obsName;
 
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     /// Copying the signal event to the output event
     fSignalEvent = fInputSignalEvent;

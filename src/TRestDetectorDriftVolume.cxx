@@ -7,9 +7,9 @@ using namespace std;
 ClassImp(TRestDetectorDriftVolume);
 
 TRestDetectorDriftVolume::TRestDetectorDriftVolume() { Initialize(); }
-TRestDetectorDriftVolume::TRestDetectorDriftVolume(const char* cfgFileName, string name)
-    : TRestMetadata(cfgFileName) {
-    LoadConfigFromFile(cfgFileName, name);
+TRestDetectorDriftVolume::TRestDetectorDriftVolume(const char* configFilename, string name)
+    : TRestMetadata(configFilename) {
+    LoadConfigFromFile(configFilename, name);
 }
 
 void TRestDetectorDriftVolume::Initialize() {

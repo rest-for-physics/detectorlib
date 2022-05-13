@@ -25,25 +25,25 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     TRandom3* fRandom;  //!
 #endif
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    protected:
     Int_t fIterations;
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    any GetInputEvent() const override { return fHitsEvent; }
+    any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
     void LoadDefaultConfig();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << " Iterations : " << fIterations << endl;
@@ -51,15 +51,15 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsShuffle"; }
+    const char* GetProcessName() const override { return "hitsShuffle"; }
 
     // Constructor
     TRestDetectorHitsShuffleProcess();
-    TRestDetectorHitsShuffleProcess(char* cfgFileName);
+    TRestDetectorHitsShuffleProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorHitsShuffleProcess();
 
-    ClassDef(TRestDetectorHitsShuffleProcess, 1);  // Template for a REST "event process" class inherited from
-                                                   // TRestEventProcess
+    ClassDefOverride(TRestDetectorHitsShuffleProcess, 1);  // Template for a REST "event process" class
+                                                           // inherited from TRestEventProcess
 };
 #endif

@@ -21,10 +21,11 @@ ClassImp(TRestDetectorElectronDiffusionProcess);
 
 TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess() { Initialize(); }
 
-TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(char* cfgFileName) {
+TRestDetectorElectronDiffusionProcess::TRestDetectorElectronDiffusionProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
 TRestDetectorElectronDiffusionProcess::~TRestDetectorElectronDiffusionProcess() { delete fOutputHitsEvent; }
@@ -58,8 +59,8 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fRandom = nullptr;
 }
 
-void TRestDetectorElectronDiffusionProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorElectronDiffusionProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 void TRestDetectorElectronDiffusionProcess::InitProcess() {
@@ -105,13 +106,13 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
 
     fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 }
 
-TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();

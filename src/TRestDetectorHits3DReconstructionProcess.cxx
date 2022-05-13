@@ -198,8 +198,8 @@ void TRestDetectorHits3DReconstructionProcess::InitProcess() {
 #endif
 }
 
-TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     // sort with z from small to large
     fInputHitsEvent->Sort();

@@ -178,7 +178,7 @@
 /// previously stored TRestDetectorReadout class stored in a ROOT file,
 /// we can find the corresponding xy-position for a given readout channel
 /// id, module id, and readout plane, or the corresponding coordinates for
-/// a given channel inside a module containned in a readout plane.
+/// a given channel inside a module contained in a readout plane.
 ///
 /// The following code shows how we can identify the readout plane
 /// (*planeId*), the readout module (*moduleId*), and the readout channel
@@ -191,7 +191,7 @@
 ///            the readout plane modId =
 ///            fReadout->GetReadoutPlane(p)->isInsideDriftVolume( x, y, z );
 ///
-///            // If the hit is containned in the readout, the last function
+///            // If the hit is contained in the readout, the last function
 ///            returns the id of the
 ///            // readout module that contains the x,y coordinates.
 ///            if( modId >= 0 )
@@ -288,9 +288,9 @@ TRestDetectorReadout::TRestDetectorReadout() { Initialize(); }
 ///
 /// First TRestDetectorReadout section occurrence will be loaded.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName) : TRestMetadata(cfgFileName) {
+TRestDetectorReadout::TRestDetectorReadout(const char* configFilename) : TRestMetadata(configFilename) {
     cout << "Loading readout. This might take few seconds" << endl;
     Initialize();
 
@@ -307,11 +307,11 @@ TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName) : TRestMetad
 /// By default the config file must be specified with full path, absolute or
 /// relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 /// \param name The name of the TRestDetectorReadout section to be loaded
 ///
-TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName, string name)
-    : TRestMetadata(cfgFileName) {
+TRestDetectorReadout::TRestDetectorReadout(const char* configFilename, string name)
+    : TRestMetadata(configFilename) {
     cout << "Loading readout. This might take few seconds" << endl;
     Initialize();
 

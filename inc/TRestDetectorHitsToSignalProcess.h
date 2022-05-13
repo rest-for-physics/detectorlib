@@ -45,7 +45,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     /// A pointer to the detector gas definition accessible to TRestRun
     TRestDetectorGas* fGas;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -63,14 +63,14 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     Double_t fDriftVelocity = -1;  // mm/us
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fHitsEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
         metadata << "Sampling : " << fSampling << " us" << endl;
@@ -81,15 +81,15 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fReadout; }
+    TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "hitsToSignal"; }
+    const char* GetProcessName() const override { return "hitsToSignal"; }
 
     TRestDetectorHitsToSignalProcess();
-    TRestDetectorHitsToSignalProcess(char* cfgFileName);
+    TRestDetectorHitsToSignalProcess(const char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDef(TRestDetectorHitsToSignalProcess, 1);
+    ClassDefOverride(TRestDetectorHitsToSignalProcess, 1);
 };
 #endif

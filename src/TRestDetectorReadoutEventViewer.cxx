@@ -126,8 +126,10 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
         readoutChannel = module->DaqToReadoutChannel(daqChannel);
         cout << "daqChannel " << daqChannel << " readoutChannel " << readoutChannel << endl;
-        // if((module = GetModule(readoutChannel))==nullptr)continue;
-        if ((channel = GetChannel(readoutChannel)) == nullptr) continue;
+
+        if ((channel = GetChannel(readoutChannel)) == nullptr) {
+            continue;
+        }
 
         int nPixels = channel->GetNumberOfPixels();
 
