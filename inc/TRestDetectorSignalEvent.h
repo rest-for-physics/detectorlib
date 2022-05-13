@@ -59,7 +59,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
     void SubtractBaselines(Int_t startBin, Int_t endBin);
     void AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge);
 
-    inline Int_t GetNumberOfSignals() const { return fSignal.size(); }
+    inline size_t GetNumberOfSignals() const { return fSignal.size(); }
     inline TRestDetectorSignal* GetSignal(Int_t n) { return &fSignal[n]; }
 
     inline TRestDetectorSignal* GetSignalById(Int_t sid) {
