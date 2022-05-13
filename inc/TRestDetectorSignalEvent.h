@@ -53,18 +53,12 @@ class TRestDetectorSignalEvent : public TRestEvent {
         return true;
     }
 
-    inline void SortSignals() {
-        for (int n = 0; n < GetNumberOfSignals(); n++) {
-            fSignal[n].Sort();
-        }
-    }
+    void SortSignals();
 
-    // Setters
     void AddSignal(const TRestDetectorSignal& signal);
     void SubtractBaselines(Int_t startBin, Int_t endBin);
     void AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge);
 
-    // Getters
     inline Int_t GetNumberOfSignals() const { return fSignal.size(); }
     inline TRestDetectorSignal* GetSignal(Int_t n) { return &fSignal[n]; }
 

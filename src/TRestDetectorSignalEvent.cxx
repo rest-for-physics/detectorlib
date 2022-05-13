@@ -46,6 +46,12 @@ void TRestDetectorSignalEvent::Initialize() {
     fMaxTime = -1E10;
 }
 
+void TRestDetectorSignalEvent::SortSignals() {
+    for (auto& signal : fSignal) {
+        signal.Sort();
+    }
+}
+
 void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
     if (signalIDExists(signal.GetSignalID())) {
         cout << "Warning. Signal ID : " << signal.GetSignalID()
