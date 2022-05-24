@@ -95,9 +95,9 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
         pad2->Draw();
         fCanvas->Update();
 
-        RESTFout.setborder("");
-        RESTFout.setorientation(TRestStringOutput::REST_Display_Orientation::kLeft);
-        RESTFout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
+        RESTcout.setborder("");
+        RESTcout.setorientation(TRestStringOutput::REST_Display_Orientation::kLeft);
+        RESTcout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
                 "switch signals"
              << RESTendl;
 

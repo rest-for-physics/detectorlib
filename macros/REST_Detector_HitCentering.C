@@ -33,7 +33,7 @@
 
 Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int startVal = -30, int endVal = 30,
                                  int bins = 120, int n1 = 0, int n2 = 60000, double invalidVal = -0.125) {
-    TRestStringOutput RESTcout;
+    TRestStringOutput RESTLog;
 
     std::vector<string> inputFilesNew = TRestTools::GetFilesMatchingPattern((string)rootFileName);
 
@@ -41,7 +41,7 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
     TH1D* hY = new TH1D(histoName + "Y", histoName + "Y", bins, startVal, endVal);
 
     if (inputFilesNew.size() == 0) {
-        RESTcout << "Files not found!" << RESTendl;
+        RESTLog << "Files not found!" << RESTendl;
         return -1;
     }
 
@@ -81,7 +81,7 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
     hY->Write(histoName + "Y");
     f->Close();
 
-    RESTcout << "Written histograms " << histoName << "X/Y into " << rootFileName << RESTendl;
+    RESTLog << "Written histograms " << histoName << "X/Y into " << rootFileName << RESTendl;
 
     return 0;
 };
