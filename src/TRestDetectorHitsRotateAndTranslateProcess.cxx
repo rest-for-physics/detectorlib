@@ -99,7 +99,7 @@ TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent*
 
     if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
-    debug << "Number of hits rotated: " << fInputHitsEvent->GetNumberOfHits() << endl;
+    RESTDebug << "Number of hits rotated: " << fInputHitsEvent->GetNumberOfHits() << RESTendl;
     return fOutputHitsEvent;
 }
 

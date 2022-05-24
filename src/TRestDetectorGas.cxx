@@ -268,7 +268,7 @@ TRestDetectorGas::TRestDetectorGas(const char* configFilename, string name, bool
 /// \brief TRestDetectorGas default destructor
 ///
 TRestDetectorGas::~TRestDetectorGas() {
-    debug << "Entering ... TRestDetectorGas() destructor." << endl;
+    RESTDebug << "Entering ... TRestDetectorGas() destructor." << RESTendl;
 
 #if defined USE_Garfield
     delete fGasMedium;
@@ -280,7 +280,7 @@ TRestDetectorGas::~TRestDetectorGas() {
 /// members.
 ///
 void TRestDetectorGas::Initialize() {
-    debug << "TRestDetectorGas. Entering ... Initialize()." << endl;
+    RESTDebug << "TRestDetectorGas. Entering ... Initialize()." << RESTendl;
 
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
@@ -325,13 +325,13 @@ void TRestDetectorGas::Initialize() {
 /// using EnableGasGeneration() or at the class construction time.
 ///
 void TRestDetectorGas::LoadGasFile() {
-    debug << "Entering ... TRestDetectorGas::LoadGasFile()." << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::LoadGasFile()." << RESTendl;
 
 #if defined USE_Garfield
-    debug << "fGasFilename = " << fGasFilename << endl;
+    RESTDebug << "fGasFilename = " << fGasFilename << RESTendl;
     if (!TRestTools::fileExists((string)(fGasFilename))) {
-        ferr << __PRETTY_FUNCTION__ << endl;
-        ferr << "The gas file does not exist. (name:" << fGasFilename << ")" << endl;
+        RESTFerr << __PRETTY_FUNCTION__ << RESTendl;
+        RESTFerr << "The gas file does not exist. (name:" << fGasFilename << ")" << RESTendl;
         fStatus = RESTGAS_ERROR;
         return;
     }
@@ -344,10 +344,10 @@ void TRestDetectorGas::LoadGasFile() {
     fGasMedium->GetFieldGrid(fEFields, fBFields, fAngles);
 
     fStatus = RESTGAS_GASFILE_LOADED;
-    info << "TRestDetectorGas. Gas file loaded!" << endl;
+    RESTInfo << "TRestDetectorGas. Gas file loaded!" << RESTendl;
 
     for (unsigned int i = 0; i < fEFields.size(); i++)
-        debug << "node " << i << " Field : " << fEFields[i] << " V/cm" << endl;
+        RESTDebug << "node " << i << " Field : " << fEFields[i] << " V/cm" << RESTendl;
 
     if (fGasMedium && fGasMedium->GetW() == 0.) {
         fGasMedium->SetW(GetWvalue());
@@ -358,8 +358,8 @@ void TRestDetectorGas::LoadGasFile() {
 }
 
 void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
-    debug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )"
-          << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )"
+          << RESTendl;
 
 #if defined USE_Garfield
     if (fEnodes <= 0) {
@@ -403,7 +403,7 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
     fGasMedium->SetTemperature(fTemperatureInK);
 
     if (fPressureInAtm != 1)
-        warning << "-- Warning : The gas will be generated for gas pressure = 1atm" << endl;
+        RESTWarning << "-- Warning : The gas will be generated for gas pressure = 1atm" << RESTendl;
 
     fGasMedium->SetPressure(1 * REST_Units::torr);
 
@@ -413,13 +413,13 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
 
     cout << "Garfield: calculating..." << endl;
 
-    if (fVerboseLevel >= REST_Info) fGasMedium->EnableDebugging();
+    if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Info) fGasMedium->EnableDebugging();
     fGasMedium->Initialise();
-    if (fVerboseLevel >= REST_Info) fGasMedium->DisableDebugging();
+    if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Info) fGasMedium->DisableDebugging();
 
     fGasMedium->GenerateGasTable(fNCollisions, true);
     if (fPressureInAtm != 1) {
-        warning << "-- Warning : Restoring the gas pressure" << endl;
+        RESTWarning << "-- Warning : Restoring the gas pressure" << RESTendl;
         fGasMedium->SetPressure(fPressureInAtm * 760.);
     }
 #else
@@ -439,8 +439,8 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
 /// \param fraction The element fraction in volume.
 ///
 void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
-    debug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName
-          << " , fraction=" << fraction << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName
+          << " , fraction=" << fraction << " )" << RESTendl;
 
     fGasComponentName.push_back(gasName);
     fGasComponentFraction.push_back(fraction);
@@ -452,11 +452,11 @@ void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
 // photoncrossection database is not available
 void TRestDetectorGas::GetGasWorkFunction() {
 #if defined USE_Garfield
-    essential << __PRETTY_FUNCTION__ << endl;
-    essential << "This method has never been validated to operate properly" << endl;
-    essential << "If we manage to make it work we could use this method to "
+    RESTEssential << __PRETTY_FUNCTION__ << RESTendl;
+    RESTEssential << "This method has never been validated to operate properly" << RESTendl;
+    RESTEssential << "If we manage to make it work we could use this method to "
                  "obtain the calculated W of the gas"
-              << endl;
+              << RESTendl;
 
     // Gas gap [cm].
     const double width = 1.;
@@ -505,7 +505,7 @@ void TRestDetectorGas::GetGasWorkFunction() {
 void TRestDetectorGas::InitFromConfigFile() {
     // if (GetVerboseLevel() <= REST_Info) fVerboseLevel = REST_Info;
 
-    debug << "Entering ... TRestDetectorGas::InitFromConfigFile()" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::InitFromConfigFile()" << RESTendl;
 
     // read config parameters of base class
     TRestDetectorDriftVolume::InitFromConfigFile();
@@ -538,14 +538,14 @@ void TRestDetectorGas::InitFromConfigFile() {
         }
     }
     if (fNofGases == 0) {
-        ferr << "TRestDetectorGas: No gas components added!" << endl;
+        RESTFerr << "TRestDetectorGas: No gas components added!" << RESTendl;
     }
     double sum = 0;
     for (int i = 0; i < fNofGases; i++) sum += GetGasComponentFraction(i);
     if (sum - 1 < 1.e12)
         fStatus = RESTGAS_CFG_LOADED;
     else {
-        warning << "TRestDetectorGas : The total gas fractions is NOT 1." << endl;
+        RESTWarning << "TRestDetectorGas : The total gas fractions is NOT 1." << RESTendl;
         fStatus = RESTGAS_ERROR;
         return;
     }
@@ -561,43 +561,43 @@ void TRestDetectorGas::InitFromConfigFile() {
         fGasGeneration = true;
     fGasOutputPath = GetParameter("gasOutputPath", "./");
     if (!TRestTools::isPathWritable((string)fGasOutputPath)) {
-        warning << "-- Warning : The specified gasOutputPath is not writable!" << endl;
-        warning << "-- Warning : The output path will be changed to ./" << endl;
+        RESTWarning << "-- Warning : The specified gasOutputPath is not writable!" << RESTendl;
+        RESTWarning << "-- Warning : The output path will be changed to ./" << RESTendl;
         fGasOutputPath = "./";
     }
     fGDMLMaterialRef = GetParameter("GDMLMaterialRef", "");
 
     // construct the gas file name and try to find it, either locally or from gas server
     fGasFilename = ConstructFilename();
-    debug << "TRestDetectorGas::InitFromConfigFile. ConstructFilename. fGasFilename = " << fGasFilename
-          << endl;
+    RESTDebug << "TRestDetectorGas::InitFromConfigFile. ConstructFilename. fGasFilename = " << fGasFilename
+          << RESTendl;
     fGasFilename = FindGasFile((string)fGasFilename);
-    debug << "TRestDetectorGas::InitFromConfigFile. FindGasFile. fGasFilename = " << fGasFilename << endl;
+    RESTDebug << "TRestDetectorGas::InitFromConfigFile. FindGasFile. fGasFilename = " << fGasFilename << RESTendl;
 
     // If we found the gasFile then obviously we disable the gas generation
     if (fGasGeneration && TRestTools::fileExists((string)fGasFilename)) {
         fGasGeneration = false;
 
-        warning << "TRestDetectorGas gasFile generation is enabled, but the "
+        RESTWarning << "TRestDetectorGas gasFile generation is enabled, but the "
                    "gasFile already exists!!"
-                << endl;
-        warning << "Filename : " << fGasFilename << endl;
-        warning << "fGasGeneration should be disabled to remove this "
+                << RESTendl;
+        RESTWarning << "Filename : " << fGasFilename << RESTendl;
+        RESTWarning << "fGasGeneration should be disabled to remove this "
                    "warning."
-                << endl;
-        warning << "If you really want to re-generate the gas file you "
+                << RESTendl;
+        RESTWarning << "If you really want to re-generate the gas file you "
                    "will need to disable the gasServer."
-                << endl;
-        warning << "And/or remove any local copies that are found by "
+                << RESTendl;
+        RESTWarning << "And/or remove any local copies that are found by "
                    "SearchPath."
-                << endl;
+                << RESTendl;
     }
     fStatus = RESTGAS_CFG_LOADED;
 
 #if defined USE_Garfield
     // calling garfield, either to generate gas file or load existing gas file
     if (fGasGeneration) {
-        essential << "Starting gas generation" << endl;
+        RESTEssential << "Starting gas generation" << RESTendl;
 
         CalcGarField(fEmin, fEmax, fEnodes);
         GenerateGasFile();
@@ -610,11 +610,11 @@ void TRestDetectorGas::InitFromConfigFile() {
         fGasMedium->SetW(fW);  // as it is probably not computed by Magboltz
 #endif
 
-    if (GetVerboseLevel() >= REST_Info) PrintGasInfo();
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) PrintGasInfo();
 }
 
 void TRestDetectorGas::InitFromRootFile() {
-    debug << "Entering ... TRestDetectorGas::InitFromRootFile()" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::InitFromRootFile()" << RESTendl;
     TRestMetadata::InitFromRootFile();
     if (fGasFileContent != "")  // use gas file content by default
     {
@@ -634,18 +634,18 @@ void TRestDetectorGas::InitFromRootFile() {
 }
 
 void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
-    essential << "uploading gas file and gas definition rmls" << endl;
+    RESTEssential << "uploading gas file and gas definition rmls" << RESTendl;
 
     if (!fTest && (fMaxElectronEnergy < 400 || fNCollisions < 10 || fEnodes < 20)) {
-        warning << "-- Warning : The gas file does not fulfill the requirements "
+        RESTWarning << "-- Warning : The gas file does not fulfill the requirements "
                    "for being uploaded to the gasServer"
-                << endl;
-        warning << "-- Warning : maxElectronEnergy >= 400. Number of collisions >= "
+                << RESTendl;
+        RESTWarning << "-- Warning : maxElectronEnergy >= 400. Number of collisions >= "
                    "10. Number of E nodes >= 20."
-                << endl;
-        warning << "-- Warning : The generated file will NOT be uploaded to the "
+                << RESTendl;
+        RESTWarning << "-- Warning : The generated file will NOT be uploaded to the "
                    "server but preserved locally."
-                << endl;
+                << RESTendl;
         return;
     }
 
@@ -668,8 +668,8 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
     a = system(cmd.c_str());
 
     if (a != 0) {
-        ferr << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        ferr << "-- Error : problem removing last line from " << fname << endl;
+        RESTFerr << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTFerr << "-- Error : problem removing last line from " << fname << RESTendl;
         return;
     }
 
@@ -711,7 +711,7 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
     //    return;
     //}
 
-    success << "-- Sucess : Gasfile server database was updated sucessfully!!" << endl;
+    RESTSuccess << "-- Sucess : Gasfile server database was updated sucessfully!!" << RESTendl;
 }
 
 /////////////////////////////////////////////
@@ -729,7 +729,7 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
 ///
 ///
 string TRestDetectorGas::FindGasFile(string name) {
-    debug << "Entering ... TRestDetectorGas::FindGasFile( name=" << name << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::FindGasFile( name=" << name << " )" << RESTendl;
 
     string absoluteName = "";
 
@@ -738,18 +738,18 @@ string TRestDetectorGas::FindGasFile(string name) {
     }
 
     if (absoluteName == "") {
-        info << "Trying to find the gasFile locally" << endl;
+        RESTInfo << "Trying to find the gasFile locally" << RESTendl;
         absoluteName = SearchFile(name);
         if (absoluteName == "") {
-            warning << "-- Warning : No sucess finding local gas file definition." << endl;
-            warning << "-- Warning : Gas file definition does not exist." << endl;
-            info << "To generate a new gasFile enable gas generation in TRestDetectorGas "
+            RESTWarning << "-- Warning : No sucess finding local gas file definition." << RESTendl;
+            RESTWarning << "-- Warning : Gas file definition does not exist." << RESTendl;
+            RESTInfo << "To generate a new gasFile enable gas generation in TRestDetectorGas "
                     "constructor"
-                 << endl;
-            info << "TRestDetectorGas ( \"gasDefinition.rml\", \"gas Name\", true );" << endl;
-            info << "Further details can be found at TRestDetectorGas class definition and "
+                 << RESTendl;
+            RESTInfo << "TRestDetectorGas ( \"gasDefinition.rml\", \"gas Name\", true );" << RESTendl;
+            RESTInfo << "Further details can be found at TRestDetectorGas class definition and "
                     "tutorial."
-                 << endl;
+                 << RESTendl;
 
             absoluteName = name;
         }
@@ -762,7 +762,7 @@ string TRestDetectorGas::FindGasFile(string name) {
 /// \brief Returns a string definning the gas components and fractions.
 ///
 TString TRestDetectorGas::GetGasMixture() {
-    debug << "Entering ... TRestDetectorGas::GetGasMixture( )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetGasMixture( )" << RESTendl;
 
     TString gasMixture;
     char tmpStr[64];
@@ -782,7 +782,7 @@ TString TRestDetectorGas::GetGasMixture() {
 /// This method returns only the filename without including absolute or relative
 /// paths.
 string TRestDetectorGas::ConstructFilename() {
-    debug << "Entering ... TRestDetectorGas::ConstructFilename( )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::ConstructFilename( )" << RESTendl;
 
     string name = "";
     char tmpStr[256];
@@ -823,29 +823,29 @@ string TRestDetectorGas::ConstructFilename() {
 
     name += ".gas";
 
-    debug << "Constructed filename : " << name << endl;
+    RESTDebug << "Constructed filename : " << name << RESTendl;
     return name;
 }
 
 /////////////////////////////////////////////
 /// \brief Save a gas file with a structured file name
 void TRestDetectorGas::GenerateGasFile() {
-    debug << "Entering ... TRestDetectorGas::GenerateGasFile( )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GenerateGasFile( )" << RESTendl;
 
 #if defined USE_Garfield
 
     fGasFilename = ConstructFilename();
-    debug << " TRestDetectorGas::GenerateGasFile. fGasFilename = " << fGasFilename << endl;
+    RESTDebug << " TRestDetectorGas::GenerateGasFile. fGasFilename = " << fGasFilename << RESTendl;
 
     if (!TRestTools::isPathWritable((string)fGasOutputPath)) {
         cout << endl;
-        warning << "-- Warning: REST ERROR. TRestDetectorGas. Path is not writtable." << endl;
-        warning << "-- Warning: Path : " << fGasOutputPath << endl;
-        warning << "-- Warning: Make sure the final data path is writtable before "
+        RESTWarning << "-- Warning: REST ERROR. TRestDetectorGas. Path is not writtable." << RESTendl;
+        RESTWarning << "-- Warning: Path : " << fGasOutputPath << RESTendl;
+        RESTWarning << "-- Warning: Make sure the final data path is writtable before "
                    "proceed to gas generation."
-                << endl;
-        warning << "-- Warning: or change the gas data path ... " << endl;
-        warning << endl;
+                << RESTendl;
+        RESTWarning << "-- Warning: or change the gas data path ... " << RESTendl;
+        RESTWarning << RESTendl;
         GetChar();
         return;
     }
@@ -874,7 +874,7 @@ void TRestDetectorGas::GenerateGasFile() {
 /// \param pressure The new pressure of the gas in atm.
 ///
 void TRestDetectorGas::SetPressure(Double_t pressure) {
-    debug << "Entering ... TRestDetectorGas::SetPressure( pressure=" << pressure << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::SetPressure( pressure=" << pressure << " )" << RESTendl;
 
     fPressureInAtm = pressure;
 #if defined USE_Garfield
@@ -885,7 +885,7 @@ void TRestDetectorGas::SetPressure(Double_t pressure) {
 /////////////////////////////////////////////
 /// \brief Defines the temperature of the gas.
 void TRestDetectorGas::SetTemperature(Double_t temperature) {
-    debug << "Entering ... TRestDetectorGas::SetPressure( temperature=" << temperature << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::SetPressure( temperature=" << temperature << " )" << RESTendl;
 
     fTemperatureInK = temperature;
 #if defined USE_Garfield
@@ -902,8 +902,8 @@ void TRestDetectorGas::SetTemperature(Double_t temperature) {
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    debug << "Entering ... TRestDetectorGas::PlotDriftVelocity( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotDriftVelocity( eMin=" << eMin << " , eMax=" << eMax
+          << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), driftVel(nSteps);
 
@@ -935,8 +935,8 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    debug << "Entering ... TRestDetectorGas::PlotLongitudinalDiffusion( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotLongitudinalDiffusion( eMin=" << eMin << " , eMax=" << eMax
+          << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), longDiff(nSteps);
 
@@ -968,8 +968,8 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    debug << "Entering ... TRestDetectorGas::PlotTransversalDiffusion( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotTransversalDiffusion( eMin=" << eMin << " , eMax=" << eMax
+          << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), transDiff(nSteps);
 
@@ -1001,8 +1001,8 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    debug << "Entering ... TRestDetectorGas::PlotTownsendCoefficient( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotTownsendCoefficient( eMin=" << eMin << " , eMax=" << eMax
+          << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), townsendCoeff(nSteps);
 
@@ -1029,17 +1029,17 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 /// V/cm.
 ///
 Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
-    debug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << RESTendl;
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
-        debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        debug << "-- Error : Gas file was not loaded!" << endl;
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
         return 0;
     }
 
-    info << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm/us" << endl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+         << "from REST standard unit. E is V/cm. The return is cm/us" << RESTendl;
 
     Double_t vx, vy, vz;
     fGasMedium->ElectronVelocity(0., 0, -E, 0, 0, 0, vx, vy, vz);
@@ -1058,17 +1058,17 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
 /// electric field in V/cm.
 ///
 Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
-    debug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << RESTendl;
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
-        debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        debug << "-- Error : Gas file was not loaded!" << endl;
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
         return 0;
     }
 
-    info << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm^1/2" << endl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+         << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
@@ -1087,17 +1087,17 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
 /// field in V/cm.
 ///
 Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
-    debug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << RESTendl;
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
-        debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        debug << "-- Error : Gas file was not loaded!" << endl;
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
         return 0;
     }
 
-    info << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm^1/2" << endl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+         << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
@@ -1116,17 +1116,17 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
 /// V/cm.
 ///
 Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
-    debug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << RESTendl;
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
-        debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        debug << "-- Error : Gas file was not loaded!" << endl;
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
         return 0;
     }
 
-    info << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << endl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t alpha;
     fGasMedium->ElectronTownsend(0., 0, -E, 0, 0, 0, alpha);
@@ -1145,17 +1145,17 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
 /// V/cm.
 ///
 Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
-    debug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << RESTendl;
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
-        debug << "-- Error : " << __PRETTY_FUNCTION__ << endl;
-        debug << "-- Error : Gas file was not loaded!" << endl;
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
         return 0;
     }
 
-    info << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << endl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t eta;
     fGasMedium->ElectronAttachment(0., 0, -E, 0, 0, 0, eta);
@@ -1173,39 +1173,39 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
 /// \brief Prints the metadata information from the gas
 ///
 void TRestDetectorGas::PrintGasInfo() {
-    debug << "Entering ... TRestDetectorGas::PrintGasInfo( )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::PrintGasInfo( )" << RESTendl;
 
     TRestMetadata::PrintMetadata();
 
-    metadata << "Status : ";
-    if (fStatus == RESTGAS_INTITIALIZED) metadata << "Initialized";
-    if (fStatus == RESTGAS_CFG_LOADED) metadata << "Configuration loaded";
-    if (fStatus == RESTGAS_GASFILE_LOADED) metadata << "Gasfile loaded";
-    if (fStatus == RESTGAS_ERROR) metadata << "Error";
-    metadata << endl;
+    RESTMetadata << "Status : ";
+    if (fStatus == RESTGAS_INTITIALIZED) RESTMetadata << "Initialized";
+    if (fStatus == RESTGAS_CFG_LOADED) RESTMetadata << "Configuration loaded";
+    if (fStatus == RESTGAS_GASFILE_LOADED) RESTMetadata << "Gasfile loaded";
+    if (fStatus == RESTGAS_ERROR) RESTMetadata << "Error";
+    RESTMetadata << RESTendl;
 
-    metadata << "Gas filename : " << TRestTools::GetPureFileName((string)fGasFilename) << endl;
-    metadata << "Pressure : " << fPressureInAtm << " atm" << endl;
-    metadata << "Temperature : " << fTemperatureInK << " K" << endl;
-    metadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << endl;
-    metadata << "W-value : " << fW << " eV" << endl;
-    metadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us")
-             << " mm/us " << endl;
-    metadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << endl;
-    metadata << "Field grid nodes : " << fEnodes << endl;
-    metadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << endl;
-    metadata << "Number of Gases : " << fNofGases << endl;
+    RESTMetadata << "Gas filename : " << TRestTools::GetPureFileName((string)fGasFilename) << RESTendl;
+    RESTMetadata << "Pressure : " << fPressureInAtm << " atm" << RESTendl;
+    RESTMetadata << "Temperature : " << fTemperatureInK << " K" << RESTendl;
+    RESTMetadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << RESTendl;
+    RESTMetadata << "W-value : " << fW << " eV" << RESTendl;
+    RESTMetadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us")
+             << " mm/us " << RESTendl;
+    RESTMetadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << RESTendl;
+    RESTMetadata << "Field grid nodes : " << fEnodes << RESTendl;
+    RESTMetadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << RESTendl;
+    RESTMetadata << "Number of Gases : " << fNofGases << RESTendl;
     for (int i = 0; i < fNofGases; i++)
-        metadata << "Gas id : " << i << ", Name : " << fGasComponentName[i]
-                 << ", Fraction : " << fGasComponentFraction[i] << endl;
-    metadata << "******************************************" << endl;
-    metadata << endl;
-    metadata << endl;
+        RESTMetadata << "Gas id : " << i << ", Name : " << fGasComponentName[i]
+                 << ", Fraction : " << fGasComponentFraction[i] << RESTendl;
+    RESTMetadata << "******************************************" << RESTendl;
+    RESTMetadata << RESTendl;
+    RESTMetadata << RESTendl;
 }
 
 Int_t TRestDetectorGas::Write(const char* name, Int_t option, Int_t bufsize) {
-    debug << "Entering ... TRestDetectorGas::Write( name=" << name << " option=" << option
-          << " bufsize=" << bufsize << " )" << endl;
+    RESTDebug << "Entering ... TRestDetectorGas::Write( name=" << name << " option=" << option
+          << " bufsize=" << bufsize << " )" << RESTendl;
 
     if (fGasFileContent == "" && GasFileLoaded()) {
         ifstream infile;

@@ -167,7 +167,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
     Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
 
     if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05)
-        debug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << endl;
+        RESTDebug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << RESTendl;
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
@@ -177,10 +177,10 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
 
     // We transform here fHitsEvent if necessary
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         fOutputHitsEvent->PrintEvent();
 
-        if (GetVerboseLevel() >= REST_Extreme) GetChar();
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
     }
 
     return fOutputHitsEvent;
@@ -202,7 +202,7 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
     BeginPrintProcess();
 
     // Print output metadata using, metadata << endl;
-    metadata << "Pitch (mm) : " << fPitch << endl;
+    RESTMetadata << "Pitch (mm) : " << fPitch << RESTendl;
 
     EndPrintProcess();
 }

@@ -113,16 +113,16 @@ class TRestDetectorSignalChannelActivityProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Low signal threshold activity : " << fLowThreshold << endl;
-        metadata << "High signal threshold activity : " << fHighThreshold << endl;
+        RESTMetadata << "Low signal threshold activity : " << fLowThreshold << RESTendl;
+        RESTMetadata << "High signal threshold activity : " << fHighThreshold << RESTendl;
 
-        metadata << "Number of daq histogram channels : " << fDaqHistogramChannels << endl;
-        metadata << "Start daq channel : " << fDaqStartChannel << endl;
-        metadata << "End daq channel : " << fDaqEndChannel << endl;
+        RESTMetadata << "Number of daq histogram channels : " << fDaqHistogramChannels << RESTendl;
+        RESTMetadata << "Start daq channel : " << fDaqStartChannel << RESTendl;
+        RESTMetadata << "End daq channel : " << fDaqEndChannel << RESTendl;
 
-        metadata << "Number of readout histogram channels : " << fReadoutHistogramChannels << endl;
-        metadata << "Start readout channel : " << fReadoutStartChannel << endl;
-        metadata << "End readout channel : " << fReadoutEndChannel << endl;
+        RESTMetadata << "Number of readout histogram channels : " << fReadoutHistogramChannels << RESTendl;
+        RESTMetadata << "Start readout channel : " << fReadoutStartChannel << RESTendl;
+        RESTMetadata << "End readout channel : " << fReadoutEndChannel << RESTendl;
 
         EndPrintProcess();
     }

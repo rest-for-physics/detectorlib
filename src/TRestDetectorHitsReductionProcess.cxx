@@ -80,7 +80,7 @@ TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* inputEve
 
     Int_t finalHits = fOutputHitsEvent->GetNumberOfHits();
 
-    if (this->GetVerboseLevel() == REST_Debug) {
+    if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsReductionProcess : Initial number of hits : " << initialHits << endl;
         cout << "TRestDetectorHitsReductionProcess : Final number of hits : " << finalHits << endl;
     }

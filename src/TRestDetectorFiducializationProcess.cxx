@@ -81,7 +81,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputE
 
     if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
-    if (this->GetVerboseLevel() >= REST_Debug) {
+    if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
         cout << "TRestDetectorFiducializationProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()

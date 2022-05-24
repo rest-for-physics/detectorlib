@@ -43,13 +43,13 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "module's daq channel re-definition: " << endl;
+        RESTMetadata << "module's daq channel re-definition: " << RESTendl;
         auto iter = fFirstDaqChannelDef.begin();
         while (iter != fFirstDaqChannelDef.end()) {
-            metadata << "module id: " << iter->first << " first daq channel: " << iter->second << endl;
+            RESTMetadata << "module id: " << iter->first << " first daq channel: " << iter->second << RESTendl;
             iter++;
         }
-        metadata << endl;
+        RESTMetadata << RESTendl;
 
         EndPrintProcess();
     }

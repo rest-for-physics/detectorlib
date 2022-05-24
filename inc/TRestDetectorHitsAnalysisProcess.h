@@ -70,18 +70,18 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        if (fCylinderFiducial) metadata << "Cylinder fiducial active" << endl;
-        if (fPrismFiducial) metadata << "Prism fiducial active" << endl;
+        if (fCylinderFiducial) RESTMetadata << "Cylinder fiducial active" << RESTendl;
+        if (fPrismFiducial) RESTMetadata << "Prism fiducial active" << RESTendl;
 
-        metadata << " -------------------" << endl;
-        metadata << " Fiducial parameters" << endl;
-        metadata << " -------------------" << endl;
-        metadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")" << endl;
-        metadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")" << endl;
-        metadata << " R : " << fFid_R << endl;
-        metadata << " sX : " << fFid_sX << endl;
-        metadata << " sY : " << fFid_sY << endl;
-        metadata << " -------------------" << endl;
+        RESTMetadata << " -------------------" << RESTendl;
+        RESTMetadata << " Fiducial parameters" << RESTendl;
+        RESTMetadata << " -------------------" << RESTendl;
+        RESTMetadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")" << RESTendl;
+        RESTMetadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")" << RESTendl;
+        RESTMetadata << " R : " << fFid_R << RESTendl;
+        RESTMetadata << " sX : " << fFid_sX << RESTendl;
+        RESTMetadata << " sY : " << fFid_sY << RESTendl;
+        RESTMetadata << " -------------------" << RESTendl;
 
         EndPrintProcess();
     }

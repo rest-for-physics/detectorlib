@@ -90,10 +90,10 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 
         //             std::cout << "Electric field : " << fElectricField << " V/cm"
         //             << endl;
-        metadata << "Drift electrode potential : " << fDriftPotential << " V" << endl;
-        metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << "Electron reduction factor : " << fPEReduction << endl;
-        metadata << "Drift stop distance : " << fStopDistance << " mm" << endl;
+        RESTMetadata << "Drift electrode potential : " << fDriftPotential << " V" << RESTendl;
+        RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << "Electron reduction factor : " << fPEReduction << RESTendl;
+        RESTMetadata << "Drift stop distance : " << fStopDistance << " mm" << RESTendl;
 
         EndPrintProcess();
     }

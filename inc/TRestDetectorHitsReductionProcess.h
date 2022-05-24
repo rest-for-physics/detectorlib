@@ -44,10 +44,10 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " Starting distance : " << fStartingDistance << endl;
-        metadata << " Minimum distance : " << fMinimumDistance << endl;
-        metadata << " Distance step factor : " << fDistanceFactor << endl;
-        metadata << " Maximum number of nodes : " << fMaxNodes << endl;
+        RESTMetadata << " Starting distance : " << fStartingDistance << RESTendl;
+        RESTMetadata << " Minimum distance : " << fMinimumDistance << RESTendl;
+        RESTMetadata << " Distance step factor : " << fDistanceFactor << RESTendl;
+        RESTMetadata << " Maximum number of nodes : " << fMaxNodes << RESTendl;
 
         EndPrintProcess();
     }

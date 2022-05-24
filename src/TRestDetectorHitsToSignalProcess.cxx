@@ -173,11 +173,11 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != nullptr) {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << endl;
-        ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+        RESTFerr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+             << RESTendl;
+        RESTFerr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorHitsToSignalProcess"
-             << endl;
+             << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
         if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
@@ -210,7 +210,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
     if (!fReadout) return nullptr;
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fHitsEvent->GetNumberOfHits() << endl;
         cout << "--------------------------" << endl;
     }
@@ -221,7 +221,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         Double_t z = fHitsEvent->GetZ(hit);
         Double_t t = fHitsEvent->GetTime(hit);
 
-        if (GetVerboseLevel() >= REST_Extreme && hit < 20)
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
             cout << "Hit : " << hit << " x : " << x << " y : " << y << " z : " << z << " t : " << t << endl;
 
         Int_t planeId = -1;
@@ -239,20 +239,20 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
                 Double_t time = plane->GetDistanceTo(x, y, z) / fDriftVelocity + t;
 
-                if (GetVerboseLevel() >= REST_Debug && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
                          << endl;
 
-                if (GetVerboseLevel() >= REST_Debug && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
                     cout << "Energy : " << energy << " time : " << time << endl;
 
-                if (GetVerboseLevel() >= REST_Extreme && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
                     printf(
                         " TRestDetectorHitsToSignalProcess: x %lf y %lf z %lf energy %lf t %lf "
                         "fDriftVelocity %lf fSampling %lf time %lf\n",
                         x, y, z, energy, t, fDriftVelocity, fSampling, time);
 
-                if (GetVerboseLevel() >= REST_Extreme)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
                     cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
 
                 time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
@@ -260,16 +260,16 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
             } else {
-                if (GetVerboseLevel() >= REST_Debug)
-                    debug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
-                          << ", " << y << ", " << z << ")!" << endl;
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                    RESTDebug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
+                          << ", " << y << ", " << z << ")!" << RESTendl;
             }
         }
     }
 
     fSignalEvent->SortSignals();
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsToSignalProcess : Number of signals added : "
              << fSignalEvent->GetNumberOfSignals() << endl;
         cout << "TRestDetectorHitsToSignalProcess : Total signals integral : " << fSignalEvent->GetIntegral()

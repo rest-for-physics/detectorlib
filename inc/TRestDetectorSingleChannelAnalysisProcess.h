@@ -64,15 +64,15 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ")
-                 << "Apply channel correction std::map for spectrum " << endl;
-        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each channel"
-                 << endl;
-        metadata << "output mapping file: " << fCalibSave << endl;
-        metadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << endl;
-        metadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << endl;
-        metadata << "Fit range for the spectra: " << any(fSpecFitRange) << endl;
+        RESTMetadata << "the mode is:" << RESTendl;
+        RESTMetadata << (fApplyGainCorrection ? ">   " : "    ")
+                 << "Apply channel correction std::map for spectrum " << RESTendl;
+        RESTMetadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each channel"
+                 << RESTendl;
+        RESTMetadata << "output mapping file: " << fCalibSave << RESTendl;
+        RESTMetadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << RESTendl;
+        RESTMetadata << "Fit range for the spectra: " << any(fSpecFitRange) << RESTendl;
 
         EndPrintProcess();
     }

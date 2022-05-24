@@ -46,7 +46,7 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " Iterations : " << fIterations << endl;
+        RESTMetadata << " Iterations : " << fIterations << RESTendl;
 
         EndPrintProcess();
     }

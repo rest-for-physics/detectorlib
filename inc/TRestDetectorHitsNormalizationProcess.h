@@ -47,7 +47,7 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " Renormalization factor : " << fFactor << endl;
+        RESTMetadata << " Renormalization factor : " << fFactor << RESTendl;
 
         EndPrintProcess();
     }

@@ -63,15 +63,15 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ")
-                 << "Apply position correction std::map for spectrum " << endl;
-        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each position"
-                 << endl;
-        metadata << "output mapping file: " << fMappingSave << endl;
-        metadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << endl;
-        metadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << endl;
-        metadata << "Binning: " << fNBinsX << ", " << fNBinsY << ", " << fNBinsZ << endl;
+        RESTMetadata << "the mode is:" << RESTendl;
+        RESTMetadata << (fApplyGainCorrection ? ">   " : "    ")
+                 << "Apply position correction std::map for spectrum " << RESTendl;
+        RESTMetadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each position"
+                 << RESTendl;
+        RESTMetadata << "output mapping file: " << fMappingSave << RESTendl;
+        RESTMetadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << RESTendl;
+        RESTMetadata << "Binning: " << fNBinsX << ", " << fNBinsY << ", " << fNBinsZ << RESTendl;
 
         EndPrintProcess();
     }

@@ -73,10 +73,10 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Sampling : " << fSampling << " us" << endl;
-        metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
+        RESTMetadata << "Sampling : " << fSampling << " us" << RESTendl;
+        RESTMetadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << "Drift velocity : " << fDriftVelocity << " mm/us" << RESTendl;
 
         EndPrintProcess();
     }

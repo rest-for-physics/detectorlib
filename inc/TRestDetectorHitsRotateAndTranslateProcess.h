@@ -54,12 +54,12 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " delta x : " << fDeltaX << endl;
-        metadata << " delta y : " << fDeltaY << endl;
-        metadata << " delta z : " << fDeltaZ << endl;
-        metadata << " alpha : " << fAlpha << endl;
-        metadata << " beta : " << fBeta << endl;
-        metadata << " gamma : " << fGamma << endl;
+        RESTMetadata << " delta x : " << fDeltaX << RESTendl;
+        RESTMetadata << " delta y : " << fDeltaY << RESTendl;
+        RESTMetadata << " delta z : " << fDeltaZ << RESTendl;
+        RESTMetadata << " alpha : " << fAlpha << RESTendl;
+        RESTMetadata << " beta : " << fBeta << RESTendl;
+        RESTMetadata << " gamma : " << fGamma << RESTendl;
 
         EndPrintProcess();
     }

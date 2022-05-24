@@ -64,16 +64,16 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << " attachment coeficient : " << fAttachment << " V/cm" << endl;
-        metadata << " gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << " longitudinal diffusion coefficient : " << fLonglDiffCoeff << " cm^1/2" << endl;
-        metadata << " transversal diffusion coefficient : " << fTransDiffCoeff << " cm^1/2" << endl;
-        metadata << " W value : " << fWvalue << " eV" << endl;
+        RESTMetadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << " attachment coeficient : " << fAttachment << " V/cm" << RESTendl;
+        RESTMetadata << " gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << " longitudinal diffusion coefficient : " << fLonglDiffCoeff << " cm^1/2" << RESTendl;
+        RESTMetadata << " transversal diffusion coefficient : " << fTransDiffCoeff << " cm^1/2" << RESTendl;
+        RESTMetadata << " W value : " << fWvalue << " eV" << RESTendl;
 
-        metadata << " Maximum number of hits : " << fMaxHits << endl;
+        RESTMetadata << " Maximum number of hits : " << fMaxHits << RESTendl;
 
-        metadata << " seed : " << fSeed << endl;
+        RESTMetadata << " seed : " << fSeed << RESTendl;
 
         EndPrintProcess();
     }
