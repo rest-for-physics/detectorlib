@@ -486,9 +486,9 @@ void TRestDetectorReadout::InitFromConfigFile() {
             Int_t mid = GetModuleDefinitionId(modName);
 
             if (mid == -1) {
-                RESTFerr << "TRestDetectorReadout at <addReadoutModule>. Module name " << modName << " not found!"
+                RESTError << "TRestDetectorReadout at <addReadoutModule>. Module name " << modName << " not found!"
                      << RESTendl;
-                RESTFerr << "Please, check spelling" << RESTendl;
+                RESTError << "Please, check spelling" << RESTendl;
                 exit(1);
             }
 
@@ -530,8 +530,8 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 Int_t daq, readout;
                 while (!feof(f)) {
                     if (fscanf(f, "%d\t%d\n", &daq, &readout) <= 0) {
-                        RESTFerr << "TRestDetectorReadout::InitFromConfigFile. Problem reading decoding" << RESTendl;
-                        RESTFerr << "This error might need support at REST forum" << RESTendl;
+                        RESTError << "TRestDetectorReadout::InitFromConfigFile. Problem reading decoding" << RESTendl;
+                        RESTError << "This error might need support at REST forum" << RESTendl;
                         exit(-1);
                     }
                     // we skip blank daq channels if readout id is <0
@@ -552,7 +552,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
             }
 
             if (fDecoding && (unsigned int)fModuleDefinitions[mid].GetNumberOfChannels() != rChannel.size()) {
-                RESTFerr << "TRestDetectorReadout."
+                RESTError << "TRestDetectorReadout."
                      << " The number of channels defined in the readout is not the same"
                      << " as the number of channels found in the decoding." << RESTendl;
                 exit(1);
@@ -648,7 +648,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         }
 
         if (pixelIDVector.size() > 0 && pixelIDVector.size() != pixelVector.size()) {
-            RESTFerr << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
+            RESTError << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
                     "readout module definition!"
                  << RESTendl;
             exit(0);
@@ -666,7 +666,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         }
 
         if (channel.GetNumberOfPixels() != pixelVector.size()) {
-            RESTFerr << "pixel id definition may be wrong! check your "
+            RESTError << "pixel id definition may be wrong! check your "
                     "readout module definition!"
                  << RESTendl;
             exit(0);
@@ -678,11 +678,11 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     }
 
     if (channelIDVector.size() > 0 && channelIDVector.size() != channelVector.size()) {
-        RESTFerr << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
+        RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
              << "check your readout module definition!" << RESTendl;
-        RESTFerr << " " << RESTendl;
-        RESTFerr << "channelIDVector size : " << channelIDVector.size() << RESTendl;
-        RESTFerr << "channel vector size : " << channelVector.size() << RESTendl;
+        RESTError << " " << RESTendl;
+        RESTError << "channelIDVector size : " << channelIDVector.size() << RESTendl;
+        RESTError << "channel vector size : " << channelVector.size() << RESTendl;
 
         exit(0);
     }
@@ -699,11 +699,11 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     }
 
     if (module.GetNumberOfChannels() != channelVector.size()) {
-        RESTFerr << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
+        RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
              << "check your readout module definition!" << RESTendl;
-        RESTFerr << " " << RESTendl;
-        RESTFerr << "Module number of channels : " << module.GetNumberOfChannels() << RESTendl;
-        RESTFerr << "channel vector size : " << channelVector.size() << RESTendl;
+        RESTError << " " << RESTendl;
+        RESTError << "Module number of channels : " << module.GetNumberOfChannels() << RESTendl;
+        RESTError << "channel vector size : " << channelVector.size() << RESTendl;
 
         exit(0);
     }

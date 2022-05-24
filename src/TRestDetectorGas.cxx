@@ -330,8 +330,8 @@ void TRestDetectorGas::LoadGasFile() {
 #if defined USE_Garfield
     RESTDebug << "fGasFilename = " << fGasFilename << RESTendl;
     if (!TRestTools::fileExists((string)(fGasFilename))) {
-        RESTFerr << __PRETTY_FUNCTION__ << RESTendl;
-        RESTFerr << "The gas file does not exist. (name:" << fGasFilename << ")" << RESTendl;
+        RESTError << __PRETTY_FUNCTION__ << RESTendl;
+        RESTError << "The gas file does not exist. (name:" << fGasFilename << ")" << RESTendl;
         fStatus = RESTGAS_ERROR;
         return;
     }
@@ -538,7 +538,7 @@ void TRestDetectorGas::InitFromConfigFile() {
         }
     }
     if (fNofGases == 0) {
-        RESTFerr << "TRestDetectorGas: No gas components added!" << RESTendl;
+        RESTError << "TRestDetectorGas: No gas components added!" << RESTendl;
     }
     double sum = 0;
     for (int i = 0; i < fNofGases; i++) sum += GetGasComponentFraction(i);
@@ -668,8 +668,8 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
     a = system(cmd.c_str());
 
     if (a != 0) {
-        RESTFerr << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
-        RESTFerr << "-- Error : problem removing last line from " << fname << RESTendl;
+        RESTError << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTError << "-- Error : problem removing last line from " << fname << RESTendl;
         return;
     }
 

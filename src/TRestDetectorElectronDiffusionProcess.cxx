@@ -70,23 +70,23 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     if (fGas == nullptr) {
         if (fLonglDiffCoeff == -1 || fTransDiffCoeff == -1) {
             RESTWarning << "Gas has not been initialized" << RESTendl;
-            RESTFerr << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
+            RESTError << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
                     "file!"
                  << RESTendl;
             exit(-1);
         }
         if (fWvalue == -1) {
             RESTWarning << "Gas has not been initialized" << RESTendl;
-            RESTFerr << "TRestDetectorElectronDiffusionProcess: gas work function has not been defined in the "
+            RESTError << "TRestDetectorElectronDiffusionProcess: gas work function has not been defined in the "
                     "rml file!"
                  << RESTendl;
             exit(-1);
         }
     } else {
 #ifndef USE_Garfield
-        RESTFerr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+        RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << RESTendl;
-        RESTFerr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorElectronDiffusionProcess"
              << RESTendl;
         exit(1);

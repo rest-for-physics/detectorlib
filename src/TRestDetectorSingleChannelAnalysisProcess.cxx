@@ -66,20 +66,20 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
         if (fCalib != nullptr) {
             for (auto iter = fChannelGain.begin(); iter != fChannelGain.end(); iter++) {
                 if (fCalib->fChannelGain.count(iter->first) == 0) {
-                    RESTFerr << "in consistent gain mapping and readout definition!" << RESTendl;
-                    RESTFerr << "channel: " << iter->first << " not fount in mapping file!" << RESTendl;
+                    RESTError << "in consistent gain mapping and readout definition!" << RESTendl;
+                    RESTError << "channel: " << iter->first << " not fount in mapping file!" << RESTendl;
                     abort();
                 }
             }
 
         } else {
-            RESTFerr << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
             abort();
         }
     }
 
     if (GetFriend("TRestRawSignalAnalysisProcess") == nullptr) {
-        RESTFerr << "please add friend process TRestRawSignalAnalysisProcess and "
+        RESTError << "please add friend process TRestRawSignalAnalysisProcess and "
                 "TRestRawReadoutAnalysisProcess "
                 "and turn on all their observables!"
              << RESTendl;
@@ -313,7 +313,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitFromConfigFile() {
         fApplyGainCorrection = true;
         fSingleThreadOnly = false;
     } else {
-        RESTFerr << "illegal mode definition! supported: create, apply" << RESTendl;
+        RESTError << "illegal mode definition! supported: create, apply" << RESTendl;
         abort();
     }
 

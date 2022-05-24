@@ -173,9 +173,9 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != nullptr) {
 #ifndef USE_Garfield
-        RESTFerr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+        RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
              << RESTendl;
-        RESTFerr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorHitsToSignalProcess"
              << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
