@@ -176,11 +176,11 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas != nullptr) {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << endl;
-        ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+        RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+             << RESTendl;
+        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorSignalToHitsProcess"
-             << endl;
+             << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
         if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
@@ -218,8 +218,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
     fHitsEvent->SetTimeStamp(fSignalEvent->GetTimeStamp());
     fHitsEvent->SetSubEventTag(fSignalEvent->GetSubEventTag());
 
-    debug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << endl;
-    if (GetVerboseLevel() >= REST_Extreme) fSignalEvent->PrintEvent();
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << RESTendl;
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) fSignalEvent->PrintEvent();
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
 
@@ -230,7 +230,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         TRestDetectorSignal* sgnl = fSignalEvent->GetSignal(i);
         Int_t signalID = sgnl->GetSignalID();
 
-        if (GetVerboseLevel() >= REST_Debug)
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
             cout << "Searching readout coordinates for signal ID : " << signalID << endl;
 
         fReadout->GetPlaneModuleChannel(signalID, planeID, readoutModule, readoutChannel);
@@ -267,13 +267,13 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             Double_t time = sgnl->GetMaxPeakTime();
             Double_t distanceToPlane = time * fDriftVelocity;
 
-            if (GetVerboseLevel() >= REST_Debug) cout << "Distance to plane : " << distanceToPlane << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) cout << "Distance to plane : " << distanceToPlane << endl;
 
             Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
             Double_t energy = sgnl->GetMaxPeakValue();
 
-            if (GetVerboseLevel() >= REST_Debug)
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
 
@@ -307,7 +307,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
-            if (GetVerboseLevel() >= REST_Debug) {
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Distance to plane : " << distanceToPlane << endl;
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
@@ -331,14 +331,14 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
                 Double_t distanceToPlane = sgnl->GetTime(j) * fDriftVelocity;
 
-                if (GetVerboseLevel() >= REST_Debug) {
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     cout << "Time : " << sgnl->GetTime(j) << " Drift velocity : " << fDriftVelocity << endl;
                     cout << "Distance to plane : " << distanceToPlane << endl;
                 }
 
                 Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
-                if (GetVerboseLevel() >= REST_Debug)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
                     cout << "Adding hit. Time : " << sgnl->GetTime(j) << " x : " << x << " y : " << y
                          << " z : " << z << endl;
 
@@ -362,15 +362,15 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 Double_t time = index * fIntWindow + fIntWindow / 2.;
                 Double_t energy = pair.second / pair.first;
                 if (energy < fThreshold) continue;
-                debug << "TimeBin " << index << " Time " << time << " Charge: " << energy
-                      << " Thr: " << (fThreshold) << endl;
+                RESTDebug << "TimeBin " << index << " Time " << time << " Charge: " << energy
+                      << " Thr: " << (fThreshold) << RESTendl;
                 Double_t distanceToPlane = time * fDriftVelocity;
                 Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
-                debug << "Time : " << time << " Drift velocity : " << fDriftVelocity
-                      << "\nDistance to plane : " << distanceToPlane << endl;
-                debug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
-                      << " type " << type << endl;
+                RESTDebug << "Time : " << time << " Drift velocity : " << fDriftVelocity
+                      << "\nDistance to plane : " << distanceToPlane << RESTendl;
+                RESTDebug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                      << " type " << type << RESTendl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
@@ -380,12 +380,12 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         }
     }
 
-    debug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << endl;
-    debug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << endl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << RESTendl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << RESTendl;
 
-    if (this->GetVerboseLevel() == REST_Debug) {
+    if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         fHitsEvent->PrintEvent(30);
-    } else if (this->GetVerboseLevel() == REST_Extreme) {
+    } else if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
         fHitsEvent->PrintEvent(-1);
     }
 

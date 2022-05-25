@@ -81,13 +81,13 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
-        metadata << "Signal to hits method : " << fMethod << endl;
+        RESTMetadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << "Drift velocity : " << fDriftVelocity << " mm/us" << RESTendl;
+        RESTMetadata << "Signal to hits method : " << fMethod << RESTendl;
         if (fMethod == "intwindow") {
-            metadata << "Threshold : " << fThreshold << " ADC" << endl;
-            metadata << "Integral window : " << fIntWindow << " us" << endl;
+            RESTMetadata << "Threshold : " << fThreshold << " ADC" << RESTendl;
+            RESTMetadata << "Integral window : " << fIntWindow << " us" << RESTendl;
         }
 
         EndPrintProcess();

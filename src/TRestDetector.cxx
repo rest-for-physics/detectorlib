@@ -65,9 +65,9 @@ void TRestDetector::PrintMetadata() {
     for (int i = 0; i < cl.GetNumberOfDataMembers(); i++) {
         if (cl.GetDataMember(i).name == "fgIsA") continue;
         if (cl.GetDataMember(i).ToString() != "-1")
-            metadata << cl.GetDataMember(i).name << ": " << cl.GetDataMember(i).ToString() << endl;
+            RESTMetadata << cl.GetDataMember(i).name << ": " << cl.GetDataMember(i).ToString() << RESTendl;
     }
-    metadata << "---------------------------------------" << endl;
+    RESTMetadata << "---------------------------------------" << RESTendl;
 }
 
 void TRestDetector::UpdateMetadataMembers() {

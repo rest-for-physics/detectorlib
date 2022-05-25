@@ -69,26 +69,26 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas == nullptr) {
         if (fLonglDiffCoeff == -1 || fTransDiffCoeff == -1) {
-            warning << "Gas has not been initialized" << endl;
-            ferr << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
+            RESTWarning << "Gas has not been initialized" << RESTendl;
+            RESTError << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
                     "file!"
-                 << endl;
+                 << RESTendl;
             exit(-1);
         }
         if (fWvalue == -1) {
-            warning << "Gas has not been initialized" << endl;
-            ferr << "TRestDetectorElectronDiffusionProcess: gas work function has not been defined in the "
+            RESTWarning << "Gas has not been initialized" << RESTendl;
+            RESTError << "TRestDetectorElectronDiffusionProcess: gas work function has not been defined in the "
                     "rml file!"
-                 << endl;
+                 << RESTendl;
             exit(-1);
         }
     } else {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << endl;
-        ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+        RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+             << RESTendl;
+        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                 "TRestDetectorElectronDiffusionProcess"
-             << endl;
+             << RESTendl;
         exit(1);
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
@@ -183,13 +183,13 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                             zDiff = z + fRandom->Gaus(0, longHitDiffusion);
 
                             if (fUnitElectronEnergy) {
-                                if (GetVerboseLevel() >= REST_Extreme)
+                                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
                                     cout << "Adding hit. x : " << xDiff << " y : " << yDiff
                                          << " z : " << zDiff << " (unit energy)" << endl;
                                 fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, hits->GetTime(n),
                                                          hits->GetType(n));
                             } else {
-                                if (GetVerboseLevel() >= REST_Extreme)
+                                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
                                     cout << "Adding hit. x : " << xDiff << " y : " << yDiff
                                          << " z : " << zDiff
                                          << " en : " << localWValue * REST_Units::keV / REST_Units::eV
@@ -205,14 +205,14 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         }
     }
 
-    if (this->GetVerboseLevel() >= REST_Debug) {
+    if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : " << fInputHitsEvent->GetEnergy()
              << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
              << endl;
-        if (GetVerboseLevel() >= REST_Extreme) GetChar();
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
     }
 
     return fOutputHitsEvent;
@@ -236,16 +236,16 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fLonglDiffCoeff == -1)
         fLonglDiffCoeff = StringToDouble(GetParameter("longDiff", "-1"));
     else {
-        warning << "longitudinalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << endl;
-        warning << " Please use the shorter form of this parameter : longDiff" << endl;
+        RESTWarning << "longitudinalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << " Please use the shorter form of this parameter : longDiff" << RESTendl;
     }
 
     fTransDiffCoeff = StringToDouble(GetParameter("transversalDiffusionCoefficient", "-1"));
     if (fTransDiffCoeff == -1)
         fTransDiffCoeff = StringToDouble(GetParameter("transDiff", "-1"));
     else {
-        warning << "transversalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << endl;
-        warning << " Please use the shorter form of this parameter : transDiff" << endl;
+        RESTWarning << "transversalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << " Please use the shorter form of this parameter : transDiff" << RESTendl;
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
     fSeed = StringToDouble(GetParameter("seed", "0"));

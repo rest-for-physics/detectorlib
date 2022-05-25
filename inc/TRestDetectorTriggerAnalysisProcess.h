@@ -66,8 +66,8 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Sampling : " << fSampling << " us" << endl;
-        metadata << "ADC length : " << fADCLength << endl;
+        RESTMetadata << "Sampling : " << fSampling << " us" << RESTendl;
+        RESTMetadata << "ADC length : " << fADCLength << RESTendl;
 
         EndPrintProcess();
     }

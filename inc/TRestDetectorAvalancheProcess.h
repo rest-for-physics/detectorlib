@@ -51,9 +51,9 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " reference energy (Eref): " << fEnergyRef << endl;
-        metadata << " resolution at Eref : " << fResolutionAtEref << endl;
-        metadata << " detector gain : " << fDetectorGain << endl;
+        RESTMetadata << " reference energy (Eref): " << fEnergyRef << RESTendl;
+        RESTMetadata << " resolution at Eref : " << fResolutionAtEref << RESTendl;
+        RESTMetadata << " detector gain : " << fDetectorGain << RESTendl;
 
         EndPrintProcess();
     }

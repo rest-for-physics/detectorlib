@@ -153,14 +153,14 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     fGeometry->DefaultColors();
     //         fGeometry->UpdateElements();
 
-    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : " << this->GetVerboseLevel() << endl;
+    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : " << static_cast<int>(this->GetVerboseLevel()) << endl;
 
     // analyze GDML geometry to find major elements (gas volume, electrodes,
     // readout)
     TObjArray* thenodes = geovol->GetNodes();
     for (TIter it = thenodes->begin(); it != thenodes->end(); ++it) {
         TGeoNode* itnode = (TGeoNode*)(*it);
-        if (GetVerboseLevel() >= REST_Info) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
             cout << "****** itnode " << itnode->GetName() << endl;
             itnode->PrintCandidates();
         }
@@ -168,7 +168,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         itnode->PrintCandidates();
 
         TGeoVolume* itvol = itnode->GetVolume();
-        if (GetVerboseLevel() >= REST_Info) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
             cout << "  *  *  itvolume " << itvol->GetName() << endl;
             itvol->Print();
         }
@@ -176,12 +176,12 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         itvol->Print();
 
         TGeoMedium* itmed = itvol->GetMedium();
-        if (GetVerboseLevel() >= REST_Info) cout << "  *  *  itmed " << itmed->GetName() << endl;
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  *  *  itmed " << itmed->GetName() << endl;
 
         // gas volume
         if (fGas->GetGDMLMaterialRef() == itmed->GetName()) {
             fGeometry->SetGfGeoMedium(itmed->GetName(), fGas);
-            if (GetVerboseLevel() >= REST_Info) {
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
                 cout << "  -> gas volume   SetMedium itmed " << itmed->GetName() << "  fGas "
                      << fGas->GetGasMedium()->GetName() << endl;
                 fGas->GetGasMedium()->PrintGas();
@@ -195,14 +195,14 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         if ((strncmp(itvol->GetName(), "anodeVol", 8) == 0) ||
             (strncmp(itvol->GetName(), "cathodeVol", 10) == 0)) {
             fGeometry->SetDriftElecNode(itnode);
-            if (GetVerboseLevel() >= REST_Info) cout << "  -> cathode volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  -> cathode volume " << endl;
             cout << "  -> cathode volume " << endl;
         }
 
         // micromegas readout electrode
         if ((strncmp(itvol->GetName(), "micromegasVol", 13) == 0)) {
             fGeometry->AddReadoutElecNode(itnode);
-            if (GetVerboseLevel() >= REST_Info) cout << "  -> readout volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  -> readout volume " << endl;
             cout << "  -> readout volume " << endl;
         }
     }
@@ -342,7 +342,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
     double xi, yi, zi, ti, xf, yf, zf, tf, energyf;
     int status;
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fInputHitsEvent->GetNumberOfHits() << endl;
         cout << "--------------------------" << endl;
         fInputHitsEvent->PrintEvent(20);
@@ -412,7 +412,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
 
     // fSignalEvent->PrintEvent();
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
@@ -425,7 +425,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
 #else
     fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
-    debug << "nullptr process" << endl;
+    RESTDebug << "nullptr process" << RESTendl;
     return inputEvent;
 
 #endif

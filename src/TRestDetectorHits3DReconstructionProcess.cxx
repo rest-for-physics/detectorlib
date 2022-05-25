@@ -254,12 +254,12 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
         }
 
         if (stripehits.size() > 50) {
-            warning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
-                    << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")" << endl;
+            RESTWarning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
+                    << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")" << RESTendl;
             continue;
         }
 
-        if (fVerboseLevel >= REST_Extreme) {
+        if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
             cout << "stripehits: ";
             for (auto h : stripehits) {
                 cout << h.x1 << "," << h.y1 << "," << h.x2 << "," << h.y2 << "," << h.e << " ";
@@ -374,7 +374,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 H_PosE.insert(H_PosE.begin(), {(*H_PosE.begin()).first - 1, 0});
                 H_PosE.insert(H_PosE.end(), {(*(H_PosE.end() - 1)).first + 1, 0});
 
-                if (fVerboseLevel >= REST_Extreme) {
+                if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "V: ";
                     for (auto pose : V_PosE) {
                         cout << pose.first << "," << pose.second << " ";
@@ -403,7 +403,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                     }
                 }
 
-                if (fVerboseLevel >= REST_Debug) {
+                if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     cout << i << " z: " << z << " " << Vsegs << " " << Hsegs << " -> "
                          << LogAmbiguity(Vsegs, Hsegs) << endl;
                     cout << endl;

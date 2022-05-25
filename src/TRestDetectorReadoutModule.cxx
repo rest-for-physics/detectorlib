@@ -150,10 +150,10 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 
                 Int_t tempCh = fMapping.GetChannelByNode(nodeX, nodeY);
                 Int_t tempPix = fMapping.GetPixelByNode(nodeX, nodeY);
-                warning << "Already associated channel : " << tempCh << " pixel : " << tempPix << endl;
+                RESTWarning << "Already associated channel : " << tempCh << " pixel : " << tempPix << RESTendl;
                 Double_t xP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().X();
                 Double_t yP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().Y();
-                warning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << endl;
+                RESTWarning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << RESTendl;
                 cout << endl;
 
                 cout << "Increasing the number of mapping of nodes may solve this issue." << endl;
@@ -291,8 +291,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
         pixel = fMapping.GetPixelByNode(nodeX, nodeY);
 
         if (count > totalNodes / 10) {
-            warning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x << ","
-                    << y << ") in internal module coordinates" << endl;
+            RESTWarning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x << ","
+                    << y << ") in internal module coordinates" << RESTendl;
 
             for (int ch = 0; ch < GetNumberOfChannels(); ch++)
                 for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++)
@@ -535,15 +535,15 @@ void TRestDetectorReadoutModule::Draw() {}
 ///
 void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
-        metadata << "-- Readout module : " << GetModuleID() << endl;
-        metadata << "----------------------------------------------------------------" << endl;
-        metadata << "-- Origin position : X = " << fModuleOriginX << " mm "
-                 << " Y : " << fModuleOriginY << " mm" << endl;
-        metadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << endl;
-        metadata << "-- Rotation : " << fModuleRotation << " degrees" << endl;
-        metadata << "-- Total channels : " << GetNumberOfChannels() << endl;
-        metadata << "-- Tolerance : " << fTolerance << endl;
-        metadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+        RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
+        RESTMetadata << "----------------------------------------------------------------" << RESTendl;
+        RESTMetadata << "-- Origin position : X = " << fModuleOriginX << " mm "
+                 << " Y : " << fModuleOriginY << " mm" << RESTendl;
+        RESTMetadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << RESTendl;
+        RESTMetadata << "-- Rotation : " << fModuleRotation << " degrees" << RESTendl;
+        RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
+        RESTMetadata << "-- Tolerance : " << fTolerance << RESTendl;
+        RESTMetadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
         for (int n = 0; n < GetNumberOfChannels(); n++) fReadoutChannel[n].Print(DetailLevel - 1);
     }

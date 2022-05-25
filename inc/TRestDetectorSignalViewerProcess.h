@@ -54,7 +54,7 @@ class TRestDetectorSignalViewerProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        std::cout << "Refresh value : " << fDrawRefresh << endl;
+        std::cout << "Refresh value : " << fDrawRefresh << std::endl;
 
         EndPrintProcess();
     }

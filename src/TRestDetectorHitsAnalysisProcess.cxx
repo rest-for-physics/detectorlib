@@ -320,7 +320,7 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
     SetObservableValue("xySkew", skewXY);
     SetObservableValue("zSkew", skewZ);
 
-    if (GetVerboseLevel() >= REST_Extreme) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
         fOutputHitsEvent->PrintEvent(1000);
         GetChar();
     }

@@ -43,7 +43,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fReadout == nullptr) {
         if (fCreateGainMap) {
-            ferr << "You must set a TRestDetectorReadout metadata object to create gain map!" << endl;
+            RESTError << "You must set a TRestDetectorReadout metadata object to create gain map!" << RESTendl;
             abort();
         }
     } else {
@@ -57,7 +57,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
 
     if (fApplyGainCorrection) {
         if (fCalib == nullptr || fCalib->f2DGainMapping == nullptr) {
-            ferr << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << endl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
             abort();
         }
     }
@@ -190,7 +190,7 @@ void TRestDetectorPositionMappingProcess::InitFromConfigFile() {
         fApplyGainCorrection = true;
         fSingleThreadOnly = false;
     } else {
-        ferr << "illegal mode definition! supported: create, apply" << endl;
+        RESTError << "illegal mode definition! supported: create, apply" << RESTendl;
         abort();
     }
 

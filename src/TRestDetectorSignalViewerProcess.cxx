@@ -81,7 +81,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
     if (eveCounter >= fDrawRefresh) {
         eveCounter = 0;
         sgnCounter = 0;
-        if (GetVerboseLevel() >= REST_Debug) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
             GetAnalysisTree()->PrintObservables();
         }
         for (auto object : fDrawingObjects) {
@@ -95,11 +95,11 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
         pad2->Draw();
         fCanvas->Update();
 
-        fout.setborder("");
-        fout.setorientation(1);
-        fout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
+        RESTcout.setborder("");
+        RESTcout.setorientation(TRestStringOutput::REST_Display_Orientation::kLeft);
+        RESTcout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
                 "switch signals"
-             << endl;
+             << RESTendl;
 
         while (true) {
             int a = GetChar("");
@@ -121,7 +121,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
                     pad2->Draw();
                     fCanvas->Update();
                 } else {
-                    warning << "cannot plot signal with id " << sgnCounter << endl;
+                    RESTWarning << "cannot plot signal with id " << sgnCounter << RESTendl;
                 }
             } else if (a == 112 || a == 80)  // p
             {
@@ -132,7 +132,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
                     pad2->Draw();
                     fCanvas->Update();
                 } else {
-                    warning << "cannot plot signal with id " << sgnCounter << endl;
+                    RESTWarning << "cannot plot signal with id " << sgnCounter << RESTendl;
                 }
             }
             while (getchar() != '\n')

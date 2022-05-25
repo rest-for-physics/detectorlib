@@ -50,13 +50,13 @@ void TRestDetectorDriftVolume::InitFromConfigFile() {
 void TRestDetectorDriftVolume::PrintMetadata() {
     TRestMetadata::PrintMetadata();
 
-    metadata << "Drift Volume Material : " << fMaterial << ", W-value : " << fW << " eV" << endl;
-    metadata << "Electric Field : " << fElectricField * V / cm << " V/cm " << endl;
-    metadata << "Drift Speed : " << fDriftVelocity * mm / us << " mm/us" << endl;
-    metadata << "Electron LifeTime : " << fElectronLifeTime * ns << " ns" << endl;
-    metadata << "Longitudinal Diffusion : " << fLongitudinalDiffusion << " (cm)^1/2" << endl;
-    metadata << "Transversal Diffusion : " << fTransversalDiffusion << " (cm)^1/2" << endl;
-    metadata << "******************************************" << endl;
-    metadata << endl;
-    metadata << endl;
+    RESTMetadata << "Drift Volume Material : " << fMaterial << ", W-value : " << fW << " eV" << RESTendl;
+    RESTMetadata << "Electric Field : " << fElectricField * V / cm << " V/cm " << RESTendl;
+    RESTMetadata << "Drift Speed : " << fDriftVelocity * mm / us << " mm/us" << RESTendl;
+    RESTMetadata << "Electron LifeTime : " << fElectronLifeTime * ns << " ns" << RESTendl;
+    RESTMetadata << "Longitudinal Diffusion : " << fLongitudinalDiffusion << " (cm)^1/2" << RESTendl;
+    RESTMetadata << "Transversal Diffusion : " << fTransversalDiffusion << " (cm)^1/2" << RESTendl;
+    RESTMetadata << "******************************************" << RESTendl;
+    RESTMetadata << RESTendl;
+    RESTMetadata << RESTendl;
 }

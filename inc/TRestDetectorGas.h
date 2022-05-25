@@ -164,7 +164,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     inline TString GetGasComponentName(Int_t n) {
         if (n >= GetNofGases()) {
             std::cout << "REST WARNING. Gas name component n=" << n << " requested. But only "
-                      << GetNofGases() << " component(s) in the mixture." << endl;
+                      << GetNofGases() << " component(s) in the mixture." << std::endl;
             return "";
         }
         return fGasComponentName[n];
@@ -174,9 +174,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     Double_t GetDriftVelocity() const override {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << endl;
-            warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
-                    << endl;
+            RESTWarning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << RESTendl;
+            RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
+                    << RESTendl;
         }
         return GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us");
     }  // in standard unit mm/us
@@ -184,9 +184,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the longitudinal diffusion in (cm)^1/2
     Double_t GetLongitudinalDiffusion() const override {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << endl;
-            warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
-                    << endl;
+            RESTWarning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!" << RESTendl;
+            RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
+                    << RESTendl;
         }
         return GetLongitudinalDiffusion(fElectricField * units("V/cm"));
     }
@@ -194,27 +194,27 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     /// Returns the transversal diffusion in (cm)^1/2
     Double_t GetTransversalDiffusion() const override {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << endl;
-            warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
-                    << endl;
+            RESTWarning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!" << RESTendl;
+            RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
+                    << RESTendl;
         }
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
     }
 
     Double_t GetTownsendCoefficient() const override {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!" << endl;
-            warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
-                    << endl;
+            RESTWarning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!" << RESTendl;
+            RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
+                    << RESTendl;
         }
         return GetTownsendCoefficient(fElectricField * units("V/cm"));
     }
 
     Double_t GetAttachmentCoefficient() const override {
         if (fElectricField == 0) {
-            warning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!" << endl;
-            warning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
-                    << endl;
+            RESTWarning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!" << RESTendl;
+            RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
+                    << RESTendl;
         }
         return GetAttachmentCoefficient(fElectricField * units("V/cm"));
     }
@@ -225,7 +225,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     inline Double_t GetGasComponentFraction(Int_t n) {
         if (n >= GetNofGases()) {
             std::cout << "REST WARNING. Gas fraction for component n=" << n << " requested. But only "
-                      << GetNofGases() << " component(s) in the mixture." << endl;
+                      << GetNofGases() << " component(s) in the mixture." << std::endl;
             return 0.;
         }
 
@@ -251,7 +251,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps);
     void PrintGasInfo();
-    inline void PrintGasFileContent() { std::cout << fGasFileContent << endl; };
+    inline void PrintGasFileContent() { std::cout << fGasFileContent << std::endl; };
 
     /// Prints the metadata information from the gas
     void PrintMetadata() override { PrintGasInfo(); }
