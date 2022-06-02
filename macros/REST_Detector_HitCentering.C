@@ -32,13 +32,15 @@
 //*******************************************************************************************************
 
 Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int startVal = -30, int endVal = 30,
-                                 int bins = 120, int n1 = 0, int n2 = 60000, double invalidVal = -0.125) {
+                                 int bins = 120, int n1 = 0, int n2 = 3000, double invalidValX = 0.125,
+                                 double invalidValY = 0.0625) {
     TRestStringOutput RESTLog;
 
     std::vector<string> inputFilesNew = TRestTools::GetFilesMatchingPattern((string)rootFileName);
 
     TH1D* hX = new TH1D(histoName + "X", histoName + "X", bins, startVal, endVal);
     TH1D* hY = new TH1D(histoName + "Y", histoName + "Y", bins, startVal, endVal);
+    TH1D* hZ = new TH1D(histoName + "Z", histoName + "Z", bins, startVal, endVal);
 
     if (inputFilesNew.size() == 0) {
         RESTLog << "Files not found!" << RESTendl;
@@ -65,9 +67,12 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
                 Double_t meanX = ev->GetMeanPosition().X();
                 Double_t valY = ev->GetY(n);
                 Double_t meanY = ev->GetMeanPosition().Y();
+                Double_t valZ = ev->GetZ(n);
+                Double_t meanZ = ev->GetMeanPosition().Z();
 
-                if (valX != invalidVal) hX->Fill(valX - meanX, en);
-                if (valY != invalidVal) hY->Fill(valY - meanY, en);
+                if (valX != invalidValX) hX->Fill(valX - meanX, en);
+                if (valY != invalidValY) hY->Fill(valY - meanY, en);
+                hZ->Fill(valZ - meanZ, en);
             }
         }
 
@@ -79,9 +84,9 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
     TFile* f = new TFile(rootFileName, "update");
     hX->Write(histoName + "X");
     hY->Write(histoName + "Y");
+    hZ->Write(histoName + "Z");
     f->Close();
-
-    RESTLog << "Written histograms " << histoName << "X/Y into " << rootFileName << RESTendl;
+    RESTLog << "Written histograms " << histoName << "X/Y/Z into " << rootFileName << RESTendl;
 
     return 0;
 };
