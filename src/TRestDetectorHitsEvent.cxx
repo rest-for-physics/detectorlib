@@ -681,9 +681,9 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
         fYZHitGraph = nullptr;
     }
 
-    Double_t xz[2][this->GetNumberOfHits()];
-    Double_t yz[2][this->GetNumberOfHits()];
-    Double_t xy[2][this->GetNumberOfHits()];
+    vector<vector<Double_t>> xz(2, vector<Double_t>(this->GetNumberOfHits()));
+    vector<vector<Double_t>> yz(2, vector<Double_t>(this->GetNumberOfHits()));
+    vector<vector<Double_t>> xy(2, vector<Double_t>(this->GetNumberOfHits()));
 
     /* {{{ Creating xz, yz, and xy arrays and initializing graphs */
     Int_t nXZ = 0;
@@ -715,17 +715,17 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
         }
     }
 
-    fXZHitGraph = new TGraph(nXZ, xz[0], xz[1]);
+    fXZHitGraph = new TGraph(nXZ, &xz[0][0], &xz[1][0]);
     fXZHitGraph->SetMarkerColor(kBlue);
     fXZHitGraph->SetMarkerSize(0.3);
     fXZHitGraph->SetMarkerStyle(20);
 
-    fYZHitGraph = new TGraph(nYZ, yz[0], yz[1]);
+    fYZHitGraph = new TGraph(nYZ, &yz[0][0], &yz[1][0]);
     fYZHitGraph->SetMarkerColor(kRed);
     fYZHitGraph->SetMarkerSize(0.3);
     fYZHitGraph->SetMarkerStyle(20);
 
-    fXYHitGraph = new TGraph(nXY, xy[0], xy[1]);
+    fXYHitGraph = new TGraph(nXY, &xy[0][0], &xy[1][0]);
     fXYHitGraph->SetMarkerColor(kBlack);
     fXYHitGraph->SetMarkerSize(0.3);
     fXYHitGraph->SetMarkerStyle(20);
