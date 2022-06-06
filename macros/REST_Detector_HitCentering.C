@@ -28,12 +28,11 @@
 //*** and others can be estimated.
 //*** --------------
 //*** Usage: restManager HitCentering /full/path/file.root [histoName] [firstBin] [lastBin]
-//*** [#bins] [firstEvent] [lastEvent] [invalidVal]
+//*** [#bins] [firstEvent] [lastEvent]
 //*******************************************************************************************************
 
 Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int startVal = -30, int endVal = 30,
-                                 int bins = 120, int n1 = 0, int n2 = 3000, double invalidValX = 0.125,
-                                 double invalidValY = 0.0625) {
+                                 int bins = 120, int n1 = 0, int n2 = 3000) {
     TRestStringOutput RESTLog;
 
     std::vector<string> inputFilesNew = TRestTools::GetFilesMatchingPattern((string)rootFileName);
@@ -70,9 +69,13 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
                 Double_t valZ = ev->GetZ(n);
                 Double_t meanZ = ev->GetMeanPosition().Z();
 
-                if (valX != invalidValX) hX->Fill(valX - meanX, en);
-                if (valY != invalidValY) hY->Fill(valY - meanY, en);
-                hZ->Fill(valZ - meanZ, en);
+                if (ev->GetType(n) == XZ) {
+                    hX->Fill(valX - meanX, en);
+                    hZ->Fill(valZ - meanZ, en);
+                } else if (ev->GetType(n) == YZ) {
+                    hY->Fill(valY - meanY, en);
+                    hZ->Fill(valZ - meanZ, en);
+                }
             }
         }
 
