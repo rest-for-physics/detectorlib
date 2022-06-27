@@ -13,32 +13,28 @@
 
 //*******************************************************************************************************
 //*** Description: This macro reads each hits event inside the file.root given by argument and centers it
-//*** around 0 by subtracting the mean event position to each individual hit position. It creates two
-//*** histograms including events n1 to n2 and stores it in file.root. One for the XZ events (with an 'X'
-//*** suffix) and one for YZ events (with a 'Y' suffix).
-//*** The given number of bins and bin range will be applied to both histograms.
-//***
-//*** Hits will only be added to the histograms, iff they have a valid coordinate. That is if their
-//*** coordinate is unequal to `invalidVal`. The default value of -0.125 corresponds to an invalid
-//*** coordinate for the IAXO/CAST readout.
-//*** Each hit only has one coordinate that is valid (either X or Y) while the other is `invalidVal`,
-//*** even if two strips are produced from one physical event.
+//*** around 0 by subtracting the mean event position to each individual hit position. It creates three
+//*** histograms including events n1 to n2 and stores them in file.root. One is for the x values in XZ
+//*** events (with an 'X' suffix), one for the y values in YZ events (with a 'Y' suffix), and one for the
+//*** z values in both XZ and YZ events.
+//*** The given number of bins and bin range will be applied to all the histograms.
 //*** --------------
 //*** The output histograms show the standard shape of the hits events, so their symmetry, gaussianity
 //*** and others can be estimated.
 //*** --------------
 //*** Usage: restManager HitCentering /full/path/file.root [histoName] [firstBin] [lastBin]
-//*** [#bins] [firstEvent] [lastEvent] [invalidVal]
+//*** [#bins] [firstEvent] [lastEvent]
 //*******************************************************************************************************
 
 Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int startVal = -30, int endVal = 30,
-                                 int bins = 120, int n1 = 0, int n2 = 60000, double invalidVal = -0.125) {
+                                 int bins = 120, int n1 = 0, int n2 = 3000) {
     TRestStringOutput RESTLog;
 
     std::vector<string> inputFilesNew = TRestTools::GetFilesMatchingPattern((string)rootFileName);
 
     TH1D* hX = new TH1D(histoName + "X", histoName + "X", bins, startVal, endVal);
     TH1D* hY = new TH1D(histoName + "Y", histoName + "Y", bins, startVal, endVal);
+    TH1D* hZ = new TH1D(histoName + "Z", histoName + "Z", bins, startVal, endVal);
 
     if (inputFilesNew.size() == 0) {
         RESTLog << "Files not found!" << RESTendl;
@@ -65,9 +61,16 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
                 Double_t meanX = ev->GetMeanPosition().X();
                 Double_t valY = ev->GetY(n);
                 Double_t meanY = ev->GetMeanPosition().Y();
+                Double_t valZ = ev->GetZ(n);
+                Double_t meanZ = ev->GetMeanPosition().Z();
 
-                if (valX != invalidVal) hX->Fill(valX - meanX, en);
-                if (valY != invalidVal) hY->Fill(valY - meanY, en);
+                if (ev->GetType(n) == XZ) {
+                    hX->Fill(valX - meanX, en);
+                    hZ->Fill(valZ - meanZ, en);
+                } else if (ev->GetType(n) == YZ) {
+                    hY->Fill(valY - meanY, en);
+                    hZ->Fill(valZ - meanZ, en);
+                }
             }
         }
 
@@ -79,9 +82,9 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
     TFile* f = new TFile(rootFileName, "update");
     hX->Write(histoName + "X");
     hY->Write(histoName + "Y");
+    hZ->Write(histoName + "Z");
     f->Close();
-
-    RESTLog << "Written histograms " << histoName << "X/Y into " << rootFileName << RESTendl;
+    RESTLog << "Written histograms " << histoName << "X/Y/Z into " << rootFileName << RESTendl;
 
     return 0;
 };
