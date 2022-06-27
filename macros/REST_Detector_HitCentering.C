@@ -13,16 +13,11 @@
 
 //*******************************************************************************************************
 //*** Description: This macro reads each hits event inside the file.root given by argument and centers it
-//*** around 0 by subtracting the mean event position to each individual hit position. It creates two
-//*** histograms including events n1 to n2 and stores it in file.root. One for the XZ events (with an 'X'
-//*** suffix) and one for YZ events (with a 'Y' suffix).
-//*** The given number of bins and bin range will be applied to both histograms.
-//***
-//*** Hits will only be added to the histograms, iff they have a valid coordinate. That is if their
-//*** coordinate is unequal to `invalidVal`. The default value of -0.125 corresponds to an invalid
-//*** coordinate for the IAXO/CAST readout.
-//*** Each hit only has one coordinate that is valid (either X or Y) while the other is `invalidVal`,
-//*** even if two strips are produced from one physical event.
+//*** around 0 by subtracting the mean event position to each individual hit position. It creates three
+//*** histograms including events n1 to n2 and stores them in file.root. One is for the x values in XZ
+//*** events (with an 'X' suffix), one for the y values in YZ events (with a 'Y' suffix), and one for the
+//*** z values in both XZ and YZ events.
+//*** The given number of bins and bin range will be applied to all the histograms.
 //*** --------------
 //*** The output histograms show the standard shape of the hits events, so their symmetry, gaussianity
 //*** and others can be estimated.
