@@ -60,7 +60,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     Double_t fDriftVelocity = -1;
 
     /// The method used to transform the signal points to hits.
-    TString fMethod = "tripleMax";
+    TString fMethod = "tripleMaxAverage";
 
     // Time window to integrate in case intwindow method is requested, units (us)
     Double_t fIntWindow = 5;

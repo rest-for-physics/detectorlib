@@ -70,16 +70,16 @@
 /// the point at the maximum amplitude of each TRestSignal found inside the
 /// TRestDetectorSignalEvent. The Z-coordinate will be directly connected
 /// with the time position at the maximum amplitude of the signal.
-/// * **tripleMax(default)**: It will transport to the
+/// * **tripleMax**: It will transport to the
 /// TRestDetectorHitsProcess only the three points with higher amplitude of
 /// each TRestSignal found inside the TRestDetectorSignalEvent. In practice
 /// this is very similar to *onlyMax*, but the effective energy is smoothed
 /// by including two additional points.
-/// * **tripleMaxAverage**: It will transport to the
+/// * **tripleMaxAverage(default)**: It will transport to the
 /// TRestDetectorHitsProcess the average of the three points with higher
 /// amplitude of each TRestSignal found inside the TRestDetectorSignalEvent.
 /// In practice this is very similar to *onlyMax*, but the effective energy
-/// is smoothed by including two additional points.Another advantage is that
+/// is smoothed by including two additional points. Another advantage is that
 /// it avoids tripling (x3) the number of hits compared to *tripleMax*.
 /// * **qCenter**: It will consider the shape of the signal to determine the
 /// the time used to transform to a Z-coordinate. The energy is also
