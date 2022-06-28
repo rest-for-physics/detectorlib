@@ -75,6 +75,12 @@
 /// each TRestSignal found inside the TRestDetectorSignalEvent. In practice
 /// this is very similar to *onlyMax*, but the effective energy is smoothed
 /// by including two additional points.
+/// * **tripleMaxAverage**: It will transport to the
+/// TRestDetectorHitsProcess the average of the three points with higher
+/// amplitude of each TRestSignal found inside the TRestDetectorSignalEvent.
+/// In practice this is very similar to *onlyMax*, but the effective energy
+/// is smoothed by including two additional points.Another advantage is that
+/// it avoids tripling (x3) the number of hits compared to *tripleMax*.
 /// * **qCenter**: It will consider the shape of the signal to determine the
 /// the time used to transform to a Z-coordinate. The energy is also
 /// averaged on all points (Perhaps this is not the most appropiate?).
@@ -177,10 +183,11 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
     if (fGas != nullptr) {
 #ifndef USE_Garfield
         RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << RESTendl;
-        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
-                "TRestDetectorSignalToHitsProcess"
-             << RESTendl;
+                  << RESTendl;
+        RESTError
+            << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+               "TRestDetectorSignalToHitsProcess"
+            << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
         if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
@@ -267,7 +274,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             Double_t time = sgnl->GetMaxPeakTime();
             Double_t distanceToPlane = time * fDriftVelocity;
 
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) cout << "Distance to plane : " << distanceToPlane << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                cout << "Distance to plane : " << distanceToPlane << endl;
 
             Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
@@ -312,6 +320,40 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
+        } else if (fMethod == "tripleMaxAverage") {
+            Int_t bin = sgnl->GetMaxIndex();
+            int binprev = (bin - 1) < 0 ? bin : bin - 1;
+            int binnext = (bin + 1) > sgnl->GetNumberOfPoints() - 1 ? bin : bin + 1;
+
+            Double_t time = sgnl->GetTime(bin);
+            Double_t energy1 = sgnl->GetData(bin);
+
+            Double_t distanceToPlane = time * fDriftVelocity;
+            Double_t z1 = zPosition + fieldZDirection * distanceToPlane;
+
+            time = sgnl->GetTime(binprev);
+            Double_t energy2 = sgnl->GetData(binprev);
+
+            distanceToPlane = time * fDriftVelocity;
+            Double_t z2 = zPosition + fieldZDirection * distanceToPlane;
+
+            time = sgnl->GetTime(binnext);
+            Double_t energy3 = sgnl->GetData(binnext);
+
+            distanceToPlane = time * fDriftVelocity;
+            Double_t z3 = zPosition + fieldZDirection * distanceToPlane;
+
+            Double_t zAvg = (z1 + z2 + z3) / 3.0;
+            Double_t eAvg = (energy1 + energy2 + energy3) / 3.0;
+
+            fHitsEvent->AddHit(x, y, zAvg, eAvg, 0, type);
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                cout << "Distance to plane : " << distanceToPlane << endl;
+                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
+                     << " Energy : " << eAvg << endl;
+            }
+
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;
@@ -363,14 +405,14 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 Double_t energy = pair.second / pair.first;
                 if (energy < fThreshold) continue;
                 RESTDebug << "TimeBin " << index << " Time " << time << " Charge: " << energy
-                      << " Thr: " << (fThreshold) << RESTendl;
+                          << " Thr: " << (fThreshold) << RESTendl;
                 Double_t distanceToPlane = time * fDriftVelocity;
                 Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
                 RESTDebug << "Time : " << time << " Drift velocity : " << fDriftVelocity
-                      << "\nDistance to plane : " << distanceToPlane << RESTendl;
+                          << "\nDistance to plane : " << distanceToPlane << RESTendl;
                 RESTDebug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
-                      << " type " << type << RESTendl;
+                          << " type " << type << RESTendl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
@@ -380,8 +422,10 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         }
     }
 
-    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << RESTendl;
-    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << RESTendl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits()
+              << RESTendl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy()
+              << RESTendl;
 
     if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         fHitsEvent->PrintEvent(30);
