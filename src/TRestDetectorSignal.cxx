@@ -28,8 +28,10 @@
 using namespace std;
 
 #include <TF1.h>
+#include <TH1.h>
 #include <TMath.h>
 #include <TRandom3.h>
+#include "TCanvas.h"  // (Elisa)
 
 ClassImp(TRestDetectorSignal);
 
@@ -249,6 +251,82 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
     }
 
     return index;
+}
+
+// (Elisa) z position by gaussian fit
+
+TVector2
+TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak (bin units) and the energy
+{
+    Int_t maxRaw = GetMaxIndex();              // The bin where the maximum of the raw signal is found
+    Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
+    Int_t index = 0;
+    Double_t energy = 0, time = 0;
+    Double_t w = 0;
+
+    // cout << " ------------------- event ID: " << GetID() << endl;
+    // cout << "maxRaw = " << maxRaw << endl;
+
+    TF1* gaus = new TF1("gaus", "gaus", maxRaw - 12, maxRaw + 15);  // The max of the signal is ~40 bins wide
+    TH1F* h1 = new TH1F("h1", "h1", 512, 0, 511);                   // Histogram to store the signal
+
+    // copying the signal peak to a histogram
+    // for( int i = maxRaw - 20; i < maxRaw + 20; i++ )
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        w = GetData(i);
+        h1->Fill(i, w);
+    }
+
+    // TCanvas *c = new TCanvas("c","signal fit",200,10,1280,720);
+    // h1->Draw();
+
+    h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+
+    // c->Update();
+
+    // cout << " fit parameters = "<< gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || " <<
+    // gaus->GetParameter(2) << " || "<<endl; cout << "GetMaxIndex" << maxRaw << " GetMaxPeakValue = " <<
+    // maxRawValue << endl; getchar();
+
+    if (!TMath::IsNaN(gaus->GetParameter(0)) && !TMath::IsNaN(gaus->GetParameter(1)) &&
+        gaus->GetParameter(1) > 0.0) {
+        energy = gaus->GetParameter(0);
+        index = (int)gaus->GetParameter(1);
+        // time = GetTime(index);
+        time = gaus->GetParameter(1);
+        // cout << " max fit = " << index << endl;
+    }
+
+    else {
+        TCanvas* c2 = new TCanvas("c2", "signal fit", 200, 10, 1280, 720);
+        h1->Draw();
+        c2->Update();
+
+        energy = -1;
+        index = -1;
+        time = -1;
+        cout << " --------------------------------------------------- WARNING: bad fit " << GetID() << endl;
+        cout << " ------------------- event ID: " << this->GetID() << endl;
+        cout << "maxRaw = " << maxRaw << endl;
+        cout << " fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || "
+             << gaus->GetParameter(2) << " || " << endl;
+
+        // getchar();
+        delete c2;
+    }
+
+    TVector2 fitParam(time, energy);
+
+    // cout << "maxRaw : " << maxRaw << " and maxRawValue : " << maxRawValue << endl;
+    // cout << "Time : " << fitParam.X() << " and Energy : " << fitParam.Y() << endl;
+
+    // getchar();
+
+    delete h1;
+    delete gaus;
+    // delete c;
+
+    return fitParam;
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetTime(GetMaxIndex(from, to)); }

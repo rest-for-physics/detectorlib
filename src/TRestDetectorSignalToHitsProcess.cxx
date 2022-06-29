@@ -353,6 +353,39 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
                      << " Energy : " << eAvg << endl;
             }
+        } else if (fMethod == "gaussFit") {  // (Based on Elisa's)
+
+            TVector2 gaussFit = sgnl->GetMaxGauss();
+
+            // cout << "Gaus Fit: time = " << gausFit.X() << "; and energy = " << gausFit.Y() << endl;
+
+            Double_t time = gaussFit.X() * fSampling;  // time in micros
+            Double_t distanceToPlane = time * fDriftVelocity;
+
+            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                cout << "Distance to plane : " << distanceToPlane << endl;
+
+            Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
+            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
+
+            Double_t energy = gaussFit.Y();
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                cout << "Signal event : " << sgnl->GetSignalID()
+                     << "--------------------------------------------------------" << endl;
+                cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
+                cout << "Signal to hit info : zPosition : " << zPosition
+                     << "; fieldZDirection : " << fieldZDirection << "; sampling : " << fSampling
+                     << " and driftV : " << fDriftVelocity << endl;
+                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                     << " Energy : " << energy << endl;
+            }
+
+            fHitsEvent->AddHit(x, y, z, energy);
 
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
