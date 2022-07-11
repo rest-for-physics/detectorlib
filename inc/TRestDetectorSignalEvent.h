@@ -19,11 +19,9 @@
 #ifndef RestDAQ_TRestDetectorSignalEvent
 #define RestDAQ_TRestDetectorSignalEvent
 
-#include <TArrayD.h>
 #include <TAxis.h>
 #include <TGraph.h>
 #include <TMultiGraph.h>
-#include <TObject.h>
 #include <TPad.h>
 #include <TRestEvent.h>
 
