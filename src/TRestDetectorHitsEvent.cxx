@@ -943,7 +943,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
     column++;
 }
 
-void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) {
+void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     TRestEvent::PrintEvent();
 
     cout << "Total energy : " << GetEnergy() << endl;

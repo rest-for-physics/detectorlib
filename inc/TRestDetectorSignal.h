@@ -23,19 +23,18 @@
 #define RestCore_TRestDetectorSignal
 
 #include <TGraph.h>
-#include <TObject.h>
 #include <TString.h>
 #include <TVector2.h>
 
 #include <iostream>
 
-class TRestDetectorSignal : public TObject {
+class TRestDetectorSignal {
    private:
     Int_t GetMinIndex();
     Int_t GetTimeIndex(Double_t t);
 
    protected:
-    Int_t fSignalID;
+    Int_t fSignalID = -1;
 
     std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
     std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
@@ -50,12 +49,6 @@ class TRestDetectorSignal : public TObject {
 
     std::vector<Int_t> fPointsOverThreshold;  //!
 #endif
-
-    void Initialize() {
-        fSignalCharge.clear();
-        fSignalTime.clear();
-        fSignalID = -1;
-    }
 
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
@@ -172,6 +165,6 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
     // Destructor
     ~TRestDetectorSignal();
 
-    ClassDef(TRestDetectorSignal, 1);
+    ClassDef(TRestDetectorSignal, 2);
 };
 #endif
