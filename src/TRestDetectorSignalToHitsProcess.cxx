@@ -353,8 +353,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
                      << " Energy : " << eAvg << endl;
             }
-        } else if (fMethod == "gaussFit") {  // (Based on Elisa's)
-
+        } else if (fMethod == "gaussFit") {
             TVector2 gaussFit = sgnl->GetMaxGauss();
 
             // cout << "Gaus Fit: time = " << gausFit.X() << "; and energy = " << gausFit.Y() << endl;

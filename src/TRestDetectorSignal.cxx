@@ -253,7 +253,7 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
     return index;
 }
 
-// (Elisa) z position by gaussian fit
+// z position by gaussian fit
 
 TVector2
 TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak (bin units) and the energy
@@ -264,28 +264,31 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t energy = 0, time = 0;
     Double_t w = 0;
 
-    // cout << " ------------------- event ID: " << GetID() << endl;
-    // cout << "maxRaw = " << maxRaw << endl;
+    cout << " ------------------- event ID: " << GetID() << "-------------------" << endl;
+    cout << "Bin of the maximum amplitude signal = " << maxRaw << ", with value: " << maxRawValue << endl;
 
     TF1* gaus = new TF1("gaus", "gaus", maxRaw - 12, maxRaw + 15);  // The max of the signal is ~40 bins wide
     TH1F* h1 = new TH1F("h1", "h1", 512, 0, 511);                   // Histogram to store the signal
 
     // copying the signal peak to a histogram
-    // for( int i = maxRaw - 20; i < maxRaw + 20; i++ )
+    // for( int i = maxRaw - 20; i < maxRaw + 20; i++ ) {
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         w = GetData(i);
         h1->Fill(i, w);
+        // if (w > 200) h1->Fill(i, w);
     }
 
     // TCanvas *c = new TCanvas("c","signal fit",200,10,1280,720);
+    // h1->GetXaxis()->SetTitle("Time bins");
+    // h1->GetYaxis()->SetTitle("Amplitude");
     // h1->Draw();
 
     h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
-    // c->Update();
+    c->Update();
 
     // cout << " fit parameters = "<< gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || " <<
-    // gaus->GetParameter(2) << " || "<<endl; cout << "GetMaxIndex" << maxRaw << " GetMaxPeakValue = " <<
+    // gaus->GetParameter(2) << " || "<<endl; cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " <<
     // maxRawValue << endl; getchar();
 
     if (!TMath::IsNaN(gaus->GetParameter(0)) && !TMath::IsNaN(gaus->GetParameter(1)) &&
