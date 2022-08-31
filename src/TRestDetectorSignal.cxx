@@ -285,7 +285,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
 
     h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
-    c->Update();
+    // c->Update();
 
     // cout << " fit parameters = "<< gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || " <<
     // gaus->GetParameter(2) << " || "<<endl; cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " <<
