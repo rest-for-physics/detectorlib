@@ -386,6 +386,39 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
             fHitsEvent->AddHit(x, y, z, energy);
 
+        } else if (fMethod == "landauFit") {
+            TVector2 landauFit = sgnl->GetMaxLandau();
+
+            // cout << "Landau Fit: time = " << landauFit.X() << "; and energy = " << landauFit.Y() << endl;
+
+            Double_t time = landauFit.X() * fSampling;  // time in micros
+            Double_t distanceToPlane = time * fDriftVelocity;
+
+            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                cout << "Distance to plane : " << distanceToPlane << endl;
+
+            Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
+            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
+
+            Double_t energy = landauFit.Y();
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                cout << "Signal event : " << sgnl->GetSignalID()
+                     << "--------------------------------------------------------" << endl;
+                cout << "landauFit : time bin " << landauFit.X() << " and energy : " << landauFit.Y() << endl;
+                cout << "Signal to hit info : zPosition : " << zPosition
+                     << "; fieldZDirection : " << fieldZDirection << "; sampling : " << fSampling
+                     << " and driftV : " << fDriftVelocity << endl;
+                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                     << " Energy : " << energy << endl;
+            }
+
+            fHitsEvent->AddHit(x, y, z, energy);
+
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;

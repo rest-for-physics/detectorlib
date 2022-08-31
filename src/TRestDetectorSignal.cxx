@@ -256,52 +256,51 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
 // z position by gaussian fit
 
 TVector2
-TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak (bin units) and the energy
+TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak time in us and the energy
 {
-    Int_t maxRaw = GetMaxIndex();              // The bin where the maximum of the raw signal is found
+    Int_t maxRaw = GetMaxIndex();        // The bin where the maximum of the raw signal is found
+    Int_t maxRawTime = GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
     Int_t index = 0;
     Double_t energy = 0, time = 0;
     Double_t w = 0;
 
-    cout << " ------------------- event ID: " << GetID() << "-------------------" << endl;
-    cout << "Bin of the maximum amplitude signal = " << maxRaw << ", with value: " << maxRawValue << endl;
+    // cout << " ------------------- event ID: " << GetID() << "-------------------" << endl;
+    // cout << "Bin of the maximum amplitude signal = " << maxRaw << ", with value: " << maxRawValue << endl;
 
-    TF1* gaus = new TF1("gaus", "gaus", maxRaw - 12, maxRaw + 15);  // The max of the signal is ~40 bins wide
-    TH1F* h1 = new TH1F("h1", "h1", 512, 0, 511);                   // Histogram to store the signal
+    TF1* gaus = new TF1("gaus", "gaus", maxRawTime - 0.2,
+                        maxRawTime + 0.4);  // The max of the signal is ~40 bins wide
+    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
+                        10);  // Histogram to store the signal. For now the number of bins is fixed.
 
     // copying the signal peak to a histogram
-    // for( int i = maxRaw - 20; i < maxRaw + 20; i++ ) {
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        w = GetData(i);
-        h1->Fill(i, w);
-        // if (w > 200) h1->Fill(i, w);
+        h1->Fill(GetTime(i), GetData(i));
     }
 
-    // TCanvas *c = new TCanvas("c","signal fit",200,10,1280,720);
-    // h1->GetXaxis()->SetTitle("Time bins");
-    // h1->GetYaxis()->SetTitle("Amplitude");
-    // h1->Draw();
+    TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
+    h1->GetXaxis()->SetTitle("Time (us)");
+    h1->GetYaxis()->SetTitle("Amplitude");
+    h1->Draw();
 
-    h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+    h1->Fit(gaus, "R");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
-    // c->Update();
+    c->Update();
 
-    // cout << " fit parameters = "<< gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || " <<
-    // gaus->GetParameter(2) << " || "<<endl; cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " <<
-    // maxRawValue << endl; getchar();
+    cout << " fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || "
+         << gaus->GetParameter(2) << " || " << endl;
+    cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
+    getchar();
 
     if (!TMath::IsNaN(gaus->GetParameter(0)) && !TMath::IsNaN(gaus->GetParameter(1)) &&
         gaus->GetParameter(1) > 0.0) {
         energy = gaus->GetParameter(0);
         index = (int)gaus->GetParameter(1);
-        // time = GetTime(index);
         time = gaus->GetParameter(1);
-        // cout << " max fit = " << index << endl;
     }
 
     else {
-        TCanvas* c2 = new TCanvas("c2", "signal fit", 200, 10, 1280, 720);
+        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
         h1->Draw();
         c2->Update();
 
@@ -328,6 +327,74 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     delete h1;
     delete gaus;
     // delete c;
+
+    return fitParam;
+}
+
+// z position by landau fit
+
+TVector2
+TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the peak time in us and the energy
+{
+    Int_t maxRaw = GetMaxIndex();        // The bin where the maximum of the raw signal is found
+    Int_t maxRawTime = GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
+    Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
+    Int_t index = 0;
+    Double_t energy = 0, time = 0;
+    Double_t w = 0;
+
+    TF1* landau = new TF1("landau", "landau", maxRawTime - 0.2,
+                          maxRawTime + 0.4);  // The max of the signal is ~40 bins wide
+    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
+                        10);  // Histogram to store the signal. For now the number of bins is fixed.
+
+    // copying the signal peak to a histogram
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        h1->Fill(GetTime(i), GetData(i));
+    }
+
+    TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
+    h1->GetXaxis()->SetTitle("Time (us)");
+    h1->GetYaxis()->SetTitle("Amplitude");
+    h1->Draw();
+
+    h1->Fit(landau, "R");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+
+    c->Update();
+
+    cout << " fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1) << " || "
+         << landau->GetParameter(2) << " || " << endl;
+    cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
+    getchar();
+
+    if (!TMath::IsNaN(landau->GetParameter(0)) && !TMath::IsNaN(landau->GetParameter(1)) &&
+        landau->GetParameter(1) > 0.0) {
+        energy = landau->GetParameter(0);
+        index = (int)landau->GetParameter(1);
+        time = landau->GetParameter(1);
+    }
+
+    else {
+        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
+        h1->Draw();
+        c2->Update();
+
+        energy = -1;
+        index = -1;
+        time = -1;
+        cout << " --------------------------------------------------- WARNING: bad fit " << GetID() << endl;
+        cout << " ------------------- event ID: " << this->GetID() << endl;
+        cout << "maxRaw = " << maxRaw << endl;
+        cout << " fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1) << " || "
+             << landau->GetParameter(2) << " || " << endl;
+
+        delete c2;
+    }
+
+    TVector2 fitParam(time, energy);
+
+    delete h1;
+    delete landau;
 
     return fitParam;
 }
