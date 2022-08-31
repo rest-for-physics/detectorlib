@@ -277,21 +277,22 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         h1->Fill(GetTime(i), GetData(i));
     }
-
+    /*
     TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
     h1->GetXaxis()->SetTitle("Time (us)");
     h1->GetYaxis()->SetTitle("Amplitude");
     h1->Draw();
+    */
 
-    h1->Fit(gaus, "R");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+    h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
-    c->Update();
-
+    // c->Update();
+    /*
     cout << " fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || "
          << gaus->GetParameter(2) << " || " << endl;
     cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
     getchar();
-
+    */
     if (!TMath::IsNaN(gaus->GetParameter(0)) && !TMath::IsNaN(gaus->GetParameter(1)) &&
         gaus->GetParameter(1) > 0.0) {
         energy = gaus->GetParameter(0);
@@ -358,14 +359,15 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     h1->GetYaxis()->SetTitle("Amplitude");
     h1->Draw();
 
-    h1->Fit(landau, "R");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+    h1->Fit(landau, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
-    c->Update();
-
+    // c->Update();
+    /*
     cout << " fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1) << " || "
          << landau->GetParameter(2) << " || " << endl;
     cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
     getchar();
+    */
 
     if (!TMath::IsNaN(landau->GetParameter(0)) && !TMath::IsNaN(landau->GetParameter(1)) &&
         landau->GetParameter(1) > 0.0) {
