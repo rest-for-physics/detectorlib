@@ -265,11 +265,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t energy = 0, time = 0;
     Double_t w = 0;
 
-    // cout << " ------------------- event ID: " << GetID() << "-------------------" << endl;
-    // cout << "Bin of the maximum amplitude signal = " << maxRaw << ", with value: " << maxRawValue << endl;
-
-    TF1* gaus = new TF1("gaus", "gaus", maxRawTime - 0.2,
-                        maxRawTime + 0.4);  // The max of the signal is ~40 bins wide
+    TF1* gaus = new TF1("gaus", "gaus", maxRawTime - 0.2, maxRawTime + 0.4);
     TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
@@ -308,8 +304,8 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         energy = -1;
         index = -1;
         time = -1;
-        cout << " --------------------------------------------------- WARNING: bad fit " << GetID() << endl;
-        cout << " ------------------- event ID: " << this->GetID() << endl;
+        cout << " ------------------- WARNING: bad fit " << GetID() << "-------------------" << endl;
+        cout << " -------------------- event ID: " << this->GetID() << "-------------------" << endl;
         cout << "maxRaw = " << maxRaw << endl;
         cout << " fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1) << " || "
              << gaus->GetParameter(2) << " || " << endl;
@@ -344,8 +340,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Double_t energy = 0, time = 0;
     Double_t w = 0;
 
-    TF1* landau = new TF1("landau", "landau", maxRawTime - 0.2,
-                          maxRawTime + 0.4);  // The max of the signal is ~40 bins wide
+    TF1* landau = new TF1("landau", "landau", maxRawTime - 0.2, maxRawTime + 0.4);
     TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
@@ -354,20 +349,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         h1->Fill(GetTime(i), GetData(i));
     }
 
-    TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
-    h1->GetXaxis()->SetTitle("Time (us)");
-    h1->GetYaxis()->SetTitle("Amplitude");
-    h1->Draw();
-
     h1->Fit(landau, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
-
-    // c->Update();
-    /*
-    cout << " fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1) << " || "
-         << landau->GetParameter(2) << " || " << endl;
-    cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
-    getchar();
-    */
 
     if (!TMath::IsNaN(landau->GetParameter(0)) && !TMath::IsNaN(landau->GetParameter(1)) &&
         landau->GetParameter(1) > 0.0) {
@@ -377,20 +359,14 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     }
 
     else {
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-
         energy = -1;
         index = -1;
         time = -1;
-        cout << " --------------------------------------------------- WARNING: bad fit " << GetID() << endl;
-        cout << " ------------------- event ID: " << this->GetID() << endl;
-        cout << "maxRaw = " << maxRaw << endl;
+        cout << " ------------------- WARNING: bad fit " << GetID() << "-------------------" << endl;
+        cout << " -------------------- event ID: " << this->GetID() << "-------------------" << endl;
+        cout << "maxRawTime = " << maxRawTime << endl;
         cout << " fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1) << " || "
              << landau->GetParameter(2) << " || " << endl;
-
-        delete c2;
     }
 
     TVector2 fitParam(time, energy);
