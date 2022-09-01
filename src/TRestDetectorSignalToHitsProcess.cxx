@@ -379,8 +379,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                      << "--------------------------------------------------------" << endl;
                 cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
                 cout << "Signal to hit info : zPosition : " << zPosition
-                     << "; fieldZDirection : " << fieldZDirection << "; sampling : " << fSampling
-                     << " and driftV : " << fDriftVelocity << endl;
+                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
+                     << endl;
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
@@ -413,8 +413,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                      << "--------------------------------------------------------" << endl;
                 cout << "landauFit : time bin " << landauFit.X() << " and energy : " << landauFit.Y() << endl;
                 cout << "Signal to hit info : zPosition : " << zPosition
-                     << "; fieldZDirection : " << fieldZDirection << "; sampling : " << fSampling
-                     << " and driftV : " << fDriftVelocity << endl;
+                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
+                     << endl;
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }

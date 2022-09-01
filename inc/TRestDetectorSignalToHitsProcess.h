@@ -68,9 +68,6 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     // Threshold value for in case intwindow method is requested
     Double_t fThreshold = 100.;
 
-    // Sampling time in us for gaussFit and landauFit methods.
-    Double_t fSampling;  // us
-
    public:
     any GetInputEvent() const override { return fSignalEvent; }
     any GetOutputEvent() const override { return fHitsEvent; }
