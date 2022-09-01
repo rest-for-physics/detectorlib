@@ -359,7 +359,7 @@ void TRestDetectorGas::LoadGasFile() {
 
 void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
     RESTDebug << "Entering ... TRestDetectorGas::CalcGarField( Emin=" << Emin << " , Emax=" << Emax << " )"
-          << RESTendl;
+              << RESTendl;
 
 #if defined USE_Garfield
     if (fEnodes <= 0) {
@@ -440,7 +440,7 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
 ///
 void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
     RESTDebug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName
-          << " , fraction=" << fraction << " )" << RESTendl;
+              << " , fraction=" << fraction << " )" << RESTendl;
 
     fGasComponentName.push_back(gasName);
     fGasComponentFraction.push_back(fraction);
@@ -455,8 +455,8 @@ void TRestDetectorGas::GetGasWorkFunction() {
     RESTEssential << __PRETTY_FUNCTION__ << RESTendl;
     RESTEssential << "This method has never been validated to operate properly" << RESTendl;
     RESTEssential << "If we manage to make it work we could use this method to "
-                 "obtain the calculated W of the gas"
-              << RESTendl;
+                     "obtain the calculated W of the gas"
+                  << RESTendl;
 
     // Gas gap [cm].
     const double width = 1.;
@@ -570,27 +570,28 @@ void TRestDetectorGas::InitFromConfigFile() {
     // construct the gas file name and try to find it, either locally or from gas server
     fGasFilename = ConstructFilename();
     RESTDebug << "TRestDetectorGas::InitFromConfigFile. ConstructFilename. fGasFilename = " << fGasFilename
-          << RESTendl;
+              << RESTendl;
     fGasFilename = FindGasFile((string)fGasFilename);
-    RESTDebug << "TRestDetectorGas::InitFromConfigFile. FindGasFile. fGasFilename = " << fGasFilename << RESTendl;
+    RESTDebug << "TRestDetectorGas::InitFromConfigFile. FindGasFile. fGasFilename = " << fGasFilename
+              << RESTendl;
 
     // If we found the gasFile then obviously we disable the gas generation
     if (fGasGeneration && TRestTools::fileExists((string)fGasFilename)) {
         fGasGeneration = false;
 
         RESTWarning << "TRestDetectorGas gasFile generation is enabled, but the "
-                   "gasFile already exists!!"
-                << RESTendl;
+                       "gasFile already exists!!"
+                    << RESTendl;
         RESTWarning << "Filename : " << fGasFilename << RESTendl;
         RESTWarning << "fGasGeneration should be disabled to remove this "
-                   "warning."
-                << RESTendl;
+                       "warning."
+                    << RESTendl;
         RESTWarning << "If you really want to re-generate the gas file you "
-                   "will need to disable the gasServer."
-                << RESTendl;
+                       "will need to disable the gasServer."
+                    << RESTendl;
         RESTWarning << "And/or remove any local copies that are found by "
-                   "SearchPath."
-                << RESTendl;
+                       "SearchPath."
+                    << RESTendl;
     }
     fStatus = RESTGAS_CFG_LOADED;
 
@@ -638,14 +639,14 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
 
     if (!fTest && (fMaxElectronEnergy < 400 || fNCollisions < 10 || fEnodes < 20)) {
         RESTWarning << "-- Warning : The gas file does not fulfill the requirements "
-                   "for being uploaded to the gasServer"
-                << RESTendl;
+                       "for being uploaded to the gasServer"
+                    << RESTendl;
         RESTWarning << "-- Warning : maxElectronEnergy >= 400. Number of collisions >= "
-                   "10. Number of E nodes >= 20."
-                << RESTendl;
+                       "10. Number of E nodes >= 20."
+                    << RESTendl;
         RESTWarning << "-- Warning : The generated file will NOT be uploaded to the "
-                   "server but preserved locally."
-                << RESTendl;
+                       "server but preserved locally."
+                    << RESTendl;
         return;
     }
 
@@ -744,12 +745,12 @@ string TRestDetectorGas::FindGasFile(string name) {
             RESTWarning << "-- Warning : No sucess finding local gas file definition." << RESTendl;
             RESTWarning << "-- Warning : Gas file definition does not exist." << RESTendl;
             RESTInfo << "To generate a new gasFile enable gas generation in TRestDetectorGas "
-                    "constructor"
-                 << RESTendl;
+                        "constructor"
+                     << RESTendl;
             RESTInfo << "TRestDetectorGas ( \"gasDefinition.rml\", \"gas Name\", true );" << RESTendl;
             RESTInfo << "Further details can be found at TRestDetectorGas class definition and "
-                    "tutorial."
-                 << RESTendl;
+                        "tutorial."
+                     << RESTendl;
 
             absoluteName = name;
         }
@@ -842,8 +843,8 @@ void TRestDetectorGas::GenerateGasFile() {
         RESTWarning << "-- Warning: REST ERROR. TRestDetectorGas. Path is not writtable." << RESTendl;
         RESTWarning << "-- Warning: Path : " << fGasOutputPath << RESTendl;
         RESTWarning << "-- Warning: Make sure the final data path is writtable before "
-                   "proceed to gas generation."
-                << RESTendl;
+                       "proceed to gas generation."
+                    << RESTendl;
         RESTWarning << "-- Warning: or change the gas data path ... " << RESTendl;
         RESTWarning << RESTendl;
         GetChar();
@@ -885,7 +886,8 @@ void TRestDetectorGas::SetPressure(Double_t pressure) {
 /////////////////////////////////////////////
 /// \brief Defines the temperature of the gas.
 void TRestDetectorGas::SetTemperature(Double_t temperature) {
-    RESTDebug << "Entering ... TRestDetectorGas::SetPressure( temperature=" << temperature << " )" << RESTendl;
+    RESTDebug << "Entering ... TRestDetectorGas::SetPressure( temperature=" << temperature << " )"
+              << RESTendl;
 
     fTemperatureInK = temperature;
 #if defined USE_Garfield
@@ -903,7 +905,7 @@ void TRestDetectorGas::SetTemperature(Double_t temperature) {
 ///
 void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSteps) {
     RESTDebug << "Entering ... TRestDetectorGas::PlotDriftVelocity( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << RESTendl;
+              << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), driftVel(nSteps);
 
@@ -935,8 +937,8 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    RESTDebug << "Entering ... TRestDetectorGas::PlotLongitudinalDiffusion( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << RESTendl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotLongitudinalDiffusion( eMin=" << eMin
+              << " , eMax=" << eMax << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), longDiff(nSteps);
 
@@ -944,7 +946,7 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
         this->SetElectricField(eField[i] / units("V/cm"));
-        longDiff[i] = GetLongitudinalDiffusion();
+        longDiff[i] = 10. * GetLongitudinalDiffusion();  // to express it in mm/sqrt(cm)
     }
 
     TCanvas* c = new TCanvas("Longitudinal diffusion", "  ");
@@ -953,7 +955,7 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
     str.Form("Longitudinal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fLongDiff->SetTitle(str);
     fLongDiff->GetXaxis()->SetTitle("E [V/cm]");
-    fLongDiff->GetYaxis()->SetTitle("Longitudinal diffusion [#mum/#sqrt{cm}]");
+    fLongDiff->GetYaxis()->SetTitle("Longitudinal diffusion [mm/#sqrt{cm}]");
     fLongDiff->GetYaxis()->SetTitleOffset(2);
     fLongDiff->Draw("");
     c->Update();
@@ -968,8 +970,8 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
 /// \param steps Number of points to be given to be drawn
 ///
 void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, Int_t nSteps) {
-    RESTDebug << "Entering ... TRestDetectorGas::PlotTransversalDiffusion( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << RESTendl;
+    RESTDebug << "Entering ... TRestDetectorGas::PlotTransversalDiffusion( eMin=" << eMin
+              << " , eMax=" << eMax << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), transDiff(nSteps);
 
@@ -977,7 +979,7 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
         this->SetElectricField(eField[i] / units("V/cm"));
-        transDiff[i] = GetTransversalDiffusion();
+        transDiff[i] = 10. * GetTransversalDiffusion();  // to express it in mm/sqrt(cm)
     }
 
     TCanvas* c = new TCanvas("Transitudinal diffusion", "  ");
@@ -986,7 +988,7 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
     str.Form("Transversal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fTransDiff->SetTitle(str);
     fTransDiff->GetXaxis()->SetTitle("E [V/cm]");
-    fTransDiff->GetYaxis()->SetTitle("Transversal diffusion [#mum/#sqrt{cm}]");
+    fTransDiff->GetYaxis()->SetTitle("Transversal diffusion [mm/#sqrt{cm}]");
     fTransDiff->GetYaxis()->SetTitleOffset(2);
     fTransDiff->Draw("");
     c->Update();
@@ -1002,7 +1004,7 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
 ///
 void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int_t nSteps) {
     RESTDebug << "Entering ... TRestDetectorGas::PlotTownsendCoefficient( eMin=" << eMin << " , eMax=" << eMax
-          << ", nSteps=" << nSteps << " )" << RESTendl;
+              << ", nSteps=" << nSteps << " )" << RESTendl;
 
     vector<Double_t> eField(nSteps), townsendCoeff(nSteps);
 
@@ -1039,7 +1041,7 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
     }
 
     RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm/us" << RESTendl;
+             << "from REST standard unit. E is V/cm. The return is cm/us" << RESTendl;
 
     Double_t vx, vy, vz;
     fGasMedium->ElectronVelocity(0., 0, -E, 0, 0, 0, vx, vy, vz);
@@ -1068,7 +1070,7 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
     }
 
     RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
+             << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
@@ -1097,7 +1099,7 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
     }
 
     RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
+             << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
     fGasMedium->ElectronDiffusion(0., 0, -E, 0, 0, 0, dl, dt);
@@ -1126,7 +1128,7 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
     }
 
     RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
+             << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t alpha;
     fGasMedium->ElectronTownsend(0., 0, -E, 0, 0, 0, alpha);
@@ -1155,7 +1157,7 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
     }
 
     RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
+             << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t eta;
     fGasMedium->ElectronAttachment(0., 0, -E, 0, 0, 0, eta);
@@ -1190,14 +1192,14 @@ void TRestDetectorGas::PrintGasInfo() {
     RESTMetadata << "Electric Field : " << fElectricField * units("V/cm") << " V/cm " << RESTendl;
     RESTMetadata << "W-value : " << fW << " eV" << RESTendl;
     RESTMetadata << "Drift velocity : " << GetDriftVelocity(fElectricField * units("V/cm")) / units("cm/us")
-             << " mm/us " << RESTendl;
+                 << " mm/us " << RESTendl;
     RESTMetadata << "Max. Electron energy : " << fMaxElectronEnergy << " eV" << RESTendl;
     RESTMetadata << "Field grid nodes : " << fEnodes << RESTendl;
     RESTMetadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << RESTendl;
     RESTMetadata << "Number of Gases : " << fNofGases << RESTendl;
     for (int i = 0; i < fNofGases; i++)
         RESTMetadata << "Gas id : " << i << ", Name : " << fGasComponentName[i]
-                 << ", Fraction : " << fGasComponentFraction[i] << RESTendl;
+                     << ", Fraction : " << fGasComponentFraction[i] << RESTendl;
     RESTMetadata << "******************************************" << RESTendl;
     RESTMetadata << RESTendl;
     RESTMetadata << RESTendl;
@@ -1205,7 +1207,7 @@ void TRestDetectorGas::PrintGasInfo() {
 
 Int_t TRestDetectorGas::Write(const char* name, Int_t option, Int_t bufsize) {
     RESTDebug << "Entering ... TRestDetectorGas::Write( name=" << name << " option=" << option
-          << " bufsize=" << bufsize << " )" << RESTendl;
+              << " bufsize=" << bufsize << " )" << RESTendl;
 
     if (fGasFileContent == "" && GasFileLoaded()) {
         ifstream infile;
