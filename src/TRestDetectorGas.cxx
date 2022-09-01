@@ -305,7 +305,7 @@ void TRestDetectorGas::Initialize() {
 #endif
 
     ///////////////////// ///////////////////// /////////////////////
-    // This must be comented. If not when we specify gasGeneration=true on the
+    // This must be commented. If not when we specify gasGeneration=true on the
     // constructor, it will be overriden inside LoadConfigFromFile
     //
     // fGasGeneration = false;
@@ -712,7 +712,7 @@ void TRestDetectorGas::UploadGasToServer(string absoluteGasFilename) {
     //    return;
     //}
 
-    RESTSuccess << "-- Sucess : Gasfile server database was updated sucessfully!!" << RESTendl;
+    RESTSuccess << "-- Success : Gasfile server database was updated successfully!" << RESTendl;
 }
 
 /////////////////////////////////////////////
@@ -760,7 +760,7 @@ string TRestDetectorGas::FindGasFile(string name) {
 }
 
 /////////////////////////////////////////////
-/// \brief Returns a string definning the gas components and fractions.
+/// \brief Returns a string defining the gas components and fractions.
 ///
 TString TRestDetectorGas::GetGasMixture() {
     RESTDebug << "Entering ... TRestDetectorGas::GetGasMixture( )" << RESTendl;
@@ -1221,7 +1221,6 @@ Int_t TRestDetectorGas::Write(const char* name, Int_t option, Int_t bufsize) {
             while (getline(infile, str)) {
                 fGasFileContent += str + "\n";
             }
-            // cout << fGasFileContent << endl;
         }
     }
     return TRestMetadata::Write();
