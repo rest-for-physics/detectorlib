@@ -358,7 +358,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
             // cout << "Gaus Fit: time = " << gausFit.X() << "; and energy = " << gausFit.Y() << endl;
 
-            Double_t time = gaussFit.X() * fSampling;  // time in micros
+            Double_t time = gaussFit.X();
+            // Double_t time = gaussFit.X() * fSampling;  // time in micros
             Double_t distanceToPlane = time * fDriftVelocity;
 
             // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
@@ -391,7 +392,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
             // cout << "Landau Fit: time = " << landauFit.X() << "; and energy = " << landauFit.Y() << endl;
 
-            Double_t time = landauFit.X() * fSampling;  // time in micros
+            Double_t time = landauFit.X();
+            // Double_t time = landauFit.X() * fSampling;  // time in micros
             Double_t distanceToPlane = time * fDriftVelocity;
 
             // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
