@@ -81,6 +81,12 @@
 /// In practice this is very similar to *onlyMax*, but the effective energy
 /// is smoothed by including two additional points. Another advantage is that
 /// it avoids tripling (x3) the number of hits compared to *tripleMax*.
+/// * **gaussFit**: It performs a gaussian fit to each signal to determine the
+/// z position and the energy.
+/// * **landauFit**: It performs a landau fit to each signal to determine the
+/// z position and the energy.
+/// * **agetFit**: It performs a fit to each signal based on the aget response
+/// function to determine the z position and the energy.
 /// * **qCenter**: It will consider the shape of the signal to determine the
 /// the time used to transform to a Z-coordinate. The energy is also
 /// averaged on all points (Perhaps this is not the most appropiate?).
@@ -412,6 +418,40 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Signal event : " << sgnl->GetSignalID()
                      << "--------------------------------------------------------" << endl;
                 cout << "landauFit : time bin " << landauFit.X() << " and energy : " << landauFit.Y() << endl;
+                cout << "Signal to hit info : zPosition : " << zPosition
+                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
+                     << endl;
+                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                     << " Energy : " << energy << endl;
+            }
+
+            fHitsEvent->AddHit(x, y, z, energy);
+
+        } else if (fMethod == "agetFit") {
+            TVector2 agetFit = sgnl->GetMaxAget();
+
+            // cout << "Aget Fit: time = " << agetFit.X() << "; and energy = " << agetFit.Y() << endl;
+
+            Double_t time = agetFit.X();
+            // Double_t time = agetFit.X() * fSampling;  // time in micros
+            Double_t distanceToPlane = time * fDriftVelocity;
+
+            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                cout << "Distance to plane : " << distanceToPlane << endl;
+
+            Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
+            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
+
+            Double_t energy = agetFit.Y();
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                cout << "Signal event : " << sgnl->GetSignalID()
+                     << "--------------------------------------------------------" << endl;
+                cout << "agetFit : time bin " << agetFit.X() << " and energy : " << agetFit.Y() << endl;
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
