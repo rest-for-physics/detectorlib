@@ -55,6 +55,7 @@ class TRestDetectorSignal {
 
     TVector2 GetMaxGauss();
     TVector2 GetMaxLandau();
+    TVector2 GetMaxAget();
 
     // Getters
     TVector2 GetPoint(Int_t n) {
