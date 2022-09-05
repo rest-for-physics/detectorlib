@@ -391,7 +391,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                      << " Energy : " << energy << endl;
             }
 
-            fHitsEvent->AddHit(x, y, z, energy);
+            fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
         } else if (fMethod == "landauFit") {
             TVector2 landauFit = sgnl->GetMaxLandau();
@@ -425,7 +425,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                      << " Energy : " << energy << endl;
             }
 
-            fHitsEvent->AddHit(x, y, z, energy);
+            fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
         } else if (fMethod == "agetFit") {
             TVector2 agetFit = sgnl->GetMaxAget();
@@ -459,7 +459,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                      << " Energy : " << energy << endl;
             }
 
-            fHitsEvent->AddHit(x, y, z, energy);
+            fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
