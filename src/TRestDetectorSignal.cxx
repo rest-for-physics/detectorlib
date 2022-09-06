@@ -24,7 +24,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
-
+#include "TFitResult.h"
 using namespace std;
 
 #include <TF1.h>
@@ -264,9 +264,10 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
     Int_t index = 0;
     Double_t energy = 0, time = 0;
-    Double_t w = 0;
+    Double_t lowerLimit = maxRawTime - 0.2;  // us
+    Double_t upperLimit = maxRawTime + 0.4;  // us
 
-    TF1* gaus = new TF1("gaus", "gaus", maxRawTime - 0.2, maxRawTime + 0.4);
+    TF1* gaus = new TF1("gaus", "gaus", lowerLimit, upperLimit);
     TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
@@ -281,7 +282,25 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     h1->Draw();
     */
 
-    h1->Fit(gaus, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+    TFitResultPtr fitResult =
+        h1->Fit(gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range; S
+                                // = save and return the fit result
+
+    if (fitResult->IsValid()) {
+        energy = gaus->GetParameter(0);
+        time = gaus->GetParameter(1);
+    } else {
+        // the fit failed, return -1 to indicate failure
+        energy = -1;
+        index = -1;
+        time = -1;
+        cout << " ------------------- WARNING: bad fit to signal with ID " << GetID() << "-------------------"
+             << endl;
+        cout << "maxRawTime = " << maxRawTime << " ns " << endl;
+        cout << "Failed fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1)
+             << " || " << gaus->GetParameter(2) << endl;
+        cout << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
+    }
 
     // c->Update();
 
@@ -291,13 +310,16 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
     getchar();
     */
+
+    /*
     if (!TMath::IsNaN(gaus->GetParameter(0)) && !TMath::IsNaN(gaus->GetParameter(1)) &&
         gaus->GetParameter(1) > 0.0) {
         energy = gaus->GetParameter(0);
         index = (int)gaus->GetParameter(1);
         time = gaus->GetParameter(1);
     }
-
+    */
+    /*
     else {
         // TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
         // h1->Draw();
@@ -315,6 +337,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         // getchar();
         // delete c2;
     }
+    */
 
     TVector2 fitParam(time, energy);
 
@@ -341,9 +364,10 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
     Int_t index = 0;
     Double_t energy = 0, time = 0;
-    Double_t w = 0;
+    Double_t lowerLimit = maxRawTime - 0.2;  // us
+    Double_t upperLimit = maxRawTime + 0.4;  // us
 
-    TF1* landau = new TF1("landau", "landau", maxRawTime - 0.2, maxRawTime + 0.4);
+    TF1* landau = new TF1("landau", "landau", lowerLimit, upperLimit);
     TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
@@ -352,6 +376,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         h1->Fill(GetTime(i), GetData(i));
     }
 
+    /*
     h1->Fit(landau, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
     if (!TMath::IsNaN(landau->GetParameter(0)) && !TMath::IsNaN(landau->GetParameter(1)) &&
@@ -377,6 +402,33 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
 
         // getchar();
         // delete c2;
+    }
+    */
+    TFitResultPtr fitResult =
+        h1->Fit(landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
+                                  // S = save and return the fit result
+
+    if (fitResult->IsValid()) {
+        energy = landau->GetParameter(0);
+        time = landau->GetParameter(1);
+    } else {
+        // the fit failed, return -1 to indicate failure
+        energy = -1;
+        index = -1;
+        time = -1;
+        cout << " ------------------- WARNING: bad fit to signal with ID " << GetID() << "-------------------"
+             << endl;
+        cout << "------------------- with maximum at time = " << maxRawTime << " ns ------------------"
+             << endl;
+        cout << "Failed fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1)
+             << " || " << landau->GetParameter(2) << endl;
+        cout << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
+
+        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
+        h1->Draw();
+        c2->Update();
+        getchar();
+        delete c2;
     }
 
     TVector2 fitParam(time, energy);
@@ -430,7 +482,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     h1->Draw();
     */
 
-    h1->Fit(aget, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
+    // h1->Fit(aget, "QNR");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range
 
     // c->Update();
 
@@ -440,7 +492,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     cout << "GetMaxIndex = " << maxRaw << " GetMaxPeakValue = " << maxRawValue << endl;
     getchar();
     */
-
+    /*
     if (!TMath::IsNaN(aget->GetParameter(0)) && !TMath::IsNaN(aget->GetParameter(1)) &&
         aget->GetParameter(1) > 0.0) {
         energy = aget->GetParameter(0);
@@ -464,6 +516,31 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
 
         // getchar();
         // delete c2;
+    }
+    */
+    TFitResultPtr fitResult = h1->Fit(aget, "QRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+                                                     // the function range; S = save and return the fit result
+
+    if (fitResult->IsValid()) {
+        energy = aget->GetParameter(0);
+        time = aget->GetParameter(1);
+    } else {
+        // the fit failed, return -1 to indicate failure
+        energy = -1;
+        index = -1;
+        time = -1;
+        cout << " ------------------- WARNING: bad fit to signal with ID " << GetID() << "-------------------"
+             << endl;
+        cout << "------------------------ with maximum at time = " << maxRawTime
+             << " ns -----------------------" << endl;
+        cout << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
+             << " || " << aget->GetParameter(2) << endl;
+        cout << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
+        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
+        h1->Draw();
+        c2->Update();
+        getchar();
+        delete c2;
     }
 
     TVector2 fitParam(time, energy);
