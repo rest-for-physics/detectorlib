@@ -359,26 +359,20 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
                      << " Energy : " << eAvg << endl;
             }
+
         } else if (fMethod == "gaussFit") {
             TVector2 gaussFit = sgnl->GetMaxGauss();
 
-            // cout << "Gaus Fit: time = " << gausFit.X() << "; and energy = " << gausFit.Y() << endl;
-
-            Double_t time = gaussFit.X();
-            // Double_t time = gaussFit.X() * fSampling;  // time in micros
-            Double_t distanceToPlane = time * fDriftVelocity;
-
-            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-                cout << "Distance to plane : " << distanceToPlane << endl;
-
-            Double_t z = zPosition + fieldZDirection * distanceToPlane;
-
-            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
-            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
-
-            Double_t energy = gaussFit.Y();
+            Double_t z = -1.0;
+            if (gaussFit.X() >= 0.0) {
+                Double_t time = gaussFit.X();
+                Double_t distanceToPlane = time * fDriftVelocity;
+                z = zPosition + fieldZDirection * distanceToPlane;
+            }
+            Double_t energy = -1.0;
+            if (gaussFit.Y() >= 0.0) {
+                energy = gaussFit.Y();
+            }
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Signal event : " << sgnl->GetSignalID()
@@ -396,23 +390,16 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "landauFit") {
             TVector2 landauFit = sgnl->GetMaxLandau();
 
-            // cout << "Landau Fit: time = " << landauFit.X() << "; and energy = " << landauFit.Y() << endl;
-
-            Double_t time = landauFit.X();
-            // Double_t time = landauFit.X() * fSampling;  // time in micros
-            Double_t distanceToPlane = time * fDriftVelocity;
-
-            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-                cout << "Distance to plane : " << distanceToPlane << endl;
-
-            Double_t z = zPosition + fieldZDirection * distanceToPlane;
-
-            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
-            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
-
-            Double_t energy = landauFit.Y();
+            Double_t z = -1.0;
+            if (landauFit.X() >= 0.0) {
+                Double_t time = landauFit.X();
+                Double_t distanceToPlane = time * fDriftVelocity;
+                z = zPosition + fieldZDirection * distanceToPlane;
+            }
+            Double_t energy = -1.0;
+            if (landauFit.Y() >= 0.0) {
+                energy = landauFit.Y();
+            }
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Signal event : " << sgnl->GetSignalID()
@@ -430,23 +417,16 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "agetFit") {
             TVector2 agetFit = sgnl->GetMaxAget();
 
-            // cout << "Aget Fit: time = " << agetFit.X() << "; and energy = " << agetFit.Y() << endl;
-
-            Double_t time = agetFit.X();
-            // Double_t time = agetFit.X() * fSampling;  // time in micros
-            Double_t distanceToPlane = time * fDriftVelocity;
-
-            // Double_t distanceToPlane = (time - firstSignalPeakTime)* fSampling * fDriftVelocity;
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-                cout << "Distance to plane : " << distanceToPlane << endl;
-
-            Double_t z = zPosition + fieldZDirection * distanceToPlane;
-
-            // cout << "zPosition : " << zPosition << "; fieldZDirection : " << fieldZDirection << "; sampling
-            // : " << fSampling << " and driftV : " << fDriftVelocity << endl;
-
-            Double_t energy = agetFit.Y();
+            Double_t z = -1.0;
+            if (agetFit.X() >= 0.0) {
+                Double_t time = agetFit.X();
+                Double_t distanceToPlane = time * fDriftVelocity;
+                z = zPosition + fieldZDirection * distanceToPlane;
+            }
+            Double_t energy = -1.0;
+            if (agetFit.Y() >= 0.0) {
+                energy = agetFit.Y();
+            }
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Signal event : " << sgnl->GetSignalID()
