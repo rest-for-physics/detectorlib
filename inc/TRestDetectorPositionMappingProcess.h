@@ -13,14 +13,13 @@
 #define RestCore_TRestDetectorPositionMappingProcess
 
 #include <TH1D.h>
-
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
 #include "TRestDetectorGainMap.h"
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 class TRestDetectorPositionMappingProcess : public TRestEventProcess {
    private:
@@ -29,15 +28,15 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TRestDetectorGainMap* fCalib;        //!
     TRestDetectorGas* fGas;              //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
     // parameters
     bool fApplyGainCorrection;
     bool fCreateGainMap;
     TVector2 fEnergyCutRange;
     TVector2 fNHitsCutRange;
-    string fMappingSave;
+    std::string fMappingSave;
 
     double fNBinsX;
     double fNBinsY;
@@ -51,39 +50,39 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TH2F* fAreaGainMap;  //!
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    any GetInputEvent() const override { return fHitsEvent; }
+    any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
     double GetCorrection2(double x, double y);
     double GetCorrection3(double x, double y, double z);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "the mode is:" << endl;
-        metadata << (fApplyGainCorrection ? ">   " : "    ") << "Apply position correction map for spectrum "
-                 << endl;
-        metadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction map for each position"
-                 << endl;
-        metadata << "output mapping file: " << fMappingSave << endl;
-        metadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << endl;
-        metadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << endl;
-        metadata << "Binning: " << fNBinsX << ", " << fNBinsY << ", " << fNBinsZ << endl;
+        RESTMetadata << "the mode is:" << RESTendl;
+        RESTMetadata << (fApplyGainCorrection ? ">   " : "    ")
+                     << "Apply position correction std::map for spectrum " << RESTendl;
+        RESTMetadata << (fCreateGainMap ? ">   " : "    ")
+                     << "Create new correction std::map for each position" << RESTendl;
+        RESTMetadata << "output mapping file: " << fMappingSave << RESTendl;
+        RESTMetadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << RESTendl;
+        RESTMetadata << "Binning: " << fNBinsX << ", " << fNBinsY << ", " << fNBinsZ << RESTendl;
 
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "readoutAnalysis"; }
+    const char* GetProcessName() const override { return "readoutAnalysis"; }
 
     TRestDetectorPositionMappingProcess();
-    TRestDetectorPositionMappingProcess(char* cfgFileName);
+    TRestDetectorPositionMappingProcess(const char* configFilename);
 
     ~TRestDetectorPositionMappingProcess();
 
-    ClassDef(TRestDetectorPositionMappingProcess, 1);
+    ClassDefOverride(TRestDetectorPositionMappingProcess, 1);
 };
 #endif

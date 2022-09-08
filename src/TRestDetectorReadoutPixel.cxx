@@ -42,6 +42,7 @@
 ///
 
 #include "TRestDetectorReadoutPixel.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutPixel);
@@ -152,12 +153,12 @@ TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
 /// \brief Prints on screen the pixel details, origin, size, rotation
 ///
 void TRestDetectorReadoutPixel::Print() {
-    metadata << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
-             << GetSizeX() << "," << GetSizeY() << ") mm" << endl;
-    metadata << "       rotation : " << fRotation << " degrees"
-             << " type : ";
+    RESTMetadata << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
+                 << GetSizeX() << "," << GetSizeY() << ") mm" << RESTendl;
+    RESTMetadata << "       rotation : " << fRotation << " degrees"
+                 << " type : ";
     if (fTriangle)
-        metadata << "triangle" << endl;
+        RESTMetadata << "triangle" << RESTendl;
     else
-        metadata << "rectangle" << endl;
+        RESTMetadata << "rectangle" << RESTendl;
 }

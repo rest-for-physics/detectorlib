@@ -40,13 +40,11 @@
 #include "TRestStringOutput.h"
 #include "TRestTools.h"
 
-using namespace std;
-
 //! An metadata class to store basic detector information
 class TRestDetector : public TRestMetadata {
    public:
     /// The detector name
-    string fDetectorName = "REST Detector";
+    std::string fDetectorName = "REST Detector";
 
     /// The detector drift voltage in V
     Double_t fDriftVoltage = -1;
@@ -84,24 +82,24 @@ class TRestDetector : public TRestMetadata {
     Double_t fElectronicsThreshold = -1;
 
     /// The electronics gain in raw configuration format (hexadecimal)
-    string fElectronicsGain = "-1";
+    std::string fElectronicsGain = "-1";
     /// The electronics clock (sampling) in raw configuration format (hexadecimal)
-    string fElectronicsClock = "-1";
+    std::string fElectronicsClock = "-1";
     /// The electronics shaping in raw configuration format (hexadecimal)
-    string fElectronicsShaping = "-1";
+    std::string fElectronicsShaping = "-1";
 
-    void InitFromConfigFile() { ReadAllParameters(); }
+    void InitFromConfigFile() override { ReadAllParameters(); }
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
-    void UpdateMetadataMembers();
+    void UpdateMetadataMembers() override;
 
     // Constructors
     TRestDetector() {}
     // Destructor
     ~TRestDetector() {}
 
-    ClassDef(TRestDetector, 4);
+    ClassDefOverride(TRestDetector, 4);
 };
 
 #endif

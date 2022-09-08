@@ -23,10 +23,8 @@
 #ifndef RestCore_TRestDetectorHitsAnalysisProcess
 #define RestCore_TRestDetectorHitsAnalysisProcess
 
-#include <TH1D.h>
-
 #include <TCanvas.h>
-
+#include <TH1D.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -43,9 +41,9 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Bool_t fCylinderFiducial;  //!
     Bool_t fPrismFiducial;     //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -60,41 +58,43 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Double_t fFid_theta;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        if (fCylinderFiducial) metadata << "Cylinder fiducial active" << endl;
-        if (fPrismFiducial) metadata << "Prism fiducial active" << endl;
+        if (fCylinderFiducial) RESTMetadata << "Cylinder fiducial active" << RESTendl;
+        if (fPrismFiducial) RESTMetadata << "Prism fiducial active" << RESTendl;
 
-        metadata << " -------------------" << endl;
-        metadata << " Fiducial parameters" << endl;
-        metadata << " -------------------" << endl;
-        metadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")" << endl;
-        metadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")" << endl;
-        metadata << " R : " << fFid_R << endl;
-        metadata << " sX : " << fFid_sX << endl;
-        metadata << " sY : " << fFid_sY << endl;
-        metadata << " -------------------" << endl;
+        RESTMetadata << " -------------------" << RESTendl;
+        RESTMetadata << " Fiducial parameters" << RESTendl;
+        RESTMetadata << " -------------------" << RESTendl;
+        RESTMetadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")"
+                     << RESTendl;
+        RESTMetadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")"
+                     << RESTendl;
+        RESTMetadata << " R : " << fFid_R << RESTendl;
+        RESTMetadata << " sX : " << fFid_sX << RESTendl;
+        RESTMetadata << " sY : " << fFid_sY << RESTendl;
+        RESTMetadata << " -------------------" << RESTendl;
 
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsAnalysis"; }
+    const char* GetProcessName() const override { return "hitsAnalysis"; }
 
     TRestDetectorHitsAnalysisProcess();
-    TRestDetectorHitsAnalysisProcess(char* cfgFileName);
+    TRestDetectorHitsAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorHitsAnalysisProcess();
 
-    ClassDef(TRestDetectorHitsAnalysisProcess, 1);
+    ClassDefOverride(TRestDetectorHitsAnalysisProcess, 1);
 };
 #endif

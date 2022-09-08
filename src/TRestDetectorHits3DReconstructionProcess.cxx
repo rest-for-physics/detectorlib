@@ -162,22 +162,20 @@ struct stripehit {
 };
 
 ClassImp(TRestDetectorHits3DReconstructionProcess)
-    //______________________________________________________________________________
+
     TRestDetectorHits3DReconstructionProcess::TRestDetectorHits3DReconstructionProcess() {
     Initialize();
 }
 
-//______________________________________________________________________________
 TRestDetectorHits3DReconstructionProcess::~TRestDetectorHits3DReconstructionProcess() {
     delete fOutputHitsEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 }
 
@@ -190,7 +188,6 @@ void TRestDetectorHits3DReconstructionProcess::PrintMetadata() {
     EndPrintProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::InitProcess() {
     if (fDraw) {
         htemp = new TH2D("hhits", "hhits", 100, -PlaneMaxX, PlaneMaxX, 100, -PlaneMaxY, PlaneMaxY);
@@ -201,9 +198,8 @@ void TRestDetectorHits3DReconstructionProcess::InitProcess() {
 #endif
 }
 
-//______________________________________________________________________________
-TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     // sort with z from small to large
     fInputHitsEvent->Sort();
@@ -258,12 +254,13 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
         }
 
         if (stripehits.size() > 50) {
-            warning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
-                    << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")" << endl;
+            RESTWarning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
+                        << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")"
+                        << RESTendl;
             continue;
         }
 
-        if (fVerboseLevel >= REST_Extreme) {
+        if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
             cout << "stripehits: ";
             for (auto h : stripehits) {
                 cout << h.x1 << "," << h.y1 << "," << h.x2 << "," << h.y2 << "," << h.e << " ";
@@ -378,7 +375,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
                 H_PosE.insert(H_PosE.begin(), {(*H_PosE.begin()).first - 1, 0});
                 H_PosE.insert(H_PosE.end(), {(*(H_PosE.end() - 1)).first + 1, 0});
 
-                if (fVerboseLevel >= REST_Extreme) {
+                if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "V: ";
                     for (auto pose : V_PosE) {
                         cout << pose.first << "," << pose.second << " ";
@@ -407,7 +404,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
                     }
                 }
 
-                if (fVerboseLevel >= REST_Debug) {
+                if (fVerboseLevel >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     cout << i << " z: " << z << " " << Vsegs << " " << Hsegs << " -> "
                          << LogAmbiguity(Vsegs, Hsegs) << endl;
                     cout << endl;
@@ -535,7 +532,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* e
 
     SetObservableValue("MeanAmbiguity", totalambiguity / Nlayers);
     SetObservableValue("DiffRecon", numeric_limits<double>::quiet_NaN());
-    if (fCompareProc != NULL && fOutputHitsEvent->GetNumberOfHits() > 0 &&
+    if (fCompareProc != nullptr && fOutputHitsEvent->GetNumberOfHits() > 0 &&
         (fObservablesDefined.count("DiffRecon") != 0 || fDynamicObs)) {
         TRestDetectorHitsEvent* reference = (TRestDetectorHitsEvent*)fCompareProc->GetOutputEvent();
         auto hits1 = *fOutputHitsEvent->GetHits();
@@ -596,7 +593,6 @@ int TRestDetectorHits3DReconstructionProcess::Factorial(const int& n) {
     return result;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::EndProcess() {
     if (fDraw) {
         delete htemp;
@@ -604,7 +600,6 @@ void TRestDetectorHits3DReconstructionProcess::EndProcess() {
     }
 }
 
-//______________________________________________________________________________
 void TRestDetectorHits3DReconstructionProcess::InitFromConfigFile() {
     fZRange = StringToDouble(GetParameter("zRange", "5"));
     fDraw = StringToBool(GetParameter("draw", "false"));

@@ -77,6 +77,7 @@
 /// <hr>
 ///
 #include "TRestDetectorSignalChannelActivityProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorSignalChannelActivityProcess);
@@ -96,12 +97,13 @@ TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityPro
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityProcess(char* cfgFileName) {
+TRestDetectorSignalChannelActivityProcess::TRestDetectorSignalChannelActivityProcess(
+    const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -135,12 +137,12 @@ void TRestDetectorSignalChannelActivityProcess::Initialize() {
 /// the path to the config file must be specified using full path, absolute or
 /// relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 /// \param name The name of the specific metadata. It will be used to find the
-/// correspondig TRestGeant4AnalysisProcess section inside the RML.
+/// corresponding TRestGeant4AnalysisProcess section inside the RML.
 ///
-void TRestDetectorSignalChannelActivityProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorSignalChannelActivityProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -153,8 +155,10 @@ void TRestDetectorSignalChannelActivityProcess::LoadConfig(std::string cfgFilena
 void TRestDetectorSignalChannelActivityProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
 
-    debug << "TRestDetectorSignalChannelActivityProcess::InitProcess. Readout pointer : " << fReadout << endl;
-    if (GetVerboseLevel() >= REST_Info && fReadout) fReadout->PrintMetadata();
+    RESTDebug << "TRestDetectorSignalChannelActivityProcess::InitProcess. Readout pointer : " << fReadout
+              << RESTendl;
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info && fReadout)
+        fReadout->PrintMetadata();
 
     if (!fReadOnly) {
         fDaqChannelsHisto = new TH1D("daqChannelActivity", "daqChannelActivity", fDaqHistogramChannels,
@@ -194,10 +198,10 @@ void TRestDetectorSignalChannelActivityProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* inputEvent) {
     TString obsName;
 
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     /// Copying the signal event to the output event
 
@@ -250,7 +254,8 @@ TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* 
         }
     }
 
-    if (GetVerboseLevel() >= REST_Debug) fAnalysisTree->PrintObservables();
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+        fAnalysisTree->PrintObservables();
 
     return fSignalEvent;
 }

@@ -1,4 +1,4 @@
-set( LibraryVersion "1.6" )
+set(LibraryVersion "1.6")
 add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
 
 #find garfield libs and includes
@@ -22,15 +22,17 @@ if (${REST_GARFIELD} MATCHES "ON")
         message(STATUS "Using old Garfield CMake")
         set(GARFIELD_INSTALL $ENV{GARFIELD_HOME})
         include(FindGarfieldOld)
-        set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/Include)
-        set(external_include_dirs ${external_include_dirs} ${GARFIELD_INSTALL}/Heed)
-        set(external_libs "${external_libs} ${Garfield_LIBRARIES}")
+        message(STATUS Garfield_INCLUDE_DIRS ${Garfield_INCLUDE_DIRS})
+        message(STATUS Garfield_INCLUDE_DIRS ${Garfield_INCLUDE_Heed_DIRS})
+        message(STATUS Garfield_LIBRARIES ${Garfield_LIBRARIES})
+        set(external_include_dirs ${external_include_dirs} ${Garfield_INCLUDE_DIRS})
+        set(external_include_dirs ${external_include_dirs} ${Garfield_INCLUDE_Heed_DIRS})
+        set(external_libs ${external_libs} ${Garfield_LIBRARIES})
         add_definitions(-DUSE_Garfield_OLD)
     else ()
         message(FATAL_ERROR "Garfield not found")
     endif ()
 
-    set(GARFIELD_INSTALL $ENV{GARFIELD_INSTALL})
     message(STATUS "GARFIELD INSTALLATION: ${GARFIELD_INSTALL}")
 
     set(feature_added "Garfield")
@@ -47,3 +49,5 @@ COMPILELIB("")
 
 file(GLOB_RECURSE MAC "${CMAKE_CURRENT_SOURCE_DIR}/macros/*")
 INSTALL(FILES ${MAC} DESTINATION ./macros/detector)
+
+ADD_LIBRARY_TEST()

@@ -178,7 +178,7 @@
 /// previously stored TRestDetectorReadout class stored in a ROOT file,
 /// we can find the corresponding xy-position for a given readout channel
 /// id, module id, and readout plane, or the corresponding coordinates for
-/// a given channel inside a module containned in a readout plane.
+/// a given channel inside a module contained in a readout plane.
 ///
 /// The following code shows how we can identify the readout plane
 /// (*planeId*), the readout module (*moduleId*), and the readout channel
@@ -191,7 +191,7 @@
 ///            the readout plane modId =
 ///            fReadout->GetReadoutPlane(p)->isInsideDriftVolume( x, y, z );
 ///
-///            // If the hit is containned in the readout, the last function
+///            // If the hit is contained in the readout, the last function
 ///            returns the id of the
 ///            // readout module that contains the x,y coordinates.
 ///            if( modId >= 0 )
@@ -265,7 +265,9 @@
 ///
 
 #include "TRestDetectorReadout.h"
+
 using namespace std;
+
 bool RESTREADOUT_DECODINGFILE_ERROR = false;
 
 ClassImp(TRestDetectorReadout);
@@ -286,9 +288,9 @@ TRestDetectorReadout::TRestDetectorReadout() { Initialize(); }
 ///
 /// First TRestDetectorReadout section occurrence will be loaded.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName) : TRestMetadata(cfgFileName) {
+TRestDetectorReadout::TRestDetectorReadout(const char* configFilename) : TRestMetadata(configFilename) {
     cout << "Loading readout. This might take few seconds" << endl;
     Initialize();
 
@@ -305,11 +307,11 @@ TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName) : TRestMetad
 /// By default the config file must be specified with full path, absolute or
 /// relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 /// \param name The name of the TRestDetectorReadout section to be loaded
 ///
-TRestDetectorReadout::TRestDetectorReadout(const char* cfgFileName, string name)
-    : TRestMetadata(cfgFileName) {
+TRestDetectorReadout::TRestDetectorReadout(const char* configFilename, string name)
+    : TRestMetadata(configFilename) {
     cout << "Loading readout. This might take few seconds" << endl;
     Initialize();
 
@@ -380,7 +382,7 @@ TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlaneWithID(int id) {
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -398,10 +400,10 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
             }
         }
     }
-    return NULL;
+    return nullptr;
 }
 
-TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithdaqID(int daqId) {
+TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithDaqID(int daqId) {
     int planeID = -1, moduleID = -1, channelID = -1;
 
     GetPlaneModuleChannel(daqId, planeID, moduleID, channelID);
@@ -409,7 +411,7 @@ TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithdaqID(in
         return &fReadoutPlanes[planeID][moduleID][channelID];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -419,13 +421,13 @@ TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlane(int p) {
     if (p < fNReadoutPlanes)
         return &fReadoutPlanes[p];
     else {
-        warning << "TRestDetectorReadout::GetReadoutPlane." << endl;
-        warning << "Readout plane index exceeded." << endl;
-        warning << "Index requested : " << p << endl;
-        warning << "Number of readout planes defined : " << fNReadoutPlanes << endl;
+        RESTWarning << "TRestDetectorReadout::GetReadoutPlane." << RESTendl;
+        RESTWarning << "Readout plane index exceeded." << RESTendl;
+        RESTWarning << "Index requested : " << p << RESTendl;
+        RESTWarning << "Number of readout planes defined : " << fNReadoutPlanes << RESTendl;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -445,8 +447,8 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
 #pragma region ParseModuledefinition
     TiXmlElement* moduleDefinition = GetElement("readoutModule");
-    while (moduleDefinition != NULL) {
-        if (GetVerboseLevel() >= REST_Debug) {
+    while (moduleDefinition != nullptr) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
             cout << "------module-----------------" << endl;
             cout << moduleDefinition << endl;
             cout << "-----------------------------" << endl;
@@ -463,7 +465,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
     TiXmlElement* planeDefinition = GetElement("readoutPlane");
     vector<TRestDetectorReadoutModule> moduleVector;
     Int_t addedChannels = 0;
-    while (planeDefinition != NULL) {
+    while (planeDefinition != nullptr) {
         TRestDetectorReadoutPlane plane;
 
         plane.SetID(GetNumberOfReadoutPlanes());
@@ -479,14 +481,14 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         moduleVector.clear();
         TiXmlElement* moduleDefinition = GetElement("addReadoutModule", planeDefinition);
-        while (moduleDefinition != NULL) {
+        while (moduleDefinition != nullptr) {
             TString modName = GetFieldValue("name", moduleDefinition);
             Int_t mid = GetModuleDefinitionId(modName);
 
             if (mid == -1) {
-                ferr << "TRestDetectorReadout at <addReadoutModule>. Module name " << modName << " not found!"
-                     << endl;
-                ferr << "Please, check spelling" << endl;
+                RESTError << "TRestDetectorReadout at <addReadoutModule>. Module name " << modName
+                          << " not found!" << RESTendl;
+                RESTError << "Please, check spelling" << RESTendl;
                 exit(1);
             }
 
@@ -506,15 +508,15 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 fDecoding = true;
 
             if (fDecoding && !TRestTools::fileExists(decodingFile.c_str())) {
-                warning << "The decoding file does not exist!" << endl;
-                warning << "--------------------------------" << endl;
-                warning << "File : " << decodingFile << endl;
-                warning << "Default decoding will be used. readoutChannel=daqChannel" << endl;
-                warning << "To avoid this message and use the default decoding define : "
-                           "decodingFile=\"\""
-                        << endl;
-                warning << "--------------------------------" << endl;
-                warning << "Press a KEY to continue..." << endl;
+                RESTWarning << "The decoding file does not exist!" << RESTendl;
+                RESTWarning << "--------------------------------" << RESTendl;
+                RESTWarning << "File : " << decodingFile << RESTendl;
+                RESTWarning << "Default decoding will be used. readoutChannel=daqChannel" << RESTendl;
+                RESTWarning << "To avoid this message and use the default decoding define : "
+                               "decodingFile=\"\""
+                            << RESTendl;
+                RESTWarning << "--------------------------------" << RESTendl;
+                RESTWarning << "Press a KEY to continue..." << RESTendl;
                 getchar();
                 fDecoding = false;
                 RESTREADOUT_DECODINGFILE_ERROR = true;
@@ -528,8 +530,9 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 Int_t daq, readout;
                 while (!feof(f)) {
                     if (fscanf(f, "%d\t%d\n", &daq, &readout) <= 0) {
-                        ferr << "TRestDetectorReadout::InitFromConfigFile. Problem reading decoding" << endl;
-                        ferr << "This error might need support at REST forum" << endl;
+                        RESTError << "TRestDetectorReadout::InitFromConfigFile. Problem reading decoding"
+                                  << RESTendl;
+                        RESTError << "This error might need support at REST forum" << RESTendl;
                         exit(-1);
                     }
                     // we skip blank daq channels if readout id is <0
@@ -542,7 +545,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 fclose(f);
             }
 
-            if (GetVerboseLevel() >= REST_Debug) {
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "------module-----------------" << endl;
                 cout << moduleDefinition << endl;
                 cout << "-----------------------------" << endl;
@@ -550,9 +553,9 @@ void TRestDetectorReadout::InitFromConfigFile() {
             }
 
             if (fDecoding && (unsigned int)fModuleDefinitions[mid].GetNumberOfChannels() != rChannel.size()) {
-                ferr << "TRestDetectorReadout."
-                     << " The number of channels defined in the readout is not the same"
-                     << " as the number of channels found in the decoding." << endl;
+                RESTError << "TRestDetectorReadout."
+                          << " The number of channels defined in the readout is not the same"
+                          << " as the number of channels found in the decoding." << RESTendl;
                 exit(1);
             }
 
@@ -606,7 +609,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {
     TRestDetectorReadoutModule* mod = new TRestDetectorReadoutModule();
     TRestDetectorReadoutModule& module = *mod;
-    if (GetVerboseLevel() >= REST_Warning) module.EnableWarnings();
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Warning) module.EnableWarnings();
 
     module.SetName(GetFieldValue("name", moduleDefinition));
     module.SetSize(StringTo2DVector(GetFieldValue("size", moduleDefinition)));
@@ -618,7 +621,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     vector<TRestDetectorReadoutChannel> channelVector;
     vector<int> channelIDVector;
     TiXmlElement* channelDefinition = GetElement("readoutChannel", moduleDefinition);
-    while (channelDefinition != NULL) {
+    while (channelDefinition != nullptr) {
         TRestDetectorReadoutChannel channel;
 
         Int_t id = StringToInteger(GetFieldValue("id", channelDefinition));
@@ -629,7 +632,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         vector<TRestDetectorReadoutPixel> pixelVector;
         vector<int> pixelIDVector;
         TiXmlElement* pixelDefinition = GetElement("addPixel", channelDefinition);
-        while (pixelDefinition != NULL) {
+        while (pixelDefinition != nullptr) {
             TRestDetectorReadoutPixel pixel;
 
             pixel.SetOrigin(StringTo2DVector(GetFieldValue("origin", pixelDefinition)));
@@ -646,9 +649,10 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         }
 
         if (pixelIDVector.size() > 0 && pixelIDVector.size() != pixelVector.size()) {
-            ferr << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
-                    "readout module definition!"
-                 << endl;
+            RESTError
+                << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
+                   "readout module definition!"
+                << RESTendl;
             exit(0);
         }
 
@@ -664,9 +668,9 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         }
 
         if (channel.GetNumberOfPixels() != pixelVector.size()) {
-            ferr << "pixel id definition may be wrong! check your "
-                    "readout module definition!"
-                 << endl;
+            RESTError << "pixel id definition may be wrong! check your "
+                         "readout module definition!"
+                      << RESTendl;
             exit(0);
         }
 #pragma endregion
@@ -676,11 +680,11 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     }
 
     if (channelIDVector.size() > 0 && channelIDVector.size() != channelVector.size()) {
-        ferr << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
-             << "check your readout module definition!" << endl;
-        ferr << " " << endl;
-        ferr << "channelIDVector size : " << channelIDVector.size() << endl;
-        ferr << "channel vector size : " << channelVector.size() << endl;
+        RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
+                  << "check your readout module definition!" << RESTendl;
+        RESTError << " " << RESTendl;
+        RESTError << "channelIDVector size : " << channelIDVector.size() << RESTendl;
+        RESTError << "channel vector size : " << channelVector.size() << RESTendl;
 
         exit(0);
     }
@@ -697,11 +701,11 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     }
 
     if (module.GetNumberOfChannels() != channelVector.size()) {
-        ferr << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
-             << "check your readout module definition!" << endl;
-        ferr << " " << endl;
-        ferr << "Module number of channels : " << module.GetNumberOfChannels() << endl;
-        ferr << "channel vector size : " << channelVector.size() << endl;
+        RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
+                  << "check your readout module definition!" << RESTendl;
+        RESTError << " " << RESTendl;
+        RESTError << "Module number of channels : " << module.GetNumberOfChannels() << RESTendl;
+        RESTError << "channel vector size : " << channelVector.size() << RESTendl;
 
         exit(0);
     }
@@ -744,25 +748,56 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
     }
 }
 
-Int_t TRestDetectorReadout::GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
-    double x = hitpos.X();
-    double y = hitpos.Y();
-    double z = hitpos.Z();
-
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(x, y, z);
+        int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
         if (m >= 0) {
             // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
             TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            Int_t readoutChannel = mod->FindChannel(x, y);
+            Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
             if (readoutChannel >= 0) {
                 planeID = plane->GetID();
                 moduleID = mod->GetModuleID();
                 channelID = readoutChannel;
                 return mod->GetChannel(readoutChannel)->GetDaqID();
             }
+        }
+    }
+    return -1;
+}
+
+///////////////////////////////////////////////
+/// \brief This method recovers the channel daq id corresponding to the (x,y,z) coordinates
+/// given by argument. It will fill the value the corresponding moduleID, and channelID where
+/// the hit was found, while it will return the value of the daq channel id.
+///
+/// It will search only at the specified readout plane.
+///
+/// This method requires to specify the plane id where the readout channel is to be found. If
+/// not given, the default value will be planeId = 0.
+///
+/// \return the value of the daq id corresponding to the readout channel
+//
+///
+Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID,
+                                                            Int_t& channelID, Int_t planeId) {
+    if (planeId > GetNumberOfReadoutPlanes()) {
+        RESTWarning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << RESTendl;
+        RESTWarning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << RESTendl;
+        return -1;
+    }
+
+    TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
+    int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+    if (m >= 0) {
+        TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
+        Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
+        if (readoutChannel >= 0) {
+            moduleID = mod->GetModuleID();
+            channelID = readoutChannel;
+            return mod->GetChannel(readoutChannel)->GetDaqID();
         }
     }
     return -1;
@@ -815,15 +850,15 @@ void TRestDetectorReadout::PrintMetadata(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
         TRestMetadata::PrintMetadata();
 
-        metadata << "Number of readout planes : " << fNReadoutPlanes << endl;
-        metadata << "Decoding was defined : ";
+        RESTMetadata << "Number of readout planes : " << fNReadoutPlanes << RESTendl;
+        RESTMetadata << "Decoding was defined : ";
         if (fDecoding)
-            metadata << "YES" << endl;
+            RESTMetadata << "YES" << RESTendl;
         else
-            metadata << "NO" << endl;
-        metadata << "-----------------------------------" << endl;
+            RESTMetadata << "NO" << RESTendl;
+        RESTMetadata << "-----------------------------------" << RESTendl;
         for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) fReadoutPlanes[p].Print(DetailLevel - 1);
-        metadata << "****************************************" << endl;
+        RESTMetadata << "****************************************" << RESTendl;
         cout << endl;
     }
 }

@@ -31,9 +31,9 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     TRandom3* fRandom;  //!
 #endif
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -52,47 +52,47 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fSeed = 0;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << " attachment coeficient : " << fAttachment << " V/cm" << endl;
-        metadata << " gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << " longitudinal diffusion coefficient : " << fLonglDiffCoeff << " cm^1/2" << endl;
-        metadata << " transversal diffusion coefficient : " << fTransDiffCoeff << " cm^1/2" << endl;
-        metadata << " W value : " << fWvalue << " eV" << endl;
+        RESTMetadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << " attachment coeficient : " << fAttachment << " V/cm" << RESTendl;
+        RESTMetadata << " gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << " longitudinal diffusion coefficient : " << fLonglDiffCoeff << " cm^1/2" << RESTendl;
+        RESTMetadata << " transversal diffusion coefficient : " << fTransDiffCoeff << " cm^1/2" << RESTendl;
+        RESTMetadata << " W value : " << fWvalue << " eV" << RESTendl;
 
-        metadata << " Maximum number of hits : " << fMaxHits << endl;
+        RESTMetadata << " Maximum number of hits : " << fMaxHits << RESTendl;
 
-        metadata << " seed : " << fSeed << endl;
+        RESTMetadata << " seed : " << fSeed << RESTendl;
 
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fGas; }
+    TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    TString GetProcessName() { return (TString) "electronDiffusion"; }
+    const char* GetProcessName() const override { return "electronDiffusion"; }
 
-    Double_t GetElectricField() { return fElectricField; }
-    Double_t GetAttachmentCoefficient() { return fAttachment; }
-    Double_t GetGasPressure() { return fGasPressure; }
+    inline Double_t GetElectricField() const { return fElectricField; }
+    inline Double_t GetAttachmentCoefficient() const { return fAttachment; }
+    inline Double_t GetGasPressure() const { return fGasPressure; }
 
     // Constructor
     TRestDetectorElectronDiffusionProcess();
-    TRestDetectorElectronDiffusionProcess(char* cfgFileName);
+    TRestDetectorElectronDiffusionProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
-    ClassDef(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
-                                                         // inherited from TRestEventProcess
+    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
+                                                                 // inherited from TRestEventProcess
 };
 #endif

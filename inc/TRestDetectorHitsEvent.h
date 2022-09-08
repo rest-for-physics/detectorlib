@@ -2,74 +2,52 @@
 #ifndef TRestSoft_TRestDetectorHitsEvent
 #define TRestSoft_TRestDetectorHitsEvent
 
+#include <TAxis.h>
+#include <TGraph.h>
+#include <TGraph2D.h>
+#include <TH2F.h>
+#include <TMath.h>
+#include <TRestEvent.h>
+#include <TRestHits.h>
+#include <TVector3.h>
+
 #include <iostream>
 
-#include "TArrayI.h"
-#include "TAxis.h"
-#include "TGraph2D.h"
-#include "TH2F.h"
-#include "TMath.h"
-#include "TObject.h"
-
-#include <TGraph.h>
-#include "TH2F.h"
-
-#include "TVector3.h"
-
-#include "TRestEvent.h"
-#include "TRestHits.h"
-#include "TVector3.h"
-
-//! An event data type that register a vector of TRestHits,
+//! An event data type that register a std::vector of TRestHits,
 //! allowing us to save a 3-coordinate position and energy.
 class TRestDetectorHitsEvent : public TRestEvent {
    private:
-    /// An auxiliar TRestHits structure to register hits on XZ projection
+    /// An auxiliary TRestHits structure to register hits on XZ projection
     TRestHits* fXZHits;  //!
-    /// An auxiliar TRestHits structure to register hits on YZ projection
+    /// An auxiliary TRestHits structure to register hits on YZ projection
     TRestHits* fYZHits;  //!
 
-    /// An auxiliar TRestHits structure to register hits on XYZ projection
+    /// An auxiliary TRestHits structure to register hits on XYZ projection
     TRestHits* fXYZHits;  //!
-
-    /// Stores the minimum x-position value. It is initialized by SetBoundaries.
-    Double_t fMinX;  //!
-    /// Stores the maximum x-position value. It is initialized by SetBoundaries.
-    Double_t fMaxX;  //!
-
-    /// Stores the minimum y-position value. It is initialized by SetBoundaries.
-    Double_t fMinY;  //!
-    /// Stores the maximum y-position value. It is initialized by SetBoundaries.
-    Double_t fMaxY;  //!
-
-    /// Stores the minimum z-position value. It is initialized by SetBoundaries.
-    Double_t fMinZ;  //!
-    /// Stores the maximum z-position value. It is initialized by SetBoundaries.
-    Double_t fMaxZ;  //!
 
    protected:
     // TODO These graphs should be placed in TRestHits?
     // (following similar GetGraph implementation in TRestDetectorSignal)
 
-    /// An auxiliar TGraph pointer to visualize hits on XY-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XY-projection.
     TGraph* fXYHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on XZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on XZ-projection.
     TGraph* fXZHitGraph;  //!
-    /// An auxiliar TGraph pointer to visualize hits on YZ-projection.
+    /// An auxiliary TGraph pointer to visualize hits on YZ-projection.
     TGraph* fYZHitGraph;  //!
 
-    /// An auxiliar TH2F histogram to visualize hits on XY-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XY-projection.
     TH2F* fXYHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on YZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on YZ-projection.
     TH2F* fYZHisto;  //!
-    /// An auxiliar TH2F histogram to visualize hits on XZ-projection.
+    /// An auxiliary TH2F histogram to visualize hits on XZ-projection.
     TH2F* fXZHisto;  //!
 
-    /// An auxiliar TH1F histogram to visualize hits on X-projection.
+    /// An auxiliary TH1F histogram to visualize hits on X-projection.
     TH1F* fXHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Y-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Y-projection.
     TH1F* fYHisto;  //!
-    /// An auxiliar TH1F histogram to visualize hits on Z-projection.
+    /// An auxiliary TH1F histogram to visualize hits on Z-projection.
     TH1F* fZHisto;  //!
 
     /// The hits structure that is is saved to disk.
@@ -79,27 +57,27 @@ class TRestDetectorHitsEvent : public TRestEvent {
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
     void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
-    void SetBoundaries();
-    void Sort(bool(comparecondition)(const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) = 0);
+    void Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
+                                     const TRestHits::iterator& hit2) = nullptr);
     void Shuffle(int NLoop);
 
-    Int_t GetNumberOfHits() { return fHits->GetNumberOfHits(); }
+    inline size_t GetNumberOfHits() const { return fHits->GetNumberOfHits(); }
 
-    TRestHits* GetHits() { return fHits; }
+    inline TRestHits* GetHits() const { return fHits; }
 
     /// Returns the X-coordinate of hit entry `n` in mm.
-    Double_t GetX(int n) { return fHits->GetX(n); }
+    inline Double_t GetX(int n) const { return fHits->GetX(n); }
 
     /// Returns the Y-coordinate of hit entry `n` in mm.
-    Double_t GetY(int n) { return fHits->GetY(n); }
+    inline Double_t GetY(int n) const { return fHits->GetY(n); }
 
     /// Returns the Z-coordinate of hit entry `n` in mm.
-    Double_t GetZ(int n) { return fHits->GetZ(n); }
+    inline Double_t GetZ(int n) const { return fHits->GetZ(n); }
 
-    REST_HitType GetType(int n) { return fHits->GetType(n); }
+    inline REST_HitType GetType(int n) const { return fHits->GetType(n); }
 
     /// Returns the squared distance between hits `n` and `m`.
-    Double_t GetDistance2(int n, int m) { return fHits->GetDistance2(n, m); }
+    inline Double_t GetDistance2(int n, int m) const { return fHits->GetDistance2(n, m); }
 
     TRestHits* GetXZHits();
     TRestHits* GetYZHits();
@@ -107,44 +85,44 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     virtual void Initialize();
 
-    virtual void PrintEvent() { TRestDetectorHitsEvent::PrintEvent(-1); };
-    virtual void PrintEvent(Int_t nHits);
+    inline virtual void PrintEvent() const { TRestDetectorHitsEvent::PrintEvent(-1); };
+    virtual void PrintEvent(Int_t nHits) const;
 
-    TVector3 GetPosition(int n) { return fHits->GetPosition(n); }
+    inline TVector3 GetPosition(int n) const { return fHits->GetPosition(n); }
 
-    TVector3 GetMeanPosition() { return fHits->GetMeanPosition(); }
+    inline TVector3 GetMeanPosition() const { return fHits->GetMeanPosition(); }
 
-    Int_t GetNumberOfHitsX() { return fHits->GetNumberOfHitsX(); }
-    Int_t GetNumberOfHitsY() { return fHits->GetNumberOfHitsY(); }
+    inline Int_t GetNumberOfHitsX() const { return fHits->GetNumberOfHitsX(); }
+    inline Int_t GetNumberOfHitsY() const { return fHits->GetNumberOfHitsY(); }
 
-    Double_t GetMeanPositionX() { return fHits->GetMeanPositionX(); }
-    Double_t GetMeanPositionY() { return fHits->GetMeanPositionY(); }
-    Double_t GetMeanPositionZ() { return fHits->GetMeanPositionZ(); }
-    Double_t GetSigmaXY2() { return fHits->GetSigmaXY2(); }
-    Double_t GetSigmaX() { return fHits->GetSigmaX(); }
-    Double_t GetSigmaY() { return fHits->GetSigmaY(); }
+    inline Double_t GetMeanPositionX() const { return fHits->GetMeanPositionX(); }
+    inline Double_t GetMeanPositionY() const { return fHits->GetMeanPositionY(); }
+    inline Double_t GetMeanPositionZ() const { return fHits->GetMeanPositionZ(); }
+    inline Double_t GetSigmaXY2() const { return fHits->GetSigmaXY2(); }
+    inline Double_t GetSigmaX() const { return fHits->GetSigmaX(); }
+    inline Double_t GetSigmaY() const { return fHits->GetSigmaY(); }
 
-    Double_t GetGaussSigmaX() { return GetXZHits()->GetGaussSigmaX(); }
-    Double_t GetGaussSigmaY() { return GetYZHits()->GetGaussSigmaY(); }
-    Double_t GetGaussSigmaZ() { return fHits->GetGaussSigmaZ(); }
+    inline Double_t GetGaussSigmaX() { return GetXZHits()->GetGaussSigmaX(); }
+    inline Double_t GetGaussSigmaY() { return GetYZHits()->GetGaussSigmaY(); }
+    inline Double_t GetGaussSigmaZ() const { return fHits->GetGaussSigmaZ(); }
 
-    Double_t GetSigmaZ2() { return fHits->GetSigmaZ2(); }
-    Double_t GetSkewXY() { return fHits->GetSkewXY(); }
-    Double_t GetSkewZ() { return fHits->GetSkewZ(); }
+    inline Double_t GetSigmaZ2() const { return fHits->GetSigmaZ2(); }
+    inline Double_t GetSkewXY() const { return fHits->GetSkewXY(); }
+    inline Double_t GetSkewZ() const { return fHits->GetSkewZ(); }
 
-    Double_t GetMaximumHitEnergy() { return fHits->GetMaximumHitEnergy(); }
-    Double_t GetMinimumHitEnergy() { return fHits->GetMinimumHitEnergy(); }
-    Double_t GetMeanHitEnergy() { return fHits->GetMeanHitEnergy(); }
+    inline Double_t GetMaximumHitEnergy() const { return fHits->GetMaximumHitEnergy(); }
+    inline Double_t GetMinimumHitEnergy() const { return fHits->GetMinimumHitEnergy(); }
+    inline Double_t GetMeanHitEnergy() const { return fHits->GetMeanHitEnergy(); }
 
-    Double_t GetEnergyX() { return fHits->GetEnergyX(); }
-    Double_t GetEnergyY() { return fHits->GetEnergyY(); }
-    Double_t GetTotalDepositedEnergy() { return fHits->fTotEnergy; }
-    Double_t GetTotalEnergy() { return fHits->fTotEnergy; }
-    Double_t GetEnergy() { return fHits->GetEnergy(); }
-    Double_t GetEnergy(int n) { return fHits->GetEnergy(n); }
-    Double_t GetTime(int n) { return GetHits()->GetTime(n); }  // return value in us
+    inline Double_t GetEnergyX() const { return fHits->GetEnergyX(); }
+    inline Double_t GetEnergyY() const { return fHits->GetEnergyY(); }
+    inline Double_t GetTotalDepositedEnergy() const { return fHits->GetTotalDepositedEnergy(); }
+    inline Double_t GetTotalEnergy() const { return fHits->GetTotalEnergy(); }
+    inline Double_t GetEnergy() const { return fHits->GetEnergy(); }
+    inline Double_t GetEnergy(int n) const { return fHits->GetEnergy(n); }
+    inline Double_t GetTime(int n) const { return GetHits()->GetTime(n); }  // return value in us
 
-    Int_t GetClosestHit(TVector3 position) { return fHits->GetClosestHit(position); }
+    inline Int_t GetClosestHit(const TVector3& position) const { return fHits->GetClosestHit(position); }
 
     // Inside Cylinder methods
     Bool_t anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius);
@@ -162,24 +140,25 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                      Double_t theta);
     TVector3 GetMeanPositionInPrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY, Double_t theta);
 
-    // Get closest distance to cylinder walls methods
+    // Get distance to cylinder walls methods
     Double_t GetClosestHitInsideDistanceToCylinderWall(TVector3 x0, TVector3 x1, Double_t radius);
     Double_t GetClosestHitInsideDistanceToCylinderTop(TVector3 x0, TVector3 x1, Double_t radius);
     Double_t GetClosestHitInsideDistanceToCylinderBottom(TVector3 x0, TVector3 x1, Double_t radius);
 
-    // Get closest distance to prism walls methods
+    // Get distance to prism walls methods
     Double_t GetClosestHitInsideDistanceToPrismWall(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                     Double_t theta);
     Double_t GetClosestHitInsideDistanceToPrismTop(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                    Double_t theta);
-    Double_t GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1, Double_t sizeX,
+    Double_t GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0, const TVector3& x1, Double_t sizeX,
                                                       Double_t sizeY, Double_t theta);
 
-    TPad* DrawEvent(TString option = "");
-    void DrawHistograms(Int_t& column, Double_t pitch = 3, TString histOption = "");
+    TPad* DrawEvent(const TString& option = "");
+
+    void DrawHistograms(Int_t& column, const TString& histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
-    // Construtor
+    // Constructor
     TRestDetectorHitsEvent();
     // Destructor
     ~TRestDetectorHitsEvent();

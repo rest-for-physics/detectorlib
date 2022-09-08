@@ -14,40 +14,36 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorDaqChannelSwitchingProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
 
-#include "TRestDetectorDaqChannelSwitchingProcess.h"
 using namespace std;
 
-ClassImp(TRestDetectorDaqChannelSwitchingProcess)
-    //______________________________________________________________________________
-    TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorDaqChannelSwitchingProcess);
 
-//______________________________________________________________________________
+TRestDetectorDaqChannelSwitchingProcess::TRestDetectorDaqChannelSwitchingProcess() { Initialize(); }
+
 TRestDetectorDaqChannelSwitchingProcess::~TRestDetectorDaqChannelSwitchingProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
     SetSectionName(this->ClassName());
 
     fFirstDaqChannelDef.clear();
     fIgnoreUndefinedModules = false;
-    fReadout = NULL;
-    fEvent = NULL;
+    fReadout = nullptr;
+    fEvent = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout != NULL) {
+    if (fReadout != nullptr) {
         auto iter = fFirstDaqChannelDef.begin();
         while (iter != fFirstDaqChannelDef.end()) {
             auto mod = fReadout->GetReadoutModuleWithID(iter->first);
-            if (mod == NULL) continue;
+            if (mod == nullptr) continue;
             // finding out the old "firstdaqchannel" value
             int mindaq = 1e9;
             for (int i = 0; i < mod->GetNumberOfChannels(); i++) {
@@ -81,23 +77,20 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
     }
 }
 
-//______________________________________________________________________________
-TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* eventInput) {
-    fEvent = eventInput;
-    return eventInput;
+TRestEvent* TRestDetectorDaqChannelSwitchingProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fEvent = inputEvent;
+    return inputEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorDaqChannelSwitchingProcess::EndProcess() {}
 
-//______________________________________________________________________________
 // redefining module's first daq channel:
 // <module id="1" firstdaqchannel="136*3" />
 // ignore undefined modules modules by setting their channel's daq id to -1e9
 // <parameter name="ignoreUndefinedModules" value="true" />
 void TRestDetectorDaqChannelSwitchingProcess::InitFromConfigFile() {
     TiXmlElement* ele = fElement->FirstChildElement("module");
-    while (ele != NULL) {
+    while (ele != nullptr) {
         int id = StringToInteger(GetParameter("id", ele));
         int channel = StringToInteger(GetParameter("firstdaqchannel", ele));
         if (id == -1 || channel == -1) continue;

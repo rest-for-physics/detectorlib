@@ -23,16 +23,15 @@
 #ifndef RestCore_TRestDetectorReadoutPlane
 #define RestCore_TRestDetectorReadoutPlane
 
-#include <iostream>
+#include <TGraph.h>
+#include <TH2Poly.h>
+#include <TObject.h>
+#include <TRestMetadata.h>
 
-#include "TObject.h"
+#include <iostream>
 
 #include "TRestDetectorReadoutChannel.h"
 #include "TRestDetectorReadoutModule.h"
-#include "TRestMetadata.h"
-
-#include <TGraph.h>
-#include <TH2Poly.h>
 
 /// A class to store the readout plane definition used in TRestDetectorReadout. It
 /// allows to integrate any number of independent readout modules.
@@ -43,7 +42,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     TVector3 fPosition;            ///< The position of the readout plane. The relative position
                                    ///< of the modules will be shifted by this value.
-    TVector3 fPlaneVector;         ///< The plane vector definning the plane orientation
+    TVector3 fPlaneVector;         ///< The plane std::vector definning the plane orientation
                                    ///< and the side of the active volume.
     TVector3 fCathodePosition;     ///< The cathode position which delimites the active
                                    ///< volume together with the readout plane.
@@ -57,8 +56,8 @@ class TRestDetectorReadoutPlane : public TObject {
     Int_t fNModules;  ///< The number of modules that have been added to the
                       ///< readout plane
     std::vector<TRestDetectorReadoutModule>
-        fReadoutModules;  ///< A vector of the instances of TRestDetectorReadoutModule
-                          ///< containned in the readout plane.
+        fReadoutModules;  ///< A std::vector of the instances of TRestDetectorReadoutModule
+                          ///< contained in the readout plane.
 
     void Initialize();
 
@@ -87,22 +86,22 @@ class TRestDetectorReadoutPlane : public TObject {
 
     // Getters
     /// Returns an integer with the plane id number.
-    Int_t GetID() { return fPlaneID; }
+    inline Int_t GetID() const { return fPlaneID; }
 
     /// Returns a TVector3 with the readout plane position
-    TVector3 GetPosition() { return fPosition; }
+    inline TVector3 GetPosition() const { return fPosition; }
 
     /// Returns a TVector3 with the cathode position
-    TVector3 GetCathodePosition() { return fCathodePosition; }
+    inline TVector3 GetCathodePosition() const { return fCathodePosition; }
 
-    /// Returns a TVector3 with a vector normal to the readout plane
-    TVector3 GetPlaneVector() { return fPlaneVector; }
+    /// Returns a TVector3 with a std::vector normal to the readout plane
+    inline TVector3 GetPlaneVector() const { return fPlaneVector; }
 
     /// Returns the charge collection ratio at this readout plane
-    Double_t GetChargeCollection() { return fChargeCollection; }
+    inline Double_t GetChargeCollection() const { return fChargeCollection; }
 
     /// Returns the total drift distance
-    Double_t GetTotalDriftDistance() { return fTotalDriftDistance; }
+    inline Double_t GetTotalDriftDistance() const { return fTotalDriftDistance; }
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.
@@ -120,9 +119,9 @@ class TRestDetectorReadoutPlane : public TObject {
 
     TRestDetectorReadoutModule& operator[](int mod) { return fReadoutModules[mod]; }
 
-    /// Returns a pointer to a readout module using its vector index
+    /// Returns a pointer to a readout module using its std::vector index
     TRestDetectorReadoutModule* GetModule(int mod) {
-        if (mod >= GetNumberOfModules()) return NULL;
+        if (mod >= GetNumberOfModules()) return nullptr;
         return &fReadoutModules[mod];
     }
 
@@ -166,7 +165,7 @@ class TRestDetectorReadoutPlane : public TObject {
     TH2Poly* GetReadoutHistogram();
     void GetBoundaries(double& xmin, double& xmax, double& ymin, double& ymax);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutPlane();
     // Destructor
     virtual ~TRestDetectorReadoutPlane();

@@ -23,30 +23,33 @@
 //////////////////////////////////////////////////////////////////////////
 ///
 /// TRestDetectorSignalToHitsProcess will use the readout definition to
-/// transform a TRestDetectorSignalEvent into a TRestDetectorHitsEvent. 
+/// transform a TRestDetectorSignalEvent into a TRestDetectorHitsEvent.
 /// The physical time on the input event will be associated with a physical
 /// spatial Z-coordinate using the gas drift velocity given by the user as
-/// the metadata parameter "driftVelocity". If the drift velocity is not 
-/// specified by the user, or it is negative, the process will try to 
-/// retrieve the drift velocity from the TRestDetectorGas metadata 
+/// the metadata parameter "driftVelocity". If the drift velocity is not
+/// specified by the user, or it is negative, the process will try to
+/// retrieve the drift velocity from the TRestDetectorGas metadata
 /// definition that should have been defined, and therefore available to
 /// the TRestRun instance. In the case that the drift velocity is retrieved
 /// from TRestDetectorGas two more parameters become relevant, the detector
-/// pressure, and the drift field, that play a role on the value of the 
+/// pressure, and the drift field, that play a role on the value of the
 /// drift velocity.
 ///
 /// Therefore, relevant parameters (see also the process header) are:
-/// * **driftVelocity**: The value of the electrons drift velocity. 
+/// * **driftVelocity**: The value of the electrons drift velocity.
 /// Typically in mm/us.
-/// * **pressure**: Gas pressure in bar. Relevant only if TRestDetectorGas 
+/// * **gasPressure**: Gas pressure in bar. Relevant only if TRestDetectorGas
 /// is used.
-/// * **electricField**: Electric field. Typically in V/cm. Relevant only 
+/// * **electricField**: Electric field. Typically in V/cm. Relevant only
 /// if TRestDetectorGas is used.
+/// * **intWindow**: In case intwindow method is selected, it defines the
+/// integral window (us) that will be used to define the window in which
+/// the data points are integrated
 ///
-/// On top of that, this process will need to get access to a 
+/// On top of that, this process will need to get access to a
 /// TRestDetectorReadout definition in order to transform the corresponding
 /// signal id found at each signal in TRestDetectorSignalEvent to a spatial
-/// physical position in the XY plane. The readout plane position at 
+/// physical position in the XY plane. The readout plane position at
 /// TRestDetectorReadout definition is also used as a reference to obtain the
 /// final Z-coordinate in this process.
 ///
@@ -54,41 +57,50 @@
 /// to reality if the physical time given at the TRestDetectorSignalEvent
 /// corresponds with the drift time to the readout plane. This is usually not
 /// the case, since our electronics system does not know the interaction time.
-/// Although, this might be the case if the interaction light is measured 
+/// Although, this might be the case if the interaction light is measured
 /// using a PMT, or the results are coming from Monte Carlo simulated data.
-/// 
-/// In order to transform the points found at each TRestSignal inside a 
+///
+/// In order to transform the points found at each TRestSignal inside a
 /// TRestDetectorSignalEvent, there are different methods that might lead to
 /// different results. Those are defined at the "method" metadata parameter.
 /// If this parameter is not given, its default value will be "tripleMax".
 ///
 /// The possible values for the "method" metadata parameter are:
-/// * **onlyMax**: It will transport to the TRestDetectorHitsProcess only 
+/// * **onlyMax**: It will transport to the TRestDetectorHitsProcess only
 /// the point at the maximum amplitude of each TRestSignal found inside the
-/// TRestDetectorSignalEvent. The Z-coordinate will be directly connected 
+/// TRestDetectorSignalEvent. The Z-coordinate will be directly connected
 /// with the time position at the maximum amplitude of the signal.
-/// * **tripleMax(default)**: It will transport to the 
-/// TRestDetectorHitsProcess only the three points with higher amplitude of 
+/// * **tripleMax**: It will transport to the
+/// TRestDetectorHitsProcess only the three points with higher amplitude of
 /// each TRestSignal found inside the TRestDetectorSignalEvent. In practice
 /// this is very similar to *onlyMax*, but the effective energy is smoothed
 /// by including two additional points.
+/// * **tripleMaxAverage(default)**: It will transport to the
+/// TRestDetectorHitsProcess the average of the three points with higher
+/// amplitude of each TRestSignal found inside the TRestDetectorSignalEvent.
+/// In practice this is very similar to *onlyMax*, but the effective energy
+/// is smoothed by including two additional points. Another advantage is that
+/// it avoids tripling (x3) the number of hits compared to *tripleMax*.
 /// * **qCenter**: It will consider the shape of the signal to determine the
-/// the time used to transform to a Z-coordinate. The energy is also 
+/// the time used to transform to a Z-coordinate. The energy is also
 /// averaged on all points (Perhaps this is not the most appropiate?).
-/// * **all**: It will simply transport all points found at the TRestSignal 
+/// * **all**: It will simply transport all points found at the TRestSignal
 /// to the TRestDetetorHitsEvent.
+/// * **intwindow**: Splits the time into a window defined by fIntwindow
+/// while performing the average of the data points. Every point corresponds
+/// to a Hit
 ///
 /// \htmlonly <style>div.image img[src="signalToHits.png"]{width:800px;}</style> \endhtmlonly
 ///
-/// The following figure shows the results of applying the process to a 
+/// The following figure shows the results of applying the process to a
 /// Monte Carlo artificially signal generated, where the energy deposits
 /// are exactly at their corresponding physical drift time values. No shaping or
 /// any other electronic effects were included at the input event (left figure).
 /// The drift time is translated to a Z-coordinate on the output event, where we
-/// show only one readout projection in X (right figure). 
+/// show only one readout projection in X (right figure).
 ///
 /// \image html signalToHits.png
-/// 
+///
 ///--------------------------------------------------------------------------
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
@@ -98,13 +110,17 @@
 /// 2016-January: First concept and implementation.
 /// \author     Javier Galan
 ///
+/// 2022-January: Implementing new method intwindod
+/// \author     JuanAn Garcia
+///
 /// \class TRestDetectorSignalToHitsProcess
 ///
 /// <hr>
 ///
 #include "TRestDetectorSignalToHitsProcess.h"
 
-#include <TRestDetectorSetup.h>
+#include "TRestDetectorSetup.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorSignalToHitsProcess);
@@ -124,12 +140,12 @@ TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess() { Initializ
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(char* cfgFileName) {
+TRestDetectorSignalToHitsProcess::TRestDetectorSignalToHitsProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -140,9 +156,7 @@ void TRestDetectorSignalToHitsProcess::LoadDefaultConfig() { SetTitle("Default c
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
-TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() {
-    delete fHitsEvent;
-}
+TRestDetectorSignalToHitsProcess::~TRestDetectorSignalToHitsProcess() { delete fHitsEvent; }
 
 ///////////////////////////////////////////////
 /// \brief Function to initialize input/output event members and define the
@@ -153,10 +167,10 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fHitsEvent = new TRestDetectorHitsEvent();
-    fSignalEvent = 0;
+    fSignalEvent = nullptr;
 
-    fGas = NULL;
-    fReadout = NULL;
+    fGas = nullptr;
+    fReadout = nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -165,16 +179,15 @@ void TRestDetectorSignalToHitsProcess::Initialize() {
 /// observables defined in TRestGeant4AnalysisProcess are filled at this stage.
 ///
 void TRestDetectorSignalToHitsProcess::InitProcess() {
-
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
-
+    if (fGas != nullptr) {
 #ifndef USE_Garfield
-        ferr << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << endl;
-        ferr << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
-                "TRestDetectorSignalToHitsProcess"
-             << endl;
+        RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
+                  << RESTendl;
+        RESTError
+            << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+               "TRestDetectorSignalToHitsProcess"
+            << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
         if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
@@ -202,8 +215,8 @@ void TRestDetectorSignalToHitsProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) {
-    fSignalEvent = (TRestDetectorSignalEvent*)evInput;
+TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     if (!fReadout) return nullptr;
 
@@ -212,17 +225,19 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
     fHitsEvent->SetTimeStamp(fSignalEvent->GetTimeStamp());
     fHitsEvent->SetSubEventTag(fSignalEvent->GetSubEventTag());
 
-    debug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << endl;
-    if (GetVerboseLevel() >= REST_Debug) fSignalEvent->PrintEvent();
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Event id : " << fHitsEvent->GetID() << RESTendl;
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) fSignalEvent->PrintEvent();
 
     Int_t numberOfSignals = fSignalEvent->GetNumberOfSignals();
+
+    if (numberOfSignals == 0) return nullptr;
 
     Int_t planeID, readoutChannel = -1, readoutModule;
     for (int i = 0; i < numberOfSignals; i++) {
         TRestDetectorSignal* sgnl = fSignalEvent->GetSignal(i);
         Int_t signalID = sgnl->GetSignalID();
 
-        if (GetVerboseLevel() >= REST_Debug)
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
             cout << "Searching readout coordinates for signal ID : " << signalID << endl;
 
         fReadout->GetPlaneModuleChannel(signalID, planeID, readoutModule, readoutChannel);
@@ -259,13 +274,14 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
             Double_t time = sgnl->GetMaxPeakTime();
             Double_t distanceToPlane = time * fDriftVelocity;
 
-            if (GetVerboseLevel() >= REST_Debug) cout << "Distance to plane : " << distanceToPlane << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                cout << "Distance to plane : " << distanceToPlane << endl;
 
             Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
             Double_t energy = sgnl->GetMaxPeakValue();
 
-            if (GetVerboseLevel() >= REST_Debug)
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
 
@@ -299,11 +315,45 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
-            if (GetVerboseLevel() >= REST_Debug) {
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Distance to plane : " << distanceToPlane << endl;
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
+        } else if (fMethod == "tripleMaxAverage") {
+            Int_t bin = sgnl->GetMaxIndex();
+            int binprev = (bin - 1) < 0 ? bin : bin - 1;
+            int binnext = (bin + 1) > sgnl->GetNumberOfPoints() - 1 ? bin : bin + 1;
+
+            Double_t time = sgnl->GetTime(bin);
+            Double_t energy1 = sgnl->GetData(bin);
+
+            Double_t distanceToPlane = time * fDriftVelocity;
+            Double_t z1 = zPosition + fieldZDirection * distanceToPlane;
+
+            time = sgnl->GetTime(binprev);
+            Double_t energy2 = sgnl->GetData(binprev);
+
+            distanceToPlane = time * fDriftVelocity;
+            Double_t z2 = zPosition + fieldZDirection * distanceToPlane;
+
+            time = sgnl->GetTime(binnext);
+            Double_t energy3 = sgnl->GetData(binnext);
+
+            distanceToPlane = time * fDriftVelocity;
+            Double_t z3 = zPosition + fieldZDirection * distanceToPlane;
+
+            Double_t zAvg = (z1 + z2 + z3) / 3.0;
+            Double_t eAvg = (energy1 + energy2 + energy3) / 3.0;
+
+            fHitsEvent->AddHit(x, y, zAvg, eAvg, 0, type);
+
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                cout << "Distance to plane : " << distanceToPlane << endl;
+                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
+                     << " Energy : " << eAvg << endl;
+            }
+
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;
@@ -317,39 +367,69 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
             Double_t z = zPosition + fieldZDirection * (distanceToPlane / energy_signal);
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
-        } else if (fMethod == "all" ) {
+        } else if (fMethod == "all") {
             for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
                 Double_t energy = sgnl->GetData(j);
 
                 Double_t distanceToPlane = sgnl->GetTime(j) * fDriftVelocity;
 
-                if (GetVerboseLevel() >= REST_Debug) {
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     cout << "Time : " << sgnl->GetTime(j) << " Drift velocity : " << fDriftVelocity << endl;
                     cout << "Distance to plane : " << distanceToPlane << endl;
                 }
 
                 Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
-                if (GetVerboseLevel() >= REST_Debug)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
                     cout << "Adding hit. Time : " << sgnl->GetTime(j) << " x : " << x << " y : " << y
                          << " z : " << z << endl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
+        } else if (fMethod == "intwindow") {
+            Int_t nPoints = sgnl->GetNumberOfPoints();
+            std::map<int, std::pair<int, double> > windowMap;
+            for (int j = 0; j < nPoints; j++) {
+                int index = sgnl->GetTime(j) / fIntWindow;
+                auto it = windowMap.find(index);
+                if (it != windowMap.end()) {
+                    it->second.first++;
+                    it->second.second += sgnl->GetData(j);
+                } else {
+                    windowMap[index] = std::make_pair(1, sgnl->GetData(j));
+                }
+            }
+
+            for (const auto& [index, pair] : windowMap) {
+                Double_t time = index * fIntWindow + fIntWindow / 2.;
+                Double_t energy = pair.second / pair.first;
+                if (energy < fThreshold) continue;
+                RESTDebug << "TimeBin " << index << " Time " << time << " Charge: " << energy
+                          << " Thr: " << (fThreshold) << RESTendl;
+                Double_t distanceToPlane = time * fDriftVelocity;
+                Double_t z = zPosition + fieldZDirection * distanceToPlane;
+
+                RESTDebug << "Time : " << time << " Drift velocity : " << fDriftVelocity
+                          << "\nDistance to plane : " << distanceToPlane << RESTendl;
+                RESTDebug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                          << " type " << type << RESTendl;
+
+                fHitsEvent->AddHit(x, y, z, energy, 0, type);
+            }
+        } else {
+            string errMsg = "The method " + (string)fMethod + " is not implemented!";
+            SetError(errMsg);
         }
-	else
-	{
-		string errMsg = "The method " + (string) fMethod + " is not implemented!";
-		SetError( errMsg );
-	}
     }
 
-    debug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits() << endl;
-    debug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy() << endl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits()
+              << RESTendl;
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy()
+              << RESTendl;
 
-    if (this->GetVerboseLevel() == REST_Debug) {
+    if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         fHitsEvent->PrintEvent(30);
-    } else if (this->GetVerboseLevel() == REST_Extreme) {
+    } else if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
         fHitsEvent->PrintEvent(-1);
     }
 
@@ -362,4 +442,3 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* evInput) 
 
     return fHitsEvent;
 }
-

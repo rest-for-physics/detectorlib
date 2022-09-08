@@ -86,6 +86,7 @@
 ///
 
 #include "TRestDetectorTriggerAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorTriggerAnalysisProcess);
@@ -105,12 +106,11 @@ TRestDetectorTriggerAnalysisProcess::TRestDetectorTriggerAnalysisProcess() { Ini
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorTriggerAnalysisProcess::TRestDetectorTriggerAnalysisProcess(char* cfgFileName) {
+TRestDetectorTriggerAnalysisProcess::TRestDetectorTriggerAnalysisProcess(const char* configFilename) {
     Initialize();
-
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -142,12 +142,12 @@ void TRestDetectorTriggerAnalysisProcess::Initialize() {
 /// the path to the config file must be specified using full path, absolute or
 /// relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 /// \param name The name of the specific metadata. It will be used to find the
-/// correspondig TRestGeant4AnalysisProcess section inside the RML.
+/// corresponding TRestGeant4AnalysisProcess section inside the RML.
 ///
-void TRestDetectorTriggerAnalysisProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorTriggerAnalysisProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -170,8 +170,8 @@ void TRestDetectorTriggerAnalysisProcess::InitProcess() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fInputSignalEvent);
     for (int sgnl = 0; sgnl < fInputSignalEvent->GetNumberOfSignals(); sgnl++)
         fSignalEvent->AddSignal(*fInputSignalEvent->GetSignal(sgnl));
@@ -215,4 +215,3 @@ TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* evInpu
 
     return fSignalEvent;
 }
-

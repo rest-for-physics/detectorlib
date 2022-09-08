@@ -14,56 +14,51 @@
 ///
 ///_______________________________________________________________________________
 
+#include "TRestDetectorSignalViewerProcess.h"
+
 #include <TLegend.h>
 #include <TPaveText.h>
 
-#include "TRestDetectorSignalViewerProcess.h"
 using namespace std;
 
 int rawCounter3 = 0;
 
-ClassImp(TRestDetectorSignalViewerProcess)
-    //______________________________________________________________________________
-    TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() {
+ClassImp(TRestDetectorSignalViewerProcess);
+
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess() { Initialize(); }
+
+TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(const char* configFilename) {
     Initialize();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 }
 
-//______________________________________________________________________________
-TRestDetectorSignalViewerProcess::TRestDetectorSignalViewerProcess(char* cfgFileName) {
-    Initialize();
-
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
-}
-
-//______________________________________________________________________________
 TRestDetectorSignalViewerProcess::~TRestDetectorSignalViewerProcess() {}
 
 void TRestDetectorSignalViewerProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
     fDrawRefresh = 0;
 
     fSingleThreadOnly = true;
 }
 
-void TRestDetectorSignalViewerProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorSignalViewerProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitProcess() { this->CreateCanvas(); }
 
-//______________________________________________________________________________
-TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEvent) {
     TString obsName;
 
-    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
+    TRestDetectorSignalEvent* fInputSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     /// Copying the signal event to the output event
     fSignalEvent = fInputSignalEvent;
@@ -86,10 +81,12 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
     if (eveCounter >= fDrawRefresh) {
         eveCounter = 0;
         sgnCounter = 0;
-        if (GetVerboseLevel() >= REST_Debug) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
             GetAnalysisTree()->PrintObservables();
         }
-        for (unsigned int i = 0; i < fDrawingObjects.size(); i++) delete fDrawingObjects[i];
+        for (auto object : fDrawingObjects) {
+            delete object;
+        }
         fDrawingObjects.clear();
 
         TPad* pad2 = DrawSignal(sgnCounter);
@@ -98,13 +95,13 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
         pad2->Draw();
         fCanvas->Update();
 
-        fout.setborder("");
-        fout.setorientation(1);
-        fout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
-                "switch signals"
-             << endl;
+        RESTcout.setborder("");
+        RESTcout.setorientation(TRestStringOutput::REST_Display_Orientation::kLeft);
+        RESTcout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
+                    "switch signals"
+                 << RESTendl;
 
-        while (1) {
+        while (true) {
             int a = GetChar("");
             if (a == 10)  // enter
             {
@@ -124,7 +121,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
                     pad2->Draw();
                     fCanvas->Update();
                 } else {
-                    warning << "cannot plot signal with id " << sgnCounter << endl;
+                    RESTWarning << "cannot plot signal with id " << sgnCounter << RESTendl;
                 }
             } else if (a == 112 || a == 80)  // p
             {
@@ -135,7 +132,7 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
                     pad2->Draw();
                     fCanvas->Update();
                 } else {
-                    warning << "cannot plot signal with id " << sgnCounter << endl;
+                    RESTWarning << "cannot plot signal with id " << sgnCounter << RESTendl;
                 }
             }
             while (getchar() != '\n')
@@ -146,7 +143,6 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* evInput) 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -156,7 +152,6 @@ void TRestDetectorSignalViewerProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorSignalViewerProcess::InitFromConfigFile() {
     fDrawRefresh = StringToDouble(GetParameter("refreshEvery", "0"));
 

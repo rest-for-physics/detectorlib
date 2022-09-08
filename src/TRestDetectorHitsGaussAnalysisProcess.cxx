@@ -53,6 +53,7 @@
 /// <hr>
 ///
 #include "TRestDetectorHitsGaussAnalysisProcess.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorHitsGaussAnalysisProcess);
@@ -74,12 +75,12 @@ TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess() {
 /// defined using the parameter `searchPath` in globals section. See
 /// TRestMetadata description.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess(char* cfgFileName) {
+TRestDetectorHitsGaussAnalysisProcess::TRestDetectorHitsGaussAnalysisProcess(const char* configFilename) {
     Initialize();
 
-    LoadConfig(cfgFileName);
+    LoadConfig(configFilename);
 }
 
 ///////////////////////////////////////////////
@@ -106,12 +107,12 @@ void TRestDetectorHitsGaussAnalysisProcess::LoadDefaultConfig() {
 /// the path to the config file must be specified using full path, absolute or
 /// relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 /// \param name The name of the specific metadata. It will be used to find the
-/// correspondig TRestDetectorHitsGaussAnalysisProcess section inside the RML.
+/// corresponding TRestDetectorHitsGaussAnalysisProcess section inside the RML.
 ///
-void TRestDetectorHitsGaussAnalysisProcess::LoadConfig(std::string cfgFilename, std::string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsGaussAnalysisProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 }
 
 ///////////////////////////////////////////////
@@ -132,15 +133,15 @@ void TRestDetectorHitsGaussAnalysisProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     // fHitsEvent = new TRestDetectorHitsEvent();
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 }
 
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TString obsName;
 
@@ -166,7 +167,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
     Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
 
     if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05)
-        debug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << endl;
+        RESTDebug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << RESTendl;
 
     SetObservableValue("xSigmaGaus", gausSigmaX);
     SetObservableValue("ySigmaGaus", gausSigmaY);
@@ -176,10 +177,10 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* evIn
 
     // We transform here fHitsEvent if necessary
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         fOutputHitsEvent->PrintEvent();
 
-        if (GetVerboseLevel() >= REST_Extreme) GetChar();
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
     }
 
     return fOutputHitsEvent;
@@ -201,7 +202,7 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
     BeginPrintProcess();
 
     // Print output metadata using, metadata << endl;
-    metadata << "Pitch (mm) : " << fPitch << endl;
+    RESTMetadata << "Pitch (mm) : " << fPitch << RESTendl;
 
     EndPrintProcess();
 }

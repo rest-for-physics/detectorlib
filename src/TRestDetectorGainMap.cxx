@@ -1,12 +1,15 @@
+
 #include "TRestDetectorGainMap.h"
 
 #include "TGraph2D.h"
 #include "TLegend.h"
 #include "TRandom.h"
+#include "TRestDetectorReadout.h"
 #include "TStyle.h"
 #include "TView.h"
 
-#include "TRestDetectorReadout.h"
+using namespace std;
+
 ClassImp(TRestDetectorGainMap);
 
 void TRestDetectorGainMap::InitFromConfigFile() {
@@ -14,7 +17,7 @@ void TRestDetectorGainMap::InitFromConfigFile() {
 }
 
 void TRestDetectorGainMap::DrawChannelGainMap(TRestDetectorReadoutModule* mod) {
-    if (mod == NULL) {
+    if (mod == nullptr) {
         int min = 1e9;
         int max = 0;
         auto iter = fChannelGain.begin();

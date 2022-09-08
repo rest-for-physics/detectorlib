@@ -23,6 +23,7 @@
 
 #ifndef RestCore_TRestDetectorDriftVolume
 #define RestCore_TRestDetectorDriftVolume
+
 #include <TROOT.h>
 #include <stdlib.h>
 
@@ -42,8 +43,8 @@
 
 class TRestDetectorDriftVolume : public TRestMetadata {
    protected:
-    string fMaterial;  // material description string
-    Double_t fW;       // Work function for electron extraction, in unit eV.
+    std::string fMaterial;  // material description std::string
+    Double_t fW;            // Work function for electron extraction, in unit eV.
 
     Double_t fElectricField;          // in unit V/mm
     Double_t fDriftVelocity;          // in unit mm/us
@@ -58,30 +59,30 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
    public:
     TRestDetectorDriftVolume();
-    TRestDetectorDriftVolume(const char* cfgFileName, string name = "");
-    virtual void Initialize();
-    virtual void InitFromConfigFile();
+    TRestDetectorDriftVolume(const char* configFilename, std::string name = "");
+    void Initialize() override;
+    void InitFromConfigFile() override;
 
-    virtual string GetMaterial() { return fMaterial; }
-    virtual Double_t GetW() { return fW; }
-    virtual Double_t GetWvalue() { return fW; }
+    virtual std::string GetMaterial() const { return fMaterial; }
+    virtual Double_t GetW() const { return fW; }
+    virtual Double_t GetWvalue() const { return fW; }
 
     /// Returns the electric field in V/mm.
-    virtual Double_t GetElectricField() { return fElectricField; }
+    virtual Double_t GetElectricField() const { return fElectricField; }
 
     /// Returns the drift velocity in mm/us.
-    virtual Double_t GetDriftVelocity() { return fDriftVelocity; }
+    virtual Double_t GetDriftVelocity() const { return fDriftVelocity; }
 
-    virtual Double_t GetElectronLifeTime() { return fElectronLifeTime; }
-    virtual Double_t GetLongitudinalDiffusion() { return fLongitudinalDiffusion; }
-    virtual Double_t GetTransversalDiffusion() { return fTransversalDiffusion; }
-    virtual Double_t GetTownsendCoefficient() { return fTownsendCoefficient; }
-    virtual Double_t GetAttachmentCoefficient() { return fAttachmentCoefficient; }
+    virtual Double_t GetElectronLifeTime() const { return fElectronLifeTime; }
+    virtual Double_t GetLongitudinalDiffusion() const { return fLongitudinalDiffusion; }
+    virtual Double_t GetTransversalDiffusion() const { return fTransversalDiffusion; }
+    virtual Double_t GetTownsendCoefficient() const { return fTownsendCoefficient; }
+    virtual Double_t GetAttachmentCoefficient() const { return fAttachmentCoefficient; }
 
-    virtual Double_t GetPressure() { return fPressureInAtm; }
-    virtual Double_t GetTemperature() { return fTemperatureInK; }
+    virtual Double_t GetPressure() const { return fPressureInAtm; }
+    virtual Double_t GetTemperature() const { return fTemperatureInK; }
 
-    virtual void SetMaterial(string value) { fMaterial = value; }
+    virtual void SetMaterial(std::string value) { fMaterial = value; }
 
     /// Sets the electric field of the drift volume. Given in V/mm.
     virtual void SetW(double value) { fW = value; }
@@ -103,9 +104,9 @@ class TRestDetectorDriftVolume : public TRestMetadata {
 
     virtual void UpdateCondition() {}
 
-    virtual void PrintMetadata();
+    void PrintMetadata() override;
 
-    ClassDef(TRestDetectorDriftVolume, 1);  // Gas Parameters
+    ClassDefOverride(TRestDetectorDriftVolume, 1);  // Gas Parameters
 };
 
 #endif

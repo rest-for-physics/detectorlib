@@ -20,26 +20,23 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorHitsNormalizationProcess.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorHitsNormalizationProcess)
-    //______________________________________________________________________________
-    TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorHitsNormalizationProcess);
 
-//______________________________________________________________________________
-TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(char* cfgFileName) {
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess() { Initialize(); }
+
+TRestDetectorHitsNormalizationProcess::TRestDetectorHitsNormalizationProcess(const char* configFilename) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
-
-    // TRestDetectorHitsNormalizationProcess default constructor
 }
 
-//______________________________________________________________________________
 TRestDetectorHitsNormalizationProcess::~TRestDetectorHitsNormalizationProcess() {
     delete fHitsOutputEvent;
     // TRestDetectorHitsNormalizationProcess destructor
@@ -51,24 +48,22 @@ void TRestDetectorHitsNormalizationProcess::LoadDefaultConfig() {
     fFactor = 5.9;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
     fFactor = 1.;
 
-    fHitsInputEvent = NULL;
+    fHitsInputEvent = nullptr;
     fHitsOutputEvent = new TRestDetectorHitsEvent();
 }
 
-void TRestDetectorHitsNormalizationProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorHitsNormalizationProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     PrintMetadata();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::InitProcess() {
     // Function to be executed once at the beginning of process
     // (before starting the process of the events)
@@ -78,9 +73,8 @@ void TRestDetectorHitsNormalizationProcess::InitProcess() {
     // TRestEventProcess::InitProcess();
 }
 
-//______________________________________________________________________________
-TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evInput) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)evInput;
+TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
 
     for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
@@ -88,7 +82,7 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evIn
                                  fHitsInputEvent->GetZ(hit), fHitsInputEvent->GetEnergy(hit) * fFactor,
                                  fHitsInputEvent->GetTime(hit), fHitsInputEvent->GetType(hit));
 
-    if (this->GetVerboseLevel() >= REST_Debug) {
+    if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsNormalizationProcess. Hits added : " << fHitsOutputEvent->GetNumberOfHits()
              << endl;
         cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : " << fHitsOutputEvent->GetEnergy()
@@ -98,7 +92,6 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* evIn
     return fHitsOutputEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::EndProcess() {
     // Function to be executed once at the end of the process
     // (after all events have been processed)
@@ -108,7 +101,6 @@ void TRestDetectorHitsNormalizationProcess::EndProcess() {
     // TRestEventProcess::EndProcess();
 }
 
-//______________________________________________________________________________
 void TRestDetectorHitsNormalizationProcess::InitFromConfigFile() {
     fFactor = StringToDouble(GetParameter("normFactor", "1"));
 }

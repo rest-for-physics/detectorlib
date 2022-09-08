@@ -23,10 +23,10 @@
 #ifndef RestCore_TRestDetectorReadoutMapping
 #define RestCore_TRestDetectorReadoutMapping
 
-#include <iostream>
-
 #include <TMatrixD.h>
 #include <TObject.h>
+
+#include <iostream>
 
 /// This class defines a uniform 2-dimensional grid relating its nodes to the
 /// pixels of a readout.
@@ -38,18 +38,18 @@ class TRestDetectorReadoutMapping : public TObject {
     Double_t fNetSizeX;  ///< The size of the net/grid in the x-axis.
     Double_t fNetSizeY;  ///< The size of the net/grid in the y-axis.
 
-    TMatrixD fChannel;  ///< A matrix containning the channel id for the
+    TMatrixD fChannel;  ///< A matrix containing the channel id for the
                         ///< corresponding XY-node.
-    TMatrixD fPixel;    ///< A matrix containning the pixel id of fChannel for the
+    TMatrixD fPixel;    ///< A matrix containing the pixel id of fChannel for the
                         ///< corresponding XY-node.
 
    public:
     // Getters
     /// Returns the number of nodes in X.
-    Int_t GetNumberOfNodesX() { return fNodesX; }
+    inline Int_t GetNumberOfNodesX() const { return fNodesX; }
 
     /// Returns the number of nodes in Y.
-    Int_t GetNumberOfNodesY() { return fNodesY; }
+    inline Int_t GetNumberOfNodesY() const { return fNodesY; }
 
     /// Gets the channel id correspoding to a given node (i,j)
     Int_t GetChannelByNode(Int_t i, Int_t j) { return fChannel[i][j]; }
@@ -83,7 +83,7 @@ class TRestDetectorReadoutMapping : public TObject {
 
     void Initialize(Int_t nX, Int_t nY, Double_t sX, Double_t sY);
 
-    // Construtor
+    // Constructor
     TRestDetectorReadoutMapping();
     // Destructor
     ~TRestDetectorReadoutMapping();

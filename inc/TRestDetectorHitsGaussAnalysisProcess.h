@@ -23,10 +23,8 @@
 #ifndef RestCore_TRestDetectorHitsGaussAnalysisProcess
 #define RestCore_TRestDetectorHitsGaussAnalysisProcess
 
-#include <TH1D.h>
-
 #include <TCanvas.h>
-
+#include <TH1D.h>
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
@@ -42,11 +40,11 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-    void InitProcess();
+    void InitProcess() override;
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -55,27 +53,27 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     Double_t fPitch;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    TRestEvent* ProcessEvent(TRestEvent* evInput);
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     /// Returns a new instance of this class
     TRestEventProcess* Maker() { return new TRestDetectorHitsGaussAnalysisProcess; }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "hitsGaussAnalysis"; }
+    const char* GetProcessName() const override { return "hitsGaussAnalysis"; }
 
     TRestDetectorHitsGaussAnalysisProcess();
-    TRestDetectorHitsGaussAnalysisProcess(char* cfgFileName);
+    TRestDetectorHitsGaussAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorHitsGaussAnalysisProcess();
 
     // If new members are added, removed or modified in this class version number must be increased!
-    ClassDef(TRestDetectorHitsGaussAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorHitsGaussAnalysisProcess, 2);
 };
 #endif

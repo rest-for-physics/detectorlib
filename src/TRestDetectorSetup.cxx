@@ -15,20 +15,18 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSetup.h"
+
 #include "TRestManager.h"
 #include "TRestRun.h"
+
 using namespace std;
 
-ClassImp(TRestDetectorSetup)
-    //______________________________________________________________________________
-    TRestDetectorSetup::TRestDetectorSetup()
-    : TRestMetadata() {
-    // TRestDetectorSetup default constructor
-    Initialize();
-}
+ClassImp(TRestDetectorSetup);
 
-//______________________________________________________________________________
-TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMetadata(cfgFileName) {
+TRestDetectorSetup::TRestDetectorSetup() : TRestMetadata() { Initialize(); }
+
+TRestDetectorSetup::TRestDetectorSetup(const char* configFilename, const string& name)
+    : TRestMetadata(configFilename) {
     Initialize();
 
     LoadConfigFromFile(fConfigFileName, name);
@@ -36,7 +34,6 @@ TRestDetectorSetup::TRestDetectorSetup(char* cfgFileName, string name) : TRestMe
     PrintMetadata();
 }
 
-//______________________________________________________________________________
 TRestDetectorSetup::~TRestDetectorSetup() {
     // TRestDetectorSetup destructor
 }
@@ -60,14 +57,13 @@ void TRestDetectorSetup::Initialize() {
     fSamplingInMicroSec = 0;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSetup::InitFromConfigFile() {
     this->Initialize();
 
     // Initialize the metadata members from a configfile
     fRunNumber = StringToInteger(GetParameter("runNumber"));
     fSubRunNumber = StringToInteger(GetParameter("subRunNumber"));
-    if (fHostmgr != NULL && fHostmgr->GetRunInfo() != NULL) {
+    if (fHostmgr != nullptr && fHostmgr->GetRunInfo() != nullptr) {
         TRestRun* r = fHostmgr->GetRunInfo();
         if (r->GetInputFileNumber() > 0) InitFromFileName(r->GetInputFileName(0));
     }
@@ -112,7 +108,8 @@ void TRestDetectorSetup::InitFromFileName(TString fName) {
     fSamplingTime = name.substr(pos, len);
 
     TString samplingReduced = fSamplingTime(2, fSamplingTime.Length());
-    fSamplingInMicroSec = (Double_t)strtol(samplingReduced.Data(), NULL, 16) / 100.;  // This is only for AGET
+    fSamplingInMicroSec =
+        (Double_t)strtol(samplingReduced.Data(), nullptr, 16) / 100.;  // This is only for AGET
 
     pos = name.find("-") + 1;
     len = name.find(".aqs") - pos;

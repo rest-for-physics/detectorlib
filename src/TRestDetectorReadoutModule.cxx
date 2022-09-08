@@ -43,7 +43,7 @@
 ///
 
 #include "TRestDetectorReadoutModule.h"
-#include "unistd.h"
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutModule);
@@ -148,10 +148,11 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 
                 Int_t tempCh = fMapping.GetChannelByNode(nodeX, nodeY);
                 Int_t tempPix = fMapping.GetPixelByNode(nodeX, nodeY);
-                warning << "Already associated channel : " << tempCh << " pixel : " << tempPix << endl;
+                RESTWarning << "Already associated channel : " << tempCh << " pixel : " << tempPix
+                            << RESTendl;
                 Double_t xP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().X();
                 Double_t yP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().Y();
-                warning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << endl;
+                RESTWarning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << RESTendl;
                 cout << endl;
 
                 cout << "Increasing the number of mapping of nodes may solve this issue." << endl;
@@ -289,8 +290,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
         pixel = fMapping.GetPixelByNode(nodeX, nodeY);
 
         if (count > totalNodes / 10) {
-            warning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x << ","
-                    << y << ") in internal module coordinates" << endl;
+            RESTWarning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x
+                        << "," << y << ") in internal module coordinates" << RESTendl;
 
             for (int ch = 0; ch < GetNumberOfChannels(); ch++)
                 for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++)
@@ -314,20 +315,11 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if the position *x,y* relative to the readout
-/// plane are inside this readout module.
-///
-Bool_t TRestDetectorReadoutModule::isInside(Double_t x, Double_t y) {
-    TVector2 v(x, y);
-    return isInside(v);
-}
-
-///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* relative to the readout
 /// plane are inside this readout module.
 ///
-Bool_t TRestDetectorReadoutModule::isInside(TVector2 pos) {
-    TVector2 rotPos = TransformToModuleCoordinates(pos);
+Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
+    TVector2 rotPos = TransformToModuleCoordinates(position);
 
     if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX)
         if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) return true;
@@ -340,17 +332,15 @@ Bool_t TRestDetectorReadoutModule::isInside(TVector2 pos) {
 /// of the readout *channel* index given.
 ///
 Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-
-    return isInsideChannel(channel, pos);
+    return isInsideChannel(channel, {x, y});
 }
 
 ///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* is found in any of the
 /// pixels of the readout *channel* index given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, TVector2 pos) {
-    pos = TransformToModuleCoordinates(pos);
+Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2& position) {
+    TVector2 pos = TransformToModuleCoordinates(position);
     for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++)
         if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) return true;
     return false;
@@ -361,21 +351,20 @@ Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, TVector2 pos) 
 /// inside the readout *channel* given.
 ///
 Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-
-    if (channel < 0 || pixel < 0) return false;
-
-    return isInsidePixel(channel, pixel, pos);
+    if (channel < 0 || pixel < 0) {
+        return false;
+    }
+    return isInsidePixel(channel, pixel, {x, y});
 }
 
 ///////////////////////////////////////////////
 /// \brief Determines if the position TVector2 *pos* is found at a specific
 /// *pixel* id inside the readout *channel* given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, TVector2 pos) {
+Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position) {
     if (channel < 0 || pixel < 0) return false;
 
-    pos = TransformToModuleCoordinates(pos);
+    TVector2 pos = TransformToModuleCoordinates(position);
     if (GetChannel(channel)->GetPixel(pixel)->isInside(pos)) return true;
     return false;
 }
@@ -386,8 +375,8 @@ Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, TVe
 ///  It can be seen as the vector to add to move from the position to the
 ///  closest border of the module.
 ///
-TVector2 TRestDetectorReadoutModule::GetDistanceToModule(TVector2 pos) {
-    TVector2 newPos = TransformToModuleCoordinates(pos);
+TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& position) {
+    TVector2 newPos = TransformToModuleCoordinates(position);
 
     Double_t dx = 0, dy = 0;
     if (newPos.X() < 0)
@@ -545,15 +534,15 @@ void TRestDetectorReadoutModule::Draw() {}
 ///
 void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
-        metadata << "-- Readout module : " << GetModuleID() << endl;
-        metadata << "----------------------------------------------------------------" << endl;
-        metadata << "-- Origin position : X = " << fModuleOriginX << " mm "
-                 << " Y : " << fModuleOriginY << " mm" << endl;
-        metadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << endl;
-        metadata << "-- Rotation : " << fModuleRotation << " degrees" << endl;
-        metadata << "-- Total channels : " << GetNumberOfChannels() << endl;
-        metadata << "-- Tolerance : " << fTolerance << endl;
-        metadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+        RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
+        RESTMetadata << "----------------------------------------------------------------" << RESTendl;
+        RESTMetadata << "-- Origin position : X = " << fModuleOriginX << " mm "
+                     << " Y : " << fModuleOriginY << " mm" << RESTendl;
+        RESTMetadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << RESTendl;
+        RESTMetadata << "-- Rotation : " << fModuleRotation << " degrees" << RESTendl;
+        RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
+        RESTMetadata << "-- Tolerance : " << fTolerance << RESTendl;
+        RESTMetadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
         for (int n = 0; n < GetNumberOfChannels(); n++) fReadoutChannel[n].Print(DetailLevel - 1);
     }

@@ -23,9 +23,9 @@
 #ifndef RestCore_TRestDetectorTriggerAnalysisProcess
 #define RestCore_TRestDetectorTriggerAnalysisProcess
 
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A process to generate integral observables for signal ADC windows found above the defined energy threshold
 class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
@@ -33,13 +33,13 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
     /// A pointer to the specific TRestSignalEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    /// A vector to temporary store the name of threshold observables
+    /// A std::vector to temporary store the name of threshold observables
     std::vector<std::string> fIntegralObservables;  //!
 
-    /// A vector to temporary the extracted threshold value from the corresponding observable
+    /// A std::vector to temporary the extracted threshold value from the corresponding observable
     std::vector<double> fThreshold;  //!
 
-    void Initialize();
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
@@ -52,34 +52,34 @@ class TRestDetectorTriggerAnalysisProcess : public TRestEventProcess {
 
    public:
     /// Returns a pointer to the input signal event
-    any GetInputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
 
     /// Returns a pointer to the input signal event
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// Prints on screen the metadata information registered by this process
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Sampling : " << fSampling << " us" << endl;
-        metadata << "ADC length : " << fADCLength << endl;
+        RESTMetadata << "Sampling : " << fSampling << " us" << RESTendl;
+        RESTMetadata << "ADC length : " << fADCLength << RESTendl;
 
         EndPrintProcess();
     }
 
-    /// Returns a string with the process name
-    TString GetProcessName() { return (TString) "triggerAnalysis"; }
+    /// Returns a std::string with the process name
+    const char* GetProcessName() const override { return "triggerAnalysis"; }
 
     TRestDetectorTriggerAnalysisProcess();
-    TRestDetectorTriggerAnalysisProcess(char* cfgFileName);
+    TRestDetectorTriggerAnalysisProcess(const char* configFilename);
 
     ~TRestDetectorTriggerAnalysisProcess();
 
-    ClassDef(TRestDetectorTriggerAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorTriggerAnalysisProcess, 2);
 };
 #endif

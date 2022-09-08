@@ -23,32 +23,32 @@
 #ifndef RestCore_TRestDetectorReadout
 #define RestCore_TRestDetectorReadout
 
+#include <TObject.h>
+#include <TRestMetadata.h>
+
 #include <iostream>
 
-#include "TObject.h"
-
 #include "TRestDetectorReadoutPlane.h"
-#include "TRestMetadata.h"
 
 /// A metadata class to generate/store a readout description.
 class TRestDetectorReadout : public TRestMetadata {
    private:
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
     Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
                        ///< between a physical readout channel id and a signal daq id
 
     Int_t fNReadoutPlanes;  ///< Number of readout planes present on the readout
     std::vector<TRestDetectorReadoutPlane>
-        fReadoutPlanes;  ///< A vector storing the TRestDetectorReadoutPlane definitions.
+        fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
 
 #ifndef __CINT__
     Int_t fMappingNodes;  //!///< Number of nodes per axis used on the readout
                           //! coordinate mapping. See also TRestDetectorReadoutMapping.
-    vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A vector storing the different
-                                                            //! TRestDetectorReadoutModule definitions.
+    std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
+                                                                 //! TRestDetectorReadoutModule definitions.
 #endif
 
     void ValidateReadout();
@@ -60,11 +60,9 @@ class TRestDetectorReadout : public TRestMetadata {
     void AddReadoutPlane(TRestDetectorReadoutPlane plane);
 
     /////////////////////////////////////
-    //{
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
     TRestDetectorReadoutModule* GetReadoutModuleWithID(int id);
-    TRestDetectorReadoutChannel* GetReadoutChannelWithdaqID(int daqId);
-    //}
+    TRestDetectorReadoutChannel* GetReadoutChannelWithDaqID(int daqId);
     /////////////////////////////////////
 
     Int_t GetNumberOfReadoutPlanes();
@@ -74,36 +72,36 @@ class TRestDetectorReadout : public TRestMetadata {
     Int_t GetModuleDefinitionId(TString name);
 
     /////////////////////////////////////
-    //{
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
     void GetPlaneModuleChannel(Int_t daqID, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannel(TVector3 hitpos, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+    Int_t GetHitsDaqChannel(const TVector3& hitPosition, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+    Int_t GetHitsDaqChannelAtReadoutPlane(const TVector3& hitPosition, Int_t& moduleID, Int_t& channelID,
+                                          Int_t planeId = 0);
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
-    //}
     /////////////////////////////////////
 
     Double_t GetX(Int_t planeID, Int_t modID, Int_t chID);
     Double_t GetY(Int_t planeID, Int_t modID, Int_t chID);
 
-    // Detal Level:
+    // Detail Level:
     // 0->this readout
     // 1->+all readout plane
     // 2->+all readout module
     // 3->+all readout channel
     // 4->+all readout pixel
-    void PrintMetadata() { PrintMetadata(1); }
+    inline void PrintMetadata() override { PrintMetadata(1); }
     void PrintMetadata(Int_t DetailLevel);
 
     void Draw();
 
-    // Construtor
+    // Constructor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* cfgFileName);
-    TRestDetectorReadout(const char* cfgFileName, std::string name);
+    TRestDetectorReadout(const char* configFilename);
+    TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
     virtual ~TRestDetectorReadout();
 
-    ClassDef(TRestDetectorReadout, 1);
+    ClassDefOverride(TRestDetectorReadout, 1);
 };
 #endif

@@ -60,37 +60,28 @@ ClassImp(TRestDetectorHitsEvent);
 /// The default behaviour is that the config file must be specified with
 /// full path, absolute or relative.
 ///
-/// \param cfgFileName A const char* giving the path to an RML file.
+/// \param configFilename A const char* giving the path to an RML file.
 ///
 TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
     fHits = new TRestHits();
 
-    fPad = NULL;
+    fPad = nullptr;
 
-    fXYHitGraph = NULL;
-    fXZHitGraph = NULL;
-    fYZHitGraph = NULL;
+    fXYHitGraph = nullptr;
+    fXZHitGraph = nullptr;
+    fYZHitGraph = nullptr;
 
-    fXYHisto = NULL;
-    fXZHisto = NULL;
-    fYZHisto = NULL;
+    fXYHisto = nullptr;
+    fXZHisto = nullptr;
+    fYZHisto = nullptr;
 
-    fXZHits = NULL;
-    fYZHits = NULL;
-    fXYZHits = NULL;
+    fXZHits = nullptr;
+    fYZHits = nullptr;
+    fXYZHits = nullptr;
 
-    fXHisto = NULL;
-    fYHisto = NULL;
-    fZHisto = NULL;
-
-    fMinX = -10;
-    fMaxX = 10;
-
-    fMinY = -10;
-    fMaxY = 10;
-
-    fMinZ = -10;
-    fMaxZ = 10;
+    fXHisto = nullptr;
+    fYHisto = nullptr;
+    fZHisto = nullptr;
 }
 
 ///////////////////////////////////////////////
@@ -128,39 +119,32 @@ void TRestDetectorHitsEvent::Initialize() {
 
     if (fXZHits) {
         delete fXZHits;
-        fXZHits = NULL;
+        fXZHits = nullptr;
     }
     if (fYZHits) {
         delete fYZHits;
-        fYZHits = NULL;
+        fYZHits = nullptr;
     }
     if (fXYZHits) {
         delete fXYZHits;
-        fXYZHits = NULL;
+        fXYZHits = nullptr;
     }
 
     fXZHits = new TRestHits();
     fYZHits = new TRestHits();
     fXYZHits = new TRestHits();
-
-    fMinX = 0;
-    fMaxX = 0;
-    fMinY = 0;
-    fMaxY = 0;
-    fMinZ = 0;
-    fMaxZ = 0;
 }
 
-void TRestDetectorHitsEvent::Sort(bool(comparecondition)(const TRestHits::iterator& hit1,
+void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
-    if (comparecondition == 0) {
+    if (compareCondition == 0) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
                   [](const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) -> bool {
                       return hit1.z() < hit2.z();
                   });
     } else {
-        std::sort(fHits->begin(), fHits->end(), comparecondition);
+        std::sort(fHits->begin(), fHits->end(), compareCondition);
     }
 }
 
@@ -243,7 +227,7 @@ Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Do
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns true if all hits are containned inside the cylinder volume given by argument.
+/// \brief This method returns true if all hits are contained inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
 /// \param x1 The center of the top face of the cylinder.
@@ -369,7 +353,7 @@ TVector3 TRestDetectorHitsEvent::GetMeanPositionInPrism(TVector3 x0, TVector3 x1
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder wall from the closest hit containned inside the
+/// \brief This method returns the distance to the cylinder wall from the closest hit contained inside the
 /// cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -407,7 +391,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderWall(TVect
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder **top** face from the closest hit containned
+/// \brief This method returns the distance to the cylinder **top** face from the closest hit contained
 /// inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -441,7 +425,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVecto
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the cylinder **bottom** face from the closest hit containned
+/// \brief This method returns the distance to the cylinder **bottom** face from the closest hit contained
 /// inside the cylinder volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the cylinder.
@@ -475,7 +459,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderBottom(TVe
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **wall** from the closest hit containned
+/// \brief This method returns the distance to the prism **wall** from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.
@@ -515,7 +499,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **top** face from the closest hit containned
+/// \brief This method returns the distance to the prism **top** face from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.
@@ -552,7 +536,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the distance to the prism **bottom** face from the closest hit containned
+/// \brief This method returns the distance to the prism **bottom** face from the closest hit contained
 /// inside the prism volume given by argument.
 ///
 /// \param x0 The center of the bottom face of the prism.
@@ -563,9 +547,9 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 ///
 /// \return If no hit is found inside the prism, -1 is returned.
 ///
-Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVector3 x0, TVector3 x1,
-                                                                          Double_t sizeX, Double_t sizeY,
-                                                                          Double_t theta) {
+Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const TVector3& x0,
+                                                                          const TVector3& x1, Double_t sizeX,
+                                                                          Double_t sizeY, Double_t theta) {
     TVector3 axis = x1 - x0;
     Double_t prismLength = axis.Mag();
 
@@ -595,19 +579,25 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(TVecto
 ///
 /// The following options are allowed:
 ///
-/// * **graph**:
-/// * **hist**:
-/// * **print**:
+/// 1. **graph**: It draws the hits using a TGraph drawing method.
+///
+/// 2. **hist**: It generates histograms in XY, XZ and YZ projections using the projected
+/// event hits at the corresponding plane, the bins are weighted with their corresponding
+/// energy. Histograms will accept as argument, between parenthesis, a conventional ROOT
+/// option, i.e. `hist(rootOption)`, where rootOption is any valid ROOT option as described
+/// by the [THistPainter](https://root.cern/doc/master/classTHistPainter.html) ROOT class.
+/// The default binning size is defined to be automatic, but the user is able to define a
+/// custom bin size of the histogram using the [ ]. i.e. the following example will define
+/// the bin size to 1mm. Example: `hist(Cont0,colz)[1]`.
+///
+/// 3 **print**: It will print on screen the result of TRestDetectorHitsEvent::PrintEvent.
 ///
 /// The different options must separated by colons, as "option1:option2:option3".
 ///
-///
 /// \return A pointer to the TPad where the event was drawn is returned.
 ///
-TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
+TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
     vector<TString> optList = Vector_cast<string, TString>(TRestTools::GetOptions((string)option));
-
-    SetBoundaries();
 
     for (unsigned int n = 0; n < optList.size(); n++) {
         if (optList[n] == "print") this->PrintEvent();
@@ -615,12 +605,13 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
     optList.erase(std::remove(optList.begin(), optList.end(), "print"), optList.end());
 
-    /// The default histogram using a pitch of 0.5mm
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[0.5]");
+    /// The default histogram using a pitch of 0 mm,
+    //  which means that it should be extracted from the hit array
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
-    if (fPad != NULL) {
+    if (fPad != nullptr) {
         delete fPad;
-        fPad = NULL;
+        fPad = nullptr;
     }
 
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
@@ -655,7 +646,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
         startPos = optionStr.find("[");
         endPos = optionStr.find("]");
-        Double_t pitch = 3;
+        Double_t pitch = 0;
         if (endPos != string::npos) {
             TString pitchOption = optList[n](startPos + 1, endPos - startPos - 1);
             pitch = stod((string)pitchOption);
@@ -663,55 +654,36 @@ TPad* TRestDetectorHitsEvent::DrawEvent(TString option) {
 
         if (drawEventOption == "graph") this->DrawGraphs(column);
 
-        if (drawEventOption == "hist") this->DrawHistograms(column, pitch, histOption);
+        if (drawEventOption == "hist") this->DrawHistograms(column, histOption, pitch);
     }
 
     return fPad;
 }
 
-void TRestDetectorHitsEvent::SetBoundaries() {
-    Double_t maxX = -1e10, minX = 1e10, maxZ = -1e10, minZ = 1e10, maxY = -1e10, minY = 1e10;
-
-    for (int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
-        Double_t x = fHits->GetX(nhit);
-        Double_t y = fHits->GetY(nhit);
-        Double_t z = fHits->GetZ(nhit);
-
-        if (x > maxX) maxX = x;
-        if (x < minX) minX = x;
-        if (y > maxY) maxY = y;
-        if (y < minY) minY = y;
-        if (z > maxZ) maxZ = z;
-        if (z < minZ) minZ = z;
-    }
-
-    fMinX = minX;
-    fMaxX = maxX;
-
-    fMinY = minY;
-    fMaxY = maxY;
-
-    fMinZ = minZ;
-    fMaxZ = maxZ;
-}
-
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as a graph.
+///
+/// This method receives as argument the column to be drawn in the TPad.
+///
+/// The different TGraphs are drawn in a TPad *fPad defined as global variable
+///
 void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
-    if (fXYHitGraph != NULL) {
+    if (fXYHitGraph != nullptr) {
         delete fXYHitGraph;
-        fXYHitGraph = NULL;
+        fXYHitGraph = nullptr;
     }
-    if (fXZHitGraph != NULL) {
+    if (fXZHitGraph != nullptr) {
         delete fXZHitGraph;
-        fXZHitGraph = NULL;
+        fXZHitGraph = nullptr;
     }
-    if (fYZHitGraph != NULL) {
+    if (fYZHitGraph != nullptr) {
         delete fYZHitGraph;
-        fYZHitGraph = NULL;
+        fYZHitGraph = nullptr;
     }
 
-    Double_t xz[2][this->GetNumberOfHits()];
-    Double_t yz[2][this->GetNumberOfHits()];
-    Double_t xy[2][this->GetNumberOfHits()];
+    vector<vector<Double_t>> xz(2, vector<Double_t>(this->GetNumberOfHits()));
+    vector<vector<Double_t>> yz(2, vector<Double_t>(this->GetNumberOfHits()));
+    vector<vector<Double_t>> xy(2, vector<Double_t>(this->GetNumberOfHits()));
 
     /* {{{ Creating xz, yz, and xy arrays and initializing graphs */
     Int_t nXZ = 0;
@@ -743,17 +715,17 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
         }
     }
 
-    fXZHitGraph = new TGraph(nXZ, xz[0], xz[1]);
+    fXZHitGraph = new TGraph(nXZ, &xz[0][0], &xz[1][0]);
     fXZHitGraph->SetMarkerColor(kBlue);
     fXZHitGraph->SetMarkerSize(0.3);
     fXZHitGraph->SetMarkerStyle(20);
 
-    fYZHitGraph = new TGraph(nYZ, yz[0], yz[1]);
+    fYZHitGraph = new TGraph(nYZ, &yz[0][0], &yz[1][0]);
     fYZHitGraph->SetMarkerColor(kRed);
     fYZHitGraph->SetMarkerSize(0.3);
     fYZHitGraph->SetMarkerStyle(20);
 
-    fXYHitGraph = new TGraph(nXY, xy[0], xy[1]);
+    fXYHitGraph = new TGraph(nXY, &xy[0][0], &xy[1][0]);
     fXYHitGraph->SetMarkerColor(kBlack);
     fXYHitGraph->SetMarkerSize(0.3);
     fXYHitGraph->SetMarkerStyle(20);
@@ -792,47 +764,63 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     column++;
 }
 
-void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TString histOption) {
-    if (fXYHisto != NULL) {
-        delete fXYHisto;
-        fXYHisto = NULL;
-    }
-    if (fXZHisto != NULL) {
-        delete fXZHisto;
-        fXZHisto = NULL;
-    }
-    if (fYZHisto != NULL) {
-        delete fYZHisto;
-        fYZHisto = NULL;
-    }
-
-    if (fXHisto != NULL) {
-        delete fXHisto;
-        fXHisto = NULL;
-    }
-    if (fYHisto != NULL) {
-        delete fYHisto;
-        fYHisto = NULL;
-    }
-    if (fZHisto != NULL) {
-        delete fZHisto;
-        fZHisto = NULL;
+///////////////////////////////////////////////
+/// \brief This method draw the hits events as an histogram
+///
+/// This method receives the following arguments:
+/// -The column to be drawn in the TPad.
+/// -The histOption used as Draw option for the histograms
+/// -The pitch size which defines the number of bins of the histograms,
+/// if the pitch size is zero, the bins are drawn based on the minDiff of a
+/// particular axis. Otherwise, the pitch passed as argument is used to define
+/// the bin size, the histogram boundaries are based on the max/min values of
+/// a particular axis.
+///
+/// The different histograms are drawn in a TPad *fPad defined as global variable
+///
+void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOption, double pitch) {
+    std::vector<double> fX, fY, fZ;
+    for (int i = 0; i < GetNumberOfHits(); i++) {
+        if (GetType(i) % X == 0) fX.emplace_back(GetX(i));
+        if (GetType(i) % Y == 0) fY.emplace_back(GetY(i));
+        if (GetType(i) % Z == 0) fZ.emplace_back(GetZ(i));
     }
 
-    Int_t nBinsX = (fMaxX - fMinX + 20) / pitch;
-    Int_t nBinsY = (fMaxY - fMinY + 20) / pitch;
-    Int_t nBinsZ = (fMaxZ - fMinZ + 20) * 3 / pitch;
+    double maxX, minX, maxY, minY, maxZ, minZ;
+    int nBinsX, nBinsY, nBinsZ;
+    TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
+    TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
+    TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
 
-    fXYHisto = new TH2F("XY", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX, nBinsY, fMinY - 10,
-                        fMinY + pitch * nBinsY);
-    fXZHisto = new TH2F("XZ", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX, nBinsZ, fMinZ - 10,
-                        fMinZ + (pitch / 3) * nBinsZ);
-    fYZHisto = new TH2F("YZ", "", nBinsY, fMinY - 10, fMinY + pitch * nBinsY, nBinsZ, fMinZ - 10,
-                        fMinZ + (pitch / 3) * nBinsZ);
+    if (pitch > 0) {
+        nBinsX = std::round((maxX - minX) / pitch);
+        nBinsY = std::round((maxY - minY) / pitch);
+        nBinsZ = std::round((maxZ - minZ) / pitch);
+    }
 
-    fXHisto = new TH1F("X", "", nBinsX, fMinX - 10, fMinX + pitch * nBinsX);
-    fYHisto = new TH1F("Y", "", nBinsY, fMinY - 10, fMinY + pitch * nBinsY);
-    fZHisto = new TH1F("Z", "", nBinsZ, fMinZ - 10, fMinZ + pitch * nBinsZ);
+    delete fXYHisto;
+    delete fXZHisto;
+    delete fYZHisto;
+
+    delete fXHisto;
+    delete fYHisto;
+    delete fZHisto;
+
+    fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+
+    fXHisto = new TH1F("X", "", nBinsX, minX, maxX);
+    fYHisto = new TH1F("Y", "", nBinsY, minY, maxY);
+    fZHisto = new TH1F("Z", "", nBinsZ, minZ, maxZ);
+
+    fXYHisto->SetStats(false);
+    fXZHisto->SetStats(false);
+    fYZHisto->SetStats(false);
+
+    fXHisto->SetStats(false);
+    fYHisto->SetStats(false);
+    fZHisto->SetStats(false);
 
     Int_t nYZ = 0, nXZ = 0, nXY = 0;
     Int_t nX = 0, nY = 0, nZ = 0;
@@ -841,20 +829,21 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
         Double_t x = fHits->GetX(nhit);
         Double_t y = fHits->GetY(nhit);
         Double_t z = fHits->GetZ(nhit);
+        Double_t en = fHits->GetEnergy(nhit);
         int type = fHits->GetType(nhit);
 
         if (type % XZ == 0) {
-            fXZHisto->Fill(x, z);
+            fXZHisto->Fill(x, z, en);
             nXZ++;
         }
 
         if (type % YZ == 0) {
-            fYZHisto->Fill(y, z);
+            fYZHisto->Fill(y, z, en);
             nYZ++;
         }
 
         if (type % XY == 0) {
-            fXYHisto->Fill(x, y);
+            fXYHisto->Fill(x, y, en);
             nXY++;
         }
 
@@ -906,6 +895,11 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
         fXYHisto->Draw(histOption);
         fXYHisto->GetXaxis()->SetTitle("X-axis (mm)");
         fXYHisto->GetYaxis()->SetTitle("Y-axis (mm)");
+        fXYHisto->GetYaxis()->SetTitleSize(1.4 * fXYHisto->GetYaxis()->GetTitleSize());
+        fXYHisto->GetXaxis()->SetTitleSize(1.4 * fXYHisto->GetXaxis()->GetTitleSize());
+        fXYHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
+        fXYHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
+        fXYHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     column++;
@@ -915,26 +909,41 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, Double_t pitch, TStri
         fXHisto->Draw(histOption);
         fXHisto->GetXaxis()->SetTitle("X-axis (mm)");
         fXHisto->GetYaxis()->SetTitle("Number of events");
+        fXHisto->GetYaxis()->SetTitleSize(1.4 * fXHisto->GetYaxis()->GetTitleSize());
+        fXHisto->GetXaxis()->SetTitleSize(1.4 * fXHisto->GetXaxis()->GetTitleSize());
+        fXHisto->GetYaxis()->SetLabelSize(1.25 * fXHisto->GetYaxis()->GetLabelSize());
+        fXHisto->GetXaxis()->SetLabelSize(1.25 * fXHisto->GetXaxis()->GetLabelSize());
+        fXHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     if (nY > 0) {
         fPad->cd(2 + 3 * column);
         fYHisto->Draw(histOption);
-        fYHisto->GetYaxis()->SetTitle("Y-axis (mm)");
+        fYHisto->GetXaxis()->SetTitle("Y-axis (mm)");
         fYHisto->GetYaxis()->SetTitle("Number of events");
+        fYHisto->GetYaxis()->SetTitleSize(1.4 * fYHisto->GetYaxis()->GetTitleSize());
+        fYHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
+        fYHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
+        fYHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
+        fYHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     if (nZ > 0) {
         fPad->cd(3 + 3 * column);
         fZHisto->Draw(histOption);
-        fZHisto->GetZaxis()->SetTitle("Z-axis (mm)");
+        fZHisto->GetXaxis()->SetTitle("Z-axis (mm)");
         fZHisto->GetYaxis()->SetTitle("Number of events");
+        fZHisto->GetYaxis()->SetTitleSize(1.4 * fYHisto->GetYaxis()->GetTitleSize());
+        fZHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
+        fZHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
+        fZHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
+        fZHisto->GetYaxis()->SetTitleOffset(1.75);
     }
 
     column++;
 }
 
-void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) {
+void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     TRestEvent::PrintEvent();
 
     cout << "Total energy : " << GetEnergy() << endl;

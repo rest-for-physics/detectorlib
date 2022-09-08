@@ -16,12 +16,11 @@
 #ifndef RestCore_TRestDetectorHitsSmearingProcess
 #define RestCore_TRestDetectorHitsSmearingProcess
 
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-
 #include <TRandom3.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
 
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
    private:
@@ -32,47 +31,47 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     TRestDetectorGas* fGas;  //!
 
-    void InitFromConfigFile();
-    void Initialize();
+    void InitFromConfigFile() override;
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
     // add here the members of your event process
 
     Double_t fEnergyRef;         ///< reference energy for the FWHM
-    Double_t fResolutionAtEref;  ///< FWHM at Energy of reference
+    Double_t fResolutionAtERef;  ///< FWHM at Energy of reference
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " reference energy (Eref): " << fEnergyRef << endl;
-        metadata << " resolution at Eref : " << fResolutionAtEref << endl;
+        RESTMetadata << " reference energy (ERef): " << fEnergyRef << RESTendl;
+        RESTMetadata << " resolution at ERef : " << fResolutionAtERef << RESTendl;
 
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return NULL; }
+    inline TRestMetadata* GetProcessMetadata() const { return nullptr; }
 
-    TString GetProcessName() { return (TString) "smearingProcess"; }
+    const char* GetProcessName() const override { return "smearingProcess"; }
 
-    Double_t GetEnergyReference() { return fEnergyRef; }
-    Double_t GetResolutionReference() { return fResolutionAtEref; }
+    inline Double_t GetEnergyReference() const { return fEnergyRef; }
+    inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
-    TRestDetectorHitsSmearingProcess(char* cfgFileName);
+    TRestDetectorHitsSmearingProcess(const char* configFilename);
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDef(TRestDetectorHitsSmearingProcess, 1);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 2);
 };
 #endif

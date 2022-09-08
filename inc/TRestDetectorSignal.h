@@ -22,20 +22,19 @@
 #ifndef RestCore_TRestDetectorSignal
 #define RestCore_TRestDetectorSignal
 
-#include <iostream>
-
 #include <TGraph.h>
-#include <TObject.h>
 #include <TString.h>
 #include <TVector2.h>
 
-class TRestDetectorSignal : public TObject {
+#include <iostream>
+
+class TRestDetectorSignal {
    private:
     Int_t GetMinIndex();
     Int_t GetTimeIndex(Double_t t);
 
    protected:
-    Int_t fSignalID;
+    Int_t fSignalID = -1;
 
     std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
     std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
@@ -51,12 +50,6 @@ class TRestDetectorSignal : public TObject {
     std::vector<Int_t> fPointsOverThreshold;  //!
 #endif
 
-    void Initialize() {
-        fSignalCharge.clear();
-        fSignalTime.clear();
-        fSignalID = -1;
-    }
-
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
@@ -67,8 +60,8 @@ class TRestDetectorSignal : public TObject {
         return vector2;
     }
 
-    Int_t GetSignalID() { return fSignalID; }
-    Int_t GetID() { return fSignalID; }
+    inline Int_t GetSignalID() const { return fSignalID; }
+    inline Int_t GetID() const { return fSignalID; }
 
     void IncreaseTimeBinBy(Int_t bin, Double_t data) {
         if (bin >= GetNumberOfPoints()) {
@@ -82,7 +75,7 @@ class TRestDetectorSignal : public TObject {
     Int_t GetNumberOfPoints() {
         if (fSignalTime.size() != fSignalCharge.size()) {
             std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-            std::cout << "WARNING, the two vector sizes did not match" << std::endl;
+            std::cout << "WARNING, the two std::vector sizes did not match" << std::endl;
             std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
         }
         return fSignalTime.size();
@@ -167,11 +160,11 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
 
     TGraph* GetGraph(Int_t color = 1);
 
-    // Construtor
+    // Constructor
     TRestDetectorSignal();
     // Destructor
     ~TRestDetectorSignal();
 
-    ClassDef(TRestDetectorSignal, 1);
+    ClassDef(TRestDetectorSignal, 2);
 };
 #endif

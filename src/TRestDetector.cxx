@@ -55,15 +55,19 @@
 ///
 #include "TRestDetector.h"
 
+using namespace std;
+
+ClassImp(TRestDetector);
+
 void TRestDetector::PrintMetadata() {
     TRestMetadata::PrintMetadata();
     any cl = any(this, this->ClassName());
     for (int i = 0; i < cl.GetNumberOfDataMembers(); i++) {
         if (cl.GetDataMember(i).name == "fgIsA") continue;
         if (cl.GetDataMember(i).ToString() != "-1")
-            metadata << cl.GetDataMember(i).name << ": " << cl.GetDataMember(i).ToString() << endl;
+            RESTMetadata << cl.GetDataMember(i).name << ": " << cl.GetDataMember(i).ToString() << RESTendl;
     }
-    metadata << "---------------------------------------" << endl;
+    RESTMetadata << "---------------------------------------" << RESTendl;
 }
 
 void TRestDetector::UpdateMetadataMembers() {
@@ -73,5 +77,3 @@ void TRestDetector::UpdateMetadataMembers() {
         fElectronicsSamplingTime = StringToInteger(fElectronicsClock) / 100.;
     }
 }
-
-ClassImp(TRestDetector);

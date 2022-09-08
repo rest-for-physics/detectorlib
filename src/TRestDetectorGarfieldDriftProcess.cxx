@@ -14,15 +14,18 @@
 ///             march 2017:   Damien Neyret
 ///_______________________________________________________________________________
 
+#include "TRestDetectorGarfieldDriftProcess.h"
+
 #include <TGeoBBox.h>
 #include <TRandom3.h>
 
-#include "TRestDetectorGarfieldDriftProcess.h"
+ClassImp(TRestDetectorGarfieldDriftProcess);
 
 #if defined USE_Garfield
-#include "ComponentConstant.hh"
-#include "TGDMLParse.h"
 using namespace Garfield;
+#include <ComponentConstant.hh>
+
+#include "TGDMLParse.h"
 #endif
 
 #include <stdio.h>
@@ -31,12 +34,9 @@ using namespace std;
 
 const double cmTomm = 10.;
 
-ClassImp(TRestDetectorGarfieldDriftProcess)
-//______________________________________________________________________________
 #if defined USE_Garfield
-    TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess()
-    : fRandom(0), fGfSensor(0) {
 
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess() : fRandom(0), fGfSensor(0) {
     Initialize();
 }
 
@@ -47,27 +47,21 @@ ClassImp(TRestDetectorGarfieldDriftProcess)
 //            process stand alone but even then we could just call LoadConfig
 //            __________________________________________________________
 
-TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(char* cfgFileName)
+TRestDetectorGarfieldDriftProcess::TRestDetectorGarfieldDriftProcess(const char* configFilename)
     : fRandom(0), fGfSensor(0) {
     Initialize();
 
-    if (LoadConfigFromFile(cfgFileName) == -1) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename) == -1) LoadDefaultConfig();
 
     PrintMetadata();
 
-    if (fReadout == NULL) fReadout = new TRestDetectorReadout(cfgFileName);
-
-    // TRestDetectorGarfieldDriftProcess default constructor
+    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
 }
-
-//______________________________________________________________________________
 
 // TRestDetectorGarfieldDriftProcess destructor
 TRestDetectorGarfieldDriftProcess::~TRestDetectorGarfieldDriftProcess() {
-    if (fReadout != NULL) delete fReadout;
-    if (fGeometry) delete fGeometry;
-    fGeometry = NULL;
-
+    delete fReadout;
+    delete fGeometry;
     delete fOutputHitsEvent;
 }
 
@@ -81,15 +75,14 @@ void TRestDetectorGarfieldDriftProcess::LoadDefaultConfig() {
     fGasPressure = 10;
 }
 
-void TRestDetectorGarfieldDriftProcess::LoadConfig(string cfgFilename, string name) {
-    if (LoadConfigFromFile(cfgFilename, name)) LoadDefaultConfig();
+void TRestDetectorGarfieldDriftProcess::LoadConfig(const string& configFilename, const string& name) {
+    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
 
     if (fDriftPotential == PARAMETER_NOT_FOUND_DBL) {
         fDriftPotential = 1000;  // V
     }
 }
 
-//______________________________________________________________________________
 #endif
 
 void TRestDetectorGarfieldDriftProcess::Initialize() {
@@ -97,19 +90,18 @@ void TRestDetectorGarfieldDriftProcess::Initialize() {
     SetLibraryVersion(LIBRARY_VERSION);
 
     fRandom = new TRandom3(0);
-    fInputHitsEvent = NULL;
+    fInputHitsEvent = nullptr;
     fOutputHitsEvent = new TRestDetectorHitsEvent();
 
 #if defined USE_Garfield
-    fReadout = NULL;
-    fGas = NULL;
-    fGeometry = NULL;
+    fReadout = nullptr;
+    fGas = nullptr;
+    fGeometry = nullptr;
     fPEReduction = 1.;
     fStopDistance = 2;  // default distance from readout to stop drift set to 2mm
 #endif
 }
 
-//______________________________________________________________________________
 #if defined USE_Garfield
 void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // Function to be executed once at the beginning of process
@@ -121,7 +113,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting gas data
     fGas = GetMetadata<TRestDetectorGas>();
-    if (fGas != NULL) {
+    if (fGas != nullptr) {
         if (fGasPressure <= 0)
             fGasPressure = fGas->GetPressure();
         else
@@ -133,8 +125,8 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 
     // Getting readout data
     fReadout = GetMetadata<TRestDetectorReadout>();
-    if (fReadout == NULL) {
-        cout << "REST ERRORRRR : Readout has not been initialized" << endl;
+    if (fReadout == nullptr) {
+        cout << "REST ERROR: Readout has not been initialized" << endl;
         exit(-1);
     }
 
@@ -146,7 +138,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         exit(-1);
     }
 
-    TGeoVolume* geovol = NULL;
+    TGeoVolume* geovol = nullptr;
     fGeometry = new TRestDetectorGeometry();
     fGeometry->InitGfGeometry();
 
@@ -161,14 +153,15 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     fGeometry->DefaultColors();
     //         fGeometry->UpdateElements();
 
-    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : " << this->GetVerboseLevel() << endl;
+    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : "
+         << static_cast<int>(this->GetVerboseLevel()) << endl;
 
     // analyze GDML geometry to find major elements (gas volume, electrodes,
     // readout)
     TObjArray* thenodes = geovol->GetNodes();
     for (TIter it = thenodes->begin(); it != thenodes->end(); ++it) {
         TGeoNode* itnode = (TGeoNode*)(*it);
-        if (GetVerboseLevel() >= REST_Info) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
             cout << "****** itnode " << itnode->GetName() << endl;
             itnode->PrintCandidates();
         }
@@ -176,7 +169,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         itnode->PrintCandidates();
 
         TGeoVolume* itvol = itnode->GetVolume();
-        if (GetVerboseLevel() >= REST_Info) {
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
             cout << "  *  *  itvolume " << itvol->GetName() << endl;
             itvol->Print();
         }
@@ -184,12 +177,13 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         itvol->Print();
 
         TGeoMedium* itmed = itvol->GetMedium();
-        if (GetVerboseLevel() >= REST_Info) cout << "  *  *  itmed " << itmed->GetName() << endl;
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+            cout << "  *  *  itmed " << itmed->GetName() << endl;
 
         // gas volume
         if (fGas->GetGDMLMaterialRef() == itmed->GetName()) {
             fGeometry->SetGfGeoMedium(itmed->GetName(), fGas);
-            if (GetVerboseLevel() >= REST_Info) {
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
                 cout << "  -> gas volume   SetMedium itmed " << itmed->GetName() << "  fGas "
                      << fGas->GetGasMedium()->GetName() << endl;
                 fGas->GetGasMedium()->PrintGas();
@@ -203,14 +197,16 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         if ((strncmp(itvol->GetName(), "anodeVol", 8) == 0) ||
             (strncmp(itvol->GetName(), "cathodeVol", 10) == 0)) {
             fGeometry->SetDriftElecNode(itnode);
-            if (GetVerboseLevel() >= REST_Info) cout << "  -> cathode volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+                cout << "  -> cathode volume " << endl;
             cout << "  -> cathode volume " << endl;
         }
 
         // micromegas readout electrode
         if ((strncmp(itvol->GetName(), "micromegasVol", 13) == 0)) {
             fGeometry->AddReadoutElecNode(itnode);
-            if (GetVerboseLevel() >= REST_Info) cout << "  -> readout volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+                cout << "  -> readout volume " << endl;
             cout << "  -> readout volume " << endl;
         }
     }
@@ -340,18 +336,17 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
     return -1;
 }
 
-//______________________________________________________________________________
 #endif
 
-TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput) {
+TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEvent) {
 #if defined USE_Garfield
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     double x, y, z, energy;
     double xi, yi, zi, ti, xf, yf, zf, tf, energyf;
     int status;
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fInputHitsEvent->GetNumberOfHits() << endl;
         cout << "--------------------------" << endl;
         fInputHitsEvent->PrintEvent(20);
@@ -417,11 +412,11 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return NULL;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
 
     // fSignalEvent->PrintEvent();
 
-    if (GetVerboseLevel() >= REST_Debug) {
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
@@ -432,17 +427,15 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* evInput)
 
     return fOutputHitsEvent;
 #else
-    fInputHitsEvent = (TRestDetectorHitsEvent*)evInput;
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent = fInputHitsEvent;
-    debug << "null process" << endl;
-    return evInput;
+    RESTDebug << "nullptr process" << RESTendl;
+    return inputEvent;
 
 #endif
 }
 
 #if defined USE_Garfield
-
-//______________________________________________________________________________
 
 void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Function to be executed once at the end of the process
@@ -452,8 +445,6 @@ void TRestDetectorGarfieldDriftProcess::EndProcess() {
     // Comment this if you don't want it.
     // TRestEventProcess::EndProcess();
 }
-
-//______________________________________________________________________________
 
 void TRestDetectorGarfieldDriftProcess::InitFromConfigFile() {
     fGasPressure = StringToDouble(GetParameter("gasPressure", "-1"));

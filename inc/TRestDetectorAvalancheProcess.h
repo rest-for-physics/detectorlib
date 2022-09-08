@@ -30,8 +30,8 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     Double_t fResolutionAtEref;  ///< FWHM at Energy of reference
     Double_t fDetectorGain;      ///< Detector's gain.
 
-    void InitFromConfigFile();
-    void Initialize();
+    void InitFromConfigFile() override;
+    void Initialize() override;
     void LoadDefaultConfig();
 
    protected:
@@ -39,40 +39,40 @@ class TRestDetectorAvalancheProcess : public TRestEventProcess {
     TRestDetectorGas* fGas;  //!
 
    public:
-    any GetInputEvent() { return fHitsInputEvent; }
-    any GetOutputEvent() { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fHitsInputEvent; }
+    any GetOutputEvent() const override { return fHitsOutputEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
 
-    void LoadConfig(std::string cfgFilename);
+    void LoadConfig(std::string configFilename);
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " reference energy (Eref): " << fEnergyRef << endl;
-        metadata << " resolution at Eref : " << fResolutionAtEref << endl;
-        metadata << " detector gain : " << fDetectorGain << endl;
+        RESTMetadata << " reference energy (Eref): " << fEnergyRef << RESTendl;
+        RESTMetadata << " resolution at Eref : " << fResolutionAtEref << RESTendl;
+        RESTMetadata << " detector gain : " << fDetectorGain << RESTendl;
 
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fGas; }
+    TRestMetadata* GetProcessMetadata() const { return fGas; }
 
-    TString GetProcessName() { return (TString) "avalancheProcess"; }
+    const char* GetProcessName() const override { return "avalancheProcess"; }
 
-    Double_t GetEnergyReference() { return fEnergyRef; }
-    Double_t GetResolutionReference() { return fResolutionAtEref; }
-    Double_t GetDetectorGain() { return fDetectorGain; }
+    inline Double_t GetEnergyReference() const { return fEnergyRef; }
+    inline Double_t GetResolutionReference() const { return fResolutionAtEref; }
+    inline Double_t GetDetectorGain() const { return fDetectorGain; }
 
     // Constructor
     TRestDetectorAvalancheProcess();
-    TRestDetectorAvalancheProcess(char* cfgFileName);
+    TRestDetectorAvalancheProcess(const char* configFilename);
     // Destructor
     ~TRestDetectorAvalancheProcess();
 
-    ClassDef(TRestDetectorAvalancheProcess, 1);  // Template for a REST "event process"
-                                                 // class inherited from TRestEventProcess
+    ClassDefOverride(TRestDetectorAvalancheProcess, 1);  // Template for a REST "event process"
+                                                         // class inherited from TRestEventProcess
 };
 #endif

@@ -1,73 +1,95 @@
-///______________________________________________________________________________
-///______________________________________________________________________________
-///______________________________________________________________________________
-///
-///
-///             RESTSoft : Software for Rare Event Searches with TPCs
-///
-///             TRestDetectorHitsToSignalProcess.h
-///
-///_______________________________________________________________________________
+/*************************************************************************
+ * This file is part of the REST software framework.                     *
+ *                                                                       *
+ * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
+ * For more information see http://gifna.unizar.es/trex                  *
+ *                                                                       *
+ * REST is free software: you can redistribute it and/or modify          *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * REST is distributed in the hope that it will be useful,               *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have a copy of the GNU General Public License along with   *
+ * REST in $REST_PATH/LICENSE.                                           *
+ * If not, see http://www.gnu.org/licenses/.                             *
+ * For the list of contributors see $REST_PATH/CREDITS.                  *
+ *************************************************************************/
 
 #ifndef RestCore_TRestDetectorHitsToSignalProcess
 #define RestCore_TRestDetectorHitsToSignalProcess
 
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
+#include <TRestEventProcess.h>
 
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
+//! A process to transform a x,y,z coordinate hits into daq identified physical time signals
 class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fHitsEvent;      //!
+    /// A pointer to the specific TRestDetectorHitsEvent output
+    TRestDetectorHitsEvent* fHitsEvent;  //!
+
+    /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
+    /// A pointer to the detector readout definition accesible to TRestRun
     TRestDetectorReadout* fReadout;  //!
-    TRestDetectorGas* fGas;          //!
 
-    void Initialize();
+    /// A pointer to the detector gas definition accessible to TRestRun
+    TRestDetectorGas* fGas;  //!
+
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
-    Int_t FindModule(Int_t readoutPlane, Double_t x, Double_t y);
-    Int_t FindChannel(Int_t module, Double_t x, Double_t y);
-
    protected:
-    Double_t fSampling;       // us
-    Double_t fGasPressure;    // atm
-    Double_t fElectricField;  // V/mm
-    Double_t fDriftVelocity;  // mm/us
+    /// The sampling rate in us
+    Double_t fSampling = 1;  //<
+
+    /// The gas pressure. If defined it will change the TRestDetectorGas pressure in atm.
+    Double_t fGasPressure = 1;  // atm
+
+    /// The electric field in V/mm. Used to calculate the drift velocity if TRestDetectorGas is defined.
+    Double_t fElectricField = 100;  //<
+
+    /// The drift velocity in mm/us. If it is negative, it will be calculated from TRestDetectorGas.
+    Double_t fDriftVelocity = -1;  // mm/us
 
    public:
-    any GetInputEvent() { return fHitsEvent; }
-    any GetOutputEvent() { return fSignalEvent; }
+    any GetInputEvent() const override { return fHitsEvent; }
+    any GetOutputEvent() const override { return fSignalEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void PrintMetadata() {
+    /// It prints out the process parameters stored in the metadata structure
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Sampling : " << fSampling << " us" << endl;
-        metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
+        RESTMetadata << "Sampling : " << fSampling << " us" << RESTendl;
+        RESTMetadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << "Drift velocity : " << fDriftVelocity << " mm/us" << RESTendl;
 
         EndPrintProcess();
     }
 
-    TRestMetadata* GetProcessMetadata() { return fReadout; }
+    TRestMetadata* GetProcessMetadata() const { return fReadout; }
 
-    TString GetProcessName() { return (TString) "hitsToSignal"; }
+    /// Returns the name of this process
+    const char* GetProcessName() const override { return "hitsToSignal"; }
 
-    // Constructor
     TRestDetectorHitsToSignalProcess();
-    TRestDetectorHitsToSignalProcess(char* cfgFileName);
-    // Destructor
+    TRestDetectorHitsToSignalProcess(const char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDef(TRestDetectorHitsToSignalProcess, 1);
+    ClassDefOverride(TRestDetectorHitsToSignalProcess, 1);
 };
 #endif

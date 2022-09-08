@@ -23,35 +23,33 @@
 #ifndef RestCore_TRestDetectorSignalToHitsProcess
 #define RestCore_TRestDetectorSignalToHitsProcess
 
-#include <TRestDetectorGas.h>
-#include <TRestDetectorReadout.h>
+#include <TRestEventProcess.h>
 
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorSignalEvent.h>
-
-#include "TRestEventProcess.h"
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! A process to transform a daq channel and physical time to spatial coordinates
 class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
    private:
     /// A pointer to the specific TRestDetectorHitsEvent output
-    TRestDetectorHitsEvent* fHitsEvent;      //!
+    TRestDetectorHitsEvent* fHitsEvent;  //!
 
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
     /// A pointer to the detector readout definition accesible to TRestRun
     TRestDetectorReadout* fReadout;  //!
-    
-    /// A pointer to the detector gas definition accessible to TRestRun
-    TRestDetectorGas* fGas;          //!
 
-    void Initialize();
+    /// A pointer to the detector gas definition accessible to TRestRun
+    TRestDetectorGas* fGas;  //!
+
+    void Initialize() override;
 
     void LoadDefaultConfig();
 
    protected:
-
     /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
     Double_t fElectricField = 100;
 
@@ -62,37 +60,46 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     Double_t fDriftVelocity = -1;
 
     /// The method used to transform the signal points to hits.
-    TString fMethod = "tripleMax";
+    TString fMethod = "tripleMaxAverage";
+
+    // Time window to integrate in case intwindow method is requested, units (us)
+    Double_t fIntWindow = 5;
+
+    // Threshold value for in case intwindow method is requested
+    Double_t fThreshold = 100.;
 
    public:
-    any GetInputEvent() { return fSignalEvent; }
-    any GetOutputEvent() { return fHitsEvent; }
+    any GetInputEvent() const override { return fSignalEvent; }
+    any GetOutputEvent() const override { return fHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
     /// It prints out the process parameters stored in the metadata structure
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << endl;
-        metadata << "Gas pressure : " << fGasPressure << " atm" << endl;
-        metadata << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
-
-        metadata << "Signal to hits method : " << fMethod << endl;
+        RESTMetadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
+        RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
+        RESTMetadata << "Drift velocity : " << fDriftVelocity << " mm/us" << RESTendl;
+        RESTMetadata << "Signal to hits method : " << fMethod << RESTendl;
+        if (fMethod == "intwindow") {
+            RESTMetadata << "Threshold : " << fThreshold << " ADC" << RESTendl;
+            RESTMetadata << "Integral window : " << fIntWindow << " us" << RESTendl;
+        }
 
         EndPrintProcess();
     }
 
     /// Returns the name of this process
-    TString GetProcessName() { return (TString) "signalToHits"; }
+    const char* GetProcessName() const override { return "signalToHits"; }
 
     TRestDetectorSignalToHitsProcess();
-    TRestDetectorSignalToHitsProcess(char* cfgFileName);
+    TRestDetectorSignalToHitsProcess(const char* configFilename);
     ~TRestDetectorSignalToHitsProcess();
 
-    ClassDef(TRestDetectorSignalToHitsProcess, 3);
+    ClassDefOverride(TRestDetectorSignalToHitsProcess, 4);
 };
 #endif

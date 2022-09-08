@@ -15,21 +15,21 @@
 #ifndef RestCore_TRestDetectorSetup
 #define RestCore_TRestDetectorSetup
 
+#include <TRestMetadata.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 #include <iostream>
 #include <vector>
 
-#include <TRestMetadata.h>
-
 class TRestDetectorSetup : public TRestMetadata {
    private:
-    void Initialize();
+    void Initialize() override;
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
     Int_t fRunNumber;
     Int_t fSubRunNumber;
@@ -46,29 +46,30 @@ class TRestDetectorSetup : public TRestMetadata {
     Double_t fSamplingInMicroSec;
 
    public:
-    Int_t GetRunNumber() { return fRunNumber; }
-    Int_t GetSubRunNumber() { return fSubRunNumber; }
-    TString GetRunTag() { return fRunTag; }
+    inline Int_t GetRunNumber() const { return fRunNumber; }
+    inline Int_t GetSubRunNumber() const { return fSubRunNumber; }
+    inline TString GetRunTag() const { return fRunTag; }
 
     void SetRunNumber(Int_t runNumber) { fRunNumber = runNumber; }
     void SetSubRunNumber(Int_t subRunNumber) { fSubRunNumber = subRunNumber; }
 
-    Double_t GetSamplingInMicroSeconds() { return fSamplingInMicroSec; }
+    inline Double_t GetSamplingInMicroSeconds() const { return fSamplingInMicroSec; }
 
     Double_t GetFieldInVPerCm() { return fDriftField * fDetectorPressure; }
 
-    Double_t GetPressureInBar() { return fDetectorPressure; }
+    inline Double_t GetPressureInBar() const { return fDetectorPressure; }
 
     void InitFromFileName(TString fName);
 
-    void PrintMetadata();
+    void PrintMetadata() override;
 
     // Constructors
     TRestDetectorSetup();
-    TRestDetectorSetup(char* cfgFileName, std::string name = "");
+    TRestDetectorSetup(const char* configFilename, const std::string& name = "");
+
     // Destructor
     ~TRestDetectorSetup();
 
-    ClassDef(TRestDetectorSetup, 1);
+    ClassDefOverride(TRestDetectorSetup, 1);
 };
 #endif

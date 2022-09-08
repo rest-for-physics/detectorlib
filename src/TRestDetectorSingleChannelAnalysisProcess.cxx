@@ -23,32 +23,28 @@
 #include <TPaveText.h>
 #include <TRandom.h>
 #include <TSpectrum.h>
+
 using namespace std;
 
-ClassImp(TRestDetectorSingleChannelAnalysisProcess)
-    //______________________________________________________________________________
-    TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() {
-    Initialize();
-}
+ClassImp(TRestDetectorSingleChannelAnalysisProcess);
 
-//______________________________________________________________________________
+TRestDetectorSingleChannelAnalysisProcess::TRestDetectorSingleChannelAnalysisProcess() { Initialize(); }
+
 TRestDetectorSingleChannelAnalysisProcess::~TRestDetectorSingleChannelAnalysisProcess() {}
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fSignalEvent = NULL;
+    fSignalEvent = nullptr;
 
-    fReadout = NULL;
+    fReadout = nullptr;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
     fCalib = GetMetadata<TRestDetectorGainMap>();
-    if (fReadout == NULL) {
+    if (fReadout == nullptr) {
     } else {
         for (int i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
             auto plane = fReadout->GetReadoutPlane(i);
@@ -67,33 +63,33 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     }
 
     if (fApplyGainCorrection) {
-        if (fCalib != NULL) {
+        if (fCalib != nullptr) {
             for (auto iter = fChannelGain.begin(); iter != fChannelGain.end(); iter++) {
                 if (fCalib->fChannelGain.count(iter->first) == 0) {
-                    ferr << "in consistent gain mapping and readout definition!" << endl;
-                    ferr << "channel: " << iter->first << " not fount in mapping file!" << endl;
+                    RESTError << "in consistent gain mapping and readout definition!" << RESTendl;
+                    RESTError << "channel: " << iter->first << " not fount in mapping file!" << RESTendl;
                     abort();
                 }
             }
 
         } else {
-            ferr << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << endl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!"
+                      << RESTendl;
             abort();
         }
     }
 
-    if (GetFriend("TRestRawSignalAnalysisProcess") == NULL) {
-        ferr << "please add friend process TRestRawSignalAnalysisProcess and "
-                "TRestRawReadoutAnalysisProcess "
-                "and turn on all their observables!"
-             << endl;
+    if (GetFriend("TRestRawSignalAnalysisProcess") == nullptr) {
+        RESTError << "please add friend process TRestRawSignalAnalysisProcess and "
+                     "TRestRawReadoutAnalysisProcess "
+                     "and turn on all their observables!"
+                  << RESTendl;
         abort();
     }
 }
 
-//______________________________________________________________________________
-TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* evInput) {
-    fSignalEvent = (TRestDetectorSignalEvent*)evInput;
+TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
+    fSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
     double nan = numeric_limits<double>::quiet_NaN();
 
@@ -117,7 +113,7 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
             // if within energy cut range
 
             for (auto iter = sAna_thr_integral_map.begin(); iter != sAna_thr_integral_map.end(); iter++) {
-                if (fChannelThrIntegral[iter->first] == NULL) {
+                if (fChannelThrIntegral[iter->first] == nullptr) {
                     fChannelThrIntegral[iter->first] = new TH1D(
                         Form("h%i", iter->first), Form("h%i", iter->first), 100, 0, fSpecFitRange.Y() * 1.5);
                 }
@@ -164,7 +160,6 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
     return fSignalEvent;
 }
 
-//______________________________________________________________________________
 void TRestDetectorSingleChannelAnalysisProcess::EndProcess() {
     if (fCreateGainMap) {
         FitChannelGain();
@@ -244,7 +239,7 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
  * instance, then it should be added to the run, and it will be written to disk with it.
  * If we want just to have a method to export data, in principe it is possible. But
  * better without using a new TRestRun instance. TRestRun should only be created for
- * writting the standard processing scheme.
+ * writing the standard processing scheme.
  ***/
 void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename) {
     cout << "TRestDetectorSingleChannelAnalysisProcess: saving result..." << endl;
@@ -268,10 +263,9 @@ void TRestDetectorSingleChannelAnalysisProcess::SaveGainMetadata(string filename
     delete r;
 }
 
-
 TH1D* TRestDetectorSingleChannelAnalysisProcess::GetChannelSpectrum(int id) {
     if (fChannelThrIntegral.count(id) != 0) return fChannelThrIntegral[id];
-    return NULL;
+    return nullptr;
 }
 
 void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string filename) {
@@ -287,7 +281,7 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
 
     c->Print((filename + ".pdf[").c_str());
     for (auto iter = fChannelThrIntegral.begin(); iter != fChannelThrIntegral.end(); iter++) {
-        if (iter->second != NULL && iter->second->GetEntries() > 0) {
+        if (iter->second != nullptr && iter->second->GetEntries() > 0) {
             cout << "Drawing: " << iter->first << endl;
             c->Clear();
             iter->second->Draw();
@@ -305,7 +299,6 @@ void TRestDetectorSingleChannelAnalysisProcess::PrintChannelSpectrums(string fil
     delete c;
 }
 
-//______________________________________________________________________________
 // setting amplification:
 // <parameter name="modulesAmp" value = "2-1:5-1.2:6-0.8:8-0.9" />
 // setting readout modules to draw:
@@ -321,7 +314,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitFromConfigFile() {
         fApplyGainCorrection = true;
         fSingleThreadOnly = false;
     } else {
-        ferr << "illegal mode definition! supported: create, apply" << endl;
+        RESTError << "illegal mode definition! supported: create, apply" << RESTendl;
         abort();
     }
 

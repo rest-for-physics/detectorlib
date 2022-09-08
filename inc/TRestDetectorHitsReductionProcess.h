@@ -12,6 +12,7 @@
 #define RestCore_TRestDetectorHitsReductionProcess
 
 #include <TRestDetectorHitsEvent.h>
+
 #include "TRestEventProcess.h"
 
 class TRestDetectorHitsReductionProcess : public TRestEventProcess {
@@ -19,9 +20,9 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-    void InitFromConfigFile();
+    void InitFromConfigFile() override;
 
-    void Initialize();
+    void Initialize() override;
 
    protected:
     Double_t fStartingDistance;
@@ -30,34 +31,34 @@ class TRestDetectorHitsReductionProcess : public TRestEventProcess {
     Double_t fMaxNodes;
 
    public:
-    any GetInputEvent() { return fInputHitsEvent; }
-    any GetOutputEvent() { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
-    void InitProcess();
-    TRestEvent* ProcessEvent(TRestEvent* eventInput);
-    void EndProcess();
+    void InitProcess() override;
+    TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
+    void EndProcess() override;
     void LoadDefaultConfig();
 
-    void LoadConfig(std::string cfgFilename, std::string name = "");
+    void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
-    void PrintMetadata() {
+    void PrintMetadata() override {
         BeginPrintProcess();
 
-        metadata << " Starting distance : " << fStartingDistance << endl;
-        metadata << " Minimum distance : " << fMinimumDistance << endl;
-        metadata << " Distance step factor : " << fDistanceFactor << endl;
-        metadata << " Maximum number of nodes : " << fMaxNodes << endl;
+        RESTMetadata << " Starting distance : " << fStartingDistance << RESTendl;
+        RESTMetadata << " Minimum distance : " << fMinimumDistance << RESTendl;
+        RESTMetadata << " Distance step factor : " << fDistanceFactor << RESTendl;
+        RESTMetadata << " Maximum number of nodes : " << fMaxNodes << RESTendl;
 
         EndPrintProcess();
     }
 
-    TString GetProcessName() { return (TString) "hitsReduction"; }
+    const char* GetProcessName() const override { return "hitsReduction"; }
 
     TRestDetectorHitsReductionProcess();
-    TRestDetectorHitsReductionProcess(char* cfgFileName);
+    TRestDetectorHitsReductionProcess(const char* configFilename);
 
     ~TRestDetectorHitsReductionProcess();
 
-    ClassDef(TRestDetectorHitsReductionProcess, 1);
+    ClassDefOverride(TRestDetectorHitsReductionProcess, 1);
 };
 #endif
