@@ -53,6 +53,10 @@ class TRestDetectorSignal {
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
+    TVector2 GetMaxGauss();
+    TVector2 GetMaxLandau();
+    TVector2 GetMaxAget();
+
     // Getters
     TVector2 GetPoint(Int_t n) {
         TVector2 vector2(GetTime(n), GetData(n));
