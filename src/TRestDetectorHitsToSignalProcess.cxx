@@ -174,10 +174,11 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
     if (fGas != nullptr) {
 #ifndef USE_Garfield
         RESTError << "A TRestDetectorGas definition was found but REST was not linked to Garfield libraries."
-             << RESTendl;
-        RESTError << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
-                "TRestDetectorHitsToSignalProcess"
-             << RESTendl;
+                  << RESTendl;
+        RESTError
+            << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
+               "TRestDetectorHitsToSignalProcess"
+            << RESTendl;
         if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
         if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
 #endif
@@ -261,8 +262,8 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
             } else {
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-                    RESTDebug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position (" << x
-                          << ", " << y << ", " << z << ")!" << RESTendl;
+                    RESTDebug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position ("
+                              << x << ", " << y << ", " << z << ")!" << RESTendl;
             }
         }
     }
