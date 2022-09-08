@@ -71,13 +71,13 @@ class TRestDetectorDriftVolume : public TRestMetadata {
     virtual Double_t GetElectricField() const { return fElectricField; }
 
     /// Returns the drift velocity in mm/us.
-    virtual Double_t GetDriftVelocity() const { return fDriftVelocity; }
+    virtual Double_t GetDriftVelocity() { return fDriftVelocity; }
 
-    virtual Double_t GetElectronLifeTime() const { return fElectronLifeTime; }
-    virtual Double_t GetLongitudinalDiffusion() const { return fLongitudinalDiffusion; }
-    virtual Double_t GetTransversalDiffusion() const { return fTransversalDiffusion; }
-    virtual Double_t GetTownsendCoefficient() const { return fTownsendCoefficient; }
-    virtual Double_t GetAttachmentCoefficient() const { return fAttachmentCoefficient; }
+    virtual Double_t GetElectronLifeTime() { return fElectronLifeTime; }
+    virtual Double_t GetLongitudinalDiffusion() { return fLongitudinalDiffusion; }
+    virtual Double_t GetTransversalDiffusion() { return fTransversalDiffusion; }
+    virtual Double_t GetTownsendCoefficient() { return fTownsendCoefficient; }
+    virtual Double_t GetAttachmentCoefficient() { return fAttachmentCoefficient; }
 
     virtual Double_t GetPressure() const { return fPressureInAtm; }
     virtual Double_t GetTemperature() const { return fTemperatureInK; }

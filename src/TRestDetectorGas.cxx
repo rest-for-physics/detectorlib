@@ -1030,9 +1030,10 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 /// \brief It returns the drift velocity in cm/us for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
+Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
     RESTDebug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << RESTendl;
-    this->SetPressure(fPressureInAtm);
+
+    SetPressure(fPressureInAtm);
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
@@ -1060,9 +1061,10 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
 /// \brief It returns the longitudinal diffusion in (cm)^1/2 for a given
 /// electric field in V/cm.
 ///
-Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
+Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
     RESTDebug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << RESTendl;
-    this->SetPressure(fPressureInAtm);
+
+    SetPressure(fPressureInAtm);
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
@@ -1090,10 +1092,10 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
 /// \brief It returns the transversal diffusion in (cm)^1/2 for a given electric
 /// field in V/cm.
 ///
-Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
+Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
     RESTDebug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << RESTendl;
-    this->SetPressure(fPressureInAtm);
 
+    SetPressure(fPressureInAtm);
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
@@ -1120,22 +1122,23 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
 /// \brief It returns the townsend coefficient for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
+Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
     RESTDebug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << RESTendl;
-    this->SetPressure(fPressureInAtm);
 
-#if defined USE_Garfield if (fStatus != RESTGAS_GASFILE_LOADED) {
-    RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
-    RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
-    return 0;
-}
+    SetPressure(fPressureInAtm);
+#if defined USE_Garfield
+    if (fStatus != RESTGAS_GASFILE_LOADED) {
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
+        return 0;
+    }
 
-RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+             << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
-Double_t alpha;
-fGasMedium->ElectronTownsend(0., 0, -E, 0, 0, 0, alpha);
-return alpha;
+    Double_t alpha;
+    fGasMedium->ElectronTownsend(0., 0, -E, 0, 0, 0, alpha);
+    return alpha;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Townsend "
                  "Coefficient from TRestDetectorGas!"
@@ -1149,22 +1152,23 @@ return alpha;
 /// \brief It returns the attachment coefficient for a given electric field in
 /// V/cm.
 ///
-Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
+Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
     RESTDebug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << RESTendl;
-    this->SetPressure(fPressureInAtm);
 
-#if defined USE_Garfield if (fStatus != RESTGAS_GASFILE_LOADED) {
-    RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
-    RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
-    return 0;
-}
+    SetPressure(fPressureInAtm);
+#if defined USE_Garfield
+    if (fStatus != RESTGAS_GASFILE_LOADED) {
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
+        return 0;
+    }
 
-RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
-         << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+             << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
-Double_t eta;
-fGasMedium->ElectronAttachment(0., 0, -E, 0, 0, 0, eta);
-return eta;
+    Double_t eta;
+    fGasMedium->ElectronAttachment(0., 0, -E, 0, 0, 0, eta);
+    return eta;
 #else
     std::cout << "This REST is not complied with garfield, Do not use Attachment "
                  "Coefficient from TRestDetectorGas!"

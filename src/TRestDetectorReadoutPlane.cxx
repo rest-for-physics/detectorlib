@@ -366,12 +366,11 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Readout plane : " << GetID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, "
-                     << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
+                 << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Vector : X = " << fPlaneVector.X() << " mm, "
-                     << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
+                 << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
-                     << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
-                     << RESTendl;
+                 << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;

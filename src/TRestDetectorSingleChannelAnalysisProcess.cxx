@@ -73,17 +73,16 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
             }
 
         } else {
-            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!"
-                      << RESTendl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
             abort();
         }
     }
 
     if (GetFriend("TRestRawSignalAnalysisProcess") == nullptr) {
         RESTError << "please add friend process TRestRawSignalAnalysisProcess and "
-                     "TRestRawReadoutAnalysisProcess "
-                     "and turn on all their observables!"
-                  << RESTendl;
+                "TRestRawReadoutAnalysisProcess "
+                "and turn on all their observables!"
+             << RESTendl;
         abort();
     }
 }

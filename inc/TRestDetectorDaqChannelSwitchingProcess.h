@@ -46,8 +46,7 @@ class TRestDetectorDaqChannelSwitchingProcess : public TRestEventProcess {
         RESTMetadata << "module's daq channel re-definition: " << RESTendl;
         auto iter = fFirstDaqChannelDef.begin();
         while (iter != fFirstDaqChannelDef.end()) {
-            RESTMetadata << "module id: " << iter->first << " first daq channel: " << iter->second
-                         << RESTendl;
+            RESTMetadata << "module id: " << iter->first << " first daq channel: " << iter->second << RESTendl;
             iter++;
         }
         RESTMetadata << RESTendl;

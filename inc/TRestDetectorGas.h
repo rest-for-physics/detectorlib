@@ -119,11 +119,11 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void UploadGasToServer(std::string gasFilename);
 
-    Double_t GetDriftVelocity(Double_t E) const;
-    Double_t GetLongitudinalDiffusion(Double_t E) const;
-    Double_t GetTransversalDiffusion(Double_t E) const;
-    Double_t GetTownsendCoefficient(Double_t E) const;
-    Double_t GetAttachmentCoefficient(Double_t E) const;
+    Double_t GetDriftVelocity(Double_t E);
+    Double_t GetLongitudinalDiffusion(Double_t E);
+    Double_t GetTransversalDiffusion(Double_t E);
+    Double_t GetTownsendCoefficient(Double_t E);
+    Double_t GetAttachmentCoefficient(Double_t E);
 
    public:
     TRestDetectorGas();
@@ -172,7 +172,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     TString GetGasMixture();
 
-    Double_t GetDriftVelocity() const override {
+    Double_t GetDriftVelocity() override {
         if (fElectricField == 0) {
             RESTWarning << "TRestDetectorGas::GetDriftVelocity. Warning fElectricField is zero!" << RESTendl;
             RESTWarning << " - Use: TRestDetectorGas::SetElectricField( field[V/mm] ) to set the field value"
@@ -182,7 +182,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }  // in standard unit mm/us
 
     /// Returns the longitudinal diffusion in (cm)^1/2
-    Double_t GetLongitudinalDiffusion() const override {
+    Double_t GetLongitudinalDiffusion() override {
         if (fElectricField == 0) {
             RESTWarning << "TRestDetectorGas::GetLongitudinalDiffusion. Warning fElectricField is zero!"
                         << RESTendl;
@@ -193,7 +193,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }
 
     /// Returns the transversal diffusion in (cm)^1/2
-    Double_t GetTransversalDiffusion() const override {
+    Double_t GetTransversalDiffusion() override {
         if (fElectricField == 0) {
             RESTWarning << "TRestDetectorGas::GetTransversalDiffusion. Warning fElectricField is zero!"
                         << RESTendl;
@@ -203,7 +203,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTransversalDiffusion(fElectricField * units("V/cm"));
     }
 
-    Double_t GetTownsendCoefficient() const override {
+    Double_t GetTownsendCoefficient() override {
         if (fElectricField == 0) {
             RESTWarning << "TRestDetectorGas::GetTownsendCoefficient. Warning fElectricField is zero!"
                         << RESTendl;
@@ -213,7 +213,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetTownsendCoefficient(fElectricField * units("V/cm"));
     }
 
-    Double_t GetAttachmentCoefficient() const override {
+    Double_t GetAttachmentCoefficient() override {
         if (fElectricField == 0) {
             RESTWarning << "TRestDetectorGas::GetAttachmentCoefficient. Warning fElectricField is zero!"
                         << RESTendl;

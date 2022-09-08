@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
 <TRestDetectorElectronDiffusionProcess name="testProcess">
     <parameter name="electricField" value="2000.0"/>
     <parameter name="gasPressure" value="1.0"/>

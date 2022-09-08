@@ -148,8 +148,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 
                 Int_t tempCh = fMapping.GetChannelByNode(nodeX, nodeY);
                 Int_t tempPix = fMapping.GetPixelByNode(nodeX, nodeY);
-                RESTWarning << "Already associated channel : " << tempCh << " pixel : " << tempPix
-                            << RESTendl;
+                RESTWarning << "Already associated channel : " << tempCh << " pixel : " << tempPix << RESTendl;
                 Double_t xP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().X();
                 Double_t yP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().Y();
                 RESTWarning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << RESTendl;
@@ -290,8 +289,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
         pixel = fMapping.GetPixelByNode(nodeX, nodeY);
 
         if (count > totalNodes / 10) {
-            RESTWarning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x
-                        << "," << y << ") in internal module coordinates" << RESTendl;
+            RESTWarning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x << ","
+                    << y << ") in internal module coordinates" << RESTendl;
 
             for (int ch = 0; ch < GetNumberOfChannels(); ch++)
                 for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++)
@@ -537,7 +536,7 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Origin position : X = " << fModuleOriginX << " mm "
-                     << " Y : " << fModuleOriginY << " mm" << RESTendl;
+                 << " Y : " << fModuleOriginY << " mm" << RESTendl;
         RESTMetadata << "-- Size : X = " << fModuleSizeX << " Y : " << fModuleSizeY << RESTendl;
         RESTMetadata << "-- Rotation : " << fModuleRotation << " degrees" << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
