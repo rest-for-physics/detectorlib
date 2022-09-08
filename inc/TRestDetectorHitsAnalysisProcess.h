@@ -76,10 +76,8 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
         RESTMetadata << " -------------------" << RESTendl;
         RESTMetadata << " Fiducial parameters" << RESTendl;
         RESTMetadata << " -------------------" << RESTendl;
-        RESTMetadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")"
-                     << RESTendl;
-        RESTMetadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")"
-                     << RESTendl;
+        RESTMetadata << " x0 : (" << fFid_x0.X() << " , " << fFid_x0.Y() << " , " << fFid_x0.Z() << ")" << RESTendl;
+        RESTMetadata << " x1 : (" << fFid_x1.X() << " , " << fFid_x1.Y() << " , " << fFid_x1.Z() << ")" << RESTendl;
         RESTMetadata << " R : " << fFid_R << RESTendl;
         RESTMetadata << " sX : " << fFid_sX << RESTendl;
         RESTMetadata << " sY : " << fFid_sY << RESTendl;

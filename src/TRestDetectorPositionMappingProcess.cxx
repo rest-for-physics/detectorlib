@@ -43,8 +43,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fReadout == nullptr) {
         if (fCreateGainMap) {
-            RESTError << "You must set a TRestDetectorReadout metadata object to create gain map!"
-                      << RESTendl;
+            RESTError << "You must set a TRestDetectorReadout metadata object to create gain map!" << RESTendl;
             abort();
         }
     } else {
@@ -58,8 +57,7 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
 
     if (fApplyGainCorrection) {
         if (fCalib == nullptr || fCalib->f2DGainMapping == nullptr) {
-            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!"
-                      << RESTendl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
             abort();
         }
     }

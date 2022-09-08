@@ -66,9 +66,9 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
 
         RESTMetadata << "the mode is:" << RESTendl;
         RESTMetadata << (fApplyGainCorrection ? ">   " : "    ")
-                     << "Apply channel correction std::map for spectrum " << RESTendl;
-        RESTMetadata << (fCreateGainMap ? ">   " : "    ")
-                     << "Create new correction std::map for each channel" << RESTendl;
+                 << "Apply channel correction std::map for spectrum " << RESTendl;
+        RESTMetadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each channel"
+                 << RESTendl;
         RESTMetadata << "output mapping file: " << fCalibSave << RESTendl;
         RESTMetadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << RESTendl;
         RESTMetadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << RESTendl;

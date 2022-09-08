@@ -155,10 +155,8 @@ void TRestDetectorSignalChannelActivityProcess::LoadConfig(const string& configF
 void TRestDetectorSignalChannelActivityProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
 
-    RESTDebug << "TRestDetectorSignalChannelActivityProcess::InitProcess. Readout pointer : " << fReadout
-              << RESTendl;
-    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info && fReadout)
-        fReadout->PrintMetadata();
+    RESTDebug << "TRestDetectorSignalChannelActivityProcess::InitProcess. Readout pointer : " << fReadout << RESTendl;
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info && fReadout) fReadout->PrintMetadata();
 
     if (!fReadOnly) {
         fDaqChannelsHisto = new TH1D("daqChannelActivity", "daqChannelActivity", fDaqHistogramChannels,
@@ -254,8 +252,7 @@ TRestEvent* TRestDetectorSignalChannelActivityProcess::ProcessEvent(TRestEvent* 
         }
     }
 
-    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-        fAnalysisTree->PrintObservables();
+    if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) fAnalysisTree->PrintObservables();
 
     return fSignalEvent;
 }

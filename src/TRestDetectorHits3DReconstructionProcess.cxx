@@ -255,8 +255,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
 
         if (stripehits.size() > 50) {
             RESTWarning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
-                        << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")"
-                        << RESTendl;
+                    << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")" << RESTendl;
             continue;
         }
 
