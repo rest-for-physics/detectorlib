@@ -1033,6 +1033,8 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
     RESTDebug << "Entering ... TRestDetectorGas::GetDriftVelocity( E=" << E << " )" << RESTendl;
 
+    this->SetPressure(fPressureInAtm);
+
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
@@ -1061,6 +1063,8 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) const {
 ///
 Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
     RESTDebug << "Entering ... TRestDetectorGas::GetLongitudinalDiffusion( E=" << E << " )" << RESTendl;
+
+    this->SetPressure(fPressureInAtm);
 
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
@@ -1091,6 +1095,7 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) const {
 Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
     RESTDebug << "Entering ... TRestDetectorGas::GetTransversalDiffusion( E=" << E << " )" << RESTendl;
 
+    this->SetPressure(fPressureInAtm);
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
@@ -1120,6 +1125,7 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) const {
 Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
     RESTDebug << "Entering ... TRestDetectorGas::GetTownsendCoefficient( E=" << E << " )" << RESTendl;
 
+    this->SetPressure(fPressureInAtm);
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
@@ -1149,6 +1155,7 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) const {
 Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) const {
     RESTDebug << "Entering ... TRestDetectorGas::GetAttachmentCoefficient( E=" << E << " )" << RESTendl;
 
+    this->SetPressure(fPressureInAtm);
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
