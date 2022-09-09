@@ -95,12 +95,9 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
     Double_t new_PeakAmplitudeIntegral = 0;
     Double_t new_ThresholdIntegral = 0;
 
-    map<int, Double_t> sAna_max_amplitude_map =
-        GetObservableValue<map<int, Double_t>>("max_amplitude_map");
-    map<int, Double_t> sAna_thr_integral_map =
-        GetObservableValue<map<int, Double_t>>("thr_integral_map");
-    Double_t sAna_PeakAmplitudeIntegral =
-        GetObservableValue<Double_t>("PeakAmplitudeIntegral");
+    map<int, Double_t> sAna_max_amplitude_map = GetObservableValue<map<int, Double_t>>("max_amplitude_map");
+    map<int, Double_t> sAna_thr_integral_map = GetObservableValue<map<int, Double_t>>("thr_integral_map");
+    Double_t sAna_PeakAmplitudeIntegral = GetObservableValue<Double_t>("PeakAmplitudeIntegral");
     Double_t sAna_ThresholdIntegral = GetObservableValue<Double_t>("ThresholdIntegral");
     Double_t sAna_NumberOfGoodSignals = GetObservableValue<int>("NumberOfGoodSignals");
 
