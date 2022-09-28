@@ -349,15 +349,20 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             distanceToPlane = time * fDriftVelocity;
             Double_t z3 = zPosition + fieldZDirection * distanceToPlane;
 
-            Double_t zAvg = (z1 + z2 + z3) / 3.0;
-            Double_t eAvg = (energy1 + energy2 + energy3) / 3.0;
+            Double_t eTot = energy1 + energy2 + energy3;
+
+            Double_t zAvg = ((z1 * energy1) + (z2 * energy2) + (z3 * energy3)) / eTot;
+            // Double_t zAvg = (z1 + z2 + z3) / 3.0;
+            Double_t eAvg = eTot / 3.0;
 
             fHitsEvent->AddHit(x, y, zAvg, eAvg, 0, type);
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-                cout << "Distance to plane : " << distanceToPlane << endl;
+                cout << "Distance to plane: " << distanceToPlane << endl;
                 cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
                      << " Energy : " << eAvg << endl;
+                cout << "z1, z2, z3 = " << z1 << ", " << z2 << ", " << z3 << endl;
+                cout << "E1, E2, E3 = " << energy1 << ", " << energy2 << ", " << energy3 << endl;
             }
 
         } else if (fMethod == "gaussFit") {
