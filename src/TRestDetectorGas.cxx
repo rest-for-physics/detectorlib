@@ -625,7 +625,8 @@ void TRestDetectorGas::InitFromRootFile() {
         outf << fGasFileContent << endl;
         outf.close();
         LoadGasFile();
-        system("rm " + fGasFilename);
+        int z = system("rm " + fGasFilename);
+        if (z != 0) RESTError << "Problem removing gas file: " << fGasFilename << RESTendl;
     } else {
         fGasFilename = FindGasFile((string)fGasFilename);
         if (fGasFilename != "") {
