@@ -170,7 +170,7 @@ void TRestDetectorHitsEvent::Shuffle(int NLoop) {
 TRestHits* TRestDetectorHitsEvent::GetXZHits() {
     fXZHits->RemoveHits();
 
-    for (int i = 0; i < this->GetNumberOfHits(); i++)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XZ)
             fXZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
                             XZ);
@@ -188,7 +188,7 @@ TRestHits* TRestDetectorHitsEvent::GetXZHits() {
 TRestHits* TRestDetectorHitsEvent::GetYZHits() {
     fYZHits->RemoveHits();
 
-    for (int i = 0; i < this->GetNumberOfHits(); i++)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == YZ)
             fYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
                             YZ);
@@ -205,7 +205,7 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
     fXYZHits->RemoveHits();
 
-    for (int i = 0; i < this->GetNumberOfHits(); i++)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XYZ)
             fXYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i),
                              this->GetTime(i), XYZ);
@@ -234,7 +234,7 @@ Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Do
 /// \param radius The radius of the cylinder.
 ///
 Bool_t TRestDetectorHitsEvent::allHitsInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
-    if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) == GetNumberOfHits()) return true;
+    if ((size_t)fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) == GetNumberOfHits()) return true;
 
     return false;
 }
@@ -302,7 +302,8 @@ Bool_t TRestDetectorHitsEvent::anyHitInsidePrism(TVector3 x0, TVector3 x1, Doubl
 ///
 Bool_t TRestDetectorHitsEvent::allHitsInsidePrism(TVector3 x0, TVector3 x1, Double_t sizeX, Double_t sizeY,
                                                   Double_t theta) {
-    if (fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) == GetNumberOfHits()) return true;
+    if ((size_t)fHits->GetNumberOfHitsInsidePrism(x0, x1, sizeX, sizeY, theta) == GetNumberOfHits())
+        return true;
 
     return false;
 }
@@ -373,7 +374,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderWall(TVect
     Double_t cylLength = axis.Mag();
 
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsideCylinder(n, x0, x1, radius)) {
             l = axis.Dot(this->GetPosition(n) - x0) / cylLength;
 
@@ -409,7 +410,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderTop(TVecto
     Double_t d = cylLength;
 
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsideCylinder(n, x0, x1, radius)) {
             d = cylLength - axis.Dot(this->GetPosition(n) - x0) / cylLength;
 
@@ -443,7 +444,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToCylinderBottom(TVe
     Double_t d = cylLength;
 
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsideCylinder(n, x0, x1, radius)) {
             d = axis.Dot(this->GetPosition(n) - x0) / cylLength;
 
@@ -480,7 +481,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismWall(TVector3
 
     Double_t d;
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsidePrism(n, x0, x1, sizeX, sizeY, theta)) {
             dX = sizeX / 2 - TMath::Abs((this->GetPosition(n) - x0).X());
             dY = sizeY / 2 - TMath::Abs((this->GetPosition(n) - x0).Y());
@@ -520,7 +521,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismTop(TVector3 
 
     Double_t d;
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsidePrism(n, x0, x1, sizeX, sizeY, theta)) {
             d = prismLength - axis.Dot(this->GetPosition(n) - x0) / prismLength;
 
@@ -557,7 +558,7 @@ Double_t TRestDetectorHitsEvent::GetClosestHitInsideDistanceToPrismBottom(const 
 
     Double_t d;
     Int_t nhits = 0;
-    for (int n = 0; n < GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
         if (fHits->isHitNInsidePrism(n, x0, x1, sizeX, sizeY, theta)) {
             d = axis.Dot(this->GetPosition(n) - x0) / prismLength;
 
@@ -690,7 +691,7 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
     Int_t nYZ = 0;
     Int_t nXY = 0;
 
-    for (int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
+    for (unsigned int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
         Double_t x = fHits->GetX(nhit);
         Double_t y = fHits->GetY(nhit);
         Double_t z = fHits->GetZ(nhit);
@@ -780,7 +781,7 @@ void TRestDetectorHitsEvent::DrawGraphs(Int_t& column) {
 ///
 void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOption, double pitch) {
     std::vector<double> fX, fY, fZ;
-    for (int i = 0; i < GetNumberOfHits(); i++) {
+    for (unsigned int i = 0; i < GetNumberOfHits(); i++) {
         if (GetType(i) % X == 0) fX.emplace_back(GetX(i));
         if (GetType(i) % Y == 0) fY.emplace_back(GetY(i));
         if (GetType(i) % Z == 0) fZ.emplace_back(GetZ(i));
@@ -825,7 +826,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
     Int_t nYZ = 0, nXZ = 0, nXY = 0;
     Int_t nX = 0, nY = 0, nZ = 0;
 
-    for (int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
+    for (unsigned int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
         Double_t x = fHits->GetX(nhit);
         Double_t y = fHits->GetY(nhit);
         Double_t z = fHits->GetZ(nhit);

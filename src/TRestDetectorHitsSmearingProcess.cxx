@@ -89,7 +89,7 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEven
     Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
 
     Double_t gain = fRandom->Gaus(1.0, eRes);
-    for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
+    for (unsigned int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
         fHitsOutputEvent->AddHit(fHitsInputEvent->GetX(hit), fHitsInputEvent->GetY(hit),
                                  fHitsInputEvent->GetZ(hit), fHitsInputEvent->GetEnergy(hit) * gain,
                                  fHitsInputEvent->GetTime(hit), fHitsInputEvent->GetType(hit));

@@ -66,8 +66,8 @@ TRestEvent* TRestDetectorHitsReductionProcess::ProcessEvent(TRestEvent* inputEve
         Bool_t merged = true;
         while (merged) {
             merged = false;
-            for (int i = 0; i < hits->GetNumberOfHits(); i++) {
-                for (int j = i + 1; j < hits->GetNumberOfHits(); j++) {
+            for (unsigned int i = 0; i < hits->GetNumberOfHits(); i++) {
+                for (unsigned int j = i + 1; j < hits->GetNumberOfHits(); j++) {
                     if (hits->GetDistance2(i, j) < distance * distance) {
                         hits->MergeHits(i, j);
                         merged = true;
