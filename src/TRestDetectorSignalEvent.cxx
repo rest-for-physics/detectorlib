@@ -56,6 +56,18 @@ void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
     fSignal.emplace_back(signal);
 }
 
+void TRestDetectorSignalEvent::RemoveSignalWithId(Int_t sId) {
+    Int_t index = GetSignalIndex(sId);
+
+    if (index == -1) {
+        std::cout << "Warning. Signal ID : " << sId
+                  << " does not exist. Signal will not be removed from signal event" << std::endl;
+        return;
+    }
+
+    fSignal.erase(fSignal.begin() + index);
+}
+
 Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
     for (int i = 0; i < GetNumberOfSignals(); i++)
         if (fSignal[i].GetSignalID() == signalID) return i;
@@ -77,47 +89,6 @@ Double_t TRestDetectorSignalEvent::GetIntegralWithTime(Double_t startTime, Doubl
     return sum;
 }
 
-/*
-Double_t TRestDetectorSignalEvent::GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline,
-                                                    Int_t endBaseline, Double_t nSigmas,
-                                                    Int_t nPointsOverThreshold, Double_t minPeakAmplitude) {
-    Double_t sum = 0;
-
-    for (int i = 0; i < GetNumberOfSignals(); i++)
-        sum += fSignal[i].GetIntegralWithThreshold(from, to, startBaseline, endBaseline, nSigmas,
-                                                   nPointsOverThreshold, minPeakAmplitude);
-
-    return sum;
-}
-*/
-
-Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endBin) {
-    Double_t baseLineMean = 0;
-
-    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
-        Double_t baseline = GetSignal(signal)->GetBaseLine(startBin, endBin);
-        baseLineMean += baseline;
-    }
-
-    return baseLineMean / GetNumberOfSignals();
-}
-
-Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin) {
-    Double_t baseLineSigmaMean = 0;
-
-    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
-        Double_t baselineSigma = GetSignal(signal)->GetBaseLineSigma(startBin, endBin);
-        baseLineSigmaMean += baselineSigma;
-    }
-
-    return baseLineSigmaMean / GetNumberOfSignals();
-}
-
-void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) {
-    for (int signal = 0; signal < GetNumberOfSignals(); signal++)
-        GetSignal(signal)->SubstractBaseline(startBin, endBin);
-}
-
 void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge) {
     Int_t signalIndex = GetSignalIndex(signalID);
     if (signalIndex == -1) {
@@ -128,7 +99,7 @@ void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, 
         AddSignal(signal);
     }
 
-    fSignal[signalIndex].AddDeposit(time, charge);
+    fSignal[signalIndex].IncreaseAmplitude(time, charge);
 }
 
 void TRestDetectorSignalEvent::PrintEvent() {

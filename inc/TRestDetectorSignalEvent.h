@@ -59,8 +59,9 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     // Setters
     void AddSignal(const TRestDetectorSignal& signal);
-    void SubstractBaselines(Int_t startBin, Int_t endBin);
     void AddChargeToSignal(Int_t signalID, Double_t time, Double_t charge);
+
+    void RemoveSignalWithId(Int_t sId);
 
     // Getters
     inline Int_t GetNumberOfSignals() const { return fSignal.size(); }
@@ -75,8 +76,6 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     Int_t GetSignalIndex(Int_t signalID);
 
-    Double_t GetBaseLineAverage(Int_t startBin, Int_t endBin);
-    Double_t GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin);
     Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0);
     Double_t GetMaxValue();
     Double_t GetMinValue();
