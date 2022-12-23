@@ -92,7 +92,7 @@ TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent*
     // fInputHitsEvent->CloneTo(fOutputHitsEvent);
 
     TVector3 meanPosition = fOutputHitsEvent->GetMeanPosition();
-    for (int hit = 0; hit < fOutputHitsEvent->GetNumberOfHits(); hit++) {
+    for (unsigned int hit = 0; hit < fOutputHitsEvent->GetNumberOfHits(); hit++) {
         fOutputHitsEvent->GetHits()->RotateIn3D(hit, fAlpha, fBeta, fGamma, meanPosition);
         fOutputHitsEvent->GetHits()->Translate(hit, fDeltaX, fDeltaY, fDeltaZ);
     }

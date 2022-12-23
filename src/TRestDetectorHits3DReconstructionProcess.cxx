@@ -207,7 +207,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
     double lastz = 0;
     double totalambiguity = 0;
     double Nlayers = 0;
-    for (int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
         double z = fInputHitsEvent->GetZ(n);
         if (z == lastz) continue;
 
@@ -223,7 +223,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 break;
             }
         }
-        for (int i = n + 1; i < fInputHitsEvent->GetNumberOfHits(); i++) {
+        for (unsigned int i = n + 1; i < fInputHitsEvent->GetNumberOfHits(); i++) {
             if (abs(fInputHitsEvent->GetZ(i) - z) < fZRange * 2) {
                 ids[i] = TMath::Gaus(abs(fInputHitsEvent->GetZ(i) - z), 0, fZRange);
             } else {
@@ -238,7 +238,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
             h.e *= i.second;
             if (!h.iszombie()) {
                 if (stripehits.size() > 0) {
-                    for (int k = 0; k < stripehits.size(); k++) {
+                    for (unsigned int k = 0; k < stripehits.size(); k++) {
                         stripehit& _h = stripehits[k];
                         if (_h.x1 == h.x1 && _h.x2 == h.x2 && _h.y1 == h.y1 && _h.y2 == h.y2) {
                             _h.e += h.e;
@@ -255,7 +255,8 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
 
         if (stripehits.size() > 50) {
             RESTWarning << "(TRestDetectorHits3DReconstructionProcess) event id: " << fInputHitsEvent->GetID()
-                    << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")" << RESTendl;
+                        << ", z: " << z << ", bad frame, too much hits! (" << stripehits.size() << ")"
+                        << RESTendl;
             continue;
         }
 
@@ -271,10 +272,10 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
         vector<regionhit> regionhits;
         double layerambiguity = 0;
         set<int> ambcalculatedstripes;
-        for (int i = 0; i < stripehits.size(); i++) {
+        for (unsigned int i = 0; i < stripehits.size(); i++) {
             vector<int> crossedids;
             double crossedsumenergy = 0;
-            for (int j = 0; j < stripehits.size(); j++) {
+            for (unsigned int j = 0; j < stripehits.size(); j++) {
                 if (i == j) continue;
                 if (stripehit::IsRectCross(stripehits[i], stripehits[j])) {
                     crossedids.push_back(j);
@@ -287,7 +288,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 rh.e = stripehits[i].e * stripehits[id].e / crossedsumenergy;
 
                 if (regionhits.size() > 0) {
-                    for (int k = 0; k < regionhits.size(); k++) {
+                    for (unsigned int k = 0; k < regionhits.size(); k++) {
                         regionhit& _rh = regionhits[k];
                         if (_rh.x == rh.x && _rh.y == rh.y) {
                             _rh.e += rh.e;
@@ -310,8 +311,8 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 auto line = stripehits[i];
                 auto newline = stripehits[crossedids[0]];
                 vector<int> crossedids_newline;
-                for (int j = 0; j < stripehits.size(); j++) {
-                    if (j == crossedids[0]) continue;
+                for (unsigned int j = 0; j < stripehits.size(); j++) {
+                    if (j == (unsigned int)crossedids[0]) continue;
                     if (stripehit::IsRectCross(stripehits[j], newline)) {
                         crossedids_newline.push_back(j);
                     }
@@ -356,7 +357,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 sort(V_PosE.begin(), V_PosE.end(), comp);
                 sort(H_PosE.begin(), H_PosE.end(), comp);
 
-                for (int j = 1; j < V_PosE.size(); j++) {
+                for (unsigned int j = 1; j < V_PosE.size(); j++) {
                     if (V_PosE[j].first - V_PosE[j - 1].first > PITCH) {
                         V_PosE.insert(V_PosE.begin() + j, {(V_PosE[j].first + V_PosE[j - 1].first) / 2, 0});
                         j++;
@@ -365,7 +366,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 V_PosE.insert(V_PosE.begin(), {(*V_PosE.begin()).first - 1, 0});
                 V_PosE.insert(V_PosE.end(), {(*(V_PosE.end() - 1)).first + 1, 0});
 
-                for (int j = 1; j < H_PosE.size(); j++) {
+                for (unsigned int j = 1; j < H_PosE.size(); j++) {
                     if (H_PosE[j].first - H_PosE[j - 1].first > PITCH) {
                         H_PosE.insert(H_PosE.begin() + j, {(H_PosE[j].first + H_PosE[j - 1].first) / 2, 0});
                         j++;
@@ -391,13 +392,13 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 int Vsegs = 0;
                 int Hsegs = 0;
 
-                for (int j = 1; j < V_PosE.size() - 1; j++) {
+                for (unsigned int j = 1; j < V_PosE.size() - 1; j++) {
                     if (V_PosE[j].second > V_PosE[j - 1].second && V_PosE[j].second > V_PosE[j + 1].second) {
                         Vsegs++;
                     }
                 }
 
-                for (int j = 1; j < H_PosE.size() - 1; j++) {
+                for (unsigned int j = 1; j < H_PosE.size() - 1; j++) {
                     if (H_PosE[j].second > H_PosE[j - 1].second && H_PosE[j].second > H_PosE[j + 1].second) {
                         Hsegs++;
                     }
@@ -425,7 +426,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
             // find the initial point(with max energy)
             double max = 0;
             int maxposition;
-            for (int i = 0; i < regionhits.size(); i++) {
+            for (unsigned int i = 0; i < regionhits.size(); i++) {
                 if (mergeflag_all.count(i) == 0) {
                     if (regionhits[i].e > max) {
                         max = regionhits[i].e;
@@ -445,7 +446,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                 // cout << endl;
 
                 bool inserted = false;
-                for (int j = 0; j < regionhits.size(); j++) {
+                for (unsigned int j = 0; j < regionhits.size(); j++) {
                     if (regionhit::dist(regionhits[i], regionhits[j]) < PITCH &&
                         regionhits[i].e > regionhits[j].e && mergeflag_all.count(j) == 0) {
                         auto insertresult = mergeflag.insert(j);

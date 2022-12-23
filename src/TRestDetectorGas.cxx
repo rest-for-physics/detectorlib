@@ -23,7 +23,7 @@
 //////////////////////////////////////////////////////////////////////////
 ///
 /// This metadata class allows to define an arbitrary gas mixture. TRestDetectorGas
-/// provides access to different gas properties, as drift velocity, diffusion,
+/// provides access to different gas properties, such as drift velocity, diffusion,
 /// townsend coefficients, etc. TRestDetectorGas is a re-implementation of
 /// Garfield::MediumMagboltz allowing to generate or read gas Magboltz files,
 /// from which the gas properties are extracted.
@@ -625,7 +625,8 @@ void TRestDetectorGas::InitFromRootFile() {
         outf << fGasFileContent << endl;
         outf.close();
         LoadGasFile();
-        system("rm " + fGasFilename);
+        int z = system("rm " + fGasFilename);
+        if (z != 0) RESTError << "Problem removing gas file: " << fGasFilename << RESTendl;
     } else {
         fGasFilename = FindGasFile((string)fGasFilename);
         if (fGasFilename != "") {

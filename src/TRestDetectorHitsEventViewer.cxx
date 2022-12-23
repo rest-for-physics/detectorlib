@@ -44,7 +44,7 @@ void TRestDetectorHitsEventViewer::AddEvent(TRestEvent* ev) {
     Double_t eDepMax = 0;
     Double_t totalEDep = 0;
 
-    for (int hit = 0; hit < fHitsEvent->GetNumberOfHits(); hit++) {
+    for (unsigned int hit = 0; hit < fHitsEvent->GetNumberOfHits(); hit++) {
         Double_t eDep = fHitsEvent->GetEnergy(hit);
         if (eDep > eDepMax) eDepMax = eDep;
         if (eDep < eDepMin) eDepMin = eDep;
@@ -59,7 +59,7 @@ void TRestDetectorHitsEventViewer::AddEvent(TRestEvent* ev) {
 
     Double_t bias = fMinRadius - slope * eDepMin;
 
-    for (int hit = 0; hit < fHitsEvent->GetNumberOfHits(); hit++) {
+    for (unsigned int hit = 0; hit < fHitsEvent->GetNumberOfHits(); hit++) {
         Float_t x = fHitsEvent->GetX(hit);
         Float_t y = fHitsEvent->GetY(hit);
         Float_t energy = fHitsEvent->GetEnergy(hit);
