@@ -148,7 +148,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
     // cout << "Event id : " << fInputHitsEvent->GetID() << endl;
     TRestHits* hits = fInputHitsEvent->GetHits();
 
-    for (int n = 0; n < hits->GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < hits->GetNumberOfHits(); n++) {
         Double_t eDep = hits->GetEnergy(n);
 
         Double_t x = hits->GetX(n);

@@ -110,7 +110,6 @@ TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID
 /// \return The value of the X-coordinate relative to the readout position
 Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
     TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
-    Double_t xOrigin = rModule->GetModuleOriginX();
 
     TRestDetectorReadoutChannel* rChannel = rModule->GetChannel(chID);
 
@@ -178,7 +177,6 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
 /// \return The value of the X-coordinate relative to the readout position
 Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
     TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
-    Double_t yOrigin = rModule->GetModuleOriginY();
 
     TRestDetectorReadoutChannel* rChannel = rModule->GetChannel(chID);
 
@@ -366,11 +364,12 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Readout plane : " << GetID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, "
-                 << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
+                     << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Vector : X = " << fPlaneVector.X() << " mm, "
-                 << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
+                     << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
-                 << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm" << RESTendl;
+                     << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
+                     << RESTendl;
         RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;

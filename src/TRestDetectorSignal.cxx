@@ -283,8 +283,6 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
-    Int_t index = 0;
     Double_t energy = 0, time = 0;
     Double_t lowerLimit = maxRawTime - 0.2;  // us
     Double_t upperLimit = maxRawTime + 0.4;  // us
@@ -314,7 +312,6 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
-        index = -1;
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
@@ -348,8 +345,6 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
-    Int_t index = 0;
     Double_t energy = 0, time = 0;
     Double_t lowerLimit = maxRawTime - 0.2;  // us
     Double_t upperLimit = maxRawTime + 0.4;  // us
@@ -372,7 +367,6 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
-        index = -1;
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
@@ -418,8 +412,6 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t maxRawValue = GetMaxPeakValue();  // The height (amplitude) of the maximum of the raw signal
-    Int_t index = 0;
     Double_t energy = 0, time = 0;
     // The intervals below are small because otherwise the function doesn't fit anymore.
     Double_t lowerLimit = maxRawTime - 0.2;  // us
@@ -445,7 +437,6 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
-        index = -1;
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime

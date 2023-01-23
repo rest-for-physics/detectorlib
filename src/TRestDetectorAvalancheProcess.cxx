@@ -100,7 +100,7 @@ TRestEvent* TRestDetectorAvalancheProcess::ProcessEvent(TRestEvent* inputEvent) 
 
     TRandom3* rnd = new TRandom3(0);
 
-    for (int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++) {
+    for (unsigned int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++) {
         gain = fDetectorGain * rnd->Gaus(1.0, eRes);
 
         // The electronics gain is applied.

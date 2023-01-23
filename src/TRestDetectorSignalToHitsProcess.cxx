@@ -277,8 +277,8 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         }
 
         if (fMethod == "onlyMax") {
-            Double_t time = sgnl->GetMaxPeakTime();
-            Double_t distanceToPlane = time * fDriftVelocity;
+            Double_t hitTime = sgnl->GetMaxPeakTime();
+            Double_t distanceToPlane = hitTime * fDriftVelocity;
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
                 cout << "Distance to plane : " << distanceToPlane << endl;
@@ -288,7 +288,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             Double_t energy = sgnl->GetMaxPeakValue();
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
@@ -297,33 +297,33 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             int binprev = (bin - 1) < 0 ? bin : bin - 1;
             int binnext = (bin + 1) > sgnl->GetNumberOfPoints() - 1 ? bin : bin + 1;
 
-            Double_t time = sgnl->GetTime(bin);
+            Double_t hitTime = sgnl->GetTime(bin);
             Double_t energy = sgnl->GetData(bin);
 
-            Double_t distanceToPlane = time * fDriftVelocity;
+            Double_t distanceToPlane = hitTime * fDriftVelocity;
             Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
-            time = sgnl->GetTime(binprev);
+            hitTime = sgnl->GetTime(binprev);
             energy = sgnl->GetData(binprev);
 
-            distanceToPlane = time * fDriftVelocity;
+            distanceToPlane = hitTime * fDriftVelocity;
             z = zPosition + fieldZDirection * distanceToPlane;
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
-            time = sgnl->GetTime(binnext);
+            hitTime = sgnl->GetTime(binnext);
             energy = sgnl->GetData(binnext);
 
-            distanceToPlane = time * fDriftVelocity;
+            distanceToPlane = hitTime * fDriftVelocity;
             z = zPosition + fieldZDirection * distanceToPlane;
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Distance to plane : " << distanceToPlane << endl;
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
         } else if (fMethod == "tripleMaxAverage") {
@@ -331,22 +331,22 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             int binprev = (bin - 1) < 0 ? bin : bin - 1;
             int binnext = (bin + 1) > sgnl->GetNumberOfPoints() - 1 ? bin : bin + 1;
 
-            Double_t time = sgnl->GetTime(bin);
+            Double_t hitTime = sgnl->GetTime(bin);
             Double_t energy1 = sgnl->GetData(bin);
 
-            Double_t distanceToPlane = time * fDriftVelocity;
+            Double_t distanceToPlane = hitTime * fDriftVelocity;
             Double_t z1 = zPosition + fieldZDirection * distanceToPlane;
 
-            time = sgnl->GetTime(binprev);
+            hitTime = sgnl->GetTime(binprev);
             Double_t energy2 = sgnl->GetData(binprev);
 
-            distanceToPlane = time * fDriftVelocity;
+            distanceToPlane = hitTime * fDriftVelocity;
             Double_t z2 = zPosition + fieldZDirection * distanceToPlane;
 
-            time = sgnl->GetTime(binnext);
+            hitTime = sgnl->GetTime(binnext);
             Double_t energy3 = sgnl->GetData(binnext);
 
-            distanceToPlane = time * fDriftVelocity;
+            distanceToPlane = hitTime * fDriftVelocity;
             Double_t z3 = zPosition + fieldZDirection * distanceToPlane;
 
             Double_t eTot = energy1 + energy2 + energy3;
@@ -359,7 +359,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Distance to plane: " << distanceToPlane << endl;
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << zAvg
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << zAvg
                      << " Energy : " << eAvg << endl;
                 cout << "z1, z2, z3 = " << z1 << ", " << z2 << ", " << z3 << endl;
                 cout << "E1, E2, E3 = " << energy1 << ", " << energy2 << ", " << energy3 << endl;
@@ -368,10 +368,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "gaussFit") {
             TVector2 gaussFit = sgnl->GetMaxGauss();
 
+            Double_t hitTime = 0;
             Double_t z = -1.0;
             if (gaussFit.X() >= 0.0) {
-                Double_t time = gaussFit.X();
-                Double_t distanceToPlane = time * fDriftVelocity;
+                hitTime = gaussFit.X();
+                Double_t distanceToPlane = hitTime * fDriftVelocity;
                 z = zPosition + fieldZDirection * distanceToPlane;
             }
             Double_t energy = -1.0;
@@ -386,7 +387,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
 
@@ -395,10 +396,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "landauFit") {
             TVector2 landauFit = sgnl->GetMaxLandau();
 
+            Double_t hitTime = 0;
             Double_t z = -1.0;
             if (landauFit.X() >= 0.0) {
-                Double_t time = landauFit.X();
-                Double_t distanceToPlane = time * fDriftVelocity;
+                hitTime = landauFit.X();
+                Double_t distanceToPlane = hitTime * fDriftVelocity;
                 z = zPosition + fieldZDirection * distanceToPlane;
             }
             Double_t energy = -1.0;
@@ -413,7 +415,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
 
@@ -422,10 +424,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "agetFit") {
             TVector2 agetFit = sgnl->GetMaxAget();
 
+            Double_t hitTime = 0;
             Double_t z = -1.0;
             if (agetFit.X() >= 0.0) {
-                Double_t time = agetFit.X();
-                Double_t distanceToPlane = time * fDriftVelocity;
+                hitTime = agetFit.X();
+                Double_t distanceToPlane = hitTime * fDriftVelocity;
                 z = zPosition + fieldZDirection * distanceToPlane;
             }
             Double_t energy = -1.0;
@@ -440,7 +443,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
-                cout << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
 
@@ -493,17 +496,17 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             }
 
             for (const auto& [index, pair] : windowMap) {
-                Double_t time = index * fIntWindow + fIntWindow / 2.;
+                Double_t hitTime = index * fIntWindow + fIntWindow / 2.;
                 Double_t energy = pair.second / pair.first;
                 if (energy < fThreshold) continue;
-                RESTDebug << "TimeBin " << index << " Time " << time << " Charge: " << energy
+                RESTDebug << "TimeBin " << index << " Time " << hitTime << " Charge: " << energy
                           << " Thr: " << (fThreshold) << RESTendl;
-                Double_t distanceToPlane = time * fDriftVelocity;
+                Double_t distanceToPlane = hitTime * fDriftVelocity;
                 Double_t z = zPosition + fieldZDirection * distanceToPlane;
 
-                RESTDebug << "Time : " << time << " Drift velocity : " << fDriftVelocity
+                RESTDebug << "Time : " << hitTime << " Drift velocity : " << fDriftVelocity
                           << "\nDistance to plane : " << distanceToPlane << RESTendl;
-                RESTDebug << "Adding hit. Time : " << time << " x : " << x << " y : " << y << " z : " << z
+                RESTDebug << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
                           << " type " << type << RESTendl;
 
                 fHitsEvent->AddHit(x, y, z, energy, 0, type);
