@@ -26,7 +26,7 @@ TEST(TRestDetectorElectronDiffusionProcess, Default) {
     TRestDetectorElectronDiffusionProcess process;
     process.PrintMetadata();
 
-    EXPECT_TRUE(process.GetProcessName() == "electronDiffusion");
+    EXPECT_TRUE(process.GetProcessName() == (std::string) "electronDiffusion");
 
     // TODO: add setters and getters to process and check values
 }

@@ -153,7 +153,8 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     fGeometry->DefaultColors();
     //         fGeometry->UpdateElements();
 
-    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : " << static_cast<int>(this->GetVerboseLevel()) << endl;
+    cout << "TRestDetectorGarfieldDriftProcess  GetVerboseLevel : "
+         << static_cast<int>(this->GetVerboseLevel()) << endl;
 
     // analyze GDML geometry to find major elements (gas volume, electrodes,
     // readout)
@@ -176,7 +177,8 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         itvol->Print();
 
         TGeoMedium* itmed = itvol->GetMedium();
-        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  *  *  itmed " << itmed->GetName() << endl;
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+            cout << "  *  *  itmed " << itmed->GetName() << endl;
 
         // gas volume
         if (fGas->GetGDMLMaterialRef() == itmed->GetName()) {
@@ -195,14 +197,16 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         if ((strncmp(itvol->GetName(), "anodeVol", 8) == 0) ||
             (strncmp(itvol->GetName(), "cathodeVol", 10) == 0)) {
             fGeometry->SetDriftElecNode(itnode);
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  -> cathode volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+                cout << "  -> cathode volume " << endl;
             cout << "  -> cathode volume " << endl;
         }
 
         // micromegas readout electrode
         if ((strncmp(itvol->GetName(), "micromegasVol", 13) == 0)) {
             fGeometry->AddReadoutElecNode(itnode);
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) cout << "  -> readout volume " << endl;
+            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info)
+                cout << "  -> readout volume " << endl;
             cout << "  -> readout volume " << endl;
         }
     }
@@ -348,7 +352,7 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
         fInputHitsEvent->PrintEvent(20);
     }
 
-    for (int hit = 0; hit < fInputHitsEvent->GetNumberOfHits(); hit++) {
+    for (unsigned int hit = 0; hit < fInputHitsEvent->GetNumberOfHits(); hit++) {
         x = fInputHitsEvent->GetX(hit);
         y = fInputHitsEvent->GetY(hit);
         z = fInputHitsEvent->GetZ(hit);

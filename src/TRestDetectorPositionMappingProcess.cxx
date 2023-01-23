@@ -43,7 +43,8 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
     fGas = GetMetadata<TRestDetectorGas>();
     if (fReadout == nullptr) {
         if (fCreateGainMap) {
-            RESTError << "You must set a TRestDetectorReadout metadata object to create gain map!" << RESTendl;
+            RESTError << "You must set a TRestDetectorReadout metadata object to create gain map!"
+                      << RESTendl;
             abort();
         }
     } else {
@@ -57,7 +58,8 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
 
     if (fApplyGainCorrection) {
         if (fCalib == nullptr || fCalib->f2DGainMapping == nullptr) {
-            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!"
+                      << RESTendl;
             abort();
         }
     }
@@ -65,8 +67,6 @@ void TRestDetectorPositionMappingProcess::InitProcess() {
 
 TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* inputEvent) {
     fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
-
-    double nan = numeric_limits<double>::quiet_NaN();
 
     Double_t newEnergy = 0;
 
@@ -100,10 +100,6 @@ TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* inputE
         correction *= GetCorrection3(x, y, z);
 
         newEnergy = e * correction;
-
-        for (int i = 0; i < fHitsEvent->GetNumberOfHits(); i++) {
-            // fHitsEvent->SetEnergy();
-        }
     }
 
     SetObservableValue("AreaCorrEnergy", newEnergy);

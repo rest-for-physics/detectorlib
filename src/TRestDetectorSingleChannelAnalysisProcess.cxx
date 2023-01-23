@@ -73,16 +73,17 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
             }
 
         } else {
-            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!" << RESTendl;
+            RESTError << "You must set a TRestDetectorGainMap metadata object to apply gain correction!"
+                      << RESTendl;
             abort();
         }
     }
 
     if (GetFriend("TRestRawSignalAnalysisProcess") == nullptr) {
         RESTError << "please add friend process TRestRawSignalAnalysisProcess and "
-                "TRestRawReadoutAnalysisProcess "
-                "and turn on all their observables!"
-             << RESTendl;
+                     "TRestRawReadoutAnalysisProcess "
+                     "and turn on all their observables!"
+                  << RESTendl;
         abort();
     }
 }
@@ -90,14 +91,11 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
 TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
     fSignalEvent = (TRestDetectorSignalEvent*)inputEvent;
 
-    double nan = numeric_limits<double>::quiet_NaN();
-
     Double_t new_PeakAmplitudeIntegral = 0;
     Double_t new_ThresholdIntegral = 0;
 
     map<int, Double_t> sAna_max_amplitude_map = GetObservableValue<map<int, Double_t>>("max_amplitude_map");
     map<int, Double_t> sAna_thr_integral_map = GetObservableValue<map<int, Double_t>>("thr_integral_map");
-    Double_t sAna_PeakAmplitudeIntegral = GetObservableValue<Double_t>("PeakAmplitudeIntegral");
     Double_t sAna_ThresholdIntegral = GetObservableValue<Double_t>("ThresholdIntegral");
     Double_t sAna_NumberOfGoodSignals = GetObservableValue<int>("NumberOfGoodSignals");
 
@@ -177,7 +175,6 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
             TFitResultPtr r = h->Fit("gaus", "QS", "", fSpecFitRange.X(), fSpecFitRange.Y());
             if (r != -1) {
                 const double* results = r->GetParams();
-                double constant = results[0];
                 double mean = results[1];
                 double sigma = results[2];
 
