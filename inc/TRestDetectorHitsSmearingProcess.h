@@ -64,6 +64,7 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
         RESTMetadata << "Reference energy (ERef) in keV: " << fEnergyReference << RESTendl;
         RESTMetadata << "FWHM resolution at ERef in \%: " << fResolutionReference << RESTendl;
+        RESTMetadata << "Random seed: " << fSeed << RESTendl;
 
         EndPrintProcess();
     }
