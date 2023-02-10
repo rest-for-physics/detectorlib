@@ -65,9 +65,9 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
 
         RESTMetadata << "the mode is:" << RESTendl;
         RESTMetadata << (fApplyGainCorrection ? ">   " : "    ")
-                 << "Apply position correction std::map for spectrum " << RESTendl;
-        RESTMetadata << (fCreateGainMap ? ">   " : "    ") << "Create new correction std::map for each position"
-                 << RESTendl;
+                     << "Apply position correction std::map for spectrum " << RESTendl;
+        RESTMetadata << (fCreateGainMap ? ">   " : "    ")
+                     << "Create new correction std::map for each position" << RESTendl;
         RESTMetadata << "output mapping file: " << fMappingSave << RESTendl;
         RESTMetadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << RESTendl;
         RESTMetadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << RESTendl;
