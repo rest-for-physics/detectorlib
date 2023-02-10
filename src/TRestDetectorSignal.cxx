@@ -24,6 +24,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
+
 #include "TFitResult.h"
 using namespace std;
 
@@ -31,6 +32,7 @@ using namespace std;
 #include <TH1.h>
 #include <TMath.h>
 #include <TRandom3.h>
+
 #include "TCanvas.h"
 
 ClassImp(TRestDetectorSignal);
