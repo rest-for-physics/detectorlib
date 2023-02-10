@@ -95,7 +95,8 @@ void TRestDetectorReadoutChannel::Print(int DetailLevel) {
         else if (GetType() == Channel_W)
             typestr = "W";
 
-        RESTMetadata << " Total pixels : " << GetNumberOfPixels() << " Channel type : " << typestr << RESTendl;
+        RESTMetadata << " Total pixels : " << GetNumberOfPixels() << " Channel type : " << typestr
+                     << RESTendl;
         RESTMetadata << "+++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
         if (DetailLevel - 1 >= 0)
