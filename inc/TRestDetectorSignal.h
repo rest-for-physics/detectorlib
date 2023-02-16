@@ -43,12 +43,7 @@ class TRestDetectorSignal {
     void SetPoint(TVector2 p);
 
    public:
-#ifndef __CINT__
-
     TGraph* fGraph;  //!
-
-    std::vector<Int_t> fPointsOverThreshold;  //!
-#endif
 
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
@@ -97,8 +92,6 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
 
     void Normalize(Double_t scale = 1.);
 
-    std::vector<Int_t> GetPointsOverThreshold() { return fPointsOverThreshold; }
-
     Double_t GetAverage(Int_t start = 0, Int_t end = 0);
     Int_t GetMaxPeakWidth();
     Double_t GetMaxPeakWithTime(Double_t startTime, Double_t endTime);
@@ -129,11 +122,9 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
     void SetPoint(Double_t t, Double_t d);
     void SetPoint(Int_t index, Double_t t, Double_t d);
 
-    Double_t GetStandardDeviation(Int_t startBin, Int_t endBin);
-    Double_t GetBaseLine(Int_t startBin, Int_t endBin);
-    Double_t GetBaseLineSigma(Int_t startBin, Int_t endBin, Double_t baseline = 0);
+    void CalculateBaseLineAndSigma(Int_t startBin, Int_t endBin, Double_t& baseline, Double_t& baseLineSigma);
 
-    Double_t SubstractBaseline(Int_t startBin, Int_t endBin);
+    void SubstractBaseline(Int_t startBin, Int_t endBin);
     void AddOffset(Double_t offset);
 
     void MultiplySignalBy(Double_t factor);

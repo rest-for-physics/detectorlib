@@ -91,26 +91,22 @@ Double_t TRestDetectorSignalEvent::GetIntegralWithThreshold(Int_t from, Int_t to
 }
 */
 
-Double_t TRestDetectorSignalEvent::GetBaseLineAverage(Int_t startBin, Int_t endBin) {
-    Double_t baseLineMean = 0;
+void TRestDetectorSignalEvent::CalculateBaseLineAndSigmaAverage(Int_t startBin, Int_t endBin,
+                                                                Double_t& baseLineAvg,
+                                                                Double_t& baseLineSigmaAvg) {
+    baseLineAvg = 0;
+    baseLineSigmaAvg = 0;
+
+    Double_t bL, bLS;
 
     for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
-        Double_t baseline = GetSignal(signal)->GetBaseLine(startBin, endBin);
-        baseLineMean += baseline;
+        GetSignal(signal)->CalculateBaseLineAndSigma(startBin, endBin, bL, bLS);
+        baseLineAvg += bL;
+        baseLineSigmaAvg += bLS;
     }
 
-    return baseLineMean / GetNumberOfSignals();
-}
-
-Double_t TRestDetectorSignalEvent::GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin) {
-    Double_t baseLineSigmaMean = 0;
-
-    for (int signal = 0; signal < GetNumberOfSignals(); signal++) {
-        Double_t baselineSigma = GetSignal(signal)->GetBaseLineSigma(startBin, endBin);
-        baseLineSigmaMean += baselineSigma;
-    }
-
-    return baseLineSigmaMean / GetNumberOfSignals();
+    baseLineAvg /= GetNumberOfSignals();
+    baseLineSigmaAvg /= GetNumberOfSignals();
 }
 
 void TRestDetectorSignalEvent::SubstractBaselines(Int_t startBin, Int_t endBin) {

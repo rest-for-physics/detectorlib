@@ -75,8 +75,8 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     Int_t GetSignalIndex(Int_t signalID);
 
-    Double_t GetBaseLineAverage(Int_t startBin, Int_t endBin);
-    Double_t GetBaseLineSigmaAverage(Int_t startBin, Int_t endBin);
+    void CalculateBaseLineAndSigmaAverage(Int_t startBin, Int_t endBin, Double_t& baseLineAvg,
+                                          Double_t& baseLineSigmaAvg);
     Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0);
     Double_t GetMaxValue();
     Double_t GetMinValue();

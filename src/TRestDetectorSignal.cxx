@@ -24,8 +24,8 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
-
 #include "TFitResult.h"
+#include "TRestSignalAnalysis.h"
 using namespace std;
 
 #include <TF1.h>
@@ -43,8 +43,6 @@ TRestDetectorSignal::TRestDetectorSignal() {
     fSignalID = -1;
     fSignalTime.clear();
     fSignalCharge.clear();
-
-    fPointsOverThreshold.clear();
 }
 
 TRestDetectorSignal::~TRestDetectorSignal() {
@@ -531,52 +529,22 @@ void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, I
 void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints) {
     this->Sort();
 
-    averagingPoints = (averagingPoints / 2) * 2 + 1;  // make it odd >= averagingPoints
+    auto smoothed = TRestSignalAnalysis::GetSignalSmoothed(fSignalCharge, averagingPoints);
 
-    Double_t sum = GetIntegral(0, averagingPoints);
-    for (int i = 0; i <= averagingPoints / 2; i++) smthSignal->AddPoint(GetTime(i), sum / averagingPoints);
-
-    for (int i = averagingPoints / 2 + 1; i < GetNumberOfPoints() - averagingPoints / 2; i++) {
-        sum -= this->GetData(i - (averagingPoints / 2 + 1));
-        sum += this->GetData(i + averagingPoints / 2);
-        smthSignal->AddPoint(this->GetTime(i), sum / averagingPoints);
-    }
-
-    for (int i = GetNumberOfPoints() - averagingPoints / 2; i < GetNumberOfPoints(); i++)
-        smthSignal->AddPoint(GetTime(i), sum / averagingPoints);
+    for (int i = 0; i < GetNumberOfPoints(); i++) smthSignal->AddPoint(GetTime(i), smoothed[i]);
 }
 
-Double_t TRestDetectorSignal::GetBaseLine(Int_t startBin, Int_t endBin) {
-    if (endBin - startBin <= 0) return 0.;
-
-    Double_t baseLine = 0;
-    for (int i = startBin; i < endBin; i++) baseLine += fSignalCharge[i];
-
-    return baseLine / (endBin - startBin);
+void TRestDetectorSignal::CalculateBaseLineAndSigma(Int_t startBin, Int_t endBin, Double_t& baseLine,
+                                                    Double_t& baseLineSigma) {
+    TRestSignalAnalysis::CalculateBaselineAndSigmaSD(fSignalCharge, startBin, endBin, baseLine,
+                                                     baseLineSigma);
 }
 
-Double_t TRestDetectorSignal::GetStandardDeviation(Int_t startBin, Int_t endBin) {
-    Double_t bL = GetBaseLine(startBin, endBin);
-    return GetBaseLineSigma(startBin, endBin, bL);
-}
-
-Double_t TRestDetectorSignal::GetBaseLineSigma(Int_t startBin, Int_t endBin, Double_t baseline) {
-    Double_t bL = baseline;
-    if (bL == 0) bL = GetBaseLine(startBin, endBin);
-
-    Double_t baseLineSigma = 0;
-    for (int i = startBin; i < endBin; i++)
-        baseLineSigma += (bL - fSignalCharge[i]) * (bL - fSignalCharge[i]);
-
-    return TMath::Sqrt(baseLineSigma / (endBin - startBin));
-}
-
-Double_t TRestDetectorSignal::SubstractBaseline(Int_t startBin, Int_t endBin) {
-    Double_t bL = GetBaseLine(startBin, endBin);
+void TRestDetectorSignal::SubstractBaseline(Int_t startBin, Int_t endBin) {
+    Double_t bL, bLS;
+    CalculateBaseLineAndSigma(startBin, endBin, bL, bLS);
 
     AddOffset(-bL);
-
-    return bL;
 }
 
 void TRestDetectorSignal::AddOffset(Double_t offset) {
