@@ -98,8 +98,8 @@ TRestEvent* TRestDetectorSignalViewerProcess::ProcessEvent(TRestEvent* inputEven
         RESTcout.setborder("");
         RESTcout.setorientation(TRestStringOutput::REST_Display_Orientation::kLeft);
         RESTcout << "Press Enter to continue\nPress Esc to stop viewing\nPress n/p to "
-                "switch signals"
-             << RESTendl;
+                    "switch signals"
+                 << RESTendl;
 
         while (true) {
             int a = GetChar("");

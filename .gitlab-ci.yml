@@ -80,5 +80,3 @@ Load REST Libraries:
   except:
     variables:
       - $CRONJOB
-
-
