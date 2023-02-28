@@ -25,6 +25,7 @@
 
 #include <TRestDetectorReadout.h>
 #include <TRestEventProcess.h>
+
 #include "TRestDetectorSignalEvent.h"
 
 //! A process allowing to recover selected channels from a TRestRawSignalEvent
