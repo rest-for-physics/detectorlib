@@ -58,10 +58,16 @@
 /// History of developments:
 ///
 /// 2017-November: First implementation of TRestDetectorSignalRecoveryProcess.
+///                 Originally it was TRestRawSignalRecoveryProcess.
 ///             Javier Galan
+///
+/// 2023-February: Update of the process so that it preserves energy and takes into
+///                account two consecutive dead channels.
+///         	Ana Quintana/Javier Galan
 ///
 /// \class      TRestDetectorSignalRecoveryProcess
 /// \author     Javier Galan
+/// \author     Ana Quintana
 ///
 /// <hr>
 ///
@@ -211,7 +217,14 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 /// \brief It returns the channel daq id of the adjacent readout channels. It will properly
 /// identify that we got two dead channels, but no more than two.
 ///
-void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight) {
+/// It returns a value that determines the case we are considering.
+///
+/// 0: Something went wrong (channels not found?)
+/// 1: There is only one dead channel
+/// 2: There is an additional dead channel to the left
+/// 3: There is an additional dead channel to the right
+///
+int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight) {
     idLeft = -1;
     idRight = -1;
 
@@ -230,15 +243,20 @@ void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, In
                 idRight = mod->GetChannel(readoutChannelID + 1)->GetDaqID();
 
                 // If idLeft is a dead channel we take the previous channel
-                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end())
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end()) {
                     idLeft = mod->GetChannel(readoutChannelID - 2)->GetDaqID();
+                    return 2;
+                }
 
                 // If idRight is a dead channel we take the next channel
-                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end())
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end()) {
                     idRight = mod->GetChannel(readoutChannelID + 2)->GetDaqID();
+                    return 3;
+                }
 
-                return;
+                return 1;
             }
         }
     }
+    return 0;
 }
