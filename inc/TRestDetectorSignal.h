@@ -39,16 +39,13 @@ class TRestDetectorSignal {
     std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
     std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
 
-    void AddPoint(TVector2 p);
-    void SetPoint(TVector2 p);
-
    public:
-#ifndef __CINT__
-
     TGraph* fGraph;  //!
 
     std::vector<Int_t> fPointsOverThreshold;  //!
-#endif
+
+    void IncreaseAmplitude(TVector2 p);
+    void SetPoint(TVector2 p);
 
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
@@ -87,13 +84,6 @@ class TRestDetectorSignal {
 
     Double_t GetIntegralWithTime(Double_t startTime, Double_t endTime);
     Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0);
-    /*
-Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline, Int_t endBaseline,
-                                  Double_t threshold = 2, Int_t nPointsOverThreshold = 5,
-                                  Double_t nMinSigmas = 5);
-Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Double_t pointThreshold,
-                                  Int_t nPointsOverThreshold, Double_t signalThreshold);
-                                                                      */
 
     void Normalize(Double_t scale = 1.);
 
@@ -122,9 +112,7 @@ Double_t GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline, Doubl
     void SetID(Int_t sID) { fSignalID = sID; }
 
     void NewPoint(Float_t time, Float_t data);
-    void AddPoint(Double_t t, Double_t d);
-    void AddCharge(Double_t t, Double_t d);
-    void AddDeposit(Double_t t, Double_t d);
+    void IncreaseAmplitude(Double_t t, Double_t d);
 
     void SetPoint(Double_t t, Double_t d);
     void SetPoint(Int_t index, Double_t t, Double_t d);
