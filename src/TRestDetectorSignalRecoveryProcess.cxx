@@ -209,16 +209,17 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 
         if (type == 1)  // Only one dead channel
         {
-            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
                 recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 2.);
+                /// Energy preserved. This could be optional using a new metadata member
+                leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 2);
+            }
 
-            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
                 recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 2.);
-
-            /// We removed the charge that we place at the dead channel
-            /// This could be optional using a metadata parameter
-            leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 2);
-            rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 2);
+                /// Energy preserved. This could be optional using a new metadata member
+                rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 2);
+            }
         }
 
         if (type == 2 || type == 3)  // We got two dead-channels
@@ -243,8 +244,10 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 
             /// We removed the charge that we place at the dead channel
             /// In this case we remove a 25% because we will enter twice in this loop
-            leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 4);
-            rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 4);
+            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 4);
+            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 4);
         }
 
         fOutputSignalEvent->AddSignal(*recoveredSignal);
