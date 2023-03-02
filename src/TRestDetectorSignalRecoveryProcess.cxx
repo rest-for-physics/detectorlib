@@ -43,6 +43,22 @@
 /// using the charge of the adjacent readout channels,
 /// \f$s_i = 0.5 \times (s_{i-1} + s_{i+1})\f$
 ///
+/// Now we preserve the energy of the event, we apply the following
+/// correction to the dead channel (i) and the adjacent channels.
+///
+/// \f$s_{i-1} = 0.5 * s_{i-1}\f$
+/// \f$s_i = 0.5 \times (s_{i-1} + s_{i+1})\f$
+/// \f$s_{i+1} = 0.5 * s_{i+1}\f$
+//
+/// The algorithm will also identify in case we have up to two
+/// consecutive dead channels. In that case it will apply the following
+/// correction, where `i` and `i+1` are the dead channels.
+///
+/// \f$s_{i-1} = 0.5 * s_{i-1}\f$
+/// \f$s_i = 1/6 \times (2*s_{i-1} + s_{i+2})\f$
+/// \f$s_{i+1} = 1/6 \times (s_{i-1} + 2*s_{i+2})\f$
+/// \f$s_{i+2} = 0.5 * s_{i+2}\f$
+///
 /// This process will access the information of the decoding stored in
 /// the TRestDetectorReadout definition to assure that the righ signal ids,
 /// corresponding to the adjacent channels, are used in the calculation.
