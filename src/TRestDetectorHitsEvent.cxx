@@ -608,7 +608,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
 
     /// The default histogram using a pitch of 0 mm,
     //  which means that it should be extracted from the hit array
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[3]");
 
     if (fPad != nullptr) {
         delete fPad;
