@@ -187,7 +187,7 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
     Int_t idL;
     Int_t idR;
     for (unsigned int x = 0; x < fChannelIds.size(); x++) {
-        GetAdjacentSignalIds(fChannelIds[x], idL, idR);
+        Int_t type = GetAdjacentSignalIds(fChannelIds[x], idL, idR);
         RESTDebug << "Channel id : " << fChannelIds[x] << " Left : " << idL << " Right : " << idR << RESTendl;
 
         if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
@@ -198,19 +198,53 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
         TRestDetectorSignal* leftSgnl = fInputSignalEvent->GetSignalById(idL);
         TRestDetectorSignal* rightSgnl = fInputSignalEvent->GetSignalById(idR);
 
-        if (leftSgnl == nullptr && rightSgnl == nullptr) continue;
+        /// If the dead channel has no charge on left and right then we do not
+        /// correct. We could think about correction here? It means it is
+        /// the first or last channel.
+        ///
+        if (leftSgnl == nullptr || rightSgnl == nullptr) continue;
 
         TRestDetectorSignal* recoveredSignal = new TRestDetectorSignal();
         recoveredSignal->SetID(fChannelIds[x]);
 
-        if (leftSgnl != nullptr) {
+        if (type == 1)  // Only one dead channel
+        {
             for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                 recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 2.);
-        }
 
-        if (rightSgnl != nullptr) {
             for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                 recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 2.);
+
+            /// We removed the charge that we place at the dead channel
+            /// This could be optional using a metadata parameter
+            leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 2);
+            rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 2);
+        }
+
+        if (type == 2 || type == 3)  // We got two dead-channels
+        {
+            if (type == 2)  // The dead channel is the one at the right
+            {
+                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 6.);
+
+                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(2 * rightSgnl->GetPoint(n) / 6.);
+            }
+
+            if (type == 3)  // The dead channel is the one at the left
+            {
+                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(2 * leftSgnl->GetPoint(n) / 6.);
+
+                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 6.);
+            }
+
+            /// We removed the charge that we place at the dead channel
+            /// In this case we remove a 25% because we will enter twice in this loop
+            leftSgnl->IncreaseAmplitude(-leftSgnl->GetPoint(n) / 4);
+            rightSgnl->IncreaseAmplitude(-rightSgnl->GetPoint(n) / 4);
         }
 
         fOutputSignalEvent->AddSignal(*recoveredSignal);
