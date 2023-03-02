@@ -207,6 +207,10 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
     return fOutputSignalEvent;
 }
 
+///////////////////////////////////////////////
+/// \brief It returns the channel daq id of the adjacent readout channels. It will properly
+/// identify that we got two dead channels, but no more than two.
+///
 void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight) {
     idLeft = -1;
     idRight = -1;
@@ -224,6 +228,14 @@ void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, In
 
                 idLeft = mod->GetChannel(readoutChannelID - 1)->GetDaqID();
                 idRight = mod->GetChannel(readoutChannelID + 1)->GetDaqID();
+
+                // If idLeft is a dead channel we take the previous channel
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end())
+                    idLeft = mod->GetChannel(readoutChannelID - 2)->GetDaqID();
+
+                // If idRight is a dead channel we take the next channel
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end())
+                    idRight = mod->GetChannel(readoutChannelID + 2)->GetDaqID();
 
                 return;
             }
