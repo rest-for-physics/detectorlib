@@ -80,7 +80,7 @@ TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initializ
 /// \brief Default destructor
 ///
 TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
-    delete fHitsOutputEvent;
+    delete fOutputEvent;
     // TRestDetectorHitsSmearingProcess destructor
 }
 
@@ -91,8 +91,8 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fHitsInputEvent = nullptr;
-    fHitsOutputEvent = new TRestDetectorHitsEvent();
+    fInputEvent = nullptr;
+    fOutputEvent = new TRestDetectorHitsEvent();
 
     fRandom = nullptr;
 }
@@ -101,28 +101,19 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
 /// \brief The main processing event function
 ///
 TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEvent) {
-    fHitsInputEvent = (TRestDetectorHitsEvent*)inputEvent;
-    fHitsOutputEvent->SetEventInfo(fHitsInputEvent);
+    fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
+    fOutputEvent->SetEventInfo(fInputEvent);
 
-    Double_t eDep = fHitsInputEvent->GetTotalEnergy();
+    Double_t eDep = fInputEvent->GetTotalEnergy();
     Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
 
     Double_t gain = fRandom->Gaus(1.0, eRes);
-    for (unsigned int hit = 0; hit < fHitsInputEvent->GetNumberOfHits(); hit++)
-        fHitsOutputEvent->AddHit(fHitsInputEvent->GetX(hit), fHitsInputEvent->GetY(hit),
-                                 fHitsInputEvent->GetZ(hit), fHitsInputEvent->GetEnergy(hit) * gain,
-                                 fHitsInputEvent->GetTime(hit), fHitsInputEvent->GetType(hit));
+    for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++)
+        fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
+                             fInputEvent->GetEnergy(hit) * gain, fInputEvent->GetTime(hit),
+                             fInputEvent->GetType(hit));
 
-    return fHitsOutputEvent;
-}
-
-void TRestDetectorHitsSmearingProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
+    return fOutputEvent;
 }
 
 void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {

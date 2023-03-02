@@ -31,14 +31,17 @@
 /// A process to include detector energy resolution in a TRestDetectorHitsEvent
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fHitsInputEvent;   //!
-    TRestDetectorHitsEvent* fHitsOutputEvent;  //!
+    /// A pointer to the process input event
+    TRestDetectorHitsEvent* fInputEvent = nullptr;  //!
 
-    TRandom3* fRandom;  //!
+    /// A pointer to the process output event
+    TRestDetectorHitsEvent* fOutputEvent = nullptr;  //!
+
+    /// A pointer to the random generator initializes with fSeed
+    TRandom3* fRandom = nullptr;  //!
 
     void InitFromConfigFile() override;
     void Initialize() override;
-    void LoadDefaultConfig();
 
    protected:
     /// Reference energy for the FWHM
@@ -48,11 +51,10 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     Double_t fResolutionAtERef = 15;  //<
 
    public:
-    any GetInputEvent() const override { return fHitsInputEvent; }
-    any GetOutputEvent() const override { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fInputEvent; }
+    any GetOutputEvent() const override { return fOutputEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
-    void EndProcess() override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
@@ -69,7 +71,10 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     const char* GetProcessName() const override { return "smearingProcess"; }
 
+    /// Returns the reference energy where the FWHM is defined
     inline Double_t GetEnergyReference() const { return fEnergyRef; }
+
+    /// Returns the energy resolution in %FWHM for the reference energy
     inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
