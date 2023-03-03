@@ -40,8 +40,8 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     /// A pointer to the random generator initializes with fSeed
     TRandom3* fRandom = nullptr;  //!
 
-    void InitFromConfigFile() override;
     void Initialize() override;
+    void InitProcess() override;
 
    protected:
     /// Reference energy for the FWHM
@@ -49,6 +49,9 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     /// FWHM at Energy of reference
     Double_t fResolutionAtERef = 15;  //<
+
+    /// The seed to be used for the random generator
+    ULong_t fSeed = 0;  //<
 
    public:
     any GetInputEvent() const override { return fInputEvent; }
@@ -82,6 +85,6 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDefOverride(TRestDetectorHitsSmearingProcess, 2);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 3);
 };
 #endif

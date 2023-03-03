@@ -93,8 +93,12 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
 
     fInputEvent = nullptr;
     fOutputEvent = new TRestDetectorHitsEvent();
+}
 
-    fRandom = nullptr;
+void TRestDetectorHitsSmearingProcess::InitProcess() {
+    if (fRandom != nullptr) delete fRandom;
+    fRandom = new TRandom3(fSeed);
+    fSeed = fRandom->TRandom::GetSeed();
 }
 
 ///////////////////////////////////////////////
@@ -114,10 +118,4 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEven
                              fInputEvent->GetType(hit));
 
     return fOutputEvent;
-}
-
-void TRestDetectorHitsSmearingProcess::InitFromConfigFile() {
-    fEnergyRef = GetDblParameterWithUnits("energyReference");
-    fResolutionAtERef = StringToDouble(GetParameter("resolutionReference"));
-    fRandom = new TRandom3(StringToDouble(GetParameter("seed", "0")));
 }
