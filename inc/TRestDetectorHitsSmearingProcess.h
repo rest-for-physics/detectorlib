@@ -1,17 +1,24 @@
-///______________________________________________________________________________
-///______________________________________________________________________________
-///______________________________________________________________________________
-///
-///
-///             RESTSoft : Software for Rare Event Searches with TPCs
-///
-///             TRestDetectorHitsSmearingProcess.h
-///
-///             feb 2016:   First concept
-///                 Created as part of the conceptualization of existing REST
-///                 software.
-///                 Javier G. Garza
-///_______________________________________________________________________________
+/*************************************************************************
+ * This file is part of the REST software framework.                     *
+ *                                                                       *
+ * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
+ * For more information see https://gifna.unizar.es/trex                 *
+ *                                                                       *
+ * REST is free software: you can redistribute it and/or modify          *
+ * it under the terms of the GNU General Public License as published by  *
+ * the Free Software Foundation, either version 3 of the License, or     *
+ * (at your option) any later version.                                   *
+ *                                                                       *
+ * REST is distributed in the hope that it will be useful,               *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
+ * GNU General Public License for more details.                          *
+ *                                                                       *
+ * You should have a copy of the GNU General Public License along with   *
+ * REST in $REST_PATH/LICENSE.                                           *
+ * If not, see https://www.gnu.org/licenses/.                            *
+ * For the list of contributors see $REST_PATH/CREDITS.                  *
+ *************************************************************************/
 
 #ifndef RestCore_TRestDetectorHitsSmearingProcess
 #define RestCore_TRestDetectorHitsSmearingProcess
@@ -19,35 +26,38 @@
 #include <TRandom3.h>
 #include <TRestEventProcess.h>
 
-#include "TRestDetectorGas.h"
 #include "TRestDetectorHitsEvent.h"
 
+/// A process to include detector energy resolution in a TRestDetectorHitsEvent
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fHitsInputEvent;   //!
-    TRestDetectorHitsEvent* fHitsOutputEvent;  //!
+    /// A pointer to the process input event
+    TRestDetectorHitsEvent* fInputEvent = nullptr;  //!
 
-    TRandom3* fRandom;  //!
+    /// A pointer to the process output event
+    TRestDetectorHitsEvent* fOutputEvent = nullptr;  //!
 
-    TRestDetectorGas* fGas;  //!
+    /// A pointer to the random generator initializes with fSeed
+    TRandom3* fRandom = nullptr;  //!
 
-    void InitFromConfigFile() override;
     void Initialize() override;
-    void LoadDefaultConfig();
+    void InitProcess() override;
 
    protected:
-    // add here the members of your event process
+    /// Reference energy for the FWHM
+    Double_t fEnergyRef = 5.9;  //<
 
-    Double_t fEnergyRef;         ///< reference energy for the FWHM
-    Double_t fResolutionAtERef;  ///< FWHM at Energy of reference
+    /// FWHM at Energy of reference
+    Double_t fResolutionAtERef = 15;  //<
+
+    /// The seed to be used for the random generator
+    ULong_t fSeed = 0;  //<
 
    public:
-    any GetInputEvent() const override { return fHitsInputEvent; }
-    any GetOutputEvent() const override { return fHitsOutputEvent; }
+    any GetInputEvent() const override { return fInputEvent; }
+    any GetOutputEvent() const override { return fOutputEvent; }
 
-    void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
-    void EndProcess() override;
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
@@ -64,7 +74,10 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     const char* GetProcessName() const override { return "smearingProcess"; }
 
+    /// Returns the reference energy where the FWHM is defined
     inline Double_t GetEnergyReference() const { return fEnergyRef; }
+
+    /// Returns the energy resolution in %FWHM for the reference energy
     inline Double_t GetResolutionReference() const { return fResolutionAtERef; }
 
     TRestDetectorHitsSmearingProcess();
@@ -72,6 +85,6 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDefOverride(TRestDetectorHitsSmearingProcess, 2);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 3);
 };
 #endif
