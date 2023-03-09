@@ -43,6 +43,22 @@
 /// using the charge of the adjacent readout channels,
 /// \f$s_i = 0.5 \times (s_{i-1} + s_{i+1})\f$
 ///
+/// Now we preserve the energy of the event, we apply the following
+/// correction to the dead channel (i) and the adjacent channels.
+///
+/// \f$s_{i-1} = 0.5 * s_{i-1}\f$
+/// \f$s_i = 0.5 \times (s_{i-1} + s_{i+1})\f$
+/// \f$s_{i+1} = 0.5 * s_{i+1}\f$
+//
+/// The algorithm will also identify in case we have up to two
+/// consecutive dead channels. In that case it will apply the following
+/// correction, where `i` and `i+1` are the dead channels.
+///
+/// \f$s_{i-1} = 0.5 * s_{i-1}\f$
+/// \f$s_i = 1/6 \times (2*s_{i-1} + s_{i+2})\f$
+/// \f$s_{i+1} = 1/6 \times (s_{i-1} + 2*s_{i+2})\f$
+/// \f$s_{i+2} = 0.5 * s_{i+2}\f$
+///
 /// This process will access the information of the decoding stored in
 /// the TRestDetectorReadout definition to assure that the righ signal ids,
 /// corresponding to the adjacent channels, are used in the calculation.
@@ -58,10 +74,16 @@
 /// History of developments:
 ///
 /// 2017-November: First implementation of TRestDetectorSignalRecoveryProcess.
+///                 Originally it was TRestRawSignalRecoveryProcess.
 ///             Javier Galan
+///
+/// 2023-February: Update of the process so that it preserves energy and takes into
+///                account two consecutive dead channels.
+///         	Ana Quintana/Javier Galan
 ///
 /// \class      TRestDetectorSignalRecoveryProcess
 /// \author     Javier Galan
+/// \author     Ana Quintana
 ///
 /// <hr>
 ///
@@ -165,7 +187,7 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
     Int_t idL;
     Int_t idR;
     for (unsigned int x = 0; x < fChannelIds.size(); x++) {
-        GetAdjacentSignalIds(fChannelIds[x], idL, idR);
+        Int_t type = GetAdjacentSignalIds(fChannelIds[x], idL, idR);
         RESTDebug << "Channel id : " << fChannelIds[x] << " Left : " << idL << " Right : " << idR << RESTendl;
 
         if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
@@ -176,19 +198,56 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
         TRestDetectorSignal* leftSgnl = fInputSignalEvent->GetSignalById(idL);
         TRestDetectorSignal* rightSgnl = fInputSignalEvent->GetSignalById(idR);
 
-        if (leftSgnl == nullptr && rightSgnl == nullptr) continue;
+        /// If the dead channel has no charge on left and right then we do not
+        /// correct. We could think about correction here? It means it is
+        /// the first or last channel.
+        ///
+        if (leftSgnl == nullptr || rightSgnl == nullptr) continue;
 
         TRestDetectorSignal* recoveredSignal = new TRestDetectorSignal();
         recoveredSignal->SetID(fChannelIds[x]);
 
-        if (leftSgnl != nullptr) {
-            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+        if (type == 1)  // Only one dead channel
+        {
+            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
                 recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 2.);
+                /// Energy preserved. This could be optional using a new metadata member
+                leftSgnl->IncreaseAmplitude(-1. * leftSgnl->GetPoint(n) / 2);
+            }
+
+            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
+                recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 2.);
+                /// Energy preserved. This could be optional using a new metadata member
+                rightSgnl->IncreaseAmplitude(-1. * rightSgnl->GetPoint(n) / 2);
+            }
         }
 
-        if (rightSgnl != nullptr) {
+        if (type == 2 || type == 3)  // We got two dead-channels
+        {
+            if (type == 2)  // The dead channel is the one at the right
+            {
+                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 6.);
+
+                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(2 * rightSgnl->GetPoint(n) / 6.);
+            }
+
+            if (type == 3)  // The dead channel is the one at the left
+            {
+                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(2 * leftSgnl->GetPoint(n) / 6.);
+
+                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 6.);
+            }
+
+            /// We removed the charge that we place at the dead channel
+            /// In this case we remove a 25% because we will enter twice in this loop
+            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                leftSgnl->IncreaseAmplitude(-1. * leftSgnl->GetPoint(n) / 4);
             for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 2.);
+                rightSgnl->IncreaseAmplitude(-1. * rightSgnl->GetPoint(n) / 4);
         }
 
         fOutputSignalEvent->AddSignal(*recoveredSignal);
@@ -207,7 +266,18 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
     return fOutputSignalEvent;
 }
 
-void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight) {
+///////////////////////////////////////////////
+/// \brief It returns the channel daq id of the adjacent readout channels. It will properly
+/// identify that we got two dead channels, but no more than two.
+///
+/// It returns a value that determines the case we are considering.
+///
+/// 0: Something went wrong (channels not found?)
+/// 1: There is only one dead channel
+/// 2: There is an additional dead channel to the left
+/// 3: There is an additional dead channel to the right
+///
+int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight) {
     idLeft = -1;
     idRight = -1;
 
@@ -225,8 +295,21 @@ void TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, In
                 idLeft = mod->GetChannel(readoutChannelID - 1)->GetDaqID();
                 idRight = mod->GetChannel(readoutChannelID + 1)->GetDaqID();
 
-                return;
+                // If idLeft is a dead channel we take the previous channel
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end()) {
+                    idLeft = mod->GetChannel(readoutChannelID - 2)->GetDaqID();
+                    return 2;
+                }
+
+                // If idRight is a dead channel we take the next channel
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end()) {
+                    idRight = mod->GetChannel(readoutChannelID + 2)->GetDaqID();
+                    return 3;
+                }
+
+                return 1;
             }
         }
     }
+    return 0;
 }
