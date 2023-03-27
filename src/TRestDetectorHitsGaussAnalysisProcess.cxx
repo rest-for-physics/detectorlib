@@ -164,7 +164,12 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
     Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX();
     Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY();
     Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ();
-    Double_t xy2SigmaGaus = (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
+    Double_t xy2SigmaGaus = (gausSigmaX == -1. || gausSigmaY == -1.)
+                                ? -1.
+                                : (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
+    Double_t xySigmaBalanceGaus = (gausSigmaX == -1. || gausSigmaY == -1.)
+                                      ? -1.
+                                      : (gausSigmaX - gausSigmaY) / (gausSigmaX + gausSigmaY);
 
     if (hits->GetNumberOfHits() > 30 && xy2SigmaGaus < 0.05)
         RESTDebug << string("Event ID: ") << to_string(fInputHitsEvent->GetID()) << string("||") << RESTendl;
@@ -173,7 +178,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
     SetObservableValue("ySigmaGaus", gausSigmaY);
     SetObservableValue("zSigmaGaus", gausSigmaZ);
     SetObservableValue("xy2SigmaGaus", xy2SigmaGaus);
-    SetObservableValue("xySigmaBalanceGaus", (gausSigmaX - gausSigmaY) / (gausSigmaX + gausSigmaY));
+    SetObservableValue("xySigmaBalanceGaus", xySigmaBalanceGaus);
 
     // We transform here fHitsEvent if necessary
 
