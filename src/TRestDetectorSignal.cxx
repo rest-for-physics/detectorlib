@@ -54,7 +54,22 @@ void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
     fSignalCharge.push_back(data);
 }
 
-void TRestDetectorSignal::AddPoint(TVector2 p) {
+///////////////////////////////////////////////
+/// \brief If the point already exists inside the detector signal event,
+/// the amplitude value will be added to the corresponding time.
+///
+void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
+    TVector2 p(t, d);
+    IncreaseAmplitude(p);
+}
+
+///////////////////////////////////////////////
+/// \brief If the point already exists inside the detector signal event,
+/// the amplitude value will be added to the corresponding time.
+///
+/// The input vector should contain a physical time and an amplitude.
+///
+void TRestDetectorSignal::IncreaseAmplitude(TVector2 p) {
     Int_t index = GetTimeIndex(p.X());
     Float_t x = p.X();
     Float_t y = p.Y();
@@ -67,6 +82,14 @@ void TRestDetectorSignal::AddPoint(TVector2 p) {
         fSignalCharge.push_back(y);
     }
 }
+
+///////////////////////////////////////////////
+/// \brief If the point already exists inside the detector signal event,
+/// it will be overwritten. If it does not exists, a new point will be
+/// added to the poins vector.
+///
+/// The input vector should contain a physical time and an amplitude.
+///
 void TRestDetectorSignal::SetPoint(TVector2 p) {
     Int_t index = GetTimeIndex(p.X());
     Float_t x = p.X();
@@ -81,23 +104,22 @@ void TRestDetectorSignal::SetPoint(TVector2 p) {
     }
 }
 
-void TRestDetectorSignal::AddPoint(Double_t t, Double_t d) {
-    TVector2 p(t, d);
-    AddPoint(p);
-}
-void TRestDetectorSignal::AddCharge(Double_t t, Double_t d) {
-    TVector2 p(t, d);
-    AddPoint(p);
-}
-void TRestDetectorSignal::AddDeposit(Double_t t, Double_t d) {
-    TVector2 p(t, d);
-    AddPoint(p);
-}
-
+///////////////////////////////////////////////
+/// \brief If the point already exists inside the detector signal event,
+/// it will be overwritten. If it does not exists, a new point will be
+/// added to the poins vector.
+///
+/// In this method the time and amplitude (data) are given as argument
+///
 void TRestDetectorSignal::SetPoint(Double_t t, Double_t d) {
     TVector2 p(t, d);
     SetPoint(p);
 }
+
+///////////////////////////////////////////////
+/// \brief If replaces the time and amplitude of the point at the
+/// given index
+///
 void TRestDetectorSignal::SetPoint(Int_t index, Double_t t, Double_t d) {
     fSignalTime[index] = t;
     fSignalCharge[index] = d;
@@ -504,26 +526,27 @@ void TRestDetectorSignal::Sort() {
 void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints) {
     this->Sort();
 
-    for (int i = 0; i < smearPoints; i++) diffSgnl->AddPoint(GetTime(i), 0);
+    for (int i = 0; i < smearPoints; i++) diffSgnl->IncreaseAmplitude(GetTime(i), 0);
 
     for (int i = smearPoints; i < this->GetNumberOfPoints() - smearPoints; i++) {
         Double_t value = (this->GetData(i + smearPoints) - GetData(i - smearPoints)) /
                          (GetTime(i + smearPoints) - GetTime(i - smearPoints));
         Double_t time = (GetTime(i + smearPoints) + GetTime(i - smearPoints)) / 2.;
 
-        diffSgnl->AddPoint(time, value);
+        diffSgnl->IncreaseAmplitude(time, value);
     }
 
     for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++)
-        diffSgnl->AddPoint(GetTime(i), 0);
+        diffSgnl->IncreaseAmplitude(GetTime(i), 0);
 }
 
 void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, Int_t delay) {
     this->Sort();
 
-    for (int i = 0; i < delay; i++) delayedSignal->AddPoint(GetTime(i), GetData(i));
+    for (int i = 0; i < delay; i++) delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i));
 
-    for (int i = delay; i < GetNumberOfPoints(); i++) delayedSignal->AddPoint(GetTime(i), GetData(i - delay));
+    for (int i = delay; i < GetNumberOfPoints(); i++)
+        delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i - delay));
 }
 
 void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints) {
@@ -593,7 +616,7 @@ void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double
         Double_t dta = 300 + amp * TMath::Exp(-0.5 * (tme - time) * (tme - time) / sigma / sigma);
 
         cout << "T : " << tme << " D : " << dta << endl;
-        AddPoint(tme, dta);
+        IncreaseAmplitude(tme, dta);
     }
 }
 
@@ -603,7 +626,7 @@ void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Do
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         TRandom3* fRandom = new TRandom3(0);
 
-        noiseSgnl->AddPoint(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
+        noiseSgnl->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
 
         delete fRandom;
     }
@@ -635,7 +658,7 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
             fGaus->SetParameter(1, GetTime(j));
             sum = fSignalCharge[j] / TMath::Sqrt(2. * TMath::Pi()) / sigma * fGaus->Integral(i, i + 1);
 
-            convSgnl->AddPoint(i, sum);
+            convSgnl->IncreaseAmplitude(i, sum);
             totChargeFinal += sum;
         }
     }
