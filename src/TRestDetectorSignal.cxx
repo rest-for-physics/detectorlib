@@ -136,10 +136,11 @@ void TRestDetectorSignal::Normalize(Double_t scale) {
 }
 
 Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) {
-    int startBin = GetTimeIndex(startTime);
-    int endBin = GetTimeIndex(endTime);
+    Double_t sum = 0;
+    for (int i = 0; i < GetNumberOfPoints(); i++)
+        if (GetTime(i) >= startTime && GetTime(i) < endTime) sum += GetData(i);
 
-    return GetIntegral(startBin, endBin);
+    return sum;
 }
 
 /* {{{

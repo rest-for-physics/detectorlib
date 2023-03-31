@@ -81,7 +81,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// readout)
     inline Double_t GetHitZCoordinate(Double_t hitTime, Double_t driftVelocity, Double_t fieldZDirection,
                                       Double_t zPosition) const {
-        const Double_t distanceToPlane = hitTime * fDriftVelocity;
+        const Double_t distanceToPlane = hitTime * driftVelocity;
         return zPosition + fieldZDirection * distanceToPlane;
     }
 
