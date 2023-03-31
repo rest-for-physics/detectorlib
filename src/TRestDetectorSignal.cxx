@@ -271,14 +271,16 @@ Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
 Bool_t TRestDetectorSignal::isSorted() { return is_sorted(fSignalTime.begin(), fSignalTime.end()); }
 
 void TRestDetectorSignal::Sort() {
-    if (fSignalCharge.size() != fSignalTime.size()) {
-        cout << "Time and charge vectors have different size " << fSignalCharge.size() << " "
-             << fSignalTime.size() << endl;
-        exit(0);
+    while (!isSorted()) {
+        for (int i = 0; i < GetNumberOfPoints(); i++) {
+            for (int j = i; j < GetNumberOfPoints(); j++) {
+                if (GetTime(i) > GetTime(j)) {
+                    iter_swap(fSignalTime.begin() + i, fSignalTime.begin() + j);
+                    iter_swap(fSignalCharge.begin() + i, fSignalCharge.begin() + j);
+                }
+            }
+        }
     }
-    sort(fSignalCharge.begin(), fSignalCharge.end(),
-         [&](size_t i, size_t j) { return fSignalTime[i] > fSignalTime[j]; });
-    sort(fSignalTime.begin(), fSignalTime.end());
 }
 
 void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints) {
