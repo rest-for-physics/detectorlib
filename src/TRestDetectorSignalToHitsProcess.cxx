@@ -125,9 +125,8 @@
 ///
 #include "TRestDetectorSignalToHitsProcess.h"
 
-#include "TRestSignalAnalysis.h"
-
 #include "TRestDetectorSetup.h"
+#include "TRestSignalAnalysis.h"
 
 using namespace std;
 

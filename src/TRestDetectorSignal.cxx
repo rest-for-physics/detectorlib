@@ -24,6 +24,7 @@
 ///_______________________________________________________________________________
 
 #include "TRestDetectorSignal.h"
+
 #include "TFitResult.h"
 #include "TRestSignalAnalysis.h"
 using namespace std;
