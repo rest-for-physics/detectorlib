@@ -77,6 +77,14 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
     void LoadConfig(const std::string& configFilename, const std::string& name = "");
 
+    /// Returns the Z coordinate from the hitTime, drifVelocity, fieldZDirection and zPositon (relative to the
+    /// readout)
+    inline Double_t GetHitZCoordinate(Double_t hitTime, Double_t driftVelocity, Double_t fieldZDirection,
+                                      Double_t zPosition) const {
+        const Double_t distanceToPlane = hitTime * fDriftVelocity;
+        return zPosition + fieldZDirection * distanceToPlane;
+    }
+
     /// It prints out the process parameters stored in the metadata structure
     void PrintMetadata() override {
         BeginPrintProcess();

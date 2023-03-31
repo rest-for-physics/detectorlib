@@ -69,17 +69,15 @@ void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
-void TRestDetectorSignal::IncreaseAmplitude(TVector2 p) {
+void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
 
     if (index >= 0) {
-        fSignalTime[index] = x;
-        fSignalCharge[index] += y;
+        fSignalTime[index] = p.X();
+        fSignalCharge[index] += p.Y();
     } else {
-        fSignalTime.push_back(x);
-        fSignalCharge.push_back(y);
+        fSignalTime.push_back(p.X());
+        fSignalCharge.push_back(p.Y());
     }
 }
 
@@ -90,17 +88,15 @@ void TRestDetectorSignal::IncreaseAmplitude(TVector2 p) {
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
-void TRestDetectorSignal::SetPoint(TVector2 p) {
+void TRestDetectorSignal::SetPoint(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
 
     if (index >= 0) {
-        fSignalTime[index] = x;
-        fSignalCharge[index] = y;
+        fSignalTime[index] = p.X();
+        fSignalCharge[index] = p.Y();
     } else {
-        fSignalTime.push_back(x);
-        fSignalCharge.push_back(y);
+        fSignalTime.push_back(p.X());
+        fSignalCharge.push_back(p.Y());
     }
 }
 
@@ -129,10 +125,7 @@ Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) {
     if (startBin < 0) startBin = 0;
     if (endBin <= 0 || endBin > GetNumberOfPoints()) endBin = GetNumberOfPoints();
 
-    Double_t sum = 0;
-    for (int i = startBin; i < endBin; i++) sum += GetData(i);
-
-    return sum;
+    return TRestSignalAnalysis::GetIntegral(fSignalCharge, startBin, endBin);
 }
 
 void TRestDetectorSignal::Normalize(Double_t scale) {
@@ -142,22 +135,10 @@ void TRestDetectorSignal::Normalize(Double_t scale) {
 }
 
 Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) {
-    Double_t sum = 0;
-    for (int i = 0; i < GetNumberOfPoints(); i++)
-        if (GetTime(i) >= startTime && GetTime(i) < endTime) sum += GetData(i);
+    int startBin = GetTimeIndex(startTime);
+    int endBin = GetTimeIndex(endTime);
 
-    return sum;
-}
-
-Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) {
-    Double_t max = -1E10;
-
-    for (int i = 0; i < GetNumberOfPoints(); i++)
-        if (GetTime(i) >= startTime && GetTime(i) < endTime) {
-            if (this->GetData(i) > max) max = GetData(i);
-        }
-
-    return max;
+    return GetIntegral(startBin, endBin);
 }
 
 /* {{{
@@ -223,118 +204,24 @@ Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Dou
 Double_t TRestDetectorSignal::GetAverage(Int_t start, Int_t end) {
     this->Sort();
 
-    if (end == 0) end = this->GetNumberOfPoints();
+    if (end <= 0) end = this->GetNumberOfPoints();
 
-    Double_t sum = 0;
-    for (int i = start; i <= end; i++) {
-        sum += this->GetData(i);
-    }
-    return sum / (end - start + 1);
+    return TRestSignalAnalysis::GetAverage(fSignalCharge, start, end);
 }
 
 Int_t TRestDetectorSignal::GetMaxPeakWidth() {
     this->Sort();
 
-    Int_t mIndex = this->GetMaxIndex();
-    Double_t maxValue = this->GetData(mIndex);
-
-    Double_t value = maxValue;
-    Int_t rightIndex = mIndex;
-    while (value > maxValue / 2) {
-        value = this->GetData(rightIndex);
-        rightIndex++;
-    }
-    Int_t leftIndex = mIndex;
-    value = maxValue;
-    while (value > maxValue / 2) {
-        value = this->GetData(leftIndex);
-        leftIndex--;
-    }
-
-    return rightIndex - leftIndex;
+    return TRestSignalAnalysis::GetMaxPeakWidth(fSignalCharge);
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakValue() { return GetData(GetMaxIndex()); }
 
-Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
-    Double_t max = -1E10;
-    Int_t index = 0;
-
-    if (from < 0) from = 0;
-    if (to > GetNumberOfPoints()) to = GetNumberOfPoints();
-
-    if (to == 0) to = GetNumberOfPoints();
-
-    for (int i = from; i < to; i++) {
-        if (this->GetData(i) > max) {
-            max = GetData(i);
-            index = i;
-        }
-    }
-
-    return index;
-}
-
-// z position by gaussian fit
-
 TVector2
 TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak time in us and the energy
 {
-    Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
-    Double_t maxRawTime =
-        GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t energy = 0, time = 0;
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.4;  // us
-
-    TF1* gaus = new TF1("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
-
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
-    }
-    /*
-    TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
-    h1->GetXaxis()->SetTitle("Time (us)");
-    h1->GetYaxis()->SetTitle("Amplitude");
-    h1->Draw();
-    */
-
-    TFitResultPtr fitResult =
-        h1->Fit(gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range; S
-                                // = save and return the fit result
-
-    if (fitResult->IsValid()) {
-        energy = gaus->GetParameter(0);
-        time = gaus->GetParameter(1);
-    } else {
-        // the fit failed, return -1 to indicate failure
-        energy = -1;
-        time = -1;
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
-             << "Failed fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1)
-             << " || " << gaus->GetParameter(2) << "\n"
-             << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
-    }
-
-    TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete gaus;
-
-    return fitParam;
+    auto gr = GetGraph();
+    return TRestSignalAnalysis::GetMaxGauss(gr);
 }
 
 // z position by landau fit
@@ -342,185 +229,50 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
 TVector2
 TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the peak time in us and the energy
 {
-    Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
-    Double_t maxRawTime =
-        GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t energy = 0, time = 0;
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.4;  // us
-
-    TF1* landau = new TF1("landau", "landau", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
-
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
-    }
-
-    TFitResultPtr fitResult =
-        h1->Fit(landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
-                                  // S = save and return the fit result
-    if (fitResult->IsValid()) {
-        energy = landau->GetParameter(0);
-        time = landau->GetParameter(1);
-    } else {
-        // the fit failed, return -1 to indicate failure
-        energy = -1;
-        time = -1;
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
-             << "Failed fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1)
-             << " || " << landau->GetParameter(2) << "\n"
-             << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
-    }
-
-    TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete landau;
-
-    return fitParam;
-}
-
-// z position by aget fit
-
-Double_t agetResponseFunction(Double_t* x, Double_t* par) {  // x contains as many elements as the number of
-                                                             // dimensions (in this case 1, i.e. x[0]), and
-    // par contains as many elements as the number of free parameters in my function.
-
-    Double_t arg =
-        (x[0] - par[1] + 1.1664) /
-        par[2];  // 1.1664 is the x value where the maximum of the base function (i.e. without parameters) is.
-    Double_t f = par[0] / 0.0440895 * exp(-3 * (arg)) * (arg) * (arg) *
-                 (arg)*sin(arg);  // to rescale the Y axis and get amplitude.
-    return f;
+    auto gr = GetGraph();
+    return TRestSignalAnalysis::GetMaxLandau(gr);
 }
 
 TVector2
 TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the peak time in us and the energy
 {
-    Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
-    Double_t maxRawTime =
-        GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t energy = 0, time = 0;
-    // The intervals below are small because otherwise the function doesn't fit anymore.
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.7;  // us
-
-    TF1* aget = new TF1("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
-    aget->SetParameters(500, maxRawTime, 1.2);
-
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
-    }
-
-    TFitResultPtr fitResult =
-        h1->Fit(aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
-                                // the function range; S = save and return the fit result
-
-    if (fitResult->IsValid()) {
-        energy = aget->GetParameter(0);
-        time = aget->GetParameter(1);
-    } else {
-        // the fit failed, return -1 to indicate failure
-        energy = -1;
-        time = -1;
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
-             << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
-             << " || " << aget->GetParameter(2) << "\n"
-             << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
-    }
-
-    TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete aget;
-
-    return fitParam;
+    auto gr = GetGraph();
+    return TRestSignalAnalysis::GetMaxAget(gr);
 }
-Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetTime(GetMaxIndex(from, to)); }
+
+Double_t TRestDetectorSignal::GetMaxPeakTime() { return GetTime(GetMaxIndex()); }
 
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
-Int_t TRestDetectorSignal::GetMinIndex() {
-    Double_t min = 1E10;
-    Int_t index = 0;
+Int_t TRestDetectorSignal::GetMaxIndex() { return TRestSignalAnalysis::GetMaxBin(fSignalCharge); }
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        if (this->GetData(i) < min) {
-            min = GetData(i);
-            index = i;
-        }
-    }
-
-    return index;
-}
+Int_t TRestDetectorSignal::GetMinIndex() { return TRestSignalAnalysis::GetMinBin(fSignalCharge); }
 
 Double_t TRestDetectorSignal::GetMinTime() {
-    Double_t minTime = 1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (minTime > fSignalTime[n]) minTime = fSignalTime[n];
-
-    return minTime;
+    int index = TRestSignalAnalysis::GetMinBin(fSignalTime);
+    return GetTime(index);
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() {
-    Double_t maxTime = -1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (maxTime < fSignalTime[n]) maxTime = fSignalTime[n];
-
-    return maxTime;
+    int index = TRestSignalAnalysis::GetMaxBin(fSignalTime);
+    return GetTime(index);
 }
 
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
-    Float_t time = t;
+    auto it = find(fSignalTime.begin(), fSignalTime.end(), t);
+    if (it != fSignalTime.end()) {
+        return *it;
+    }
 
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (time == fSignalTime[n]) return n;
     return -1;
 }
 
-Bool_t TRestDetectorSignal::isSorted() {
-    for (int i = 0; i < GetNumberOfPoints() - 1; i++) {
-        if (GetTime(i + 1) < GetTime(i)) return false;
-    }
-    return true;
-}
+Bool_t TRestDetectorSignal::isSorted() { return is_sorted(fSignalTime.begin(), fSignalTime.end()); }
 
 void TRestDetectorSignal::Sort() {
-    while (!isSorted()) {
-        for (int i = 0; i < GetNumberOfPoints(); i++) {
-            for (int j = i; j < GetNumberOfPoints(); j++) {
-                if (GetTime(i) > GetTime(j)) {
-                    iter_swap(fSignalTime.begin() + i, fSignalTime.begin() + j);
-                    iter_swap(fSignalCharge.begin() + i, fSignalCharge.begin() + j);
-                }
-            }
-        }
-    }
+    sort(fSignalCharge.begin(), fSignalCharge.end(),
+         [&](size_t i, size_t j) { return fSignalTime[i] > fSignalTime[j]; });
+    sort(fSignalTime.begin(), fSignalTime.end());
 }
 
 void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints) {
@@ -554,7 +306,7 @@ void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int
 
     auto smoothed = TRestSignalAnalysis::GetSignalSmoothed(fSignalCharge, averagingPoints);
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) smthSignal->AddPoint(GetTime(i), smoothed[i]);
+    for (int i = 0; i < GetNumberOfPoints(); i++) smthSignal->IncreaseAmplitude(GetTime(i), smoothed[i]);
 }
 
 void TRestDetectorSignal::CalculateBaseLineAndSigma(Int_t startBin, Int_t endBin, Double_t& baseLine,
@@ -624,11 +376,8 @@ void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Do
     this->Sort();
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        TRandom3* fRandom = new TRandom3(0);
-
-        noiseSgnl->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
-
-        delete fRandom;
+        TRandom3 fRandom(0);
+        noiseSgnl->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom.Gaus(0, noiseLevel));
     }
 }
 
@@ -684,7 +433,7 @@ TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
         fGraph = nullptr;
     }
 
-    fGraph = new TGraph();
+    fGraph = new TGraph(GetNumberOfPoints(), fSignalTime.data(), fSignalCharge.data());
 
     //   cout << "Signal ID " << this->GetSignalID( ) << " points " <<
     //   this->GetNumberOfPoints() << endl;
@@ -692,12 +441,6 @@ TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
     fGraph->SetLineWidth(2);
     fGraph->SetLineColor(color);
     fGraph->SetMarkerStyle(7);
-
-    int points = 0;
-    for (int n = 0; n < GetNumberOfPoints(); n++) {
-        fGraph->SetPoint(points, GetTime(n), GetData(n));
-        points++;
-    }
 
     return fGraph;
 }
