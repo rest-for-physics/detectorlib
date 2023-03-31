@@ -261,11 +261,10 @@ Double_t TRestDetectorSignal::GetMaxTime() {
 }
 
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
-    auto it = find(fSignalTime.begin(), fSignalTime.end(), t);
-    if (it != fSignalTime.end()) {
-        return distance(fSignalTime.begin(), it);
-    }
+    Float_t time = t;
 
+    for (int n = 0; n < GetNumberOfPoints(); n++)
+        if (time == fSignalTime[n]) return n;
     return -1;
 }
 
