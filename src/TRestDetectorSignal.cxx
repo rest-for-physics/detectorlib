@@ -262,7 +262,7 @@ Double_t TRestDetectorSignal::GetMaxTime() {
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
     auto it = find(fSignalTime.begin(), fSignalTime.end(), t);
     if (it != fSignalTime.end()) {
-        return *it;
+        return distance(fSignalTime.begin(), it);
     }
 
     return -1;
