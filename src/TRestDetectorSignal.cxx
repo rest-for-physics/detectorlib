@@ -271,6 +271,11 @@ Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
 Bool_t TRestDetectorSignal::isSorted() { return is_sorted(fSignalTime.begin(), fSignalTime.end()); }
 
 void TRestDetectorSignal::Sort() {
+    if (fSignalCharge.size() != fSignalTime.size()) {
+        cout << "Time and charge vectors have different size " << fSignalCharge.size() << " "
+             << fSignalTime.size() << endl;
+        exit(0);
+    }
     sort(fSignalCharge.begin(), fSignalCharge.end(),
          [&](size_t i, size_t j) { return fSignalTime[i] > fSignalTime[j]; });
     sort(fSignalTime.begin(), fSignalTime.end());
