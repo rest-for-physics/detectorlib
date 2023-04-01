@@ -143,66 +143,6 @@ Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t e
     return sum;
 }
 
-/* {{{
-Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Int_t startBaseline, Int_t
-endBaseline,
-                                               Double_t nSigmas, Int_t nPointsOverThreshold,
-                                               Double_t nMinSigmas) {
-    if (startBaseline < 0) startBaseline = 0;
-    if (endBaseline <= 0 || endBaseline > GetNumberOfPoints()) endBaseline = GetNumberOfPoints();
-
-    Double_t baseLine = GetBaseLine(startBaseline, endBaseline);
-
-    Double_t pointThreshold = nSigmas * GetBaseLineSigma(startBaseline, endBaseline);
-    Double_t signalThreshold = nMinSigmas * GetBaseLineSigma(startBaseline, endBaseline);
-
-    return GetIntegralWithThreshold(from, to, baseLine, pointThreshold, nPointsOverThreshold,
-                                    signalThreshold);
-}
-
-Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Double_t baseline,
-                                               Double_t pointThreshold, Int_t nPointsOverThreshold,
-                                               Double_t signalThreshold) {
-    Double_t sum = 0;
-    Int_t nPoints = 0;
-    fPointsOverThreshold.clear();
-
-    if (to > GetNumberOfPoints()) to = GetNumberOfPoints();
-
-    Float_t maxValue = 0;
-    for (int i = from; i < to; i++) {
-        if (GetData(i) > baseline + pointThreshold) {
-            if (GetData(i) > maxValue) maxValue = GetData(i);
-            nPoints++;
-        } else {
-            if (nPoints >= nPointsOverThreshold) {
-                Double_t sig = GetStandardDeviation(i - nPoints, i);
-                if (sig > signalThreshold) {
-                    for (int j = i - nPoints; j < i; j++) {
-                        sum += this->GetData(j);
-                        fPointsOverThreshold.push_back(j);
-                    }
-                }
-            }
-            nPoints = 0;
-            maxValue = 0;
-        }
-    }
-
-    if (nPoints >= nPointsOverThreshold) {
-        Double_t sig = GetStandardDeviation(to - nPoints, to);
-        if (sig > signalThreshold) {
-            for (int j = to - nPoints; j < to; j++) {
-                sum += this->GetData(j);
-                fPointsOverThreshold.push_back(j);
-            }
-        }
-    }
-
-    return sum;
-}
-}}} */
-
 Double_t TRestDetectorSignal::GetAverage(Int_t start, Int_t end) {
     this->Sort();
 
@@ -315,19 +255,6 @@ void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int
     auto smoothed = TRestSignalAnalysis::GetSignalSmoothed(fSignalCharge, averagingPoints);
 
     for (int i = 0; i < GetNumberOfPoints(); i++) smthSignal->IncreaseAmplitude(GetTime(i), smoothed[i]);
-}
-
-void TRestDetectorSignal::CalculateBaseLineAndSigma(Int_t startBin, Int_t endBin, Double_t& baseLine,
-                                                    Double_t& baseLineSigma) {
-    TRestSignalAnalysis::CalculateBaselineAndSigmaSD(fSignalCharge, startBin, endBin, baseLine,
-                                                     baseLineSigma);
-}
-
-void TRestDetectorSignal::SubstractBaseline(Int_t startBin, Int_t endBin) {
-    Double_t bL, bLS;
-    CalculateBaseLineAndSigma(startBin, endBin, bL, bLS);
-
-    AddOffset(-bL);
 }
 
 void TRestDetectorSignal::AddOffset(Double_t offset) {

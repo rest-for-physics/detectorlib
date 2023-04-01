@@ -110,9 +110,6 @@ class TRestDetectorSignal {
     void SetPoint(const TVector2& p);
     void SetPoint(Int_t index, Double_t t, Double_t d);
 
-    void CalculateBaseLineAndSigma(Int_t startBin, Int_t endBin, Double_t& baseline, Double_t& baseLineSigma);
-
-    void SubstractBaseline(Int_t startBin, Int_t endBin);
     void AddOffset(Double_t offset);
 
     void MultiplySignalBy(Double_t factor);
