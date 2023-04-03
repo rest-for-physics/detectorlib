@@ -126,7 +126,7 @@
 #include "TRestDetectorSignalToHitsProcess.h"
 
 #include "TRestDetectorSetup.h"
-#include "TRestSignalAnalysis.h"
+#include "TRestPulseShapeAnalysis.h"
 
 using namespace std;
 
@@ -289,7 +289,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
         } else if (fMethod == "tripleMax") {
             auto gr = sgnl->GetGraph();
-            auto tripleMax = TRestSignalAnalysis::GetTripleMax(gr);
+            auto tripleMax = TRestPulseShapeAnalysis::GetTripleMax(gr);
 
             for (const auto& [hitTime, energy] : tripleMax) {
                 const double z = GetHitZCoordinate(hitTime, fDriftVelocity, fieldZDirection, zPosition);
@@ -303,7 +303,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
         } else if (fMethod == "tripleMaxAverage") {
             auto gr = sgnl->GetGraph();
-            const TVector2 tripleMaxAvg = TRestSignalAnalysis::GetTripleMaxAverage(gr);
+            const TVector2 tripleMaxAvg = TRestPulseShapeAnalysis::GetTripleMaxAverage(gr);
             const double z = GetHitZCoordinate(tripleMaxAvg.X(), fDriftVelocity, fieldZDirection, zPosition);
 
             fHitsEvent->AddHit(x, y, z, tripleMaxAvg.Y(), 0, type);
@@ -427,7 +427,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             }
         } else if (fMethod == "intwindow") {
             auto gr = sgnl->GetGraph();
-            auto intWindow = TRestSignalAnalysis::GetIntWindow(gr, fIntWindow);
+            auto intWindow = TRestPulseShapeAnalysis::GetIntWindow(gr, fIntWindow);
 
             for (const auto& [hitTime, energy] : intWindow) {
                 if (energy < fThreshold) continue;

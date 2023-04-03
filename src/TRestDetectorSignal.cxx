@@ -26,7 +26,7 @@
 #include "TRestDetectorSignal.h"
 
 #include "TFitResult.h"
-#include "TRestSignalAnalysis.h"
+#include "TRestPulseShapeAnalysis.h"
 using namespace std;
 
 #include <TF1.h>
@@ -126,7 +126,7 @@ Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) {
     if (startBin < 0) startBin = 0;
     if (endBin <= 0 || endBin > GetNumberOfPoints()) endBin = GetNumberOfPoints();
 
-    return TRestSignalAnalysis::GetIntegral(fSignalCharge, startBin, endBin);
+    return TRestPulseShapeAnalysis::GetIntegral(fSignalCharge, startBin, endBin);
 }
 
 void TRestDetectorSignal::Normalize(Double_t scale) {
@@ -148,13 +148,13 @@ Double_t TRestDetectorSignal::GetAverage(Int_t start, Int_t end) {
 
     if (end <= 0) end = this->GetNumberOfPoints();
 
-    return TRestSignalAnalysis::GetAverage(fSignalCharge, start, end);
+    return TRestPulseShapeAnalysis::GetAverage(fSignalCharge, start, end);
 }
 
 Int_t TRestDetectorSignal::GetMaxPeakWidth() {
     this->Sort();
 
-    return TRestSignalAnalysis::GetMaxPeakWidth(fSignalCharge);
+    return TRestPulseShapeAnalysis::GetMaxPeakWidth(fSignalCharge);
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakValue() { return GetData(GetMaxIndex()); }
@@ -163,7 +163,7 @@ TVector2
 TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak time in us and the energy
 {
     auto gr = GetGraph();
-    return TRestSignalAnalysis::GetMaxGauss(gr);
+    return TRestPulseShapeAnalysis::GetMaxGauss(gr);
 }
 
 // z position by landau fit
@@ -172,31 +172,31 @@ TVector2
 TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the peak time in us and the energy
 {
     auto gr = GetGraph();
-    return TRestSignalAnalysis::GetMaxLandau(gr);
+    return TRestPulseShapeAnalysis::GetMaxLandau(gr);
 }
 
 TVector2
 TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the peak time in us and the energy
 {
     auto gr = GetGraph();
-    return TRestSignalAnalysis::GetMaxAget(gr);
+    return TRestPulseShapeAnalysis::GetMaxAget(gr);
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakTime() { return GetTime(GetMaxIndex()); }
 
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
-Int_t TRestDetectorSignal::GetMaxIndex() { return TRestSignalAnalysis::GetMaxBin(fSignalCharge); }
+Int_t TRestDetectorSignal::GetMaxIndex() { return TRestPulseShapeAnalysis::GetMaxBin(fSignalCharge); }
 
-Int_t TRestDetectorSignal::GetMinIndex() { return TRestSignalAnalysis::GetMinBin(fSignalCharge); }
+Int_t TRestDetectorSignal::GetMinIndex() { return TRestPulseShapeAnalysis::GetMinBin(fSignalCharge); }
 
 Double_t TRestDetectorSignal::GetMinTime() {
-    int index = TRestSignalAnalysis::GetMinBin(fSignalTime);
+    int index = TRestPulseShapeAnalysis::GetMinBin(fSignalTime);
     return GetTime(index);
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() {
-    int index = TRestSignalAnalysis::GetMaxBin(fSignalTime);
+    int index = TRestPulseShapeAnalysis::GetMaxBin(fSignalTime);
     return GetTime(index);
 }
 
@@ -252,7 +252,7 @@ void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, I
 void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints) {
     this->Sort();
 
-    auto smoothed = TRestSignalAnalysis::GetSignalSmoothed(fSignalCharge, averagingPoints);
+    auto smoothed = TRestPulseShapeAnalysis::GetSignalSmoothed(fSignalCharge, averagingPoints);
 
     for (int i = 0; i < GetNumberOfPoints(); i++) smthSignal->IncreaseAmplitude(GetTime(i), smoothed[i]);
 }
