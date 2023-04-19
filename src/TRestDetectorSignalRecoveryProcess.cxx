@@ -81,6 +81,10 @@
 ///                account two consecutive dead channels.
 ///         	Ana Quintana/Javier Galan
 ///
+/// 2023-March: Update of the process fixing some problems of the previous update
+///		that had some errors related to the time in the function IncreaseAmplitude
+///	        Ana Quintana
+///
 /// \class      TRestDetectorSignalRecoveryProcess
 /// \author     Javier Galan
 /// \author     Ana Quintana
@@ -202,6 +206,7 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
         /// correct. We could think about correction here? It means it is
         /// the first or last channel.
         ///
+
         if (leftSgnl == nullptr || rightSgnl == nullptr) continue;
 
         TRestDetectorSignal* recoveredSignal = new TRestDetectorSignal();
@@ -210,55 +215,59 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
         if (type == 1)  // Only one dead channel
         {
             for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
-                recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 2.);
+                recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 2.);
                 /// Energy preserved. This could be optional using a new metadata member
-                leftSgnl->IncreaseAmplitude(-1. * leftSgnl->GetPoint(n) / 2);
+                leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 2.);
             }
 
             for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
-                recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 2.);
+                recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 2.);
                 /// Energy preserved. This could be optional using a new metadata member
-                rightSgnl->IncreaseAmplitude(-1. * rightSgnl->GetPoint(n) / 2);
+                rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 2.);
             }
         }
 
-        if (type == 2 || type == 3)  // We got two dead-channels
-        {
-            if (type == 2)  // The dead channel is the one at the right
+        if (type == 2 || type == 3) {  // We got two dead-channels
+            if (type == 2)             // The other dead channel is the one at the left
             {
                 for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetPoint(n) / 6.);
+                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 6.);
 
                 for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(2 * rightSgnl->GetPoint(n) / 6.);
+                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), 2 * rightSgnl->GetData(n) / 6.);
             }
 
-            if (type == 3)  // The dead channel is the one at the left
+            if (type == 3)  // The other dead channel is the one at the right
             {
                 for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(2 * leftSgnl->GetPoint(n) / 6.);
+                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), 2 * leftSgnl->GetData(n) / 6.);
 
                 for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetPoint(n) / 6.);
+                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 6.);
             }
 
             /// We removed the charge that we place at the dead channel
             /// In this case we remove a 25% because we will enter twice in this loop
             for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
-                leftSgnl->IncreaseAmplitude(-1. * leftSgnl->GetPoint(n) / 4);
+                leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 4.);
             for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                rightSgnl->IncreaseAmplitude(-1. * rightSgnl->GetPoint(n) / 4);
+                rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 4.);
         }
 
         fOutputSignalEvent->AddSignal(*recoveredSignal);
 
-        delete recoveredSignal;
+        /*cout << "Channel recovered!! " << endl;
+        if( leftSgnl != nullptr && rightSgnl != nullptr )
+            for( int n = 0; n < nPoints; n++ )
+                cout << "Sample " << n << " : " << leftSgnl->GetData(n) << " + " << rightSgnl->GetData(n) << "
+        = " << recoveredSignal->GetData(n) << endl;*/
 
         RESTDebug << "Channel recovered!! " << RESTendl;
         if (leftSgnl != nullptr && rightSgnl != nullptr)
             for (int n = 0; n < nPoints; n++)
                 RESTDebug << "Sample " << n << " : " << leftSgnl->GetData(n) << " + " << rightSgnl->GetData(n)
                           << " = " << recoveredSignal->GetData(n) << RESTendl;
+        delete recoveredSignal;
     }
 
     RESTDebug << "Channels after : " << fOutputSignalEvent->GetNumberOfSignals() << RESTendl;
@@ -302,11 +311,10 @@ int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int
                 }
 
                 // If idRight is a dead channel we take the next channel
-                if (std::find(fChannelIds.begin(), fChannelIds.end(), idLeft) != fChannelIds.end()) {
+                if (std::find(fChannelIds.begin(), fChannelIds.end(), idRight) != fChannelIds.end()) {
                     idRight = mod->GetChannel(readoutChannelID + 2)->GetDaqID();
                     return 3;
                 }
-
                 return 1;
             }
         }
