@@ -1,0 +1,6 @@
+<TRestDetectorVetoReadout name="vetoReadout">
+
+    <parameter name="geometry" value="/tmp/tmp.wzQlLMLurf/projects/iaxo/iaxo-geometry/gdml/IAXO-D1/Default.gdml"/>
+
+
+</TRestDetectorVetoReadout>
