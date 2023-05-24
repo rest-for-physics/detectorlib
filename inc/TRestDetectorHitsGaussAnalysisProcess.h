@@ -51,6 +51,8 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
    protected:
     /// The pitch or size of the strips in mm
     Double_t fPitch;
+    /// Error assigned to the hits on the sides
+    Double_t fError;
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }

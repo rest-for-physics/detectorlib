@@ -102,9 +102,9 @@ class TRestDetectorHitsEvent : public TRestEvent {
     inline Double_t GetSigmaX() const { return fHits->GetSigmaX(); }
     inline Double_t GetSigmaY() const { return fHits->GetSigmaY(); }
 
-    inline Double_t GetGaussSigmaX() { return GetXZHits()->GetGaussSigmaX(); }
-    inline Double_t GetGaussSigmaY() { return GetYZHits()->GetGaussSigmaY(); }
-    inline Double_t GetGaussSigmaZ() const { return fHits->GetGaussSigmaZ(); }
+    inline Double_t GetGaussSigmaX(Double_t error) { return GetXZHits()->GetGaussSigmaX(error); }
+    inline Double_t GetGaussSigmaY(Double_t error) { return GetYZHits()->GetGaussSigmaY(error); }
+    inline Double_t GetGaussSigmaZ(Double_t error) const { return fHits->GetGaussSigmaZ(error); }
 
     inline Double_t GetSigmaZ2() const { return fHits->GetSigmaZ2(); }
     inline Double_t GetSkewXY() const { return fHits->GetSkewXY(); }
