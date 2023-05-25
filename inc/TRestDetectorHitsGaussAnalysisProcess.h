@@ -53,6 +53,8 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     Double_t fPitch;
     /// Error assigned to the hits on the sides
     Double_t fError;
+    /// The minimum number of hits required to apply the hit correction
+    Int_t fNHitsMin;
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }

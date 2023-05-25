@@ -161,9 +161,9 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
         fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
     }
 
-    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX(fError);
-    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fError);
-    Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ(fError);
+    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX(fError, fNHitsMin);
+    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fError, fNHitsMin);
+    Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ(fError, fNHitsMin);
     Double_t xy2SigmaGaus = (gausSigmaX == -1. || gausSigmaY == -1.)
                                 ? -1.
                                 : (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
@@ -198,6 +198,7 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
 void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
     fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
     fError = StringToDouble(GetParameter("Error", "150"));
+    fNHitsMin = StringToDouble(GetParameter("Error", "100000"));
 }
 
 ///////////////////////////////////////////////
