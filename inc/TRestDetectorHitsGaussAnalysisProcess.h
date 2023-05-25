@@ -42,19 +42,19 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
 
     void InitProcess() override;
 
-    void InitFromConfigFile() override;
-
     void Initialize() override;
 
     void LoadDefaultConfig();
 
    protected:
     /// The pitch or size of the strips in mm
-    Double_t fPitch;
+    Double_t fPitch = 0.5;
+
     /// Error assigned to the hits on the sides
-    Double_t fError;
+    Double_t fError = 150;
+
     /// The minimum number of hits required to apply the hit correction
-    Int_t fNHitsMin;
+    Int_t fNHitsMin = 100000;
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }

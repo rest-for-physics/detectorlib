@@ -192,16 +192,6 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
 }
 
 ///////////////////////////////////////////////
-/// \brief Function reading input parameters from the RML
-/// TRestDetectorHitsGaussAnalysisProcess section
-///
-void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
-    fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
-    fError = StringToDouble(GetParameter("Error", "150"));
-    fNHitsMin = StringToDouble(GetParameter("Error", "100000"));
-}
-
-///////////////////////////////////////////////
 /// \brief It prints out the process parameters stored in the
 /// metadata structure
 ///
