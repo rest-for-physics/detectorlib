@@ -201,6 +201,7 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
     // Print output metadata using, metadata << endl;
     RESTMetadata << "Pitch (mm) : " << fPitch << RESTendl;
     RESTMetadata << "Error (ADC) : " << fError << RESTendl;
+    RESTMetadata << "Minimum number of hits to apply correction : " << fNHitsMin << RESTendl;
 
     EndPrintProcess();
 }
