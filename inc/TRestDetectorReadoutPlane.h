@@ -141,7 +141,7 @@ class TRestDetectorReadoutPlane {
 
     Int_t isZInsideDriftVolume(Double_t z);
 
-    Int_t isZInsideDriftVolume(TVector3 position);
+    Int_t isZInsideDriftVolume(const TVector3& position);
 
     Bool_t isDaqIDInside(Int_t daqId);
 
@@ -155,7 +155,7 @@ class TRestDetectorReadoutPlane {
 
     void Print(Int_t DetailLevel = 0);
 
-    Int_t FindChannel(Int_t module, Double_t absX, Double_t absY);
+    Int_t FindChannel(Int_t module, const TVector2& position);
 
     Double_t GetX(Int_t modID, Int_t chID);
     Double_t GetY(Int_t modID, Int_t chID);

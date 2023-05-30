@@ -43,6 +43,8 @@
 
 #include "TRestDetectorReadoutPixel.h"
 
+#include <TRestMetadata.h>
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutPixel);
@@ -67,21 +69,20 @@ void TRestDetectorReadoutPixel::Initialize() {}
 TVector2 TRestDetectorReadoutPixel::GetCenter() const {
     TVector2 center(0, 0);
     TVector2 origin(fPixelOriginX, fPixelOriginY);
-    TVector2 opositeVertex = GetVertex(2);
+    TVector2 oppositeVertex = GetVertex(2);
 
     if (fTriangle)
-        center = (opositeVertex - origin) / 4. + origin;
+        center = (oppositeVertex - origin) / 4. + origin;
     else
-        center = (origin + opositeVertex) / 2.;
+        center = (origin + oppositeVertex) / 2.;
 
     return center;
-    //*/
 }
 
 ///////////////////////////////////////////////
 /// \brief Returns the specified pixel vertex position
 ///
-/// \param n A value between 0-3 definning the vertex position to be returned.
+/// \param n A value between 0-3 defining the vertex position to be returned.
 ///
 TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
     TVector2 vertex(0, 0);
@@ -143,8 +144,8 @@ Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
 /// pixel coordinate system. The coordinates are referenced to the readout
 /// module system.
 ///
-TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
-    TVector2 pos(p.X() - fPixelOriginX, p.Y() - fPixelOriginY);
+TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(const TVector2& pixel) const {
+    TVector2 pos(pixel.X() - fPixelOriginX, pixel.Y() - fPixelOriginY);
     pos = pos.Rotate(-fRotation * TMath::Pi() / 180.);
     return pos;
 }
@@ -152,7 +153,7 @@ TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
 ///////////////////////////////////////////////
 /// \brief Prints on screen the pixel details, origin, size, rotation
 ///
-void TRestDetectorReadoutPixel::Print() {
+void TRestDetectorReadoutPixel::Print() const {
     RESTMetadata << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
                  << GetSizeX() << "," << GetSizeY() << ") mm" << RESTendl;
     RESTMetadata << "       rotation : " << fRotation << " degrees"

@@ -241,16 +241,15 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
 /// \param absX It is the x absolut physical position
 /// \param absY It is the y absolut physical position
 /// \return The corresponding channel id
-Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, Double_t absX, Double_t absY) {
-    Double_t modX = absX - fPosition.X();
-    Double_t modY = absY - fPosition.Y();
+Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& position) {
+    const auto relativePosition = position - TVector2{fPosition.X(), fPosition.Y()};
 
     // TODO : check first if (modX,modY) is inside the module.
     // If not return error.
     // FindChannel will take a long time to search for the channel if it is not
     // there. It will be faster
 
-    return fReadoutModules[module].FindChannel(modX, modY);
+    return fReadoutModules[module].FindChannel(relativePosition);
 }
 
 ///////////////////////////////////////////////
@@ -300,13 +299,13 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \brief This method determines if the z-coordinate is inside the drift volume
 /// for this readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) {
+    TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
 
@@ -321,7 +320,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
 /// the readout plane. The *x* and *y* values must be found inside one of the
 /// readout modules defined inside the readout plane.
 ///
-/// \param x,y,z Three Double_t definning the position.
+/// \param x,y,z Three Double_t defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
@@ -337,7 +336,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param pos A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
