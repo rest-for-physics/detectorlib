@@ -216,7 +216,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
         // find the hits near this z slice
         map<int, double> ids;  //[id, weight]
         ids[n] = 1;
-        for (int i = n - 1; i >= 0; i--) {
+        for (auto i = n - 1; i >= 0; i--) {
             if (abs(fInputHitsEvent->GetZ(i) - z) < fZRange * 2) {
                 ids[i] = TMath::Gaus(abs(fInputHitsEvent->GetZ(i) - z), 0, fZRange);
             } else {
@@ -578,7 +578,7 @@ int TRestDetectorHits3DReconstructionProcess::Ambiguity(const int& n, const int&
     int M = max({n, m});
 
     int ambiguity = pow(N, M);
-    for (int i = N - 1; i > 0; i--) {
+    for (auto i = N - 1; i > 0; i--) {
         // value of nC(n-i)
         int combinations = Factorial(N) / Factorial(N - i) / Factorial(i);
         ambiguity -= Ambiguity(i, M) * combinations;

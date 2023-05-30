@@ -151,7 +151,7 @@ void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterat
 void TRestDetectorHitsEvent::Shuffle(int NLoop) {
     Int_t nHits = fHits->GetNumberOfHits();
     if (nHits >= 2) {
-        for (int n = 0; n < NLoop; n++) {
+        for (auto n = 0; n < NLoop; n++) {
             Int_t hit1 = (Int_t)(nHits * gRandom->Uniform(0, 1));
             Int_t hit2 = (Int_t)(nHits * gRandom->Uniform(0, 1));
 

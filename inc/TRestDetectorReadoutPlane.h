@@ -103,7 +103,7 @@ class TRestDetectorReadoutPlane {
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.
-    Double_t GetDistanceTo(TVector3 position);
+    Double_t GetDistanceTo(const TVector3& position);
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *x*, *y*, *z*.
@@ -135,7 +135,7 @@ class TRestDetectorReadoutPlane {
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }
 
-    Int_t GetNumberOfChannels();
+    size_t GetNumberOfChannels();
 
     TRestDetectorReadoutModule* GetModuleByID(Int_t modID);
 
@@ -145,7 +145,7 @@ class TRestDetectorReadoutPlane {
 
     Bool_t isDaqIDInside(Int_t daqId);
 
-    Int_t GetModuleIDFromPosition(TVector3 position);
+    Int_t GetModuleIDFromPosition(const TVector3& position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 

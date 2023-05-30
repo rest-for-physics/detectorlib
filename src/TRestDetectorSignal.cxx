@@ -132,7 +132,7 @@ Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) {
     if (endBin <= 0 || endBin > GetNumberOfPoints()) endBin = GetNumberOfPoints();
 
     Double_t sum = 0;
-    for (int i = startBin; i < endBin; i++) sum += GetData(i);
+    for (auto i = startBin; i < endBin; i++) sum += GetData(i);
 
     return sum;
 }
@@ -140,12 +140,12 @@ Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) {
 void TRestDetectorSignal::Normalize(Double_t scale) {
     Double_t sum = GetIntegral();
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = scale * GetData(i) / sum;
+    for (auto i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = scale * GetData(i) / sum;
 }
 
 Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) {
     Double_t sum = 0;
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+    for (auto i = 0; i < GetNumberOfPoints(); i++)
         if (GetTime(i) >= startTime && GetTime(i) < endTime) sum += GetData(i);
 
     return sum;
@@ -154,7 +154,7 @@ Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t e
 Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) {
     Double_t max = -1E10;
 
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+    for (auto i = 0; i < GetNumberOfPoints(); i++)
         if (GetTime(i) >= startTime && GetTime(i) < endTime) {
             if (this->GetData(i) > max) max = GetData(i);
         }
@@ -189,7 +189,7 @@ Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Dou
     if (to > GetNumberOfPoints()) to = GetNumberOfPoints();
 
     Float_t maxValue = 0;
-    for (int i = from; i < to; i++) {
+    for (auto i = from; i < to; i++) {
         if (GetData(i) > baseline + pointThreshold) {
             if (GetData(i) > maxValue) maxValue = GetData(i);
             nPoints++;
@@ -197,7 +197,7 @@ Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Dou
             if (nPoints >= nPointsOverThreshold) {
                 Double_t sig = GetStandardDeviation(i - nPoints, i);
                 if (sig > signalThreshold) {
-                    for (int j = i - nPoints; j < i; j++) {
+                    for (auto j = i - nPoints; j < i; j++) {
                         sum += this->GetData(j);
                         fPointsOverThreshold.push_back(j);
                     }
@@ -211,7 +211,7 @@ Double_t TRestDetectorSignal::GetIntegralWithThreshold(Int_t from, Int_t to, Dou
     if (nPoints >= nPointsOverThreshold) {
         Double_t sig = GetStandardDeviation(to - nPoints, to);
         if (sig > signalThreshold) {
-            for (int j = to - nPoints; j < to; j++) {
+            for (auto j = to - nPoints; j < to; j++) {
                 sum += this->GetData(j);
                 fPointsOverThreshold.push_back(j);
             }
@@ -228,7 +228,7 @@ Double_t TRestDetectorSignal::GetAverage(Int_t start, Int_t end) {
     if (end == 0) end = this->GetNumberOfPoints();
 
     Double_t sum = 0;
-    for (int i = start; i <= end; i++) {
+    for (auto i = start; i <= end; i++) {
         sum += this->GetData(i);
     }
     return sum / (end - start + 1);
@@ -267,7 +267,7 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
 
     if (to == 0) to = GetNumberOfPoints();
 
-    for (int i = from; i < to; i++) {
+    for (auto i = from; i < to; i++) {
         if (this->GetData(i) > max) {
             max = GetData(i);
             index = i;
@@ -294,7 +294,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
     // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         h1->Fill(GetTime(i), GetData(i));
     }
     /*
@@ -356,7 +356,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
                         10);  // Histogram to store the signal. For now the number of bins is fixed.
 
     // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         h1->Fill(GetTime(i), GetData(i));
     }
 
@@ -425,7 +425,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     aget->SetParameters(500, maxRawTime, 1.2);
 
     // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         h1->Fill(GetTime(i), GetData(i));
     }
 
@@ -471,7 +471,7 @@ Int_t TRestDetectorSignal::GetMinIndex() {
     Double_t min = 1E10;
     Int_t index = 0;
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         if (this->GetData(i) < min) {
             min = GetData(i);
             index = i;
@@ -483,7 +483,7 @@ Int_t TRestDetectorSignal::GetMinIndex() {
 
 Double_t TRestDetectorSignal::GetMinTime() {
     Double_t minTime = 1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
+    for (auto n = 0; n < GetNumberOfPoints(); n++)
         if (minTime > fSignalTime[n]) minTime = fSignalTime[n];
 
     return minTime;
@@ -491,7 +491,7 @@ Double_t TRestDetectorSignal::GetMinTime() {
 
 Double_t TRestDetectorSignal::GetMaxTime() {
     Double_t maxTime = -1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
+    for (auto n = 0; n < GetNumberOfPoints(); n++)
         if (maxTime < fSignalTime[n]) maxTime = fSignalTime[n];
 
     return maxTime;
@@ -500,13 +500,13 @@ Double_t TRestDetectorSignal::GetMaxTime() {
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
     Float_t time = t;
 
-    for (int n = 0; n < GetNumberOfPoints(); n++)
+    for (auto n = 0; n < GetNumberOfPoints(); n++)
         if (time == fSignalTime[n]) return n;
     return -1;
 }
 
 Bool_t TRestDetectorSignal::isSorted() {
-    for (int i = 0; i < GetNumberOfPoints() - 1; i++) {
+    for (auto i = 0; i < GetNumberOfPoints() - 1; i++) {
         if (GetTime(i + 1) < GetTime(i)) return false;
     }
     return true;
@@ -514,8 +514,8 @@ Bool_t TRestDetectorSignal::isSorted() {
 
 void TRestDetectorSignal::Sort() {
     while (!isSorted()) {
-        for (int i = 0; i < GetNumberOfPoints(); i++) {
-            for (int j = i; j < GetNumberOfPoints(); j++) {
+        for (auto i = 0; i < GetNumberOfPoints(); i++) {
+            for (auto j = i; j < GetNumberOfPoints(); j++) {
                 if (GetTime(i) > GetTime(j)) {
                     iter_swap(fSignalTime.begin() + i, fSignalTime.begin() + j);
                     iter_swap(fSignalCharge.begin() + i, fSignalCharge.begin() + j);
@@ -528,9 +528,9 @@ void TRestDetectorSignal::Sort() {
 void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints) {
     this->Sort();
 
-    for (int i = 0; i < smearPoints; i++) diffSgnl->IncreaseAmplitude(GetTime(i), 0);
+    for (auto i = 0; i < smearPoints; i++) diffSgnl->IncreaseAmplitude(GetTime(i), 0);
 
-    for (int i = smearPoints; i < this->GetNumberOfPoints() - smearPoints; i++) {
+    for (auto i = smearPoints; i < this->GetNumberOfPoints() - smearPoints; i++) {
         Double_t value = (this->GetData(i + smearPoints) - GetData(i - smearPoints)) /
                          (GetTime(i + smearPoints) - GetTime(i - smearPoints));
         Double_t time = (GetTime(i + smearPoints) + GetTime(i - smearPoints)) / 2.;
@@ -538,16 +538,16 @@ void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, I
         diffSgnl->IncreaseAmplitude(time, value);
     }
 
-    for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++)
+    for (auto i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++)
         diffSgnl->IncreaseAmplitude(GetTime(i), 0);
 }
 
 void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, Int_t delay) {
     this->Sort();
 
-    for (int i = 0; i < delay; i++) delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i));
+    for (auto i = 0; i < delay; i++) delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i));
 
-    for (int i = delay; i < GetNumberOfPoints(); i++)
+    for (auto i = delay; i < GetNumberOfPoints(); i++)
         delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i - delay));
 }
 
@@ -557,16 +557,16 @@ void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int
     averagingPoints = (averagingPoints / 2) * 2 + 1;  // make it odd >= averagingPoints
 
     Double_t sum = GetIntegral(0, averagingPoints);
-    for (int i = 0; i <= averagingPoints / 2; i++)
+    for (auto i = 0; i <= averagingPoints / 2; i++)
         smthSignal->IncreaseAmplitude(GetTime(i), sum / averagingPoints);
 
-    for (int i = averagingPoints / 2 + 1; i < GetNumberOfPoints() - averagingPoints / 2; i++) {
+    for (auto i = averagingPoints / 2 + 1; i < GetNumberOfPoints() - averagingPoints / 2; i++) {
         sum -= this->GetData(i - (averagingPoints / 2 + 1));
         sum += this->GetData(i + averagingPoints / 2);
         smthSignal->IncreaseAmplitude(this->GetTime(i), sum / averagingPoints);
     }
 
-    for (int i = GetNumberOfPoints() - averagingPoints / 2; i < GetNumberOfPoints(); i++)
+    for (auto i = GetNumberOfPoints() - averagingPoints / 2; i < GetNumberOfPoints(); i++)
         smthSignal->IncreaseAmplitude(GetTime(i), sum / averagingPoints);
 }
 
@@ -574,7 +574,7 @@ Double_t TRestDetectorSignal::GetBaseLine(Int_t startBin, Int_t endBin) {
     if (endBin - startBin <= 0) return 0.;
 
     Double_t baseLine = 0;
-    for (int i = startBin; i < endBin; i++) baseLine += fSignalCharge[i];
+    for (auto i = startBin; i < endBin; i++) baseLine += fSignalCharge[i];
 
     return baseLine / (endBin - startBin);
 }
@@ -589,7 +589,7 @@ Double_t TRestDetectorSignal::GetBaseLineSigma(Int_t startBin, Int_t endBin, Dou
     if (bL == 0) bL = GetBaseLine(startBin, endBin);
 
     Double_t baseLineSigma = 0;
-    for (int i = startBin; i < endBin; i++)
+    for (auto i = startBin; i < endBin; i++)
         baseLineSigma += (bL - fSignalCharge[i]) * (bL - fSignalCharge[i]);
 
     return TMath::Sqrt(baseLineSigma / (endBin - startBin));
@@ -604,15 +604,15 @@ Double_t TRestDetectorSignal::SubstractBaseline(Int_t startBin, Int_t endBin) {
 }
 
 void TRestDetectorSignal::AddOffset(Double_t offset) {
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = fSignalCharge[i] + offset;
+    for (auto i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = fSignalCharge[i] + offset;
 }
 
 void TRestDetectorSignal::MultiplySignalBy(Double_t factor) {
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = factor * fSignalCharge[i];
+    for (auto i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = factor * fSignalCharge[i];
 }
 
 void TRestDetectorSignal::ExponentialConvolution(Double_t fromTime, Double_t decayTime, Double_t offset) {
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         if (fSignalTime[i] > fromTime)
             fSignalCharge[i] =
                 (fSignalCharge[i] - offset) * exp(-(fSignalTime[i] - fromTime) / decayTime) + offset;
@@ -627,7 +627,7 @@ void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
 
     Int_t badSignalTimes = 0;
 
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+    for (auto i = 0; i < GetNumberOfPoints(); i++)
         if (GetTime(i) != inSgnl->GetTime(i)) {
             cout << "Time : " << GetTime(i) << " != " << inSgnl->GetTime(i) << endl;
             badSignalTimes++;
@@ -638,12 +638,12 @@ void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
         return;
     }
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] += inSgnl->GetData(i);
+    for (auto i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] += inSgnl->GetData(i);
 }
 
 void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double_t time, Int_t N,
                                             Double_t fromTime, Double_t toTime) {
-    for (int i = 0; i < N; i++) {
+    for (auto i = 0; i < N; i++) {
         Double_t tme = fromTime + (double)i / (N - 1) * (toTime - fromTime);
 
         Double_t dta = 300 + amp * TMath::Exp(-0.5 * (tme - time) * (tme - time) / sigma / sigma);
@@ -656,7 +656,7 @@ void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double
 void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Double_t noiseLevel) {
     this->Sort();
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
+    for (auto i = 0; i < GetNumberOfPoints(); i++) {
         TRandom3* fRandom = new TRandom3(0);
 
         noiseSgnl->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
@@ -680,11 +680,11 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
     Double_t sum;
 
     // We calculate the charge of the event before convolution
-    for (int i = 0; i < GetNumberOfPoints(); i++) totChargeInitial += fSignalCharge[i];
+    for (auto i = 0; i < GetNumberOfPoints(); i++) totChargeInitial += fSignalCharge[i];
 
     // The gaussian convolution of the initial signal is performed
-    for (int i = GetMinTime() - nSigmas * sigma; i < GetMaxTime() + nSigmas * sigma; i++) {
-        for (int j = 0; j < GetNumberOfPoints(); j++) {
+    for (auto i = GetMinTime() - nSigmas * sigma; i < GetMaxTime() + nSigmas * sigma; i++) {
+        for (auto j = 0; j < GetNumberOfPoints(); j++) {
             if (TMath::Abs(i - GetTime(j)) > nSigmas * sigma) continue;
             if (TMath::Abs(i - GetTime(j)) > nSigmas * sigma && i < GetTime(j)) break;
 
@@ -702,12 +702,12 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
 
 void TRestDetectorSignal::WriteSignalToTextFile(TString filename) {
     FILE* fff = fopen(filename.Data(), "w");
-    for (int i = 0; i < GetNumberOfPoints(); i++) fprintf(fff, "%e\t%e\n", GetTime(i), GetData(i));
+    for (auto i = 0; i < GetNumberOfPoints(); i++) fprintf(fff, "%e\t%e\n", GetTime(i), GetData(i));
     fclose(fff);
 }
 
 void TRestDetectorSignal::Print() {
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+    for (auto i = 0; i < GetNumberOfPoints(); i++)
         cout << "Time : " << GetTime(i) << " Charge : " << GetData(i) << endl;
 }
 
@@ -727,7 +727,7 @@ TGraph* TRestDetectorSignal::GetGraph(Int_t color) {
     fGraph->SetMarkerStyle(7);
 
     int points = 0;
-    for (int n = 0; n < GetNumberOfPoints(); n++) {
+    for (auto n = 0; n < GetNumberOfPoints(); n++) {
         fGraph->SetPoint(points, GetTime(n), GetData(n));
         points++;
     }

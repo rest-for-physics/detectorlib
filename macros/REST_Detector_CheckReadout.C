@@ -66,12 +66,12 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
 
     Int_t totalPixels = 0;
     Int_t totalChannels = 0;
-    for (int mdID = 0; mdID < nModules; mdID++) {
+    for (auto mdID = 0; mdID < nModules; mdID++) {
         TRestDetectorReadoutModule* module = &(*readoutPlane)[mdID];
         Int_t nChannels = module->GetNumberOfChannels();
         totalChannels += nChannels;
 
-        for (int ch = 0; ch < nChannels; ch++) {
+        for (auto ch = 0; ch < nChannels; ch++) {
             TRestDetectorReadoutChannel* channel = &(*module)[ch];
             Int_t nPixels = channel->GetNumberOfPixels();
             totalPixels += nPixels;
@@ -92,7 +92,7 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
     Int_t graph = 0;
     Int_t modGraphID = 0;
     Int_t chGraph = 0;
-    for (int mdID = 0; mdID < nModules; mdID++) {
+    for (auto mdID = 0; mdID < nModules; mdID++) {
         TRestDetectorReadoutModule* module = &(*readoutPlane)[mdID];
         Int_t nChannels = module->GetNumberOfChannels();
 
@@ -115,7 +115,7 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
 
         modGraphID++;
 
-        for (int ch = 0; ch < nChannels; ch++) {
+        for (auto ch = 0; ch < nChannels; ch++) {
             TRestDetectorReadoutChannel* channel = &(*module)[ch];
 
             Int_t nPixels = channel->GetNumberOfPixels();
@@ -144,9 +144,9 @@ Int_t REST_Detector_CheckReadout(TString rootFile, TString name, Double_t region
 
     GetHittedStripMap(readoutPlane, stripsMask, region, N, offset)->Draw("Psame");
 
-    for (int i = 0; i < modGraphID; i++) modGraph[i]->Draw("same");
+    for (auto i = 0; i < modGraphID; i++) modGraph[i]->Draw("same");
 
-    for (int i = 0; i < graph; i++) pixelGraph[i]->Draw("same");
+    for (auto i = 0; i < graph; i++) pixelGraph[i]->Draw("same");
 
     return 0;
 }
@@ -184,7 +184,7 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
 
     std::vector<Int_t> channelIds;
 
-    for (int n = 0; n < 128; n++) {
+    for (auto n = 0; n < 128; n++) {
         Int_t bit = n % 32;
         Int_t level = n / 32;
 
@@ -204,8 +204,8 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
     while (N > 0) {
         xR = rnd->Uniform(xMin, xMax);
         yR = rnd->Uniform(yMin, yMax);
-        for (int mod = 0; mod < p->GetNumberOfModules(); mod++) {
-            Int_t chFound = p->FindChannel(mod, xR, yR);
+        for (auto mod = 0; mod < p->GetNumberOfModules(); mod++) {
+            Int_t chFound = p->FindChannel(mod, {xR, yR});
 
             if (chFound != -1 &&
                 std::find(channelIds.begin(), channelIds.end(), chFound) != channelIds.end()) {

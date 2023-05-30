@@ -60,12 +60,12 @@ class TRestDetectorReadoutChannel {
     inline Int_t GetChannelId() const { return fChannelId; }
 
     /// Returns the total number of pixels inside the readout channel
-    Int_t GetNumberOfPixels() { return fReadoutPixel.size(); }
+    size_t GetNumberOfPixels() const { return fReadoutPixel.size(); }
 
     TRestDetectorReadoutPixel& operator[](int n) { return fReadoutPixel[n]; }
 
     /// Returns a pointer to the pixel *n* by index.
-    TRestDetectorReadoutPixel* GetPixel(int n) {
+    const TRestDetectorReadoutPixel* GetPixel(int n) const {
         if (n >= GetNumberOfPixels()) return nullptr;
         return &fReadoutPixel[n];
     }

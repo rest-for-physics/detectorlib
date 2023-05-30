@@ -110,30 +110,21 @@ TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if a given *x,y* coordinates are found inside the pixel.
-/// The coordinates are referenced to the readout module system.
-///
-Bool_t TRestDetectorReadoutPixel::isInside(Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-    return isInside(pos);
-}
-
-///////////////////////////////////////////////
 /// \brief Determines if a given TVector2 *pos* coordinates are found inside
 /// the pixel. The coordinates are referenced to the readout module system.
 ///
-Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
-    pos = TransformToPixelCoordinates(pos);
-    Double_t const x = pos.X();
-    if (pos.X() >= -fTolerance && pos.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
+Bool_t TRestDetectorReadoutPixel::isInside(const TVector2& pos) const {
+    const auto posNew = TransformToPixelCoordinates(pos);
+    Double_t const x = posNew.X();
+    if (posNew.X() >= -fTolerance && posNew.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
     {
-        if (fTriangle && pos.Y() >= -fTolerance &&
-            pos.Y() <= fPixelSizeY + fTolerance -
-                           x * (fPixelSizeY / fPixelSizeX))  // if triangle, third condition depends on x
+        if (fTriangle && posNew.Y() >= -fTolerance &&
+            posNew.Y() <= fPixelSizeY + fTolerance -
+                              x * (fPixelSizeY / fPixelSizeX))  // if triangle, third condition depends on x
             return true;
-        if (!fTriangle && pos.Y() >= -fTolerance &&
-            pos.Y() <= fPixelSizeY + fTolerance)  // for a normal rectangular pixel, same
-                                                  // simple conditions
+        if (!fTriangle && posNew.Y() >= -fTolerance &&
+            posNew.Y() <= fPixelSizeY + fTolerance)  // for a normal rectangular pixel, same
+                                                     // simple conditions
             return true;
     }
     return false;

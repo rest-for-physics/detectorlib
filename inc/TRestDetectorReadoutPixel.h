@@ -69,7 +69,7 @@ class TRestDetectorReadoutPixel {
     inline Double_t GetSizeY() const { return fPixelSizeY; }
 
     /// Returns a TVector2 with the pixel size.
-    TVector2 GetSize() { return {fPixelSizeX, fPixelSizeY}; }
+    TVector2 GetSize() const { return {fPixelSizeX, fPixelSizeY}; }
 
     /// Returns true if the pixel is a triangle.
     Bool_t GetTriangle() const { return fTriangle; }
@@ -78,22 +78,10 @@ class TRestDetectorReadoutPixel {
 
     TVector2 GetVertex(int n) const;
 
-    /// Sets the origin of the pixel using the coordinate values *x*,*y*.
-    void SetOrigin(Double_t x, Double_t y) {
-        fPixelOriginX = x;
-        fPixelOriginY = y;
-    }
-
     /// Sets the origin of the pixel using a TVector2.
     void SetOrigin(const TVector2& origin) {
         fPixelOriginX = origin.X();
         fPixelOriginY = origin.Y();
-    }
-
-    /// Sets the size of the pixel using the coordinate values *sx*,*sy*.
-    void SetSize(Double_t sx, Double_t sy) {
-        fPixelSizeX = sx;
-        fPixelSizeY = sy;
     }
 
     /// Sets the size of the pixel using a TVector2.
@@ -111,8 +99,7 @@ class TRestDetectorReadoutPixel {
     /// Sets the value of the tolerance in mm. Used in IsInside method.
     void SetTolerance(Double_t tol) { fTolerance = tol; }
 
-    Bool_t isInside(TVector2 pos);
-    Bool_t isInside(Double_t x, Double_t y);
+    Bool_t isInside(const TVector2& pos) const;
 
     TVector2 TransformToPixelCoordinates(const TVector2& pixel) const;
 

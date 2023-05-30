@@ -121,9 +121,11 @@ class TRestDetectorReadoutModule {
 
     /// Returns the physical readout channel index for a given daq id channel
     /// number
-    inline Int_t DaqToReadoutChannel(Int_t daqChannel) {
-        for (int n = 0; n < GetNumberOfChannels(); n++)
-            if (GetChannel(n)->GetDaqID() == daqChannel) return n;
+    inline Int_t DaqToReadoutChannel(Int_t daqChannel) const {
+        for (auto n = 0; n < GetNumberOfChannels(); n++)
+            if (GetChannel(n)->GetDaqID() == daqChannel) {
+                return n;
+            }
         return -1;
     }
 
@@ -153,11 +155,11 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 GetModuleCoordinates(const TVector2& p) { return TransformToModuleCoordinates(p); }
+    TVector2 GetModuleCoordinates(const TVector2& p) const { return TransformToModuleCoordinates(p); }
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 GetPhysicalCoordinates(const TVector2& p) {
+    TVector2 GetPhysicalCoordinates(const TVector2& p) const {
         return TransformToPhysicalCoordinates(p.X(), p.Y());
     }
 
@@ -165,15 +167,26 @@ class TRestDetectorReadoutModule {
     inline const char* GetName() const { return fModuleName.Data(); }
 
     /// Returns a pointer to the readout mapping
-    inline TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
+    inline const TRestDetectorReadoutMapping* GetMapping() const { return &fMapping; }
 
     inline TRestDetectorReadoutChannel& operator[](int n) { return fReadoutChannel[n]; }
 
-    /// Returns a pointer to a readout channel by index
-    inline TRestDetectorReadoutChannel* GetChannel(int n) {
-        if (n >= GetNumberOfChannels()) return nullptr;
+    /// Returns a const pointer to a readout channel by index
+    inline const TRestDetectorReadoutChannel* GetChannel(int n) const {
+        if (n >= GetNumberOfChannels()) {
+            return nullptr;
+        }
         return &fReadoutChannel[n];
     }
+
+    /// Returns a pointer to a readout channel by index
+    inline  TRestDetectorReadoutChannel* GetChannel(int n)  {
+        if (n >= GetNumberOfChannels()) {
+            return nullptr;
+        }
+        return &fReadoutChannel[n];
+    }
+
 
     /// Returns the total number of channels defined inside the module
     inline size_t GetNumberOfChannels() const { return fReadoutChannel.size(); }
@@ -186,32 +199,32 @@ class TRestDetectorReadoutModule {
 
     void DoReadoutMapping(Int_t nodes = 0);
 
-    Bool_t isInside(const TVector2& position);
+    Bool_t isInside(const TVector2& position) const;
 
     ///////////////////////////////////////////////
     /// \brief Determines if the position *x,y* relative to the readout
     /// plane are inside this readout module.
     ///
-    inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
+    inline Bool_t isInside(Double_t x, Double_t y) const { return isInside({x, y}); }
 
-    Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
-    Bool_t isInsideChannel(Int_t channel, const TVector2& position);
+    Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y) const;
+    Bool_t isInsideChannel(Int_t channel, const TVector2& position) const;
 
-    Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
+    Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position) const;
 
-    Bool_t isDaqIDInside(Int_t daqID);
-    Int_t FindChannel(const TVector2& position);
-    TVector2 GetDistanceToModule(const TVector2& position);
+    Bool_t isDaqIDInside(Int_t daqID) const;
+    Int_t FindChannel(const TVector2& position) const;
+    TVector2 GetDistanceToModule(const TVector2& position) const;
 
-    TVector2 GetPixelOrigin(Int_t channel, Int_t pixel);
-    TVector2 GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex);
-    TVector2 GetPixelCenter(Int_t channel, Int_t pixel);
-    Bool_t GetPixelTriangle(Int_t channel, Int_t pixel);
+    TVector2 GetPixelOrigin(Int_t channel, Int_t pixel) const;
+    TVector2 GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) const;
+    TVector2 GetPixelCenter(Int_t channel, Int_t pixel) const;
+    Bool_t GetPixelTriangle(Int_t channel, Int_t pixel) const;
 
-    TVector2 GetPixelOrigin(TRestDetectorReadoutPixel* pix);
-    TVector2 GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex);
-    TVector2 GetPixelCenter(TRestDetectorReadoutPixel* pix);
-    Bool_t GetPixelTriangle(TRestDetectorReadoutPixel* pix);
+    TVector2 GetPixelOrigin(TRestDetectorReadoutPixel* pix) const;
+    TVector2 GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex) const;
+    TVector2 GetPixelCenter(TRestDetectorReadoutPixel* pix) const;
+    Bool_t GetPixelTriangle(TRestDetectorReadoutPixel* pix) const;
 
     TVector2 GetVertex(int n) const;
 

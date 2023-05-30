@@ -69,7 +69,7 @@ void TRestDetectorSignalEvent::RemoveSignalWithId(Int_t sId) {
 }
 
 Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
-    for (int i = 0; i < GetNumberOfSignals(); i++)
+    for (auto i = 0; i < GetNumberOfSignals(); i++)
         if (fSignal[i].GetSignalID() == signalID) return i;
     return -1;
 }
@@ -77,14 +77,14 @@ Int_t TRestDetectorSignalEvent::GetSignalIndex(Int_t signalID) {
 Double_t TRestDetectorSignalEvent::GetIntegral(Int_t startBin, Int_t endBin) {
     Double_t sum = 0;
 
-    for (int i = 0; i < GetNumberOfSignals(); i++) sum += fSignal[i].GetIntegral(startBin, endBin);
+    for (auto i = 0; i < GetNumberOfSignals(); i++) sum += fSignal[i].GetIntegral(startBin, endBin);
 
     return sum;
 }
 
 Double_t TRestDetectorSignalEvent::GetIntegralWithTime(Double_t startTime, Double_t endTime) {
     Double_t sum = 0;
-    for (int n = 0; n < GetNumberOfSignals(); n++) sum += fSignal[n].GetIntegralWithTime(startTime, endTime);
+    for (auto n = 0; n < GetNumberOfSignals(); n++) sum += fSignal[n].GetIntegralWithTime(startTime, endTime);
 
     return sum;
 }
@@ -105,7 +105,7 @@ void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, 
 void TRestDetectorSignalEvent::PrintEvent() {
     TRestEvent::PrintEvent();
 
-    for (int i = 0; i < GetNumberOfSignals(); i++) {
+    for (auto i = 0; i < GetNumberOfSignals(); i++) {
         cout << "================================================" << endl;
         cout << "Signal ID : " << fSignal[i].GetSignalID() << endl;
         cout << "Integral : " << fSignal[i].GetIntegral() << endl;
@@ -191,7 +191,7 @@ TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
     mg->GetYaxis()->SetLabelSize(1.25 * mg->GetYaxis()->GetLabelSize());
     mg->GetXaxis()->SetLabelSize(1.25 * mg->GetXaxis()->GetLabelSize());
 
-    for (int n = 0; n < nSignals; n++) {
+    for (auto n = 0; n < nSignals; n++) {
         TGraph* gr = fSignal[n].GetGraph(n + 1);
         mg->Add(gr);
     }

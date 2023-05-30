@@ -378,7 +378,7 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
     }
 
     string gasStr[3];
-    for (int i = 0; i < fNofGases; i++) {
+    for (auto i = 0; i < fNofGases; i++) {
         gasStr[i] = (string)fGasComponentName[i];
         if (i == 2) break;
     }
@@ -541,7 +541,7 @@ void TRestDetectorGas::InitFromConfigFile() {
         RESTError << "TRestDetectorGas: No gas components added!" << RESTendl;
     }
     double sum = 0;
-    for (int i = 0; i < fNofGases; i++) sum += GetGasComponentFraction(i);
+    for (auto i = 0; i < fNofGases; i++) sum += GetGasComponentFraction(i);
     if (sum - 1 < 1.e12)
         fStatus = RESTGAS_CFG_LOADED;
     else {
@@ -768,7 +768,7 @@ TString TRestDetectorGas::GetGasMixture() {
 
     TString gasMixture;
     char tmpStr[64];
-    for (int n = 0; n < fNofGases; n++) {
+    for (auto n = 0; n < fNofGases; n++) {
         if (n > 0) gasMixture += "-";
         gasMixture += GetGasComponentName(n) + "_";
         sprintf(tmpStr, "%03.1lf", GetGasComponentFraction(n) * 100.);
@@ -788,7 +788,7 @@ string TRestDetectorGas::ConstructFilename() {
 
     string name = "";
     char tmpStr[256];
-    for (int n = 0; n < fNofGases; n++) {
+    for (auto n = 0; n < fNofGases; n++) {
         if (n > 0) name += "-";
         name += GetGasComponentName(n) + "_";
         if (GetGasComponentFraction(n) >= 0.001)
@@ -910,7 +910,7 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
 
     vector<Double_t> eField(nSteps), driftVel(nSteps);
 
-    for (int i = 0; i < nSteps; i++) {
+    for (auto i = 0; i < nSteps; i++) {
         eField[i] = (eMin + (double)i * (eMax - eMin) / nSteps);
 
         this->SetElectricField(eField[i] / units("V/cm"));
@@ -943,7 +943,7 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
 
     vector<Double_t> eField(nSteps), longDiff(nSteps);
 
-    for (int i = 0; i < nSteps; i++) {
+    for (auto i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
         this->SetElectricField(eField[i] / units("V/cm"));
@@ -976,7 +976,7 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
 
     vector<Double_t> eField(nSteps), transDiff(nSteps);
 
-    for (int i = 0; i < nSteps; i++) {
+    for (auto i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
         this->SetElectricField(eField[i] / units("V/cm"));
@@ -1009,7 +1009,7 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
 
     vector<Double_t> eField(nSteps), townsendCoeff(nSteps);
 
-    for (int i = 0; i < nSteps; i++) {
+    for (auto i = 0; i < nSteps; i++) {
         eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
         townsendCoeff[i] = GetTownsendCoefficient(eField[i]);
@@ -1205,7 +1205,7 @@ void TRestDetectorGas::PrintGasInfo() {
     RESTMetadata << "Field grid nodes : " << fEnodes << RESTendl;
     RESTMetadata << "Efield range : ( " << fEmin << " , " << fEmax << " ) V/cm " << RESTendl;
     RESTMetadata << "Number of Gases : " << fNofGases << RESTendl;
-    for (int i = 0; i < fNofGases; i++)
+    for (auto i = 0; i < fNofGases; i++)
         RESTMetadata << "Gas id : " << i << ", Name : " << fGasComponentName[i]
                      << ", Fraction : " << fGasComponentFraction[i] << RESTendl;
     RESTMetadata << "******************************************" << RESTendl;

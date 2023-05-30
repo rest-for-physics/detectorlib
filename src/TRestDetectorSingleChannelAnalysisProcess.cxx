@@ -46,11 +46,11 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fCalib = GetMetadata<TRestDetectorGainMap>();
     if (fReadout == nullptr) {
     } else {
-        for (int i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
+        for (auto i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
             auto plane = fReadout->GetReadoutPlane(i);
-            for (int j = 0; j < plane->GetNumberOfModules(); j++) {
+            for (auto j = 0; j < plane->GetNumberOfModules(); j++) {
                 auto mod = plane->GetModule(j);
-                for (int k = 0; k < mod->GetNumberOfChannels(); k++) {
+                for (auto k = 0; k < mod->GetNumberOfChannels(); k++) {
                     auto channel = mod->GetChannel(k);
                     fChannelGain[channel->GetDaqID()] = 1;       // default correction factor is 1
                     fChannelGainError[channel->GetDaqID()] = 1;  // relative error
@@ -134,14 +134,14 @@ TRestEvent* TRestDetectorSingleChannelAnalysisProcess::ProcessEvent(TRestEvent* 
         }
 
         // update charge value in output event
-        for (int i = 0; i < fSignalEvent->GetNumberOfSignals(); i++) {
+        for (auto i = 0; i < fSignalEvent->GetNumberOfSignals(); i++) {
             TRestDetectorSignal* sgn = fSignalEvent->GetSignal(i);
             if (fCalib->fChannelGain.count(sgn->GetID()) == 0 || fCalib->fChannelGain[sgn->GetID()] == 0) {
                 cout << "warning! unrecorded gain for channel: " << sgn->GetID() << endl;
                 continue;
             }
             double gain = fCalib->fChannelGain[sgn->GetID()];
-            for (int j = 0; j < sgn->GetNumberOfPoints(); j++) {
+            for (auto j = 0; j < sgn->GetNumberOfPoints(); j++) {
                 auto timecharge = sgn->GetPoint(j);
                 sgn->SetPoint(j, timecharge.X(), timecharge.Y() * gain);
             }
@@ -193,7 +193,7 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
             double* peaks = spc.GetPositionX();
             double min = 1e9;
             int minpos = 0;
-            for (int i = 0; i < n; i++) {
+            for (auto i = 0; i < n; i++) {
                 double dist = abs(peaks[i] - middle);
                 if (dist < min) {
                     min = dist;

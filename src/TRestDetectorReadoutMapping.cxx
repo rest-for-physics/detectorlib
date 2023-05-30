@@ -74,7 +74,7 @@ Double_t TRestDetectorReadoutMapping::GetY(Int_t nodeY) { return (fNetSizeY / fN
 ///////////////////////////////////////////////
 /// \brief Gets the nodeX index corresponding to the x coordinate
 ///
-Int_t TRestDetectorReadoutMapping::GetNodeX(Double_t x) {
+Int_t TRestDetectorReadoutMapping::GetNodeX(Double_t x) const {
     Int_t nX = (Int_t)((x / fNetSizeX) * fNodesX);
     if (nX >= fNodesX) return fNodesX - 1;
     return nX;
@@ -83,7 +83,7 @@ Int_t TRestDetectorReadoutMapping::GetNodeX(Double_t x) {
 ///////////////////////////////////////////////
 /// \brief Gets the nodeY index corresponding to the y coordinate
 ///
-Int_t TRestDetectorReadoutMapping::GetNodeY(Double_t y) {
+Int_t TRestDetectorReadoutMapping::GetNodeY(Double_t y) const {
     Int_t nY = (Int_t)((y / fNetSizeY) * fNodesY);
     if (nY >= fNodesY) return fNodesY - 1;
     return nY;
@@ -92,7 +92,7 @@ Int_t TRestDetectorReadoutMapping::GetNodeY(Double_t y) {
 ///////////////////////////////////////////////
 /// \brief Gets the channel number corresponding to coordinates (x,y)
 ///
-Int_t TRestDetectorReadoutMapping::GetChannel(Double_t x, Double_t y) {
+Int_t TRestDetectorReadoutMapping::GetChannel(Double_t x, Double_t y) const {
     return fChannel[GetNodeX(x)][GetNodeY(y)];
 }
 
@@ -108,8 +108,8 @@ Int_t TRestDetectorReadoutMapping::GetPixel(Double_t x, Double_t y) {
 ///
 Int_t TRestDetectorReadoutMapping::GetNumberOfNodesNotSet() {
     Int_t counter = 0;
-    for (int i = 0; i < fNodesX; i++)
-        for (int j = 0; j < fNodesY; j++) {
+    for (auto i = 0; i < fNodesX; i++)
+        for (auto j = 0; j < fNodesY; j++) {
             if (!isNodeSet(i, j)) counter++;
         }
     return counter;
@@ -118,9 +118,9 @@ Int_t TRestDetectorReadoutMapping::GetNumberOfNodesNotSet() {
 ///////////////////////////////////////////////
 /// \brief Finds the node index in X for a given channel and pixel ids.
 ///
-Int_t TRestDetectorReadoutMapping::GetNodeX_ForChannelAndPixel(Int_t ch, Int_t px) {
-    for (int i = 0; i < fNodesX; i++)
-        for (int j = 0; j < fNodesY; j++) {
+Int_t TRestDetectorReadoutMapping::GetNodeX_ForChannelAndPixel(Int_t ch, Int_t px) const {
+    for (auto i = 0; i < fNodesX; i++)
+        for (auto j = 0; j < fNodesY; j++) {
             if (fChannel[i][j] == ch && fPixel[i][j] == px) return i;
         }
     return -1;
@@ -129,9 +129,9 @@ Int_t TRestDetectorReadoutMapping::GetNodeX_ForChannelAndPixel(Int_t ch, Int_t p
 ///////////////////////////////////////////////
 /// \brief Finds the node index in Y for a given channel and pixel ids.
 ///
-Int_t TRestDetectorReadoutMapping::GetNodeY_ForChannelAndPixel(Int_t ch, Int_t px) {
-    for (int i = 0; i < fNodesX; i++)
-        for (int j = 0; j < fNodesY; j++) {
+Int_t TRestDetectorReadoutMapping::GetNodeY_ForChannelAndPixel(Int_t ch, Int_t px) const {
+    for (auto i = 0; i < fNodesX; i++)
+        for (auto j = 0; j < fNodesY; j++) {
             if (fChannel[i][j] == ch && fPixel[i][j] == px) return j;
         }
     return -1;
@@ -148,8 +148,8 @@ void TRestDetectorReadoutMapping::Initialize(Int_t nX, Int_t nY, Double_t sX, Do
     fChannel.ResizeTo(fNodesX, fNodesY);
     fPixel.ResizeTo(fNodesX, fNodesY);
 
-    for (int i = 0; i < fNodesX; i++)
-        for (int j = 0; j < fNodesY; j++) {
+    for (auto i = 0; i < fNodesX; i++)
+        for (auto j = 0; j < fNodesY; j++) {
             fChannel[i][j] = -1;
             fPixel[i][j] = -1;
         }
@@ -175,8 +175,8 @@ Bool_t TRestDetectorReadoutMapping::isNodeSet(Int_t i, Int_t j) {
 /// \brief Checks if all the nodes in the net have been defined.
 ///
 Bool_t TRestDetectorReadoutMapping::AllNodesSet() {
-    for (int i = 0; i < fNodesX; i++)
-        for (int j = 0; j < fNodesY; j++) {
+    for (auto i = 0; i < fNodesX; i++)
+        for (auto j = 0; j < fNodesY; j++) {
             if (!isNodeSet(i, j)) {
                 cout << "Node : " << i << " , " << j << " is NOT set. Ch : " << fChannel[i][j]
                      << " Pix : " << fPixel[i][j] << endl;

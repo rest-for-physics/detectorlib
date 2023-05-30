@@ -172,7 +172,7 @@ TPad* TRestDetectorSignalViewerProcess::DrawSignal(Int_t signal) {
     mg->GetYaxis()->SetTitleOffset(1.4);
     mg->GetYaxis()->SetTitle("Energy");
 
-    for (int n = 0; n < fSignalEvent->GetNumberOfSignals(); n++) {
+    for (auto n = 0; n < fSignalEvent->GetNumberOfSignals(); n++) {
         TGraph* gr = fSignalEvent->GetSignal(n)->GetGraph((n + 1) % 6);
         mg->Add(gr);
     }

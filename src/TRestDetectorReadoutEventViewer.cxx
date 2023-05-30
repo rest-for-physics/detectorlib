@@ -100,8 +100,8 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
     zmax = 1E-9;
 
     double z;
-    for (int i = 0; i < fSignalEvent->GetNumberOfSignals(); i++)
-        for (int j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++) {
+    for (auto i = 0; i < fSignalEvent->GetNumberOfSignals(); i++)
+        for (auto j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++) {
             z = fSignalEvent->GetSignal(i)->GetTime(j);
             if (z < zmin) zmin = z;
             if (z > zmax) zmax = z;
@@ -113,11 +113,11 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
     fHistoXZ = new TH2D("XZ", "XZ", 100, xmin, xmax, 100, zmin, zmax);
     fHistoYZ = new TH2D("YZ", "YZ", 100, ymin, ymax, 100, zmin, zmax);
 
-    for (int i = 0; i < fSignalEvent->GetNumberOfSignals(); i++) {
+    for (auto i = 0; i < fSignalEvent->GetNumberOfSignals(); i++) {
         daqChannel = fSignalEvent->GetSignal(i)->GetSignalID();
 
         TRestDetectorReadoutPlane* plane = &(*fReadout)[planeId];
-        for (int m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (auto m = 0; m < plane->GetNumberOfModules(); m++) {
             module = &(*plane)[m];
 
             if (module->isDaqIDInside(daqChannel)) break;
@@ -142,21 +142,21 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
         if (TMath::IsNaN(yRead)) xStrip = 1;
         if (TMath::IsNaN(xRead)) yStrip = 1;
         if (xStrip == 0 && yStrip == 0) {
-            for (int j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
+            for (auto j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
                 fHistoXZ->Fill(xRead, fSignalEvent->GetSignal(i)->GetTime(j),
                                fSignalEvent->GetSignal(i)->GetData(j));
-            for (int j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
+            for (auto j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
                 fHistoYZ->Fill(yRead, fSignalEvent->GetSignal(i)->GetTime(j),
                                fSignalEvent->GetSignal(i)->GetData(j));
         }
         // Strips readout
         else {
             if (yStrip == 0) {
-                for (int j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
+                for (auto j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++)
                     fHistoXZ->Fill(xRead, fSignalEvent->GetSignal(i)->GetTime(j),
                                    fSignalEvent->GetSignal(i)->GetData(j));
             } else if (xStrip == 0) {
-                for (int j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++) {
+                for (auto j = 0; j < fSignalEvent->GetSignal(i)->GetNumberOfPoints(); j++) {
                     fHistoYZ->Fill(yRead, fSignalEvent->GetSignal(i)->GetTime(j),
                                    fSignalEvent->GetSignal(i)->GetData(j));
                 }
@@ -179,9 +179,9 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
 TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
-    for (int n = 0; n < plane->GetNumberOfModules(); n++) {
+    for (auto n = 0; n < plane->GetNumberOfModules(); n++) {
         if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
-        return (*plane)[n].GetChannel(readoutChannel);
+        return const_cast<TRestDetectorReadoutChannel*>((*plane)[n].GetChannel(readoutChannel));
     }
 
     cout << "Readout channel " << readoutChannel << " not found" << endl;
@@ -190,7 +190,7 @@ TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int rea
 
 TRestDetectorReadoutModule* TRestDetectorReadoutEventViewer::GetModule(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
-    for (int n = 0; n < fReadout->GetNumberOfModules(); n++) {
+    for (auto n = 0; n < fReadout->GetNumberOfModules(); n++) {
         if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return &(*plane)[n];
     }

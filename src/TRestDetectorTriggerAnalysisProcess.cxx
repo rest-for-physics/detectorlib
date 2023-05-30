@@ -186,7 +186,7 @@ TRestEvent* TRestDetectorTriggerAnalysisProcess::ProcessEvent(TRestEvent* inputE
 
     unsigned int counter = 0;
     unsigned int nObs = fIntegralObservables.size();
-    for (int i = minT - fADCLength / 2; i <= maxT && counter < nObs; i++) {
+    for (auto i = minT - fADCLength / 2; i <= maxT && counter < nObs; i++) {
         Double_t en = fSignalEvent->GetIntegralWithTime(i * fSampling, (i + fADCLength / 2) * fSampling);
 
         for (unsigned int n = 0; n < nObs; n++)

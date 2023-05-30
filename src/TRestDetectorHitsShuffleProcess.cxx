@@ -57,7 +57,7 @@ TRestEvent* TRestDetectorHitsShuffleProcess::ProcessEvent(TRestEvent* inputEvent
 
     Int_t nHits = hits->GetNumberOfHits();
     if (nHits >= 2) {
-        for (int n = 0; n < fIterations; n++) {
+        for (auto n = 0; n < fIterations; n++) {
             Int_t hit1 = (Int_t)(nHits * fRandom->Uniform(0, 1));
             Int_t hit2 = (Int_t)(nHits * fRandom->Uniform(0, 1));
 

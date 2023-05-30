@@ -46,12 +46,12 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
 
     Int_t totalPixels = 0;
     Int_t totalChannels = 0;
-    for (int mdID = 0; mdID < nModules; mdID++) {
+    for (auto mdID = 0; mdID < nModules; mdID++) {
         TRestDetectorReadoutModule* module = &(*readoutPlane)[mdID];
         Int_t nChannels = module->GetNumberOfChannels();
         totalChannels += nChannels;
 
-        for (int ch = 0; ch < nChannels; ch++) {
+        for (auto ch = 0; ch < nChannels; ch++) {
             TRestDetectorReadoutChannel* channel = &(*module)[ch];
             Int_t nPixels = channel->GetNumberOfPixels();
             totalPixels += nPixels;
@@ -72,7 +72,7 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
     Int_t graph = 0;
     Int_t modGraphID = 0;
     Int_t chGraph = 0;
-    for (int mdID = 0; mdID < nModules; mdID++) {
+    for (auto mdID = 0; mdID < nModules; mdID++) {
         TRestDetectorReadoutModule* module = &(*readoutPlane)[mdID];
         Int_t nChannels = module->GetNumberOfChannels();
 
@@ -98,7 +98,7 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
 
         modGraphID++;
 
-        for (int ch = 0; ch < nChannels; ch++) {
+        for (auto ch = 0; ch < nChannels; ch++) {
             TRestDetectorReadoutChannel* channel = &(*module)[ch];
 
             Int_t nPixels = channel->GetNumberOfPixels();
@@ -154,14 +154,14 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
     c->DrawFrame(xmin, ymin, xmax, ymax, title);
     c->SetTicks();
 
-    for (int i = 0; i < modGraphID; i++) modGraph[i]->Draw("same");
+    for (auto i = 0; i < modGraphID; i++) modGraph[i]->Draw("same");
 
-    for (int i = 0; i < graph; i++) {
+    for (auto i = 0; i < graph; i++) {
         pixelGraph[i]->Draw("same");
         // channelIDLabel[i]->Draw("same"); //If commented the graphics are faster
     }
 
-    for (int i = 0; i < chGraph; i++) channelGraph[i]->Draw("same");
+    for (auto i = 0; i < chGraph; i++) channelGraph[i]->Draw("same");
 
 // when we run this macro from restManager from bash,
 // we need to call TRestMetadata::GetChar() to prevent returning,

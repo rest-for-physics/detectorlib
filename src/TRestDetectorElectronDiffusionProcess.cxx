@@ -131,7 +131,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         wValue = fInputHitsEvent->GetEnergy() * REST_Units::eV / fMaxHits;
     }
 
-    for (int n = 0; n < nHits; n++) {
+    for (auto n = 0; n < nHits; n++) {
         TRestHits* hits = fInputHitsEvent->GetHits();
 
         Double_t eDep = hits->GetEnergy(n);
@@ -141,7 +141,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             const Double_t y = hits->GetY(n);
             const Double_t z = hits->GetZ(n);
 
-            for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+            for (auto p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
                 TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
 
                 if (plane->isZInsideDriftVolume(z)) {

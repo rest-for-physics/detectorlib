@@ -183,7 +183,7 @@ void TRestDetectorSignalRecoveryProcess::InitProcess() {
 TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput) {
     fInputSignalEvent = (TRestDetectorSignalEvent*)evInput;
 
-    for (int n = 0; n < fInputSignalEvent->GetNumberOfSignals(); n++)
+    for (auto n = 0; n < fInputSignalEvent->GetNumberOfSignals(); n++)
         fOutputSignalEvent->AddSignal(*fInputSignalEvent->GetSignal(n));
 
     Int_t nPoints = fOutputSignalEvent->GetSignal(0)->GetNumberOfPoints();
@@ -214,13 +214,13 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 
         if (type == 1)  // Only one dead channel
         {
-            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
+            for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
                 recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 2.);
                 /// Energy preserved. This could be optional using a new metadata member
                 leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 2.);
             }
 
-            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
+            for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
                 recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 2.);
                 /// Energy preserved. This could be optional using a new metadata member
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 2.);
@@ -230,27 +230,27 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
         if (type == 2 || type == 3) {  // We got two dead-channels
             if (type == 2)             // The other dead channel is the one at the left
             {
-                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                     recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 6.);
 
-                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                     recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), 2 * rightSgnl->GetData(n) / 6.);
             }
 
             if (type == 3)  // The other dead channel is the one at the right
             {
-                for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+                for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                     recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), 2 * leftSgnl->GetData(n) / 6.);
 
-                for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+                for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                     recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 6.);
             }
 
             /// We removed the charge that we place at the dead channel
             /// In this case we remove a 25% because we will enter twice in this loop
-            for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
+            for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                 leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 4.);
-            for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
+            for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 4.);
         }
 
@@ -264,7 +264,7 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 
         RESTDebug << "Channel recovered!! " << RESTendl;
         if (leftSgnl != nullptr && rightSgnl != nullptr)
-            for (int n = 0; n < nPoints; n++)
+            for (auto n = 0; n < nPoints; n++)
                 RESTDebug << "Sample " << n << " : " << leftSgnl->GetData(n) << " + " << rightSgnl->GetData(n)
                           << " = " << recoveredSignal->GetData(n) << RESTendl;
         delete recoveredSignal;
@@ -290,9 +290,9 @@ int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int
     idLeft = -1;
     idRight = -1;
 
-    for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+    for (auto p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
-        for (int m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (auto m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* mod = plane->GetModule(m);
             // We iterate over all readout modules searching for the one that contains
             // our signal id

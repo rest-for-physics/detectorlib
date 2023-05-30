@@ -51,10 +51,10 @@ class TRestDetectorReadoutMapping {
     inline Int_t GetNumberOfNodesY() const { return fNodesY; }
 
     /// Gets the channel id corresponding to a given node (i,j)
-    Int_t GetChannelByNode(Int_t i, Int_t j) { return fChannel[i][j]; }
+    Int_t GetChannelByNode(Int_t i, Int_t j) const { return fChannel[i][j]; }
 
     /// Gets the pixel id corresponding to a given node (i,j)
-    Int_t GetPixelByNode(Int_t i, Int_t j) { return fPixel[i][j]; }
+    Int_t GetPixelByNode(Int_t i, Int_t j) const { return fPixel[i][j]; }
 
     Bool_t isNodeSet(Int_t i, Int_t j);
 
@@ -62,19 +62,19 @@ class TRestDetectorReadoutMapping {
 
     Int_t GetNumberOfNodesNotSet();
 
-    Int_t GetNodeX_ForChannelAndPixel(Int_t ch, Int_t px);
+    Int_t GetNodeX_ForChannelAndPixel(Int_t ch, Int_t px) const;
 
-    Int_t GetNodeY_ForChannelAndPixel(Int_t ch, Int_t px);
+    Int_t GetNodeY_ForChannelAndPixel(Int_t ch, Int_t px) const;
 
-    Int_t GetNodeX(Double_t x);
+    Int_t GetNodeX(Double_t x) const;
 
-    Int_t GetNodeY(Double_t y);
+    Int_t GetNodeY(Double_t y) const;
 
     Double_t GetX(Int_t nodeX);
 
     Double_t GetY(Int_t nodeY);
 
-    Int_t GetChannel(Double_t x, Double_t y);
+    Int_t GetChannel(Double_t x, Double_t y) const;
 
     Int_t GetPixel(Double_t x, Double_t y);
 

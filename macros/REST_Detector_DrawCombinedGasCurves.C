@@ -29,13 +29,13 @@ int REST_Detector_DrawCombinedGasCurves() {
     gas[2] = new TRestDetectorGas("GasDefinitionXeTMA7Pct.rml", "", true);
     gas[3] = new TRestDetectorGas("GasDefinitionXeTMA9Pct.rml", "", true);
 
-    for (int i = 0; i < nGases; i++) gas[i]->SetPressure(10);
+    for (auto i = 0; i < nGases; i++) gas[i]->SetPressure(10);
 
     Double_t eField[nSteps], driftVel[nGases][nSteps], diffLong[nGases][nSteps], diffTrans[nGases][nSteps];
-    for (int i = 0; i < nSteps; i++) eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
+    for (auto i = 0; i < nSteps; i++) eField[i] = eMin + (double)i * (eMax - eMin) / nSteps;
 
-    for (int j = 0; j < nGases; j++) {
-        for (int i = 0; i < nSteps; i++) {
+    for (auto j = 0; j < nGases; j++) {
+        for (auto i = 0; i < nSteps; i++) {
             gas[j]->SetElectricField(eField[i]);
 
             driftVel[j][i] = gas[j]->GetDriftVelocity();
@@ -51,7 +51,7 @@ int REST_Detector_DrawCombinedGasCurves() {
 
     TCanvas* c = new TCanvas("Drift velocity", "  ");
     c->SetLogx(true);
-    for (int i = 0; i < nGases; i++) {
+    for (auto i = 0; i < nGases; i++) {
         driftVelGraph[i] = new TGraph(nSteps, eField, driftVel[i]);
         driftVelGraph[i]->SetLineColor(i + 1);
         driftVelGraph[i]->SetLineWidth(2);
@@ -69,17 +69,17 @@ int REST_Detector_DrawCombinedGasCurves() {
     Double_t xl1 = .55, yl1 = 0.55, xl2 = xl1 + .3, yl2 = yl1 + .3;
     TLegend* leg = new TLegend(xl1, yl1, xl2, yl2);
 
-    for (int i = 0; i < nGases; i++)
+    for (auto i = 0; i < nGases; i++)
         leg->AddEntry(driftVelGraph[i], gas[i]->GetGasMixture(), "L");  // h1 and h2 are histogram pointers
 
     driftVelGraph[0]->Draw("");
-    for (int i = 1; i < nGases; i++) driftVelGraph[i]->Draw("same");
+    for (auto i = 1; i < nGases; i++) driftVelGraph[i]->Draw("same");
 
     leg->Draw("same");
 
     TCanvas* c2 = new TCanvas("Longitudinal diffusion", "  ");
     c2->SetLogx(true);
-    for (int i = 0; i < nGases; i++) {
+    for (auto i = 0; i < nGases; i++) {
         diffLGraph[i] = new TGraph(nSteps, eField, diffLong[i]);
         diffLGraph[i]->SetLineColor(i + 1);
         diffLGraph[i]->SetLineWidth(2);
@@ -96,17 +96,17 @@ int REST_Detector_DrawCombinedGasCurves() {
     //   Double_t xl1=.55, yl1=0.55, xl2=xl1+.3, yl2=yl1+.3;
     //   TLegend *leg = new TLegend( xl1, yl1, xl2, yl2 );
 
-    for (int i = 0; i < nGases; i++)
+    for (auto i = 0; i < nGases; i++)
         leg->AddEntry(diffLGraph[i], gas[i]->GetGasMixture(), "L");  // h1 and h2 are histogram pointers
 
     diffLGraph[0]->Draw("");
-    for (int i = 1; i < nGases; i++) diffLGraph[i]->Draw("same");
+    for (auto i = 1; i < nGases; i++) diffLGraph[i]->Draw("same");
 
     leg->Draw("same");
 
     TCanvas* c3 = new TCanvas("Transversal diffusion", "  ");
     c2->SetLogx(true);
-    for (int i = 0; i < nGases; i++) {
+    for (auto i = 0; i < nGases; i++) {
         diffTGraph[i] = new TGraph(nSteps, eField, diffTrans[i]);
         diffTGraph[i]->SetLineColor(i + 1);
         diffTGraph[i]->SetLineWidth(2);
@@ -123,11 +123,11 @@ int REST_Detector_DrawCombinedGasCurves() {
     //   Double_t xl1=.55, yl1=0.55, xl2=xl1+.3, yl2=yl1+.3;
     //   TLegend *leg = new TLegend( xl1, yl1, xl2, yl2 );
 
-    for (int i = 0; i < nGases; i++)
+    for (auto i = 0; i < nGases; i++)
         leg->AddEntry(diffTGraph[i], gas[i]->GetGasMixture(), "L");  // h1 and h2 are histogram pointers
 
     diffTGraph[0]->Draw("");
-    for (int i = 1; i < nGases; i++) diffTGraph[i]->Draw("same");
+    for (auto i = 1; i < nGases; i++) diffTGraph[i]->Draw("same");
 
     leg->Draw("same");
 

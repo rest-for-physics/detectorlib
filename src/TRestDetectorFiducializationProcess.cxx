@@ -61,7 +61,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputE
     if (nHits <= 0) return nullptr;
 
     TRestHits* hits = fInputHitsEvent->GetHits();
-    for (int n = 0; n < nHits; n++) {
+    for (auto n = 0; n < nHits; n++) {
         Double_t eDep = hits->GetEnergy(n);
 
         const Double_t x = hits->GetX(n);
@@ -71,7 +71,7 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputE
         const Double_t t = hits->GetTime(n);
         auto type = hits->GetType(n);
 
-        for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+        for (auto p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
 
             if (plane->GetModuleIDFromPosition(TVector3(x, y, z)) >= 0)

@@ -47,14 +47,14 @@ void TRestDetectorGainMap::DrawChannelGainMap(TRestDetectorReadoutModule* mod) {
         // we throw randomly 1000 points to fill the graph
         TRandom* r = new TRandom();
         int N = mod->GetNumberOfChannels() * mod->GetNumberOfChannels() / 4;
-        for (int i = 0; i < N; i++) {
+        for (auto i = 0; i < N; i++) {
             double x = xmax * (r->Rndm());
             double y = ymax * (r->Rndm());
             gr->SetPoint(i, x, y, 1);
         }
 
-        for (int i = 0; i < mod->GetNumberOfChannels(); i++) {
-            TRestDetectorReadoutChannel* channel = mod->GetChannel(i);
+        for (auto i = 0; i < mod->GetNumberOfChannels(); i++) {
+            const TRestDetectorReadoutChannel* channel = mod->GetChannel(i);
             int id = channel->GetDaqID();
             if (fChannelGain.count(id) == 0) fChannelGain[id] = 1;
 

@@ -50,12 +50,12 @@ Int_t REST_Detector_HitCentering(TString rootFileName, TString histoName, int st
         TRestDetectorHitsEvent* ev = new TRestDetectorHitsEvent();
 
         run->SetInputEvent(ev);
-        for (int i = n1; i < n2 + 1; i++) {
+        for (auto i = n1; i < n2 + 1; i++) {
             run->GetEntry(i);
 
             // Fill in the histogram with position and energy if the coordinate is valid
             // i.e. unequal to `invalidVal`
-            for (int n = 0; n < ev->GetNumberOfHits(); n++) {
+            for (auto n = 0; n < ev->GetNumberOfHits(); n++) {
                 Double_t en = ev->GetEnergy(n);
                 Double_t valX = ev->GetX(n);
                 Double_t meanX = ev->GetMeanPosition().X();

@@ -87,7 +87,7 @@ void TRestDetectorReadoutModule::Initialize() {
 void TRestDetectorReadoutModule::SetMinMaxDaqIDs() {
     Int_t maxID = GetChannel(0)->GetDaqID();
     Int_t minID = GetChannel(0)->GetDaqID();
-    for (int ch = 0; ch < this->GetNumberOfChannels(); ch++) {
+    for (auto ch = 0; ch < this->GetNumberOfChannels(); ch++) {
         Int_t daqID = GetChannel(ch)->GetDaqID();
         if (daqID > maxID) maxID = daqID;
 
@@ -110,9 +110,9 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     // assymmetric
     // /////////////////////////////////////////////////////////////////////////////
     Int_t totalNumberOfPixels = 0;
-    for (int ch = 0; ch < this->GetNumberOfChannels(); ch++)
-        totalNumberOfPixels += GetChannel(ch)->GetNumberOfPixels();
-
+    for (auto ch = 0; ch < this->GetNumberOfChannels(); ch++) {
+        totalNumberOfPixels += fReadoutChannel[ch].GetNumberOfPixels();
+    }
     if (nodes == 0) {
         nodes = TMath::Sqrt(totalNumberOfPixels);
         nodes = 2 * nodes;
@@ -129,10 +129,10 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 
     fMapping.Initialize(nodes, nodes, GetModuleSizeX(), GetModuleSizeY());
 
-    for (int ch = 0; ch < this->GetNumberOfChannels(); ch++) {
-        for (int px = 0; px < this->GetChannel(ch)->GetNumberOfPixels(); px++) {
-            Double_t xPix = this->GetChannel(ch)->GetPixel(px)->GetCenter().X();
-            Double_t yPix = this->GetChannel(ch)->GetPixel(px)->GetCenter().Y();
+    for (auto ch = 0; ch < this->GetNumberOfChannels(); ch++) {
+        for (int px = 0; px < fReadoutChannel[ch].GetNumberOfPixels(); px++) {
+            Double_t xPix = fReadoutChannel[ch].GetPixel(px)->GetCenter().X();
+            Double_t yPix = fReadoutChannel[ch].GetPixel(px)->GetCenter().Y();
 
             Int_t nodeX = fMapping.GetNodeX(xPix);
             Int_t nodeY = fMapping.GetNodeY(yPix);
@@ -151,8 +151,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
                 Int_t tempPix = fMapping.GetPixelByNode(nodeX, nodeY);
                 RESTWarning << "Already associated channel : " << tempCh << " pixel : " << tempPix
                             << RESTendl;
-                Double_t xP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().X();
-                Double_t yP = this->GetChannel(tempCh)->GetPixel(tempPix)->GetCenter().Y();
+                Double_t xP = fReadoutChannel[tempCh].GetPixel(tempPix)->GetCenter().X();
+                Double_t yP = fReadoutChannel[tempCh].GetPixel(tempPix)->GetCenter().Y();
                 RESTWarning << "Pixel coordinates : ( " << xP << " , " << yP << " ) " << RESTendl;
                 cout << endl;
 
@@ -163,18 +163,18 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         }
     }
 
-    for (int i = 0; i < nodes; i++) {
+    for (auto i = 0; i < nodes; i++) {
         printf("Completed : %.2lf %%\r", 100. * (i * (Double_t)nodes) / nodes / nodes);
         fflush(stdout);
-        for (int j = 0; j < nodes; j++) {
+        for (auto j = 0; j < nodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
             const auto transformedCoordinates = TransformToPhysicalCoordinates(x, y);
 
             if (!fMapping.isNodeSet(i, j)) {
-                for (int ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
-                    for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels() && !fMapping.isNodeSet(i, j);
-                         px++) {
+                for (auto ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
+                    for (int px = 0;
+                         px < fReadoutChannel[ch].GetNumberOfPixels() && !fMapping.isNodeSet(i, j); px++) {
                         if (isInsidePixel(ch, px, transformedCoordinates)) {
                             fMapping.SetNode(i, j, ch, px);
                         }
@@ -189,8 +189,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     else
         cout << "All Nodes set" << endl;
 
-    for (int i = 0; i < nodes; i++)
-        for (int j = 0; j < nodes; j++) {
+    for (auto i = 0; i < nodes; i++)
+        for (auto j = 0; j < nodes; j++) {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
@@ -198,8 +198,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 
                 cout << "Node NOT SET : " << i << " , " << j << " Mapping x : " << x << " y : " << y << endl;
 
-                for (int ch = 0; ch < GetNumberOfChannels(); ch++) {
-                    for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++) {
+                for (auto ch = 0; ch < GetNumberOfChannels(); ch++) {
+                    for (int px = 0; px < fReadoutChannel[ch].GetNumberOfPixels(); px++) {
                         if (isInsidePixel(ch, px, transformedCoordinates)) {
                             cout << "X : " << transformedCoordinates.X() << " , "
                                  << transformedCoordinates.Y() << " Is inside channel : " << ch
@@ -216,7 +216,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 ///////////////////////////////////////////////
 /// \brief Determines if a given *daqID* number is in the range of the module
 ///
-Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
+Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) const {
     if (daqID >= fMinimumDaqId && daqID <= fMaximumDaqId) return true;
     return false;
 }
@@ -228,7 +228,7 @@ Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
 /// The readout mapping (see TRestDetectorReadoutMapping) is used to help finding
 /// the pixel where coordinates absX and absY fall in.
 ///
-Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
+Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) const {
     if (!isInside(position)) return -1;
 
     const auto transformedCoordinates = TransformToModuleCoordinates(position);
@@ -295,8 +295,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
             RESTWarning << "TRestDetectorReadoutModule. I did not find any channel for hit position (" << x
                         << "," << y << ") in internal module coordinates" << RESTendl;
 
-            for (int ch = 0; ch < GetNumberOfChannels(); ch++)
-                for (int px = 0; px < GetChannel(ch)->GetNumberOfPixels(); px++)
+            for (auto ch = 0; ch < GetNumberOfChannels(); ch++)
+                for (auto px = 0; px < fReadoutChannel[ch].GetNumberOfPixels(); px++)
                     if (isInsidePixel(ch, px, position)) {
                         cout << "( " << x << " , " << y << ") Should be in channel " << ch
                              << " pixel : " << px << endl;
@@ -319,7 +319,7 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
 /// \brief Determines if the position TVector2 *pos* relative to the readout
 /// plane are inside this readout module.
 ///
-Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
+Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) const {
     TVector2 positionRotated = TransformToModuleCoordinates(position);
 
     if (positionRotated.X() >= 0 && positionRotated.X() <= fModuleSize.X() && positionRotated.Y() >= 0 &&
@@ -333,7 +333,7 @@ Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
 /// \brief Determines if the position *x,y* is found in any of the pixels
 /// of the readout *channel* index given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Double_t y) {
+Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Double_t y) const {
     return isInsideChannel(channel, {x, y});
 }
 
@@ -341,10 +341,12 @@ Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Do
 /// \brief Determines if the position TVector2 *pos* is found in any of the
 /// pixels of the readout *channel* index given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2& position) {
+Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2& position) const {
     TVector2 pos = TransformToModuleCoordinates(position);
     for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++)
-        if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) return true;
+        if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) {
+            return true;
+        }
     return false;
 }
 
@@ -352,11 +354,13 @@ Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2
 /// \brief Determines if the position TVector2 *pos* is found at a specific
 /// *pixel* id inside the readout *channel* given.
 ///
-Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position) {
+Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position) const {
     if (channel < 0 || pixel < 0) return false;
 
     TVector2 pos = TransformToModuleCoordinates(position);
-    if (GetChannel(channel)->GetPixel(pixel)->isInside(pos)) return true;
+    if (GetChannel(channel)->GetPixel(pixel)->isInside(pos)) {
+        return true;
+    }
     return false;
 }
 
@@ -366,7 +370,7 @@ Bool_t TRestDetectorReadoutModule::isInsidePixel(Int_t channel, Int_t pixel, con
 ///  It can be seen as the vector to add to move from the position to the
 ///  closest border of the module.
 ///
-TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& position) {
+TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& position) const {
     TVector2 newPos = TransformToModuleCoordinates(position);
 
     Double_t dx = 0, dy = 0;
@@ -387,7 +391,7 @@ TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& positio
 /// \brief Returns the pixel origin (left-bottom) position for a given *channel*
 /// and *pixel* indexes.
 ///
-TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) {
+TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) const {
     return GetPixelVertex(channel, pixel, 0);
 }
 
@@ -398,7 +402,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) 
 /// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
-TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) {
+TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) const {
     TVector2 pixPosition = GetChannel(channel)->GetPixel(pixel)->GetVertex(vertex);
 
     pixPosition = pixPosition.Rotate(fModuleRotation * TMath::Pi() / 180.);
@@ -413,7 +417,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, 
 /// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
-TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) {
+TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) const {
     TVector2 pixCenter = GetChannel(channel)->GetPixel(pixel)->GetCenter();
 
     pixCenter = pixCenter.Rotate(fModuleRotation * TMath::Pi() / 180.);
@@ -428,31 +432,31 @@ TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) 
 /// \param vertex A boolean that is true if the pixel is triangular, false
 /// otherwise
 ///
-Bool_t TRestDetectorReadoutModule::GetPixelTriangle(Int_t channel, Int_t pixel) {
+Bool_t TRestDetectorReadoutModule::GetPixelTriangle(Int_t channel, Int_t pixel) const {
     Bool_t type = GetChannel(channel)->GetPixel(pixel)->GetTriangle();
 
     return type;
 }
 
-TVector2 TRestDetectorReadoutModule::GetPixelOrigin(TRestDetectorReadoutPixel* pix) {
+TVector2 TRestDetectorReadoutModule::GetPixelOrigin(TRestDetectorReadoutPixel* pix) const {
     return GetPixelVertex(pix, 0);
 }
 
-TVector2 TRestDetectorReadoutModule::GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex) {
+TVector2 TRestDetectorReadoutModule::GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex) const {
     TVector2 pixPosition = pix->GetVertex(vertex);
     pixPosition = pixPosition.Rotate(fModuleRotation * TMath::Pi() / 180.);
     pixPosition = pixPosition + fModuleOrigin;
     return pixPosition;
 }
 
-TVector2 TRestDetectorReadoutModule::GetPixelCenter(TRestDetectorReadoutPixel* pix) {
+TVector2 TRestDetectorReadoutModule::GetPixelCenter(TRestDetectorReadoutPixel* pix) const {
     TVector2 corner1(GetPixelVertex(pix, 0));
     TVector2 corner2(GetPixelVertex(pix, 2));
     TVector2 center = (corner1 + corner2) / 2.;
     return center;
 }
 
-Bool_t TRestDetectorReadoutModule::GetPixelTriangle(TRestDetectorReadoutPixel* pix) {
+Bool_t TRestDetectorReadoutModule::GetPixelTriangle(TRestDetectorReadoutPixel* pix) const {
     return pix->GetTriangle();
 }
 
@@ -492,7 +496,7 @@ TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
 /// \brief Adds a new channel to the module
 ///
 void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& rChannel) {
-    for (int i = 0; i < rChannel.GetNumberOfPixels(); i++) {
+    for (auto i = 0; i < rChannel.GetNumberOfPixels(); i++) {
         // TODO we expect here that the user will only do pixel rotations between 0
         // and 90 degrees, we must force that on pixel definition or fix it here
         Double_t oX = rChannel.GetPixel(i)->GetVertex(3).X();
@@ -535,7 +539,7 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Tolerance : " << fTolerance << RESTendl;
         RESTMetadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
-        for (int n = 0; n < GetNumberOfChannels(); n++) {
+        for (auto n = 0; n < GetNumberOfChannels(); n++) {
             fReadoutChannel[n].Print(DetailLevel - 1);
         }
     }

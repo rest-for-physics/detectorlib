@@ -239,7 +239,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
     if (numberOfSignals == 0) return nullptr;
 
     Int_t planeID, readoutChannel = -1, readoutModule;
-    for (int i = 0; i < numberOfSignals; i++) {
+    for (auto i = 0; i < numberOfSignals; i++) {
         TRestDetectorSignal* sgnl = fSignalEvent->GetSignal(i);
         Int_t signalID = sgnl->GetSignalID();
 
@@ -453,7 +453,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;
 
-            for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
+            for (auto j = 0; j < sgnl->GetNumberOfPoints(); j++) {
                 Double_t energy_point = sgnl->GetData(j);
                 energy_signal += energy_point;
                 distanceToPlane += sgnl->GetTime(j) * fDriftVelocity * energy_point;
@@ -463,7 +463,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             Double_t z = zPosition + fieldZDirection * (distanceToPlane / energy_signal);
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
         } else if (fMethod == "all") {
-            for (int j = 0; j < sgnl->GetNumberOfPoints(); j++) {
+            for (auto j = 0; j < sgnl->GetNumberOfPoints(); j++) {
                 Double_t energy = sgnl->GetData(j);
 
                 Double_t distanceToPlane = sgnl->GetTime(j) * fDriftVelocity;
@@ -484,7 +484,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "intwindow") {
             Int_t nPoints = sgnl->GetNumberOfPoints();
             std::map<int, std::pair<int, double> > windowMap;
-            for (int j = 0; j < nPoints; j++) {
+            for (auto j = 0; j < nPoints; j++) {
                 int index = sgnl->GetTime(j) / fIntWindow;
                 auto it = windowMap.find(index);
                 if (it != windowMap.end()) {

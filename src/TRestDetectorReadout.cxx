@@ -347,7 +347,9 @@ Int_t TRestDetectorReadout::GetNumberOfReadoutPlanes() { return fReadoutPlanes.s
 ///
 Int_t TRestDetectorReadout::GetNumberOfModules() {
     Int_t modules = 0;
-    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) modules += fReadoutPlanes[p].GetNumberOfModules();
+    for (auto p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+        modules += fReadoutPlanes[p].GetNumberOfModules();
+    }
     return modules;
 }
 
@@ -357,9 +359,10 @@ Int_t TRestDetectorReadout::GetNumberOfModules() {
 ///
 Int_t TRestDetectorReadout::GetNumberOfChannels() {
     Int_t channels = 0;
-    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++)
-        for (int m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++)
+    for (auto p = 0; p < GetNumberOfReadoutPlanes(); p++)
+        for (auto m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++) {
             channels += fReadoutPlanes[p][m].GetNumberOfChannels();
+        }
     return channels;
 }
 
@@ -368,7 +371,9 @@ Int_t TRestDetectorReadout::GetNumberOfChannels() {
 ///
 Int_t TRestDetectorReadout::GetModuleDefinitionId(TString name) {
     for (unsigned int i = 0; i < fModuleDefinitions.size(); i++)
-        if (fModuleDefinitions[i].GetName() == name) return i;
+        if (fModuleDefinitions[i].GetName() == name) {
+            return i;
+        }
     return -1;
 }
 
@@ -376,7 +381,7 @@ Int_t TRestDetectorReadout::GetModuleDefinitionId(TString name) {
 /// \brief Returns a pointer to the readout plane by ID
 ///
 TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlaneWithID(int id) {
-    for (int i = 0; i < this->GetNumberOfReadoutPlanes(); i++) {
+    for (auto i = 0; i < this->GetNumberOfReadoutPlanes(); i++) {
         if (fReadoutPlanes[i].GetID() == id) {
             return &fReadoutPlanes[i];
         }
@@ -391,10 +396,10 @@ TRestDetectorReadoutPlane* TRestDetectorReadout::GetReadoutPlaneWithID(int id) {
 /// e.g. micromegas M0 has id 0, M5 has id 5. The **ID** is Unique of all the
 /// readout mudules
 TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id) {
-    for (int i = 0; i < this->GetNumberOfReadoutPlanes(); i++) {
+    for (auto i = 0; i < this->GetNumberOfReadoutPlanes(); i++) {
         TRestDetectorReadoutPlane& plane = fReadoutPlanes[i];
 
-        for (int j = 0; j < plane.GetNumberOfModules(); j++) {
+        for (auto j = 0; j < plane.GetNumberOfModules(); j++) {
             if (plane[j].GetModuleID() == id) {
                 return &plane[j];
             }
@@ -445,7 +450,6 @@ void TRestDetectorReadout::AddReadoutPlane(TRestDetectorReadoutPlane plane) {
 void TRestDetectorReadout::InitFromConfigFile() {
     fMappingNodes = StringToInteger(GetParameter("mappingNodes", "0"));
 
-#pragma region ParseModuledefinition
     TiXmlElement* moduleDefinition = GetElement("readoutModule");
     while (moduleDefinition != nullptr) {
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
@@ -460,7 +464,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
         fModuleDefinitions.push_back(module);
         moduleDefinition = GetNextElement(moduleDefinition);
     }
-#pragma endregion
 
     TiXmlElement* planeDefinition = GetElement("readoutPlane");
     vector<TRestDetectorReadoutModule> moduleVector;
@@ -476,8 +479,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         Double_t tDriftDistance = plane.GetDistanceTo(plane.GetCathodePosition());
         plane.SetTotalDriftDistance(tDriftDistance);
-
-#pragma region addReadoutModuleToPlane
 
         moduleVector.clear();
         TiXmlElement* moduleDefinition = GetElement("addReadoutModule", planeDefinition);
@@ -495,8 +496,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
             fModuleDefinitions[mid].SetModuleID(StringToInteger(GetFieldValue("id", moduleDefinition)));
             fModuleDefinitions[mid].SetOrigin(StringTo2DVector(GetFieldValue("origin", moduleDefinition)));
             fModuleDefinitions[mid].SetRotation(StringToDouble(GetFieldValue("rotation", moduleDefinition)));
-
-#pragma region SetupDecodingFile
 
             Int_t firstDaqChannel = StringToInteger(GetFieldValue("firstDaqChannel", moduleDefinition));
             if (firstDaqChannel == -1) firstDaqChannel = addedChannels;
@@ -559,7 +558,8 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 exit(1);
             }
 
-            for (int ch = 0; ch < fModuleDefinitions[mid].GetNumberOfChannels(); ch++) {
+            for (auto ch = 0; ch < fModuleDefinitions[mid].GetNumberOfChannels(); ch++) {
+                // for (auto &channel: fModuleDefinitions[mid].fReadoutChannel) {
                 if (!fDecoding) {
                     Int_t id = ch;
                     rChannel.push_back(id);
@@ -571,7 +571,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetDaqID(dChannel[ch]);
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetChannelID(rChannel[ch]);
 
-#pragma endregion
                 addedChannels++;
             }
             fModuleDefinitions[mid].SetMinMaxDaqIDs();
@@ -597,7 +596,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
             //	}
             //}
         }
-#pragma endregion
 
         this->AddReadoutPlane(plane);
         planeDefinition = GetNextElement(planeDefinition);
@@ -648,7 +646,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
             pixelDefinition = GetNextElement(pixelDefinition);
         }
 
-        if (pixelIDVector.size() > 0 && pixelIDVector.size() != pixelVector.size()) {
+        if (!pixelIDVector.empty() && pixelIDVector.size() != pixelVector.size()) {
             RESTError
                 << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
                    "readout module definition!"
@@ -679,7 +677,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         channelDefinition = GetNextElement(channelDefinition);
     }
 
-    if (channelIDVector.size() > 0 && channelIDVector.size() != channelVector.size()) {
+    if (!channelIDVector.empty() && channelIDVector.size() != channelVector.size()) {
         RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
                   << "check your readout module definition!" << RESTendl;
         RESTError << " " << RESTendl;
@@ -734,9 +732,9 @@ void TRestDetectorReadout::ValidateReadout() {
 
 void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID, Int_t& moduleID,
                                                  Int_t& channelID) {
-    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+    for (auto p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        for (int m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (auto m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* mod = &(*plane)[m];
 
             if (mod->isDaqIDInside(signalID)) {
@@ -750,7 +748,7 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
 
 Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
-    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+    for (auto p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
         int m = plane->GetModuleIDFromPosition(position.X(), position.Y(), position.Z());
         if (m >= 0) {
@@ -857,7 +855,7 @@ void TRestDetectorReadout::PrintMetadata(Int_t DetailLevel) {
         else
             RESTMetadata << "NO" << RESTendl;
         RESTMetadata << "-----------------------------------" << RESTendl;
-        for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) fReadoutPlanes[p].Print(DetailLevel - 1);
+        for (auto p = 0; p < GetNumberOfReadoutPlanes(); p++) fReadoutPlanes[p].Print(DetailLevel - 1);
         RESTMetadata << "****************************************" << RESTendl;
         cout << endl;
     }

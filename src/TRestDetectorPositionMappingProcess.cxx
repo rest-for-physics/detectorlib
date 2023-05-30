@@ -130,8 +130,8 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
         // Calculate the mean of each bin's spectrum
         double sum = 0;
         double n = 0;
-        for (int i = 1; i <= fAreaGainMap->GetNbinsX(); i++) {
-            for (int j = 1; j <= fAreaGainMap->GetNbinsY(); j++) {
+        for (auto i = 1; i <= fAreaGainMap->GetNbinsX(); i++) {
+            for (auto j = 1; j <= fAreaGainMap->GetNbinsY(); j++) {
                 if (fAreaCounts->GetBinContent(i, j) > 100) {
                     double meanthrintegral =
                         fAreaThrIntegralSum->GetBinContent(i, j) / fAreaCounts->GetBinContent(i, j);
@@ -146,8 +146,8 @@ void TRestDetectorPositionMappingProcess::EndProcess() {
         double meanmean = sum / n;
 
         // normalize and fill the result
-        for (int i = 1; i <= fAreaGainMap->GetNbinsX(); i++) {
-            for (int j = 1; j <= fAreaGainMap->GetNbinsY(); j++) {
+        for (auto i = 1; i <= fAreaGainMap->GetNbinsX(); i++) {
+            for (auto j = 1; j <= fAreaGainMap->GetNbinsY(); j++) {
                 if (fAreaGainMap->GetBinContent(i, j) == 0) {
                     fAreaGainMap->SetBinContent(i, j, 1);
                 } else {

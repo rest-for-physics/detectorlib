@@ -50,7 +50,7 @@ class TRestDetectorSignalEvent : public TRestEvent {
     }
 
     inline void SortSignals() {
-        for (int n = 0; n < GetNumberOfSignals(); n++) {
+        for (auto n = 0; n < GetNumberOfSignals(); n++) {
             fSignal[n].Sort();
         }
     }

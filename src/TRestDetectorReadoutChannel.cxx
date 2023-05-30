@@ -67,7 +67,9 @@ void TRestDetectorReadoutChannel::Initialize() { fDaqID = -1; }
 ///
 Int_t TRestDetectorReadoutChannel::isInside(Double_t x, Double_t y) {
     for (unsigned int i = 0; i < fReadoutPixel.size(); i++)
-        if (fReadoutPixel[i].isInside(x, y)) return true;
+        if (fReadoutPixel[i].isInside({x, y})) {
+            return true;
+        }
     return false;
 }
 
@@ -100,7 +102,7 @@ void TRestDetectorReadoutChannel::Print(int DetailLevel) {
         RESTMetadata << "+++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
         if (DetailLevel - 1 >= 0)
-            for (int n = 0; n < GetNumberOfPixels(); n++) {
+            for (auto n = 0; n < GetNumberOfPixels(); n++) {
                 fReadoutPixel[n].Print();
             }
     }
