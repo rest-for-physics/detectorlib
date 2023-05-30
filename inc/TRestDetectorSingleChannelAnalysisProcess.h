@@ -23,13 +23,9 @@
 
 class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorSignalEvent* fSignalEvent;  //!
-
-    TRestDetectorReadout* fReadout;  //!
-
-    TRestDetectorGainMap* fCalib;  //!
-#endif
+    TRestDetectorReadout* fReadout;          //!
+    TRestDetectorGainMap* fCalib;            //!
 
     void InitFromConfigFile() override;
 

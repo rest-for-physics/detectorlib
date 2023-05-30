@@ -19,11 +19,8 @@
 
 class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fHitsEvent;  //!
-
     TRandom3* fRandom;  //!
-#endif
 
     void InitFromConfigFile() override;
 

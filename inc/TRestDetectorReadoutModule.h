@@ -66,10 +66,8 @@ class TRestDetectorReadoutModule {
     Double_t fTolerance;  ///< Tolerance allowed in overlaps at the pixel
                           ///< boundaries in mm.
 
-#ifndef __CINT__
     Bool_t showWarnings;  //!///< Flag to enable/disable warning outputs. Disabled by
                           //! default. REST_Warning in TRestDetectorReadout will enable it.
-#endif
 
     void Initialize();
 
