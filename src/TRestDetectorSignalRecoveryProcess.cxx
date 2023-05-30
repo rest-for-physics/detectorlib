@@ -221,7 +221,7 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 2.);
             }
         } else if (type == 2 || type == 3) {  // We got two dead-channels
-            if (type == 2)             // The other dead channel is the one at the left
+            if (type == 2)                    // The other dead channel is the one at the left
             {
                 for (int n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                     recoveredSignal.IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 6.);
@@ -246,14 +246,14 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
             for (int n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 4.);
         } else {
-          RESTWarning << "Adjacent channels for signal " << fChannelIds[x] << " not found " << RESTendl;
-          continue;
+            RESTWarning << "Adjacent channels for signal " << fChannelIds[x] << " not found " << RESTendl;
+            continue;
         }
 
-       if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
+        if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
             fOutputSignalEvent->RemoveSignalWithId(fChannelIds[x]);
 
-       fOutputSignalEvent->AddSignal(recoveredSignal);
+        fOutputSignalEvent->AddSignal(recoveredSignal);
 
         /*cout << "Channel recovered!! " << endl;
         if( leftSgnl != nullptr && rightSgnl != nullptr )
