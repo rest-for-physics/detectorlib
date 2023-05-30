@@ -40,11 +40,11 @@ class TRestDetectorReadoutPlane {
 
     TVector3 fPosition;            ///< The position of the readout plane. The relative position
                                    ///< of the modules will be shifted by this value.
-    TVector3 fPlaneVector;         ///< The plane std::vector definning the plane orientation
+    TVector3 fPlaneVector;         ///< The plane std::vector defining the plane orientation
                                    ///< and the side of the active volume.
     TVector3 fCathodePosition;     ///< The cathode position which delimites the active
                                    ///< volume together with the readout plane.
-    Double_t fChargeCollection;    ///< A parameter between 0 and 1 definning how
+    Double_t fChargeCollection;    ///< A parameter between 0 and 1 defining how
                                    ///< much charge should be collected from a
                                    ///< charge hit. It might be used to distribute
                                    ///< the charge between different readout planes.
@@ -66,15 +66,15 @@ class TRestDetectorReadoutPlane {
     void SetID(int id) { fPlaneID = id; }
 
     /// Sets the readout plane position
-    void SetPosition(TVector3 pos) { fPosition = pos; }
+    void SetPosition(const TVector3& position) { fPosition = position; }
 
     /// Sets the cathode plane position. By default is parallel to the readout
     /// plane.
-    void SetCathodePosition(TVector3 pos) { fCathodePosition = pos; }
+    void SetCathodePosition(const TVector3& position) { fCathodePosition = position; }
 
     /// Sets the orientation of the readout plane, and defines the side of the
     /// active volume.
-    void SetPlaneVector(TVector3 vect) { fPlaneVector = vect.Unit(); }
+    void SetPlaneVector(const TVector3& vect) { fPlaneVector = vect.Unit(); }
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
@@ -103,7 +103,7 @@ class TRestDetectorReadoutPlane {
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.
-    Double_t GetDistanceTo(TVector3 pos);
+    Double_t GetDistanceTo(TVector3 position);
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *x*, *y*, *z*.
@@ -111,8 +111,8 @@ class TRestDetectorReadoutPlane {
 
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
-    TVector2 GetDistanceToModule(Int_t mod, TVector2 pos) {
-        return GetModuleByID(mod)->GetDistanceToModule(pos);
+    TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) {
+        return GetModuleByID(mod)->GetDistanceToModule(position);
     }
 
     TRestDetectorReadoutModule& operator[](int mod) { return fReadoutModules[mod]; }
@@ -124,7 +124,7 @@ class TRestDetectorReadoutPlane {
     }
 
     /// Returns the total number of modules in the readout plane
-    Int_t GetNumberOfModules() { return fReadoutModules.size(); }
+    size_t GetNumberOfModules() { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
     void AddModule(TRestDetectorReadoutModule& rModule) {
@@ -141,11 +141,11 @@ class TRestDetectorReadoutPlane {
 
     Int_t isZInsideDriftVolume(Double_t z);
 
-    Int_t isZInsideDriftVolume(TVector3 pos);
+    Int_t isZInsideDriftVolume(TVector3 position);
 
     Bool_t isDaqIDInside(Int_t daqId);
 
-    Int_t GetModuleIDFromPosition(TVector3 pos);
+    Int_t GetModuleIDFromPosition(TVector3 position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 

@@ -28,7 +28,6 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     TCanvas* fCanvasXY;
     TCanvas* fCanvasXZYZ;
 
-    // TRestDecoding *fDecoding;
     TRestDetectorReadout* fReadout;
 
     TRestDetectorSignalEvent* fSignalEvent;
@@ -37,12 +36,12 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     TH2D* fHistoXZ;
     TH2D* fHistoYZ;
 
-    bool isfirstEvent;
+    bool isFirstevent;
 
     double xmin, xmax, ymin, ymax, zmin, zmax;
 
    public:
-    void Initialize();
+    void Initialize() override;
     // Finalize initialization based on arg. TRestDetectorReadout
     void SetReadout(TRestDetectorReadout* readout);
 

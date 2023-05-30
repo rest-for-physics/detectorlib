@@ -53,7 +53,7 @@ class TRestDetectorReadoutModule {
                                ///< position=(fModuleOriginX, fModuleOriginY) in
                                ///< degrees.
 
-    Int_t fMininimumDaqId;  ///< The minimum daq channel id associated to the
+    Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
                             ///< module.
     Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
 
@@ -79,7 +79,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates (xPhys,yPhys) in the readout plane reference
     /// system to the readout module reference system.
-    inline TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) {
+    inline TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) const {
         TVector2 coords(xPhys - fModuleOriginX, yPhys - fModuleOriginY);
         TVector2 rot = coords.Rotate(-fModuleRotation * TMath::Pi() / 180.);
 
@@ -88,7 +88,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates (xMod,yMod) in the readout module reference
     /// system to the readout plane reference system.
-    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) {
+    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) const {
         TVector2 coords(xMod, yMod);
 
         coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
@@ -135,7 +135,7 @@ class TRestDetectorReadoutModule {
     inline Double_t GetTolerance() const { return fTolerance; }
 
     /// Returns the minimum daq id number
-    inline Int_t GetMinDaqID() const { return fMininimumDaqId; }
+    inline Int_t GetMinDaqID() const { return fMinimumDaqId; }
 
     /// Returns the maximum daq id number
     inline Int_t GetMaxDaqID() const { return fMaximumDaqId; }

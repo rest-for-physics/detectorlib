@@ -86,7 +86,7 @@ class TRestDetectorReadoutChannel {
     void SetChannelID(Int_t id) { fChannelId = id; }
 
     /// Adds a new pixel to the readout channel
-    void AddPixel(TRestDetectorReadoutPixel pix) { fReadoutPixel.push_back(pix); }
+    void AddPixel(const TRestDetectorReadoutPixel& pixel) { fReadoutPixel.emplace_back(pixel); }
 
     Int_t isInside(Double_t x, Double_t y);
 

@@ -57,7 +57,7 @@ class TRestDetectorReadoutPixel {
     Double_t GetOriginY() const { return fPixelOriginY; }
 
     /// Returns a TVector2 with the pixel origin.
-    TVector2 GetOrigin() const { return TVector2(fPixelOriginX, fPixelOriginY); }
+    TVector2 GetOrigin() const { return {fPixelOriginX, fPixelOriginY}; }
 
     /// Returns the rotation angle in degrees
     Double_t GetRotation() const { return fRotation; }
@@ -69,7 +69,7 @@ class TRestDetectorReadoutPixel {
     inline Double_t GetSizeY() const { return fPixelSizeY; }
 
     /// Returns a TVector2 with the pixel size.
-    TVector2 GetSize() { return TVector2(fPixelSizeX, fPixelSizeY); }
+    TVector2 GetSize() { return {fPixelSizeX, fPixelSizeY}; }
 
     /// Returns true if the pixel is a triangle.
     Bool_t GetTriangle() const { return fTriangle; }
@@ -85,7 +85,7 @@ class TRestDetectorReadoutPixel {
     }
 
     /// Sets the origin of the pixel using a TVector2.
-    void SetOrigin(TVector2 origin) {
+    void SetOrigin(const TVector2& origin) {
         fPixelOriginX = origin.X();
         fPixelOriginY = origin.Y();
     }
@@ -97,7 +97,7 @@ class TRestDetectorReadoutPixel {
     }
 
     /// Sets the size of the pixel using a TVector2.
-    void SetSize(TVector2 size) {
+    void SetSize(const TVector2& size) {
         fPixelSizeX = size.X();
         fPixelSizeY = size.Y();
     }
