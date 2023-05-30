@@ -64,7 +64,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
 
     if (fApplyGainCorrection) {
         if (fCalib != nullptr) {
-            for (auto & iter : fChannelGain) {
+            for (auto& iter : fChannelGain) {
                 if (fCalib->fChannelGain.count(iter.first) == 0) {
                     RESTError << "in consistent gain mapping and readout definition!" << RESTendl;
                     RESTError << "channel: " << iter.first << " not fount in mapping file!" << RESTendl;

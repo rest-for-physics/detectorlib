@@ -180,13 +180,12 @@ class TRestDetectorReadoutModule {
     }
 
     /// Returns a pointer to a readout channel by index
-    inline  TRestDetectorReadoutChannel* GetChannel(size_t n)  {
+    inline TRestDetectorReadoutChannel* GetChannel(size_t n) {
         if (n >= GetNumberOfChannels()) {
             return nullptr;
         }
         return &fReadoutChannel[n];
     }
-
 
     /// Returns the total number of channels defined inside the module
     inline size_t GetNumberOfChannels() const { return fReadoutChannel.size(); }
