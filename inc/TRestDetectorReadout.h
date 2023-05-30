@@ -97,7 +97,7 @@ class TRestDetectorReadout : public TRestMetadata {
     explicit TRestDetectorReadout(const char* configFilename);
     TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
-    virtual ~TRestDetectorReadout();
+    ~TRestDetectorReadout() override;
 
     ClassDefOverride(TRestDetectorReadout, 1);
 };

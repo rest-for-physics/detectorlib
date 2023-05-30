@@ -183,7 +183,7 @@ class TRestDetectorReadoutModule {
     }
 
     /// Returns the module name
-    inline const char* GetName() const override { return fModuleName.Data(); }
+    inline const char* GetName() const { return fModuleName.Data(); }
 
     /// Returns a pointer to the readout mapping
     inline TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
