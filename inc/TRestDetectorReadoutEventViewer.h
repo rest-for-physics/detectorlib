@@ -45,7 +45,7 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     // Finalize initialization based on arg. TRestDetectorReadout
     void SetReadout(TRestDetectorReadout* readout);
 
-    void AddEvent(TRestEvent* ev);
+    void AddEvent(TRestEvent* ev) override;
     void DrawReadoutPulses();
     TRestDetectorReadoutChannel* GetChannel(int readoutChannel);
     TRestDetectorReadoutModule* GetModule(int readoutChannel);
