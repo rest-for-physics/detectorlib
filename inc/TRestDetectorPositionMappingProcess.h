@@ -81,7 +81,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TRestDetectorPositionMappingProcess();
     TRestDetectorPositionMappingProcess(const char* configFilename);
 
-    ~TRestDetectorPositionMappingProcess();
+    ~TRestDetectorPositionMappingProcess() override;
 
     ClassDefOverride(TRestDetectorPositionMappingProcess, 1);
 };

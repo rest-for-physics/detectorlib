@@ -50,10 +50,10 @@ class TRestDetectorReadoutMapping {
     /// Returns the number of nodes in Y.
     inline Int_t GetNumberOfNodesY() const { return fNodesY; }
 
-    /// Gets the channel id correspoding to a given node (i,j)
+    /// Gets the channel id corresponding to a given node (i,j)
     Int_t GetChannelByNode(Int_t i, Int_t j) { return fChannel[i][j]; }
 
-    /// Gets the pixel id correspoding to a given node (i,j)
+    /// Gets the pixel id corresponding to a given node (i,j)
     Int_t GetPixelByNode(Int_t i, Int_t j) { return fPixel[i][j]; }
 
     Bool_t isNodeSet(Int_t i, Int_t j);

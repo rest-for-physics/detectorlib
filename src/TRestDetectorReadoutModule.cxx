@@ -77,7 +77,7 @@ void TRestDetectorReadoutModule::Initialize() {
     fModuleRotation = 0;
 
     fMaximumDaqId = -1;
-    fMininimumDaqId = -1;
+    fMinimumDaqId = -1;
 
     fTolerance = 1.e-3;
 
@@ -98,7 +98,7 @@ void TRestDetectorReadoutModule::SetMinMaxDaqIDs() {
     }
 
     fMaximumDaqId = maxID;
-    fMininimumDaqId = minID;
+    fMinimumDaqId = minID;
 }
 
 ///////////////////////////////////////////////
@@ -220,7 +220,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 /// \brief Determines if a given *daqID* number is in the range of the module
 ///
 Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
-    if (daqID >= fMininimumDaqId && daqID <= fMaximumDaqId) return true;
+    if (daqID >= fMinimumDaqId && daqID <= fMaximumDaqId) return true;
     return false;
 }
 
