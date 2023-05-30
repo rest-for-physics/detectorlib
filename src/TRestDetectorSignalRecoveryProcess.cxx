@@ -290,9 +290,9 @@ int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int
     idLeft = -1;
     idRight = -1;
 
-    for (auto p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+    for (size_t p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
-        for (auto m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (size_t m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* mod = plane->GetModule(m);
             // We iterate over all readout modules searching for the one that contains
             // our signal id

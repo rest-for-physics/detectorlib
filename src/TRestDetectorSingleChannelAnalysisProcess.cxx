@@ -46,11 +46,11 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
     fCalib = GetMetadata<TRestDetectorGainMap>();
     if (fReadout == nullptr) {
     } else {
-        for (auto i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
+        for (size_t i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
             auto plane = fReadout->GetReadoutPlane(i);
-            for (auto j = 0; j < plane->GetNumberOfModules(); j++) {
+            for (size_t j = 0; j < plane->GetNumberOfModules(); j++) {
                 auto mod = plane->GetModule(j);
-                for (auto k = 0; k < mod->GetNumberOfChannels(); k++) {
+                for (size_t k = 0; k < mod->GetNumberOfChannels(); k++) {
                     auto channel = mod->GetChannel(k);
                     fChannelGain[channel->GetDaqID()] = 1;       // default correction factor is 1
                     fChannelGainError[channel->GetDaqID()] = 1;  // relative error
@@ -64,10 +64,10 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
 
     if (fApplyGainCorrection) {
         if (fCalib != nullptr) {
-            for (auto iter = fChannelGain.begin(); iter != fChannelGain.end(); iter++) {
-                if (fCalib->fChannelGain.count(iter->first) == 0) {
+            for (auto & iter : fChannelGain) {
+                if (fCalib->fChannelGain.count(iter.first) == 0) {
                     RESTError << "in consistent gain mapping and readout definition!" << RESTendl;
-                    RESTError << "channel: " << iter->first << " not fount in mapping file!" << RESTendl;
+                    RESTError << "channel: " << iter.first << " not fount in mapping file!" << RESTendl;
                     abort();
                 }
             }

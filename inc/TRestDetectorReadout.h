@@ -62,9 +62,9 @@ class TRestDetectorReadout : public TRestMetadata {
     TRestDetectorReadoutChannel* GetReadoutChannelWithDaqID(int daqId);
     /////////////////////////////////////
 
-    Int_t GetNumberOfReadoutPlanes();
-    Int_t GetNumberOfModules();
-    Int_t GetNumberOfChannels();
+    size_t GetNumberOfReadoutPlanes();
+    size_t GetNumberOfModules();
+    size_t GetNumberOfChannels();
 
     Int_t GetModuleDefinitionId(TString name);
 

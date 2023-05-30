@@ -46,14 +46,14 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
             if (mod == nullptr) continue;
             // finding out the old "firstdaqchannel" value
             int mindaq = 1e9;
-            for (auto i = 0; i < mod->GetNumberOfChannels(); i++) {
+            for (size_t i = 0; i < mod->GetNumberOfChannels(); i++) {
                 if (mod->GetChannel(i)->GetDaqID() < mindaq) {
                     mindaq = mod->GetChannel(i)->GetDaqID();
                 }
             }
 
             // re-setting the value
-            for (auto i = 0; i < mod->GetNumberOfChannels(); i++) {
+            for (size_t i = 0; i < mod->GetNumberOfChannels(); i++) {
                 mod->GetChannel(i)->SetDaqID(mod->GetChannel(i)->GetDaqID() - mindaq + iter->second);
             }
 
@@ -61,13 +61,13 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
         }
 
         if (fIgnoreUndefinedModules) {
-            for (auto i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
+            for (size_t i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
                 TRestDetectorReadoutPlane& plane = (*fReadout)[i];
 
-                for (auto j = 0; j < plane.GetNumberOfModules(); j++) {
+                for (size_t j = 0; j < plane.GetNumberOfModules(); j++) {
                     TRestDetectorReadoutModule& mod = plane[j];
                     if (fFirstDaqChannelDef.count(mod.GetModuleID()) == 0) {
-                        for (auto i = 0; i < mod.GetNumberOfChannels(); i++) {
+                        for (size_t i = 0; i < mod.GetNumberOfChannels(); i++) {
                             mod.GetChannel(i)->SetDaqID(-1e9);
                         }
                     }

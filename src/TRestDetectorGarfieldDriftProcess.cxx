@@ -230,7 +230,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         readoutmatrix->Print();
         matrixZpos = (readoutmatrix->IsTranslation() ? 10 * readoutmatrix->GetTranslation()[2]
                                                      : 0);  // converted to mm
-        for (int jj = 0; jj < fReadout->GetNumberOfReadoutPlanes(); jj++) {
+        for (size_t jj = 0; jj < fReadout->GetNumberOfReadoutPlanes(); jj++) {
             TRestDetectorReadoutPlane* readoutplane = fReadout->GetReadoutPlane(jj);
             planeZpos = readoutplane->GetPosition().Z();
             cout << "    jj " << jj << " matrixZpos " << matrixZpos << " planeZpos " << planeZpos << endl;
@@ -325,12 +325,10 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
     // }
 }
 
-//------------------------------------------------------------------------------
-
 Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t x, Double_t y) {
     // TODO verify this
     TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(readoutPlane);
-    for (int md = 0; md < plane->GetNumberOfModules(); md++)
+    for (size_t md = 0; md < plane->GetNumberOfModules(); md++)
         if ((*plane)[md].isInside(x, y)) return md;
 
     return -1;

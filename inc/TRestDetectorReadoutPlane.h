@@ -118,13 +118,13 @@ class TRestDetectorReadoutPlane {
     TRestDetectorReadoutModule& operator[](int mod) { return fReadoutModules[mod]; }
 
     /// Returns a pointer to a readout module using its std::vector index
-    TRestDetectorReadoutModule* GetModule(int mod) {
+    TRestDetectorReadoutModule* GetModule(size_t mod) {
         if (mod >= GetNumberOfModules()) return nullptr;
         return &fReadoutModules[mod];
     }
 
     /// Returns a const pointer to a readout module using its std::vector index
-    const TRestDetectorReadoutModule* GetModule(int mod) const {
+    const TRestDetectorReadoutModule* GetModule(size_t mod) const {
         if (mod >= GetNumberOfModules()) return nullptr;
         return &fReadoutModules[mod];
     }

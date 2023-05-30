@@ -122,7 +122,7 @@ class TRestDetectorReadoutModule {
     /// Returns the physical readout channel index for a given daq id channel
     /// number
     inline Int_t DaqToReadoutChannel(Int_t daqChannel) const {
-        for (auto n = 0; n < GetNumberOfChannels(); n++)
+        for (size_t n = 0; n < GetNumberOfChannels(); n++)
             if (GetChannel(n)->GetDaqID() == daqChannel) {
                 return n;
             }
@@ -169,10 +169,10 @@ class TRestDetectorReadoutModule {
     /// Returns a pointer to the readout mapping
     inline const TRestDetectorReadoutMapping* GetMapping() const { return &fMapping; }
 
-    inline TRestDetectorReadoutChannel& operator[](int n) { return fReadoutChannel[n]; }
+    inline TRestDetectorReadoutChannel& operator[](size_t n) { return fReadoutChannel[n]; }
 
     /// Returns a const pointer to a readout channel by index
-    inline const TRestDetectorReadoutChannel* GetChannel(int n) const {
+    inline const TRestDetectorReadoutChannel* GetChannel(size_t n) const {
         if (n >= GetNumberOfChannels()) {
             return nullptr;
         }
@@ -180,7 +180,7 @@ class TRestDetectorReadoutModule {
     }
 
     /// Returns a pointer to a readout channel by index
-    inline  TRestDetectorReadoutChannel* GetChannel(int n)  {
+    inline  TRestDetectorReadoutChannel* GetChannel(size_t n)  {
         if (n >= GetNumberOfChannels()) {
             return nullptr;
         }

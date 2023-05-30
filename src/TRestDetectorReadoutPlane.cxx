@@ -387,7 +387,9 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (auto i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -410,16 +412,16 @@ TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
 
     TH2Poly* readoutHistogram = new TH2Poly("ReadoutHistogram", "ReadoutHistogram", xmin, xmax, ymin, ymax);
 
-    for (auto i = 0; i < this->GetNumberOfModules(); i++) {
+    for (size_t i = 0; i < this->GetNumberOfModules(); i++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[i];
 
-        int nChannels = module->GetNumberOfChannels();
+        size_t nChannels = module->GetNumberOfChannels();
 
-        for (auto ch = 0; ch < nChannels; ch++) {
+        for (size_t ch = 0; ch < nChannels; ch++) {
             const TRestDetectorReadoutChannel* channel = module->GetChannel(ch);
-            Int_t nPixels = channel->GetNumberOfPixels();
+            size_t nPixels = channel->GetNumberOfPixels();
 
-            for (int px = 0; px < nPixels; px++) {
+            for (size_t px = 0; px < nPixels; px++) {
                 for (int v = 0; v < 4; v++) {
                     x[v] = module->GetPixelVertex(ch, px, v).X();
                     y[v] = module->GetPixelVertex(ch, px, v).Y();
@@ -444,7 +446,7 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 
     xmin = 1E9, xmax = -1E9, ymin = 1E9, ymax = -1E9;
 
-    for (auto mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
+    for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];
 
         for (int v = 0; v < 4; v++) {

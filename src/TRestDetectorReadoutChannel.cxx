@@ -101,9 +101,10 @@ void TRestDetectorReadoutChannel::Print(int DetailLevel) {
                      << RESTendl;
         RESTMetadata << "+++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
-        if (DetailLevel - 1 >= 0)
-            for (auto n = 0; n < GetNumberOfPixels(); n++) {
+        if (DetailLevel - 1 >= 0) {
+            for (size_t n = 0; n < GetNumberOfPixels(); n++) {
                 fReadoutPixel[n].Print();
             }
+        }
     }
 }

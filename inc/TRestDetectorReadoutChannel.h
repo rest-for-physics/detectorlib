@@ -65,7 +65,7 @@ class TRestDetectorReadoutChannel {
     TRestDetectorReadoutPixel& operator[](int n) { return fReadoutPixel[n]; }
 
     /// Returns a pointer to the pixel *n* by index.
-    const TRestDetectorReadoutPixel* GetPixel(int n) const {
+    const TRestDetectorReadoutPixel* GetPixel(size_t n) const {
         if (n >= GetNumberOfPixels()) return nullptr;
         return &fReadoutPixel[n];
     }

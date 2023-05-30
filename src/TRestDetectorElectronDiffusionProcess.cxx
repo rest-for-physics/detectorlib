@@ -141,7 +141,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             const Double_t y = hits->GetY(n);
             const Double_t z = hits->GetZ(n);
 
-            for (auto p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+            for (size_t p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
                 TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
 
                 if (plane->isZInsideDriftVolume(z)) {
