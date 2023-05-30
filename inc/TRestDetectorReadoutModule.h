@@ -54,8 +54,8 @@ class TRestDetectorReadoutModule {
                                ///< degrees.
 
     Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
-                            ///< module.
-    Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
+                          ///< module.
+    Int_t fMaximumDaqId;  ///< The maximum daq channel id associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
         fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
