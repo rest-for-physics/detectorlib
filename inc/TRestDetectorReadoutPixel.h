@@ -24,14 +24,12 @@
 #define RestCore_TRestDetectorReadoutPixel
 
 #include <TMath.h>
-#include <TObject.h>
-#include <TRestMetadata.h>
 #include <TVector2.h>
 
 #include <iostream>
 
 /// A class to store the readout pixel definition used in TRestDetectorReadoutChannel.
-class TRestDetectorReadoutPixel : public TObject {
+class TRestDetectorReadoutPixel {
    private:
     Double_t fPixelOriginX;  ///< The pixel x-origin position, left-bottom corner.
     Double_t fPixelOriginY;  ///< The pixel y-origin position, left-bottom corner.
@@ -125,6 +123,7 @@ class TRestDetectorReadoutPixel : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutPixel();
 
-    ClassDef(TRestDetectorReadoutPixel, 4);
+    ClassDef(TRestDetectorReadoutPixel, 5);
 };
+
 #endif

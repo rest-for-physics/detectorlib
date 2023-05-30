@@ -24,7 +24,6 @@
 #define RestCore_TRestDetectorReadoutModule
 
 #include <TMath.h>
-#include <TObject.h>
 #include <TVector2.h>
 
 #include <iostream>
@@ -34,7 +33,7 @@
 
 /// A class to store the readout module definition used in TRestDetectorReadoutPlane. It
 /// allows to integrate any number of independent readout channels.
-class TRestDetectorReadoutModule : public TObject {
+class TRestDetectorReadoutModule {
    private:
     Int_t fModuleID;  ///< The module id given by the readout definition.
 
@@ -253,6 +252,6 @@ class TRestDetectorReadoutModule : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutModule();
 
-    ClassDefOverride(TRestDetectorReadoutModule, 1);
+    ClassDefOverride(TRestDetectorReadoutModule, 2);
 };
 #endif
