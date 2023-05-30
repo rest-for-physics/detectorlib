@@ -114,9 +114,9 @@ class TRestDetectorReadoutPixel {
     Bool_t isInside(TVector2 pos);
     Bool_t isInside(Double_t x, Double_t y);
 
-    TVector2 TransformToPixelCoordinates(TVector2 p);
+    TVector2 TransformToPixelCoordinates(const TVector2& pixel) const;
 
-    void Print();
+    void Print() const;
 
     // Constructor
     TRestDetectorReadoutPixel();

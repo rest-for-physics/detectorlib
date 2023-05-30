@@ -50,7 +50,7 @@ void TRestDetectorSingleChannelAnalysisProcess::InitProcess() {
             auto plane = fReadout->GetReadoutPlane(i);
             for (size_t j = 0; j < plane->GetNumberOfModules(); j++) {
                 auto mod = plane->GetModule(j);
-                for (int k = 0; k < mod->GetNumberOfChannels(); k++) {
+                for (size_t k = 0; k < mod->GetNumberOfChannels(); k++) {
                     auto channel = mod->GetChannel(k);
                     fChannelGain[channel->GetDaqID()] = 1;       // default correction factor is 1
                     fChannelGainError[channel->GetDaqID()] = 1;  // relative error
