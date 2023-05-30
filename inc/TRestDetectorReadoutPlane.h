@@ -103,15 +103,15 @@ class TRestDetectorReadoutPlane {
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.
-    Double_t GetDistanceTo(const TVector3& position);
+    Double_t GetDistanceTo(const TVector3& position) const;
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *x*, *y*, *z*.
-    Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z);
+    Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z) const;
 
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
-    TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) {
+    TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) const {
         return GetModuleByID(mod)->GetDistanceToModule(position);
     }
 
@@ -123,8 +123,14 @@ class TRestDetectorReadoutPlane {
         return &fReadoutModules[mod];
     }
 
+    /// Returns a const pointer to a readout module using its std::vector index
+    const TRestDetectorReadoutModule* GetModule(int mod) const {
+        if (mod >= GetNumberOfModules()) return nullptr;
+        return &fReadoutModules[mod];
+    }
+
     /// Returns the total number of modules in the readout plane
-    size_t GetNumberOfModules() { return fReadoutModules.size(); }
+    size_t GetNumberOfModules() const { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
     void AddModule(TRestDetectorReadoutModule& rModule) {
@@ -135,19 +141,19 @@ class TRestDetectorReadoutPlane {
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }
 
-    size_t GetNumberOfChannels();
+    size_t GetNumberOfChannels() const;
 
     TRestDetectorReadoutModule* GetModuleByID(Int_t modID);
 
-    Int_t isZInsideDriftVolume(Double_t z);
+    Int_t isZInsideDriftVolume(Double_t z) const;
 
-    Int_t isZInsideDriftVolume(const TVector3& position);
+    Int_t isZInsideDriftVolume(const TVector3& position) const;
 
-    Bool_t isDaqIDInside(Int_t daqId);
+    Bool_t isDaqIDInside(Int_t daqId) const;
 
-    Int_t GetModuleIDFromPosition(const TVector3& position);
+    Int_t GetModuleIDFromPosition(const TVector3& position) const;
 
-    Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
+    Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) const;
 
     void SetDriftDistance();
 
@@ -155,10 +161,10 @@ class TRestDetectorReadoutPlane {
 
     void Print(Int_t DetailLevel = 0);
 
-    Int_t FindChannel(Int_t module, const TVector2& position);
+    Int_t FindChannel(Int_t module, const TVector2& position) const;
 
-    Double_t GetX(Int_t modID, Int_t chID);
-    Double_t GetY(Int_t modID, Int_t chID);
+    Double_t GetX(Int_t modID, Int_t chID) const;
+    Double_t GetY(Int_t modID, Int_t chID) const;
 
     TH2Poly* GetReadoutHistogram();
     void GetBoundaries(double& xmin, double& xmax, double& ymin, double& ymax);
@@ -169,5 +175,6 @@ class TRestDetectorReadoutPlane {
     virtual ~TRestDetectorReadoutPlane();
 
     ClassDef(TRestDetectorReadoutPlane, 2);
+    const TRestDetectorReadoutModule* GetModuleByID(Int_t modID) const;
 };
 #endif

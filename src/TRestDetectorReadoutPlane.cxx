@@ -72,7 +72,7 @@ void TRestDetectorReadoutPlane::Initialize() {
 ///////////////////////////////////////////////
 /// \brief Returns the total number of channels in the readout plane
 ///
-size_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
+size_t TRestDetectorReadoutPlane::GetNumberOfChannels() const {
     size_t result = 0;
     for (const auto& module : fReadoutModules) {
         result += module.GetNumberOfChannels();
@@ -99,6 +99,13 @@ TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID
     return nullptr;
 }
 
+const TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) const {
+    for (const auto& module : fReadoutModules) {
+        if (module.GetModuleID() == modID) return &module;
+    }
+    cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
+    return nullptr;
+}
 ///////////////////////////////////////////////
 /// \brief Returns the X coordinate of a given channel in a given module using
 /// their internal module and channel ids.
@@ -110,8 +117,8 @@ TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID
 /// \param chID Internal channel id. As defined on the readout.
 ///
 /// \return The value of the X-coordinate relative to the readout position
-Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
-    TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
+Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) const {
+    const TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
 
     const TRestDetectorReadoutChannel* rChannel = rModule->GetChannel(chID);
 
@@ -177,8 +184,8 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
 /// \param chID Internal channel id. As defined on the readout.
 ///
 /// \return The value of the X-coordinate relative to the readout position
-Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
-    TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
+Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) const {
+    const TRestDetectorReadoutModule* rModule = GetModuleByID(modID);
 
     const TRestDetectorReadoutChannel* rChannel = rModule->GetChannel(chID);
 
@@ -227,7 +234,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
@@ -243,7 +250,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
 /// \param absX It is the x absolut physical position
 /// \param absY It is the y absolut physical position
 /// \return The corresponding channel id
-Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& position) {
+Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& position) const {
     const auto relativePosition = position - TVector2{fPosition.X(), fPosition.Y()};
 
     // TODO : check first if (modX,modY) is inside the module.
@@ -258,7 +265,7 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// *x*, *y*, *z* position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double_t z) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double_t z) const {
     return GetDistanceTo(TVector3(x, y, z));
 }
 
@@ -266,7 +273,7 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) const {
     return (pos - GetPosition()).Dot(GetPlaneVector());
 }
 
@@ -277,7 +284,7 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) const {
     TVector3 pos = TVector3(0, 0, z);
 
     return isZInsideDriftVolume(pos);
@@ -290,7 +297,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 /// \return true if daqId is found
 /// returns false if daqId is not found
 ///
-Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
+Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) const {
     for (auto& readoutModule : fReadoutModules) {
         if (readoutModule.isDaqIDInside(daqId)) {
             return true;
@@ -308,7 +315,7 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) {
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) const {
     TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
@@ -329,10 +336,8 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) {
-    TVector3 pos = TVector3(x, y, z);
-
-    return GetModuleIDFromPosition(pos);
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) const {
+    return GetModuleIDFromPosition({x, y, z});
 }
 ///////////////////////////////////////////////
 /// \brief This method returns the module id where *pos* is found.
@@ -345,7 +350,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) {
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) const {
     TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
