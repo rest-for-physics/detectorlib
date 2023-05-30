@@ -23,7 +23,6 @@
 #ifndef RestCore_TRestDetectorReadout
 #define RestCore_TRestDetectorReadout
 
-#include <TObject.h>
 #include <TRestMetadata.h>
 
 #include <iostream>
@@ -97,7 +96,7 @@ class TRestDetectorReadout : public TRestMetadata {
 
     // Constructor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* configFilename);
+    explicit TRestDetectorReadout(const char* configFilename);
     TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
     virtual ~TRestDetectorReadout();

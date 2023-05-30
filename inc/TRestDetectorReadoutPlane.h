@@ -25,8 +25,6 @@
 
 #include <TGraph.h>
 #include <TH2Poly.h>
-#include <TObject.h>
-#include <TRestMetadata.h>
 
 #include <iostream>
 
@@ -35,7 +33,7 @@
 
 /// A class to store the readout plane definition used in TRestDetectorReadout. It
 /// allows to integrate any number of independent readout modules.
-class TRestDetectorReadoutPlane : public TObject {
+class TRestDetectorReadoutPlane {
    private:
     Int_t fPlaneID;  ///< The readout plane id. The id number is imposed by the
                      ///< order of creation. Being the first id=0.
@@ -170,6 +168,6 @@ class TRestDetectorReadoutPlane : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 1);
+    ClassDef(TRestDetectorReadoutPlane, 2);
 };
 #endif
