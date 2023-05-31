@@ -342,14 +342,17 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) {
+    TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
 
     if (distance > 0 && distance < fTotalDriftDistance) {
-        for (int m = 0; m < GetNumberOfModules(); m++)
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
+        for (auto& module : fReadoutModules) {
+            if (module.isInside(posNew.X(), posNew.Y())) {
+                return module.GetModuleID();
+            }
+        }
     }
 
     return -1;

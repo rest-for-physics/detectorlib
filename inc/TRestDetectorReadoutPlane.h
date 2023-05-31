@@ -147,7 +147,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     Bool_t isDaqIDInside(Int_t daqId);
 
-    Int_t GetModuleIDFromPosition(TVector3 pos);
+    Int_t GetModuleIDFromPosition(const TVector3& position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 
