@@ -42,11 +42,11 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     double xmin, xmax, ymin, ymax, zmin, zmax;
 
    public:
-    void Initialize();
+    void Initialize() override;
     // Finalize initialization based on arg. TRestDetectorReadout
     void SetReadout(TRestDetectorReadout* readout);
 
-    void AddEvent(TRestEvent* ev);
+    void AddEvent(TRestEvent* ev) override;
     void DrawReadoutPulses();
     TRestDetectorReadoutChannel* GetChannel(int readoutChannel);
     TRestDetectorReadoutModule* GetModule(int readoutChannel);
@@ -56,7 +56,7 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     // Destructor
     ~TRestDetectorReadoutEventViewer() override;
 
-    ClassDef(TRestDetectorReadoutEventViewer, 1);  // class inherited from
-                                                   // TRestEventViewer
+    ClassDefOverride(TRestDetectorReadoutEventViewer, 1);  // class inherited from
+                                                           // TRestEventViewer
 };
 #endif
