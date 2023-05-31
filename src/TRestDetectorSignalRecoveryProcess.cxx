@@ -186,16 +186,11 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
     for (auto n = 0; n < fInputSignalEvent->GetNumberOfSignals(); n++)
         fOutputSignalEvent->AddSignal(*fInputSignalEvent->GetSignal(n));
 
-    Int_t nPoints = fOutputSignalEvent->GetSignal(0)->GetNumberOfPoints();
-
     Int_t idL;
     Int_t idR;
     for (unsigned int x = 0; x < fChannelIds.size(); x++) {
         Int_t type = GetAdjacentSignalIds(fChannelIds[x], idL, idR);
         RESTDebug << "Channel id : " << fChannelIds[x] << " Left : " << idL << " Right : " << idR << RESTendl;
-
-        if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
-            fOutputSignalEvent->RemoveSignalWithId(fChannelIds[x]);
 
         if (idL == -1 || idR == -1) continue;
 
@@ -209,41 +204,41 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
 
         if (leftSgnl == nullptr || rightSgnl == nullptr) continue;
 
-        TRestDetectorSignal* recoveredSignal = new TRestDetectorSignal();
-        recoveredSignal->SetID(fChannelIds[x]);
+        TRestDetectorSignal recoveredSignal;
+        recoveredSignal.SetID(fChannelIds[x]);
 
         if (type == 1)  // Only one dead channel
         {
             for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++) {
-                recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 2.);
+                recoveredSignal.IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 2.);
+
                 /// Energy preserved. This could be optional using a new metadata member
                 leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 2.);
             }
 
             for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++) {
-                recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 2.);
+                recoveredSignal.IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 2.);
+
                 /// Energy preserved. This could be optional using a new metadata member
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 2.);
             }
-        }
-
-        if (type == 2 || type == 3) {  // We got two dead-channels
-            if (type == 2)             // The other dead channel is the one at the left
+        } else if (type == 2 || type == 3) {  // We got two dead-channels
+            if (type == 2)                    // The other dead channel is the one at the left
             {
                 for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 6.);
+                    recoveredSignal.IncreaseAmplitude(leftSgnl->GetTime(n), leftSgnl->GetData(n) / 6.);
 
                 for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), 2 * rightSgnl->GetData(n) / 6.);
+                    recoveredSignal.IncreaseAmplitude(rightSgnl->GetTime(n), 2 * rightSgnl->GetData(n) / 6.);
             }
 
             if (type == 3)  // The other dead channel is the one at the right
             {
                 for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(leftSgnl->GetTime(n), 2 * leftSgnl->GetData(n) / 6.);
+                    recoveredSignal.IncreaseAmplitude(leftSgnl->GetTime(n), 2 * leftSgnl->GetData(n) / 6.);
 
                 for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
-                    recoveredSignal->IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 6.);
+                    recoveredSignal.IncreaseAmplitude(rightSgnl->GetTime(n), rightSgnl->GetData(n) / 6.);
             }
 
             /// We removed the charge that we place at the dead channel
@@ -252,22 +247,27 @@ TRestEvent* TRestDetectorSignalRecoveryProcess::ProcessEvent(TRestEvent* evInput
                 leftSgnl->IncreaseAmplitude(leftSgnl->GetTime(n), -1. * leftSgnl->GetData(n) / 4.);
             for (auto n = 0; n < rightSgnl->GetNumberOfPoints(); n++)
                 rightSgnl->IncreaseAmplitude(rightSgnl->GetTime(n), -1. * rightSgnl->GetData(n) / 4.);
+        } else {
+            RESTWarning << "Adjacent channels for signal " << fChannelIds[x] << " not found " << RESTendl;
+            continue;
         }
 
-        fOutputSignalEvent->AddSignal(*recoveredSignal);
+        if (fOutputSignalEvent->GetSignalIndex(fChannelIds[x]) > 0)
+            fOutputSignalEvent->RemoveSignalWithId(fChannelIds[x]);
+
+        fOutputSignalEvent->AddSignal(recoveredSignal);
 
         /*cout << "Channel recovered!! " << endl;
         if( leftSgnl != nullptr && rightSgnl != nullptr )
             for( int n = 0; n < nPoints; n++ )
                 cout << "Sample " << n << " : " << leftSgnl->GetData(n) << " + " << rightSgnl->GetData(n) << "
-        = " << recoveredSignal->GetData(n) << endl;*/
+        = " << recoveredSignal.GetData(n) << endl;*/
 
         RESTDebug << "Channel recovered!! " << RESTendl;
         if (leftSgnl != nullptr && rightSgnl != nullptr)
-            for (auto n = 0; n < nPoints; n++)
+            for (auto n = 0; n < leftSgnl->GetNumberOfPoints(); n++)
                 RESTDebug << "Sample " << n << " : " << leftSgnl->GetData(n) << " + " << rightSgnl->GetData(n)
-                          << " = " << recoveredSignal->GetData(n) << RESTendl;
-        delete recoveredSignal;
+                          << " = " << recoveredSignal.GetData(n) << RESTendl;
     }
 
     RESTDebug << "Channels after : " << fOutputSignalEvent->GetNumberOfSignals() << RESTendl;
