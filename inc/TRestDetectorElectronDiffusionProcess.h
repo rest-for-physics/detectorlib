@@ -21,7 +21,6 @@
 
 class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
    private:
-
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 

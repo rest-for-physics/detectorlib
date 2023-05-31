@@ -20,7 +20,7 @@
 class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
    private:
     TRestDetectorHitsEvent* fHitsEvent;  //!
-    TRandom3* fRandom;  //!
+    TRandom3* fRandom;                   //!
 
     void InitFromConfigFile() override;
 
