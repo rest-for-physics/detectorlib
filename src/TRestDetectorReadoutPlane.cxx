@@ -447,7 +447,6 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
     }
 }
 
-
 ///////////////////////////////////////////////
 /// \brief Rotates the point with the direction of the readout plane.
 ///
