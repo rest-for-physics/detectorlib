@@ -117,6 +117,8 @@ class TRestDetectorReadoutPlane : public TObject {
         return GetModuleByID(mod)->GetDistanceToModule(pos);
     }
 
+    TVector2 GetRelativePosition(const TVector3& pos) const;
+
     TRestDetectorReadoutModule& operator[](int mod) { return fReadoutModules[mod]; }
 
     /// Returns a pointer to a readout module using its std::vector index

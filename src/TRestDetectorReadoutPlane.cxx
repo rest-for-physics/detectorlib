@@ -446,3 +446,14 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
         }
     }
 }
+
+
+///////////////////////////////////////////////
+/// \brief Rotates the point with the direction of the readout plane.
+///
+TVector2 TRestDetectorReadoutPlane::GetRelativePosition(const TVector3& position) const {
+    TVector3 rotated = position;
+    rotated.RotateUz(fPlaneVector);
+
+    return {rotated.X(), rotated.Y()};
+}
