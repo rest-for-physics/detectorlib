@@ -64,7 +64,7 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
             for (int i = 0; i < fReadout->GetNumberOfReadoutPlanes(); i++) {
                 TRestDetectorReadoutPlane& plane = (*fReadout)[i];
 
-                for (int j = 0; j < plane.GetNumberOfModules(); j++) {
+                for (size_t j = 0; j < plane.GetNumberOfModules(); j++) {
                     TRestDetectorReadoutModule& mod = plane[j];
                     if (fFirstDaqChannelDef.count(mod.GetModuleID()) == 0) {
                         for (int i = 0; i < mod.GetNumberOfChannels(); i++) {

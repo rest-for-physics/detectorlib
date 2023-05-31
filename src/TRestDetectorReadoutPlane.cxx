@@ -74,7 +74,8 @@ void TRestDetectorReadoutPlane::Initialize() {
 ///
 Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
     Int_t nChannels = 0;
-    for (int md = 0; md < GetNumberOfModules(); md++) nChannels += fReadoutModules[md].GetNumberOfChannels();
+    for (size_t md = 0; md < GetNumberOfModules(); md++)
+        nChannels += fReadoutModules[md].GetNumberOfChannels();
     return nChannels;
 }
 
@@ -90,7 +91,7 @@ void TRestDetectorReadoutPlane::SetDriftDistance() {
 /// \brief Returns a pointer to a module using its internal module id
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
-    for (int md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++)
         if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
@@ -290,7 +291,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 /// returns false if daqId is not found
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
-    for (int m = 0; m < GetNumberOfModules(); m++)
+    for (size_t m = 0; m < GetNumberOfModules(); m++)
         if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
 
     return false;
@@ -348,7 +349,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
     Double_t distance = GetDistanceTo(posNew);
 
     if (distance > 0 && distance < fTotalDriftDistance) {
-        for (int m = 0; m < GetNumberOfModules(); m++)
+        for (size_t m = 0; m < GetNumberOfModules(); m++)
             if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
     }
 
@@ -376,7 +377,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (int i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
     }
 }
 
@@ -399,7 +400,7 @@ TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
 
     TH2Poly* readoutHistogram = new TH2Poly("ReadoutHistogram", "ReadoutHistogram", xmin, xmax, ymin, ymax);
 
-    for (int mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
+    for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];
 
         int nChannels = module->GetNumberOfChannels();
@@ -433,7 +434,7 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 
     xmin = 1E9, xmax = -1E9, ymin = 1E9, ymax = -1E9;
 
-    for (int mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
+    for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];
 
         for (int v = 0; v < 4; v++) {

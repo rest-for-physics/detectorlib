@@ -358,7 +358,7 @@ Int_t TRestDetectorReadout::GetNumberOfModules() {
 Int_t TRestDetectorReadout::GetNumberOfChannels() {
     Int_t channels = 0;
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++)
-        for (int m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++)
+        for (size_t m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++)
             channels += fReadoutPlanes[p][m].GetNumberOfChannels();
     return channels;
 }
@@ -394,7 +394,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
     for (int i = 0; i < this->GetNumberOfReadoutPlanes(); i++) {
         TRestDetectorReadoutPlane& plane = fReadoutPlanes[i];
 
-        for (int j = 0; j < plane.GetNumberOfModules(); j++) {
+        for (size_t j = 0; j < plane.GetNumberOfModules(); j++) {
             if (plane[j].GetModuleID() == id) {
                 return &plane[j];
             }
@@ -736,7 +736,7 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
                                                  Int_t& channelID) {
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        for (int m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (size_t m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* mod = &(*plane)[m];
 
             if (mod->isDaqIDInside(signalID)) {

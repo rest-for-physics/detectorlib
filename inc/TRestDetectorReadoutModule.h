@@ -54,8 +54,8 @@ class TRestDetectorReadoutModule {
                                ///< degrees.
 
     Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
-                            ///< module.
-    Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
+                          ///< module.
+    Int_t fMaximumDaqId;  ///< The maximum daq channel id associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
         fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
@@ -73,7 +73,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    inline TVector2 TransformToModuleCoordinates(const TVector2& p) {
+    inline TVector2 TransformToModuleCoordinates(const TVector2& p) const {
         return TransformToModuleCoordinates(p.X(), p.Y());
     }
 
@@ -174,7 +174,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 GetModuleCoordinates(const TVector2& p) { return TransformToModuleCoordinates(p); }
+    TVector2 GetModuleCoordinates(const TVector2& p) const { return TransformToModuleCoordinates(p); }
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
