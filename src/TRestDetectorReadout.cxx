@@ -752,17 +752,9 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& pla
                                               Int_t& channelID) {
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+        int m = plane->GetModuleIDFromPosition(position);
         if (m >= 0) {
-            // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
-            if (readoutChannel >= 0) {
-                planeID = plane->GetID();
-                moduleID = mod->GetModuleID();
-                channelID = readoutChannel;
-                return mod->GetChannel(readoutChannel)->GetDaqID();
-            }
+            return GetHitsDaqChannelAtReadoutPlane(position, moduleID, channelID, p);
         }
     }
     return -1;

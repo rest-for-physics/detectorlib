@@ -231,7 +231,10 @@ Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
 /// The readout mapping (see TRestDetectorReadoutMapping) is used to help finding
 /// the pixel where coordinates absX and absY fall in.
 ///
-Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
+Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
+    const auto& absX = position.X();
+    const auto& absY = position.Y();
+
     if (!isInside(absX, absY)) return -1;
 
     Double_t x = TransformToModuleCoordinates(absX, absY).X();
@@ -325,9 +328,11 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
 Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
     TVector2 rotPos = TransformToModuleCoordinates(position);
 
-    if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX)
-        if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) return true;
-
+    if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX) {
+        if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) {
+            return true;
+        }
+    }
     return false;
 }
 

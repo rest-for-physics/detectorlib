@@ -250,7 +250,7 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, Double_t absX, Double
     // FindChannel will take a long time to search for the channel if it is not
     // there. It will be faster
 
-    return fReadoutModules[module].FindChannel(modX, modY);
+    return fReadoutModules[module].FindChannel({modX, modY});
 }
 
 ///////////////////////////////////////////////
@@ -265,7 +265,7 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(TVector3 pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
     return (pos - GetPosition()).Dot(GetPlaneVector());
 }
 
@@ -305,7 +305,7 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& pos) {
     TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
 
     Double_t distance = GetDistanceTo(posNew);
@@ -326,11 +326,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) {
-    TVector3 pos = TVector3(x, y, z);
 
-    return GetModuleIDFromPosition(pos);
-}
 ///////////////////////////////////////////////
 /// \brief This method returns the module id where *pos* is found.
 /// The z-coordinate must be found in between

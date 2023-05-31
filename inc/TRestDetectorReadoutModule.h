@@ -217,6 +217,7 @@ class TRestDetectorReadoutModule : public TObject {
     /// plane are inside this readout module.
     ///
     inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
+    inline Bool_t isInside(const TVector3& position) const;
 
     Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
     Bool_t isInsideChannel(Int_t channel, const TVector2& position);
@@ -225,7 +226,7 @@ class TRestDetectorReadoutModule : public TObject {
     Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
 
     Bool_t isDaqIDInside(Int_t daqID);
-    Int_t FindChannel(Double_t x, Double_t y);
+    Int_t FindChannel(const TVector2& position);
     TVector2 GetDistanceToModule(const TVector2& position);
 
     TVector2 GetPixelOrigin(Int_t channel, Int_t pixel);

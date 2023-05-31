@@ -230,7 +230,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             Int_t daqId =
-                fReadout->GetHitsDaqChannelAtReadoutPlane(TVector3(x, y, z), moduleId, channelId, p);
+                fReadout->GetHitsDaqChannelAtReadoutPlane({x, y, z}, moduleId, channelId, p);
 
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
 

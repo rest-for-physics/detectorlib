@@ -68,15 +68,15 @@ class TRestDetectorReadoutPlane : public TObject {
     void SetID(int id) { fPlaneID = id; }
 
     /// Sets the readout plane position
-    void SetPosition(TVector3 pos) { fPosition = pos; }
+    void SetPosition(const TVector3& pos) { fPosition = pos; }
 
     /// Sets the cathode plane position. By default is parallel to the readout
     /// plane.
-    void SetCathodePosition(TVector3 pos) { fCathodePosition = pos; }
+    void SetCathodePosition(const TVector3& pos) { fCathodePosition = pos; }
 
     /// Sets the orientation of the readout plane, and defines the side of the
     /// active volume.
-    void SetPlaneVector(TVector3 vect) { fPlaneVector = vect.Unit(); }
+    void SetPlaneVector(const TVector3& vect) { fPlaneVector = vect.Unit(); }
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
@@ -105,7 +105,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *pos*.
-    Double_t GetDistanceTo(TVector3 pos);
+    Double_t GetDistanceTo(const TVector3& pos);
 
     /// Returns the perpendicular distance to the readout plane from a given
     /// position *x*, *y*, *z*.
@@ -113,7 +113,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
-    TVector2 GetDistanceToModule(Int_t mod, TVector2 pos) {
+    TVector2 GetDistanceToModule(Int_t mod, const TVector2& pos) {
         return GetModuleByID(mod)->GetDistanceToModule(pos);
     }
 
@@ -143,13 +143,11 @@ class TRestDetectorReadoutPlane : public TObject {
 
     Int_t isZInsideDriftVolume(Double_t z);
 
-    Int_t isZInsideDriftVolume(TVector3 pos);
+    Int_t isZInsideDriftVolume(const TVector3& pos);
 
     Bool_t isDaqIDInside(Int_t daqId);
 
     Int_t GetModuleIDFromPosition(const TVector3& position);
-
-    Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 
     void SetDriftDistance();
 
