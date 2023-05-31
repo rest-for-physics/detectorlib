@@ -153,12 +153,12 @@ TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
 /// \brief Prints on screen the pixel details, origin, size, rotation
 ///
 void TRestDetectorReadoutPixel::Print() {
-    RESTMetadata << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
-                 << GetSizeX() << "," << GetSizeY() << ") mm" << RESTendl;
-    RESTMetadata << "       rotation : " << fRotation << " degrees"
-                 << " type : ";
+    std::cout << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
+              << GetSizeX() << "," << GetSizeY() << ") mm" << std::endl;
+    std::cout << "       rotation : " << fRotation << " degrees"
+              << " type : ";
     if (fTriangle)
-        RESTMetadata << "triangle" << RESTendl;
+        std::cout << "triangle" << std::endl;
     else
-        RESTMetadata << "rectangle" << RESTendl;
+        std::cout << "rectangle" << std::endl;
 }
