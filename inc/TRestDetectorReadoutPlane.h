@@ -42,11 +42,11 @@ class TRestDetectorReadoutPlane : public TObject {
 
     TVector3 fPosition;            ///< The position of the readout plane. The relative position
                                    ///< of the modules will be shifted by this value.
-    TVector3 fPlaneVector;         ///< The plane std::vector definning the plane orientation
+    TVector3 fPlaneVector;         ///< The plane std::vector defining the plane orientation
                                    ///< and the side of the active volume.
-    TVector3 fCathodePosition;     ///< The cathode position which delimites the active
+    TVector3 fCathodePosition;     ///< The cathode position which delimits the active
                                    ///< volume together with the readout plane.
-    Double_t fChargeCollection;    ///< A parameter between 0 and 1 definning how
+    Double_t fChargeCollection;    ///< A parameter between 0 and 1 defining how
                                    ///< much charge should be collected from a
                                    ///< charge hit. It might be used to distribute
                                    ///< the charge between different readout planes.

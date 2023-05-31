@@ -146,7 +146,7 @@
 /// and the daq channel number defined at the acquisition system.
 /// If *no decoding* file is defined the relation between daq and readout
 /// channel is assigned *one to one*.
-/// The decoding file must be a text file definning two columns with as
+/// The decoding file must be a text file defining two columns with as
 /// many columns as the number of channels defined in the readout module.
 /// The first column is the daq channel number, and the second column is
 /// the readout channel defined in the RML file.

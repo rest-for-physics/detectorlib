@@ -408,7 +408,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) 
 /// \brief Returns any of the pixel vertex position for a given *channel* and
 /// *pixel* indexes.
 ///
-/// \param vertex A value between 0-3 definning the vertex position to be
+/// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
 TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) {
@@ -423,7 +423,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, 
 /// \brief Returns the center pixel position for a given *channel* and
 /// *pixel* indexes.
 ///
-/// \param vertex A value between 0-3 definning the vertex position to be
+/// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
 TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) {
@@ -474,7 +474,7 @@ Bool_t TRestDetectorReadoutModule::GetPixelTriangle(TRestDetectorReadoutPixel* p
 /// physical coordinates relative to the readout plane are returned, including
 /// rotation.
 ///
-/// \param n A value between 0-3 definning the vertex position to be returned
+/// \param n A value between 0-3 defining the vertex position to be returned
 ///
 TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
     TVector2 vertex(0, 0);

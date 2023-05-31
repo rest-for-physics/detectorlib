@@ -155,7 +155,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
                 if (deltaY < deltaX) x = rModule->GetPixelCenter(chID, 0).X();
             }
         } else {
-            // we choose to ouput x only when deltaY > deltaX under non-90 deg rotation
+            // we choose to output x only when deltaY > deltaX under non-90 deg rotation
             // otherwise it is a y channel and should return nan
             if (deltaY > deltaX) x = rModule->GetPixelCenter(chID, 0).X();
         }
@@ -225,7 +225,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
@@ -300,7 +300,7 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \brief This method determines if the z-coordinate is inside the drift volume
 /// for this readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param pos A TVector3 defining the position.
 ///
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
@@ -321,7 +321,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
 /// the readout plane. The *x* and *y* values must be found inside one of the
 /// readout modules defined inside the readout plane.
 ///
-/// \param x,y,z Three Double_t definning the position.
+/// \param x,y,z Three Double_t defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
@@ -337,7 +337,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
