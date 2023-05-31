@@ -55,7 +55,7 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     // Destructor
     ~TRestDetectorReadoutEventViewer() override;
 
-    ClassDef(TRestDetectorReadoutEventViewer, 1);  // class inherited from
-                                                   // TRestEventViewer
+    ClassDefOverride(TRestDetectorReadoutEventViewer, 1);  // class inherited from
+                                                           // TRestEventViewer
 };
 #endif
