@@ -76,7 +76,7 @@ class TRestDetectorReadoutPlane : public TObject {
 
     /// Sets the orientation of the readout plane, and defines the side of the
     /// active volume.
-    void SetPlaneVector(const TVector3& vect) { fPlaneVector = vect.Unit(); }
+    void SetPlaneVector(const TVector3& v) { fPlaneVector = v.Unit(); }
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }

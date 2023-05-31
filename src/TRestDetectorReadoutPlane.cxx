@@ -63,7 +63,7 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 void TRestDetectorReadoutPlane::Initialize() {
     fCathodePosition = TVector3(0, 0, 0);
     fPosition = TVector3(0, 0, 0);
-    fPlaneVector = TVector3(0, 0, 0);
+    fPlaneVector = TVector3(0, 0, 1);
 
     fNModules = 0;
     fReadoutModules.clear();
