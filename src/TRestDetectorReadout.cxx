@@ -146,7 +146,7 @@
 /// and the daq channel number defined at the acquisition system.
 /// If *no decoding* file is defined the relation between daq and readout
 /// channel is assigned *one to one*.
-/// The decoding file must be a text file definning two columns with as
+/// The decoding file must be a text file defining two columns with as
 /// many columns as the number of channels defined in the readout module.
 /// The first column is the daq channel number, and the second column is
 /// the readout channel defined in the RML file.
@@ -748,21 +748,13 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
     }
 }
 
-Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& planeID, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& planeID, Int_t& moduleID,
                                               Int_t& channelID) {
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+        int m = plane->GetModuleIDFromPosition(position);
         if (m >= 0) {
-            // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-            Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
-            if (readoutChannel >= 0) {
-                planeID = plane->GetID();
-                moduleID = mod->GetModuleID();
-                channelID = readoutChannel;
-                return mod->GetChannel(readoutChannel)->GetDaqID();
-            }
+            return GetHitsDaqChannelAtReadoutPlane(position, moduleID, channelID, p);
         }
     }
     return -1;
@@ -781,7 +773,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& hitpos, Int_t& pla
 /// \return the value of the daq id corresponding to the readout channel
 //
 ///
-Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID,
+Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& position, Int_t& moduleID,
                                                             Int_t& channelID, Int_t planeId) {
     if (planeId > GetNumberOfReadoutPlanes()) {
         RESTWarning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << RESTendl;
@@ -790,10 +782,11 @@ Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitp
     }
 
     TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
-    int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+    int m = plane->GetModuleIDFromPosition(position);
     if (m >= 0) {
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-        Int_t readoutChannel = mod->FindChannel(hitpos.X(), hitpos.Y());
+        const TVector2 relativePosition = plane->GetPositionInReadoutPlane(position);
+        Int_t readoutChannel = mod->FindChannel(relativePosition);
         if (readoutChannel >= 0) {
             moduleID = mod->GetModuleID();
             channelID = readoutChannel;

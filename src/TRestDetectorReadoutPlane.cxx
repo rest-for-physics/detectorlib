@@ -61,9 +61,13 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 /// \brief TRestDetectorReadoutPlane initialization
 ///
 void TRestDetectorReadoutPlane::Initialize() {
-    fCathodePosition = TVector3(0, 0, 0);
-    fPosition = TVector3(0, 0, 0);
-    fPlaneVector = TVector3(0, 0, 0);
+    fCathodePosition = {0, 0, 0};
+    fPosition = {0, 0, 0};
+    fPlaneVector = {0, 0, 1};
+
+    fPlaneAxisX = {1, 0, 0};
+    fPlaneAxisY = {0, 1, 0};
+    fPlaneRotationAngle = 0;
 
     fNModules = 0;
     fReadoutModules.clear();
@@ -84,6 +88,37 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
 void TRestDetectorReadoutPlane::SetDriftDistance() {
     Double_t tDriftDistance = this->GetDistanceTo(this->GetCathodePosition());
     this->SetTotalDriftDistance(tDriftDistance);
+}
+
+void TRestDetectorReadoutPlane::SetPlaneVector(const TVector3& planeVector) {
+    fPlaneVector = planeVector;
+    fPlaneVector = fPlaneVector.Unit();
+
+    // if the plane vector does not have the correct direction: from anode to cathode, we flip it
+
+    const TVector3 direction = fCathodePosition - fPosition;
+    if (fPlaneVector.Dot(direction) < 0) {
+        fPlaneVector *= -1;
+        RESTWarning << "Plane vector was flipped to point from anode to cathode" << RESTendl;
+    }
+
+    // rotate the axis X and Y of the plane
+
+    fPlaneAxisX.RotateUz(fPlaneVector);
+    fPlaneAxisY.RotateUz(fPlaneVector);
+}
+
+///////////////////////////////////////////////
+/// \brief Sets the plane rotation in degrees
+///
+void TRestDetectorReadoutPlane::SetPlaneRotation(Double_t rotationAngle) {
+    fPlaneRotationAngle = rotationAngle;  // in degrees
+    // rotate the axis X and Y of the plane
+    fPlaneAxisX = {1, 0, 0};
+    fPlaneAxisY = {0, 1, 0};
+
+    fPlaneAxisX.Rotate(fPlaneRotationAngle * TMath::DegToRad(), fPlaneVector);
+    fPlaneAxisY.Rotate(fPlaneRotationAngle * TMath::DegToRad(), fPlaneVector);
 }
 
 ///////////////////////////////////////////////
@@ -155,7 +190,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
                 if (deltaY < deltaX) x = rModule->GetPixelCenter(chID, 0).X();
             }
         } else {
-            // we choose to ouput x only when deltaY > deltaX under non-90 deg rotation
+            // we choose to output x only when deltaY > deltaX under non-90 deg rotation
             // otherwise it is a y channel and should return nan
             if (deltaY > deltaX) x = rModule->GetPixelCenter(chID, 0).X();
         }
@@ -225,7 +260,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
@@ -250,7 +285,7 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, Double_t absX, Double
     // FindChannel will take a long time to search for the channel if it is not
     // there. It will be faster
 
-    return fReadoutModules[module].FindChannel(modX, modY);
+    return fReadoutModules[module].FindChannel({modX, modY});
 }
 
 ///////////////////////////////////////////////
@@ -265,7 +300,7 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(TVector3 pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
     return (pos - GetPosition()).Dot(GetPlaneVector());
 }
 
@@ -291,7 +326,9 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
     for (int m = 0; m < GetNumberOfModules(); m++)
-        if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
+        if (fReadoutModules[m].isDaqIDInside(daqId)) {
+            return true;
+        }
 
     return false;
 }
@@ -300,12 +337,12 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \brief This method determines if the z-coordinate is inside the drift volume
 /// for this readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param pos A TVector3 defining the position.
 ///
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& pos) {
     TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
 
     Double_t distance = GetDistanceTo(posNew);
@@ -321,35 +358,34 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
 /// the readout plane. The *x* and *y* values must be found inside one of the
 /// readout modules defined inside the readout plane.
 ///
-/// \param x,y,z Three Double_t definning the position.
+/// \param x,y,z Three Double_t defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) {
-    TVector3 pos = TVector3(x, y, z);
 
-    return GetModuleIDFromPosition(pos);
-}
 ///////////////////////////////////////////////
 /// \brief This method returns the module id where *pos* is found.
 /// The z-coordinate must be found in between
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) {
+    TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
 
     if (distance > 0 && distance < fTotalDriftDistance) {
-        for (int m = 0; m < GetNumberOfModules(); m++)
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
+        for (auto& module : fReadoutModules) {
+            if (module.isInside(posNew.X(), posNew.Y())) {
+                return module.GetModuleID();
+            }
+        }
     }
 
     return -1;
@@ -370,13 +406,19 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
                      << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
                      << RESTendl;
+        RESTMetadata << "-- Local X axis vector (1,0) in 3d space : X = " << fPlaneAxisX.X()
+                     << " mm, Y : " << fPlaneAxisX.Y() << " mm, Z : " << fPlaneAxisX.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Local Y axis vector (0,1) in 3d space : X = " << fPlaneAxisY.X()
+                     << " mm, Y : " << fPlaneAxisY.Y() << " mm, Z : " << fPlaneAxisY.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (int i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (int i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -446,4 +488,11 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
             if (y[v] > ymax) ymax = y[v];
         }
     }
+}
+
+///////////////////////////////////////////////
+/// \brief Returns the position of the point in the local coordinates of the plane
+///
+TVector2 TRestDetectorReadoutPlane::GetPositionInReadoutPlane(const TVector3& position) const {
+    return {position.Dot(fPlaneAxisX), fPosition.Dot(fPlaneAxisX)};
 }

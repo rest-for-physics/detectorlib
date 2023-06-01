@@ -77,27 +77,13 @@ class TRestDetectorReadoutModule : public TObject {
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
     inline TVector2 TransformToModuleCoordinates(const TVector2& p) {
-        return TransformToModuleCoordinates(p.X(), p.Y());
-    }
-
-    /// Converts the coordinates (xPhys,yPhys) in the readout plane reference
-    /// system to the readout module reference system.
-    inline TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) {
-        TVector2 coords(xPhys - fModuleOriginX, yPhys - fModuleOriginY);
-        TVector2 rot = coords.Rotate(-fModuleRotation * TMath::Pi() / 180.);
-
-        return rot;
+        return p - TVector2(fModuleOriginX, fModuleOriginY);
     }
 
     /// Converts the coordinates (xMod,yMod) in the readout module reference
     /// system to the readout plane reference system.
-    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) {
-        TVector2 coords(xMod, yMod);
-
-        coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
-        coords = coords + TVector2(fModuleOriginX, fModuleOriginY);
-
-        return coords;
+    inline TVector2 TransformToReadoutCoordinates(const TVector2& p) {
+        return p + TVector2(fModuleOriginX, fModuleOriginY);
     }
 
    protected:
@@ -181,9 +167,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 GetPhysicalCoordinates(const TVector2& p) {
-        return TransformToPhysicalCoordinates(p.X(), p.Y());
-    }
+    TVector2 GetPhysicalCoordinates(const TVector2& p) { return TransformToReadoutCoordinates(p); }
 
     /// Returns the module name
     inline const char* GetName() const override { return fModuleName.Data(); }
@@ -217,6 +201,7 @@ class TRestDetectorReadoutModule : public TObject {
     /// plane are inside this readout module.
     ///
     inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
+    inline Bool_t isInside(const TVector3& position) const;
 
     Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
     Bool_t isInsideChannel(Int_t channel, const TVector2& position);
@@ -225,7 +210,7 @@ class TRestDetectorReadoutModule : public TObject {
     Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
 
     Bool_t isDaqIDInside(Int_t daqID);
-    Int_t FindChannel(Double_t x, Double_t y);
+    Int_t FindChannel(const TVector2& position);
     TVector2 GetDistanceToModule(const TVector2& position);
 
     TVector2 GetPixelOrigin(Int_t channel, Int_t pixel);

@@ -81,7 +81,7 @@ TVector2 TRestDetectorReadoutPixel::GetCenter() const {
 ///////////////////////////////////////////////
 /// \brief Returns the specified pixel vertex position
 ///
-/// \param n A value between 0-3 definning the vertex position to be returned.
+/// \param n A value between 0-3 defining the vertex position to be returned.
 ///
 TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
     TVector2 vertex(0, 0);

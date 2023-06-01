@@ -172,8 +172,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         for (int j = 0; j < nodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
-            Double_t xAbs = TransformToPhysicalCoordinates(x, y).X();
-            Double_t yAbs = TransformToPhysicalCoordinates(x, y).Y();
+            Double_t xAbs = TransformToReadoutCoordinates({x, y}).X();
+            Double_t yAbs = TransformToReadoutCoordinates({x, y}).Y();
 
             if (!fMapping.isNodeSet(i, j)) {
                 for (int ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
@@ -198,8 +198,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
-                Double_t xAbs = TransformToPhysicalCoordinates(x, y).X();
-                Double_t yAbs = TransformToPhysicalCoordinates(x, y).Y();
+                Double_t xAbs = TransformToReadoutCoordinates({x, y}).X();
+                Double_t yAbs = TransformToReadoutCoordinates({x, y}).Y();
                 cout << "Node NOT SET : " << i << " , " << j << " Mapping x : " << x << " y : " << y << endl;
 
                 for (int ch = 0; ch < GetNumberOfChannels(); ch++) {
@@ -231,11 +231,14 @@ Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
 /// The readout mapping (see TRestDetectorReadoutMapping) is used to help finding
 /// the pixel where coordinates absX and absY fall in.
 ///
-Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
+Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
+    const auto& absX = position.X();
+    const auto& absY = position.Y();
+
     if (!isInside(absX, absY)) return -1;
 
-    Double_t x = TransformToModuleCoordinates(absX, absY).X();
-    Double_t y = TransformToModuleCoordinates(absX, absY).Y();
+    Double_t x = TransformToModuleCoordinates({absX, absY}).X();
+    Double_t y = TransformToModuleCoordinates({absX, absY}).Y();
 
     Int_t nodeX = fMapping.GetNodeX(x);
     Int_t nodeY = fMapping.GetNodeY(y);
@@ -325,9 +328,11 @@ Int_t TRestDetectorReadoutModule::FindChannel(Double_t absX, Double_t absY) {
 Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
     TVector2 rotPos = TransformToModuleCoordinates(position);
 
-    if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX)
-        if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) return true;
-
+    if (rotPos.X() >= 0 && rotPos.X() < fModuleSizeX) {
+        if (rotPos.Y() >= 0 && rotPos.Y() < fModuleSizeY) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -408,7 +413,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) 
 /// \brief Returns any of the pixel vertex position for a given *channel* and
 /// *pixel* indexes.
 ///
-/// \param vertex A value between 0-3 definning the vertex position to be
+/// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
 TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) {
@@ -423,7 +428,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, 
 /// \brief Returns the center pixel position for a given *channel* and
 /// *pixel* indexes.
 ///
-/// \param vertex A value between 0-3 definning the vertex position to be
+/// \param vertex A value between 0-3 defining the vertex position to be
 /// returned
 ///
 TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) {
@@ -474,7 +479,7 @@ Bool_t TRestDetectorReadoutModule::GetPixelTriangle(TRestDetectorReadoutPixel* p
 /// physical coordinates relative to the readout plane are returned, including
 /// rotation.
 ///
-/// \param n A value between 0-3 definning the vertex position to be returned
+/// \param n A value between 0-3 defining the vertex position to be returned
 ///
 TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
     TVector2 vertex(0, 0);
