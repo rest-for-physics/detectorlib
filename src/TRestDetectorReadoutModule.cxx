@@ -172,8 +172,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         for (int j = 0; j < nodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
-            Double_t xAbs = TransformToPhysicalCoordinates(x, y).X();
-            Double_t yAbs = TransformToPhysicalCoordinates(x, y).Y();
+            Double_t xAbs = TransformToReadoutCoordinates({x, y}).X();
+            Double_t yAbs = TransformToReadoutCoordinates({x, y}).Y();
 
             if (!fMapping.isNodeSet(i, j)) {
                 for (int ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
@@ -198,8 +198,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
-                Double_t xAbs = TransformToPhysicalCoordinates(x, y).X();
-                Double_t yAbs = TransformToPhysicalCoordinates(x, y).Y();
+                Double_t xAbs = TransformToReadoutCoordinates({x, y}).X();
+                Double_t yAbs = TransformToReadoutCoordinates({x, y}).Y();
                 cout << "Node NOT SET : " << i << " , " << j << " Mapping x : " << x << " y : " << y << endl;
 
                 for (int ch = 0; ch < GetNumberOfChannels(); ch++) {
@@ -237,8 +237,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
 
     if (!isInside(absX, absY)) return -1;
 
-    Double_t x = TransformToModuleCoordinates(absX, absY).X();
-    Double_t y = TransformToModuleCoordinates(absX, absY).Y();
+    Double_t x = TransformToModuleCoordinates({absX, absY}).X();
+    Double_t y = TransformToModuleCoordinates({absX, absY}).Y();
 
     Int_t nodeX = fMapping.GetNodeX(x);
     Int_t nodeY = fMapping.GetNodeY(y);

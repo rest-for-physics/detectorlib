@@ -326,7 +326,9 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
     for (int m = 0; m < GetNumberOfModules(); m++)
-        if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
+        if (fReadoutModules[m].isDaqIDInside(daqId)) {
+            return true;
+        }
 
     return false;
 }
