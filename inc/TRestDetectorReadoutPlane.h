@@ -51,7 +51,7 @@ class TRestDetectorReadoutPlane : public TObject {
                             /// < This vector is contained in the plane and corresponds to the second local
                             /// coordinate (0,1)
     Double_t fPlaneRotationAngle;  ///< The angle of rotation of the plane around the planeVector
-                                   ///< axis. This rotates the planeAxisX and planeAxisY vectors.
+                                   ///< axis. This rotates the planeAxisX and planeAxisY vectors. (degrees)
     TVector3 fCathodePosition;     ///< The cathode position which delimits the active
                                    ///< volume together with the readout plane.
     Double_t fChargeCollection;    ///< A parameter between 0 and 1 defining how
@@ -106,6 +106,9 @@ class TRestDetectorReadoutPlane : public TObject {
 
     /// Returns a TVector3 with a std::vector normal to the readout plane
     inline TVector3 GetPlaneVector() const { return fPlaneVector; }
+
+    /// Returns the plane rotation angle in degrees
+    inline Double_t GetPlaneRotationAngle() const { return fPlaneRotationAngle; }
 
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }

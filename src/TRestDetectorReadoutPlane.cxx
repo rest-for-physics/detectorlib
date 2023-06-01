@@ -108,10 +108,17 @@ void TRestDetectorReadoutPlane::SetPlaneVector(const TVector3& planeVector) {
     fPlaneAxisY.RotateUz(fPlaneVector);
 }
 
+///////////////////////////////////////////////
+/// \brief Sets the plane rotation in degrees
+///
 void TRestDetectorReadoutPlane::SetPlaneRotation(Double_t rotationAngle) {
+    fPlaneRotationAngle = rotationAngle;  // in degrees
     // rotate the axis X and Y of the plane
-    fPlaneAxisX.Rotate(rotationAngle, fPlaneVector);
-    fPlaneAxisY.Rotate(rotationAngle, fPlaneVector);
+    fPlaneAxisX = {1, 0, 0};
+    fPlaneAxisY = {0, 1, 0};
+
+    fPlaneAxisX.Rotate(fPlaneRotationAngle * TMath::DegToRad(), fPlaneVector);
+    fPlaneAxisY.Rotate(fPlaneRotationAngle * TMath::DegToRad(), fPlaneVector);
 }
 
 ///////////////////////////////////////////////
