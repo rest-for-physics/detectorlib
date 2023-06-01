@@ -90,9 +90,17 @@ void TRestDetectorReadoutPlane::SetDriftDistance() {
     this->SetTotalDriftDistance(tDriftDistance);
 }
 
-void TRestDetectorReadoutPlane::SetPlaneVector(const TVector3& v) {
-    fPlaneVector = v;
+void TRestDetectorReadoutPlane::SetPlaneVector(const TVector3& planeVector) {
+    fPlaneVector = planeVector;
     fPlaneVector = fPlaneVector.Unit();
+
+    // if the plane vector does not have the correct direction: from anode to cathode, we flip it
+
+    const TVector3 direction = fCathodePosition - fPosition;
+    if (fPlaneVector.Dot(direction) < 0) {
+        fPlaneVector *= -1;
+        RESTWarning << "Plane vector was flipped to point from anode to cathode" << RESTendl;
+    }
 
     // rotate the axis X and Y of the plane
 
