@@ -785,7 +785,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& posi
     int m = plane->GetModuleIDFromPosition(position);
     if (m >= 0) {
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-        const TVector2 relativePosition = plane->GetRelativePosition(position);
+        const TVector2 relativePosition = plane->GetPositionInReadoutPlane(position);
         Int_t readoutChannel = mod->FindChannel(relativePosition);
         if (readoutChannel >= 0) {
             moduleID = mod->GetModuleID();

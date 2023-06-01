@@ -40,10 +40,18 @@ class TRestDetectorReadoutPlane : public TObject {
     Int_t fPlaneID;  ///< The readout plane id. The id number is imposed by the
                      ///< order of creation. Being the first id=0.
 
-    TVector3 fPosition;            ///< The position of the readout plane. The relative position
-                                   ///< of the modules will be shifted by this value.
-    TVector3 fPlaneVector;         ///< The plane std::vector defining the plane orientation
-                                   ///< and the side of the active volume.
+    TVector3 fPosition;     ///< The position of the readout plane. The relative position
+                            ///< of the modules will be shifted by this value.
+    TVector3 fPlaneVector;  ///< The plane std::vector defining the plane orientation
+                            ///< and the side of the active volume.
+    TVector3 fPlaneAxisX;   ///< The first coordinate vector of the plane in absolute coordinates.
+                            /// < This vector is contained in the plane and corresponds to the first local
+                            /// coordinate (1,0)
+    TVector3 fPlaneAxisY;   ///< The first coordinate vector of the plane in absolute coordinates.
+                            /// < This vector is contained in the plane and corresponds to the second local
+                            /// coordinate (0,1)
+    Double_t fPlaneRotationAngle;  ///< The angle of rotation of the plane around the planeVector
+                                   ///< axis. This rotates the planeAxisX and planeAxisY vectors.
     TVector3 fCathodePosition;     ///< The cathode position which delimits the active
                                    ///< volume together with the readout plane.
     Double_t fChargeCollection;    ///< A parameter between 0 and 1 defining how
@@ -74,9 +82,11 @@ class TRestDetectorReadoutPlane : public TObject {
     /// plane.
     void SetCathodePosition(const TVector3& pos) { fCathodePosition = pos; }
 
-    /// Sets the orientation of the readout plane, and defines the side of the
-    /// active volume.
-    void SetPlaneVector(const TVector3& v) { fPlaneVector = v.Unit(); }
+    /// Sets the orientation of the readout plane, and defines the side of the active volume.
+    void SetPlaneVector(const TVector3& v);
+
+    /// Sets the orientation of the readout plane, and defines the side of the active volume.
+    void SetPlaneRotation(Double_t rotationAngle);
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
@@ -117,7 +127,7 @@ class TRestDetectorReadoutPlane : public TObject {
         return GetModuleByID(mod)->GetDistanceToModule(pos);
     }
 
-    TVector2 GetRelativePosition(const TVector3& pos) const;
+    TVector2 GetPositionInReadoutPlane(const TVector3& position) const;
 
     TRestDetectorReadoutModule& operator[](int mod) { return fReadoutModules[mod]; }
 
@@ -170,6 +180,6 @@ class TRestDetectorReadoutPlane : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 1);
+    ClassDef(TRestDetectorReadoutPlane, 2);
 };
 #endif

@@ -61,9 +61,13 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 /// \brief TRestDetectorReadoutPlane initialization
 ///
 void TRestDetectorReadoutPlane::Initialize() {
-    fCathodePosition = TVector3(0, 0, 0);
-    fPosition = TVector3(0, 0, 0);
-    fPlaneVector = TVector3(0, 0, 1);
+    fCathodePosition = {0, 0, 0};
+    fPosition = {0, 0, 0};
+    fPlaneVector = {0, 0, 1};
+
+    fPlaneAxisX = {1, 0, 0};
+    fPlaneAxisY = {0, 1, 0};
+    fPlaneRotationAngle = 0;
 
     fNModules = 0;
     fReadoutModules.clear();
@@ -84,6 +88,22 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
 void TRestDetectorReadoutPlane::SetDriftDistance() {
     Double_t tDriftDistance = this->GetDistanceTo(this->GetCathodePosition());
     this->SetTotalDriftDistance(tDriftDistance);
+}
+
+void TRestDetectorReadoutPlane::SetPlaneVector(const TVector3& v) {
+    fPlaneVector = v;
+    fPlaneVector = fPlaneVector.Unit();
+
+    // rotate the axis X and Y of the plane
+
+    fPlaneAxisX.RotateUz(fPlaneVector);
+    fPlaneAxisY.RotateUz(fPlaneVector);
+}
+
+void TRestDetectorReadoutPlane::SetPlaneRotation(Double_t rotationAngle) {
+    // rotate the axis X and Y of the plane
+    fPlaneAxisX.Rotate(rotationAngle, fPlaneVector);
+    fPlaneAxisY.Rotate(rotationAngle, fPlaneVector);
 }
 
 ///////////////////////////////////////////////
@@ -369,13 +389,19 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
                      << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
                      << RESTendl;
+        RESTMetadata << "-- Local X axis vector (1,0) in 3d space : X = " << fPlaneAxisX.X()
+                     << " mm, Y : " << fPlaneAxisX.Y() << " mm, Z : " << fPlaneAxisX.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Local Y axis vector (0,1) in 3d space : X = " << fPlaneAxisY.X()
+                     << " mm, Y : " << fPlaneAxisY.Y() << " mm, Z : " << fPlaneAxisY.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (int i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (int i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -448,11 +474,8 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 ///////////////////////////////////////////////
-/// \brief Rotates the point with the direction of the readout plane.
+/// \brief Returns the position of the point in the local coordinates of the plane
 ///
-TVector2 TRestDetectorReadoutPlane::GetRelativePosition(const TVector3& position) const {
-    TVector3 rotated = position;
-    rotated.RotateUz(fPlaneVector);
-
-    return {rotated.X(), rotated.Y()};
+TVector2 TRestDetectorReadoutPlane::GetPositionInReadoutPlane(const TVector3& position) const {
+    return {position.Dot(fPlaneAxisX), fPosition.Dot(fPlaneAxisX)};
 }
