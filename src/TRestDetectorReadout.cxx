@@ -491,9 +491,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
             }
 
             fModuleDefinitions[mid].SetModuleID(StringToInteger(GetFieldValue("id", moduleDefinition)));
-            std::cout << "Origin: " << GetFieldValue("origin", moduleDefinition) << std::endl;
-            TVector2 v = StringTo2DVector(GetFieldValue("origin", moduleDefinition));
-            v.Print();
             fModuleDefinitions[mid].SetOrigin(StringTo2DVector(GetFieldValue("origin", moduleDefinition)));
             fModuleDefinitions[mid].SetRotation(StringToDouble(GetFieldValue("rotation", moduleDefinition)));
 
