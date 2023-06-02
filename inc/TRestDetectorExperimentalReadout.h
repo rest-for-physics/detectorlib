@@ -20,7 +20,11 @@ class TRestDetectorExperimentalReadout : public TNamed {
     TRestDetectorExperimentalReadout() = default;
     ~TRestDetectorExperimentalReadout() override = default;
 
-    // size_t GetNumberOfModules() { return fModules.size(); }
+    size_t GetNumberOfModules() { return fModules.size(); }
+
+    void AddModule(const TRestDetectorExperimentalReadoutModule& module) {
+        fModules.insert({fModules.size(), module});
+    }
 
     ClassDef(TRestDetectorExperimentalReadout, 1);
 };
