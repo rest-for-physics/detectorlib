@@ -76,7 +76,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates (xMod,yMod) in the readout module reference
     /// system to the readout plane reference system.
-    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) const {
+    inline TVector2 TransformToPlaneCoordinates(Double_t xMod, Double_t yMod) const {
         TVector2 coords(xMod, yMod);
 
         coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
@@ -157,9 +157,7 @@ class TRestDetectorReadoutModule {
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 GetPhysicalCoordinates(const TVector2& p) {
-        return TransformToPhysicalCoordinates(p.X(), p.Y());
-    }
+    TVector2 GetPlaneCoordinates(const TVector2& p) { return TransformToPlaneCoordinates(p.X(), p.Y()); }
 
     /// Returns the module name
     inline const char* GetName() const { return fModuleName.Data(); }

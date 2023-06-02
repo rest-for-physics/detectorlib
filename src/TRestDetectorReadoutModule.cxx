@@ -169,7 +169,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         for (int j = 0; j < nodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
-            const auto transformedCoordinates = TransformToPhysicalCoordinates(x, y);
+            const auto transformedCoordinates = TransformToPlaneCoordinates(x, y);
 
             if (!fMapping.isNodeSet(i, j)) {
                 for (size_t ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
@@ -194,7 +194,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
-                const auto transformedCoordinates = TransformToPhysicalCoordinates(x, y);
+                const auto transformedCoordinates = TransformToPlaneCoordinates(x, y);
 
                 cout << "Node NOT SET : " << i << " , " << j << " Mapping x : " << x << " y : " << y << endl;
 
