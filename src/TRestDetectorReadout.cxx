@@ -566,6 +566,11 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
                 // WRONG version before -->
                 // fModuleDefinitions[mid].GetChannel(ch)->SetID( rChannel[ch] );
+                if (!fModuleDefinitions[mid].GetChannel(rChannel[ch])) {
+                    RESTError << "Problem setting readout channel " << rChannel[ch]
+                              << " with daq id: " << dChannel[ch] << RESTendl;
+                    continue;
+                }
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetDaqID(dChannel[ch]);
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetChannelID(rChannel[ch]);
 
