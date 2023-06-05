@@ -105,7 +105,7 @@ jobs:
           restManager --c generateReadout.rml --o readout.root
           restRoot -b -q PrintReadout.C'("readout.root")' > print.txt
           restRoot -b -q PrintReadout.C'("readout.root")' |& tee print.txt
-          diff print.txt validation.txt > output.txt
+          diff print.txt validation.txt |& tee output.txt
           python3 checkLines.py
       # We need to introduce basic validation here
       #    - diff validation.txt print.txt
