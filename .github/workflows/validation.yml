@@ -61,6 +61,12 @@ jobs:
         run: |
           source ${{ env.REST_PATH }}/thisREST.sh
           restRoot -b -q
+      - name: Cache framework installation
+        id: detectorlib-install-cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ env.BRANCH_NAME }}-${{ github.sha }}
+          path: ${{ env.REST_PATH }}
 
   readout:
     name: "Readout"
