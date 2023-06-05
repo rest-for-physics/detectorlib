@@ -24,13 +24,12 @@
 #define RestCore_TRestDetectorReadoutMapping
 
 #include <TMatrixD.h>
-#include <TObject.h>
 
 #include <iostream>
 
 /// This class defines a uniform 2-dimensional grid relating its nodes to the
 /// pixels of a readout.
-class TRestDetectorReadoutMapping : public TObject {
+class TRestDetectorReadoutMapping {
    private:
     Int_t fNodesX;  ///< The number of nodes in the x-axis.
     Int_t fNodesY;  ///< The number of nodes in the y-axis.
@@ -51,10 +50,10 @@ class TRestDetectorReadoutMapping : public TObject {
     /// Returns the number of nodes in Y.
     inline Int_t GetNumberOfNodesY() const { return fNodesY; }
 
-    /// Gets the channel id correspoding to a given node (i,j)
+    /// Gets the channel id corresponding to a given node (i,j)
     Int_t GetChannelByNode(Int_t i, Int_t j) { return fChannel[i][j]; }
 
-    /// Gets the pixel id correspoding to a given node (i,j)
+    /// Gets the pixel id corresponding to a given node (i,j)
     Int_t GetPixelByNode(Int_t i, Int_t j) { return fPixel[i][j]; }
 
     Bool_t isNodeSet(Int_t i, Int_t j);
@@ -88,6 +87,6 @@ class TRestDetectorReadoutMapping : public TObject {
     // Destructor
     ~TRestDetectorReadoutMapping();
 
-    ClassDef(TRestDetectorReadoutMapping, 1);
+    ClassDef(TRestDetectorReadoutMapping, 2);
 };
 #endif

@@ -74,7 +74,8 @@ void TRestDetectorReadoutPlane::Initialize() {
 ///
 Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
     Int_t nChannels = 0;
-    for (int md = 0; md < GetNumberOfModules(); md++) nChannels += fReadoutModules[md].GetNumberOfChannels();
+    for (size_t md = 0; md < GetNumberOfModules(); md++)
+        nChannels += fReadoutModules[md].GetNumberOfChannels();
     return nChannels;
 }
 
@@ -90,7 +91,7 @@ void TRestDetectorReadoutPlane::SetDriftDistance() {
 /// \brief Returns a pointer to a module using its internal module id
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
-    for (int md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++)
         if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
@@ -241,16 +242,15 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
 /// \param absX It is the x absolut physical position
 /// \param absY It is the y absolut physical position
 /// \return The corresponding channel id
-Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, Double_t absX, Double_t absY) {
-    Double_t modX = absX - fPosition.X();
-    Double_t modY = absY - fPosition.Y();
+Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& position) {
+    const auto relativePosition = position - TVector2{fPosition.X(), fPosition.Y()};
 
     // TODO : check first if (modX,modY) is inside the module.
     // If not return error.
     // FindChannel will take a long time to search for the channel if it is not
     // there. It will be faster
 
-    return fReadoutModules[module].FindChannel(modX, modY);
+    return fReadoutModules[module].FindChannel(relativePosition);
 }
 
 ///////////////////////////////////////////////
@@ -290,7 +290,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 /// returns false if daqId is not found
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
-    for (int m = 0; m < GetNumberOfModules(); m++)
+    for (size_t m = 0; m < GetNumberOfModules(); m++)
         if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
 
     return false;
@@ -300,13 +300,13 @@ Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
 /// \brief This method determines if the z-coordinate is inside the drift volume
 /// for this readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return 1 if the Z-position is found inside the drift volume definition. 0
 /// otherwise
 ///
-Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
+Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) {
+    TVector3 posNew = TVector3(position.X() - fPosition.X(), position.Y() - fPosition.Y(), position.Z());
 
     Double_t distance = GetDistanceTo(posNew);
 
@@ -321,7 +321,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(TVector3 pos) {
 /// the readout plane. The *x* and *y* values must be found inside one of the
 /// readout modules defined inside the readout plane.
 ///
-/// \param x,y,z Three Double_t definning the position.
+/// \param x,y,z Three Double_t defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
@@ -337,7 +337,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 definning the position.
+/// \param pos A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
@@ -348,7 +348,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
     Double_t distance = GetDistanceTo(posNew);
 
     if (distance > 0 && distance < fTotalDriftDistance) {
-        for (int m = 0; m < GetNumberOfModules(); m++)
+        for (size_t m = 0; m < GetNumberOfModules(); m++)
             if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
     }
 
@@ -376,7 +376,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (int i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
     }
 }
 
@@ -399,7 +399,7 @@ TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
 
     TH2Poly* readoutHistogram = new TH2Poly("ReadoutHistogram", "ReadoutHistogram", xmin, xmax, ymin, ymax);
 
-    for (int mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
+    for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];
 
         int nChannels = module->GetNumberOfChannels();
@@ -433,7 +433,7 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 
     xmin = 1E9, xmax = -1E9, ymin = 1E9, ymax = -1E9;
 
-    for (int mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
+    for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];
 
         for (int v = 0; v < 4; v++) {

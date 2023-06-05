@@ -23,7 +23,6 @@
 #ifndef RestCore_TRestDetectorReadoutChannel
 #define RestCore_TRestDetectorReadoutChannel
 
-#include <TObject.h>
 #include <TRestMetadata.h>
 
 #include <iostream>
@@ -42,7 +41,7 @@ enum TRestDetectorReadoutChannelType {
 
 /// A class to store the readout channel definition used in TRestDetectorReadoutModule.
 /// It allows to integrate any number of independent readout pixels.
-class TRestDetectorReadoutChannel : public TObject {
+class TRestDetectorReadoutChannel {
    private:
     Int_t fDaqID;  ///< Defines the corresponding daq channel id. See decoding
                    ///< details at TRestDetectorReadout.
@@ -87,7 +86,7 @@ class TRestDetectorReadoutChannel : public TObject {
     void SetChannelID(Int_t id) { fChannelId = id; }
 
     /// Adds a new pixel to the readout channel
-    void AddPixel(TRestDetectorReadoutPixel pix) { fReadoutPixel.push_back(pix); }
+    void AddPixel(const TRestDetectorReadoutPixel& pixel) { fReadoutPixel.emplace_back(pixel); }
 
     Int_t isInside(Double_t x, Double_t y);
 
@@ -98,6 +97,6 @@ class TRestDetectorReadoutChannel : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutChannel();
 
-    ClassDef(TRestDetectorReadoutChannel, 3);  // REST run class
+    ClassDef(TRestDetectorReadoutChannel, 4);  // REST run class
 };
 #endif

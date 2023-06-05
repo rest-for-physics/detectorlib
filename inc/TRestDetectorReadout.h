@@ -23,7 +23,6 @@
 #ifndef RestCore_TRestDetectorReadout
 #define RestCore_TRestDetectorReadout
 
-#include <TObject.h>
 #include <TRestMetadata.h>
 
 #include <iostream>
@@ -44,12 +43,10 @@ class TRestDetectorReadout : public TRestMetadata {
     std::vector<TRestDetectorReadoutPlane>
         fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
 
-#ifndef __CINT__
     Int_t fMappingNodes;  //!///< Number of nodes per axis used on the readout
                           //! coordinate mapping. See also TRestDetectorReadoutMapping.
     std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
                                                                  //! TRestDetectorReadoutModule definitions.
-#endif
 
     void ValidateReadout();
 
@@ -74,7 +71,7 @@ class TRestDetectorReadout : public TRestMetadata {
     /////////////////////////////////////
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
     void GetPlaneModuleChannel(Int_t daqID, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannel(const TVector3& hitPosition, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+    Int_t GetHitsDaqChannel(const TVector3& position, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
     Int_t GetHitsDaqChannelAtReadoutPlane(const TVector3& hitPosition, Int_t& moduleID, Int_t& channelID,
                                           Int_t planeId = 0);
     Double_t GetX(Int_t signalID);
@@ -97,10 +94,10 @@ class TRestDetectorReadout : public TRestMetadata {
 
     // Constructor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* configFilename);
+    explicit TRestDetectorReadout(const char* configFilename);
     TRestDetectorReadout(const char* configFilename, std::string name);
     // Destructor
-    virtual ~TRestDetectorReadout();
+    ~TRestDetectorReadout() override;
 
     ClassDefOverride(TRestDetectorReadout, 1);
 };

@@ -24,14 +24,12 @@
 #define RestCore_TRestDetectorReadoutPixel
 
 #include <TMath.h>
-#include <TObject.h>
-#include <TRestMetadata.h>
 #include <TVector2.h>
 
 #include <iostream>
 
 /// A class to store the readout pixel definition used in TRestDetectorReadoutChannel.
-class TRestDetectorReadoutPixel : public TObject {
+class TRestDetectorReadoutPixel {
    private:
     Double_t fPixelOriginX;  ///< The pixel x-origin position, left-bottom corner.
     Double_t fPixelOriginY;  ///< The pixel y-origin position, left-bottom corner.
@@ -59,7 +57,7 @@ class TRestDetectorReadoutPixel : public TObject {
     Double_t GetOriginY() const { return fPixelOriginY; }
 
     /// Returns a TVector2 with the pixel origin.
-    TVector2 GetOrigin() const { return TVector2(fPixelOriginX, fPixelOriginY); }
+    TVector2 GetOrigin() const { return {fPixelOriginX, fPixelOriginY}; }
 
     /// Returns the rotation angle in degrees
     Double_t GetRotation() const { return fRotation; }
@@ -71,7 +69,7 @@ class TRestDetectorReadoutPixel : public TObject {
     inline Double_t GetSizeY() const { return fPixelSizeY; }
 
     /// Returns a TVector2 with the pixel size.
-    TVector2 GetSize() { return TVector2(fPixelSizeX, fPixelSizeY); }
+    TVector2 GetSize() { return {fPixelSizeX, fPixelSizeY}; }
 
     /// Returns true if the pixel is a triangle.
     Bool_t GetTriangle() const { return fTriangle; }
@@ -87,7 +85,7 @@ class TRestDetectorReadoutPixel : public TObject {
     }
 
     /// Sets the origin of the pixel using a TVector2.
-    void SetOrigin(TVector2 origin) {
+    void SetOrigin(const TVector2& origin) {
         fPixelOriginX = origin.X();
         fPixelOriginY = origin.Y();
     }
@@ -99,7 +97,7 @@ class TRestDetectorReadoutPixel : public TObject {
     }
 
     /// Sets the size of the pixel using a TVector2.
-    void SetSize(TVector2 size) {
+    void SetSize(const TVector2& size) {
         fPixelSizeX = size.X();
         fPixelSizeY = size.Y();
     }
@@ -116,15 +114,16 @@ class TRestDetectorReadoutPixel : public TObject {
     Bool_t isInside(TVector2 pos);
     Bool_t isInside(Double_t x, Double_t y);
 
-    TVector2 TransformToPixelCoordinates(TVector2 p);
+    TVector2 TransformToPixelCoordinates(const TVector2& pixel) const;
 
-    void Print();
+    void Print() const;
 
     // Constructor
     TRestDetectorReadoutPixel();
     // Destructor
     virtual ~TRestDetectorReadoutPixel();
 
-    ClassDef(TRestDetectorReadoutPixel, 4);
+    ClassDef(TRestDetectorReadoutPixel, 5);
 };
+
 #endif

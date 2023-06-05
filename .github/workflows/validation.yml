@@ -61,3 +61,51 @@ jobs:
         run: |
           source ${{ env.REST_PATH }}/thisREST.sh
           restRoot -b -q
+
+  readout:
+    name: "Readout"
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/lobis/root-geant4-garfield:rest-for-physics
+    needs: [ build-detectorlib ]
+    steps:
+      - uses: rest-for-physics/framework/.github/actions/checkout@master
+        with:
+          branch: ${{ env.BRANCH_NAME }}
+          repository: rest-for-physics/detectorlib
+          path: ${{ env.DETECTOR_LIB_PATH }}
+      - name: Restore cache
+        uses: actions/cache@v3
+        id: detectorlib-install-cache
+        with:
+          key: ${{ env.BRANCH_NAME }}-${{ github.sha }}
+          path: ${{ env.REST_PATH }}
+          #- name: Load Gas
+          # run: |
+          #source ${{ env.REST_PATH }}/thisREST.sh
+          #cd framework/pipeline/metadata/gas/
+          #restRoot -b -q LoadGasFromServerAndValidate.C
+          # Not working, not used in gitlab pipeline
+          #- name: Generate Gas
+          #  run: |
+          #    source ${{ env.REST_PATH }}/thisREST.sh
+          #    source $(root-config --bindir)/thisroot.sh
+          #    cd framework/pipeline/metadata/gas/
+          #    restRoot -b -q GenerateDummyGas.C
+      - name: Generate Readout
+        run: |
+          source ${{ env.REST_PATH }}/thisREST.sh
+          cd ${{ env.DETECTOR_LIB_PATH }}/pipeline/readout
+          restManager --c generateReadout.rml --o readout.root
+          restRoot -b -q PrintReadout.C'("readout.root")' > print.txt
+          source check_readout.sh
+      # We need to introduce basic validation here
+      #    - diff validation.txt print.txt
+      # - name: Basic Readout
+      #  run: |
+      #    source ${{ env.REST_PATH }}/thisREST.sh
+      #    cd framework/projects/basic-examples/
+      #    git submodule update --init .
+      #    cd basic-readouts
+      #    git submodule update --init .
+      #    restRoot -b -q GenerateReadouts.C'("basic.root")'

@@ -205,7 +205,7 @@ TGraph* GetHittedStripMap(TRestDetectorReadoutPlane* p, Int_t mask[4], Double_t 
         xR = rnd->Uniform(xMin, xMax);
         yR = rnd->Uniform(yMin, yMax);
         for (int mod = 0; mod < p->GetNumberOfModules(); mod++) {
-            Int_t chFound = p->FindChannel(mod, xR, yR);
+            Int_t chFound = p->FindChannel(mod, TVector2(xR, yR));
 
             if (chFound != -1 &&
                 std::find(channelIds.begin(), channelIds.end(), chFound) != channelIds.end()) {
