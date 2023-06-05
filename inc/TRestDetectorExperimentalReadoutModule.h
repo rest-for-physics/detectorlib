@@ -20,40 +20,19 @@ class TRestDetectorExperimentalReadoutModule {
 
    public:
     TRestDetectorExperimentalReadoutModule(const TVector3& position, double height, const TVector3& normal,
-                                           double rotationInDegrees = 0) {
-        fPosition = position;
-        fHeight = height;
-        fNormal = normal;
+                                           double rotationInDegrees = 0);
 
-        fCoordinateAxes = {{1, 0, 0}, {0, 1, 0}};
-
-        // rotate the coordinate axes by rotationInDegrees around the normal vector
-        fCoordinateAxes.first.Rotate(rotationInDegrees * TMath::RadToDeg(), fNormal);
-        fCoordinateAxes.second.Rotate(rotationInDegrees * TMath::RadToDeg(), fNormal);
-    }
-
-    virtual ~TRestDetectorExperimentalReadoutModule() = default;
+    // needed for root
     TRestDetectorExperimentalReadoutModule() = default;
+    virtual ~TRestDetectorExperimentalReadoutModule() = default;
 
     size_t GetNumberOfPixels() const { return fPixels.size(); }
 
     std::vector<TRestDetectorExperimentalReadoutPixel> GetPixels() const { return fPixels; }
 
-    void AddPixel(const TRestDetectorExperimentalReadoutPixel& pixel, id pixelId = 0) {
-        fPixels.push_back(pixel);
-    }
+    void InsertPixel(const TRestDetectorExperimentalReadoutPixel& pixel);
 
-    std::vector<TVector2> GetConvexHull() const {
-        std::vector<TVector2> vertices;
-
-        for (auto& pixel : fPixels) {
-            for (auto& vertex : pixel.GetVertices()) {
-                vertices.push_back(vertex);
-            }
-        }
-
-        return TRestDetectorExperimentalReadoutPixel::findConvexHull(vertices);
-    }
+    std::vector<TVector2> GetConvexHull() const;
 
     ClassDef(TRestDetectorExperimentalReadoutModule, 1);
 };

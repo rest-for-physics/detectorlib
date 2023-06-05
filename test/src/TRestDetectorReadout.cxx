@@ -43,7 +43,7 @@ TEST(TRestDetectorReadout, Initialize) {
         for (int j = 0; j < moduleSizeInPixels; j++) {
             TVector2 center = {i * pixelSize, j * pixelSize};
             auto pixel = TRestDetectorExperimentalReadoutPixel(center, pixelSize);
-            module.AddPixel(pixel);
+            module.InsertPixel(pixel);
         }
     }
 
