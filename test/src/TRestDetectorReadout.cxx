@@ -37,15 +37,20 @@ TEST(TRestDetectorReadout, Initialize) {
     readout.AddModule(module);
 
     double pixelSize = 1.0;
-    int moduleSizeInPixels = 10;
+    int pixelsPerSide = 25;
 
-    for (int i = 0; i < moduleSizeInPixels; i++) {
-        for (int j = 0; j < moduleSizeInPixels; j++) {
+    std::vector<TRestDetectorExperimentalReadoutPixel> pixels;
+    for (int i = 0; i < pixelsPerSide; i++) {
+        for (int j = 0; j < pixelsPerSide; j++) {
             TVector2 center = {i * pixelSize, j * pixelSize};
-            auto pixel = TRestDetectorExperimentalReadoutPixel(center, pixelSize);
-            module.InsertPixel(pixel);
+            pixels.emplace_back(center, pixelSize);
         }
     }
+
+    module.SetPixels(pixels);
+
+    module.GetPixelsInPoint({0, 0});
+    return;
 
     auto canvas = new TCanvas("canvas", "Shape Canvas", 800, 600);
 
@@ -72,7 +77,7 @@ TEST(TRestDetectorReadout, Initialize) {
     // print pixel info
     for (int i = 0; i < module.GetNumberOfPixels(); i++) {
         const auto pixel = module.GetPixels()[i];
-        cout << "Pixel X: " << pixel.GetCenter().X() << " Y: " << pixel.GetCenter().Y() << endl;
+        // cout << "Pixel X: " << pixel.GetCenter().X() << " Y: " << pixel.GetCenter().Y() << endl;
         const auto vertices = pixel.GetVertices();
 
         const auto n = vertices.size() + 1;
@@ -87,7 +92,7 @@ TEST(TRestDetectorReadout, Initialize) {
         y[n - 1] = vertices[0].Y();
 
         for (int i = 0; i < n; i++) {
-            cout << "i: " << i << " X: " << x[i] << " Y: " << y[i] << endl;
+            // cout << "i: " << i << " X: " << x[i] << " Y: " << y[i] << endl;
         }
 
         auto graph = new TGraph(vertices.size() + 1, x, y);
@@ -96,7 +101,8 @@ TEST(TRestDetectorReadout, Initialize) {
         graph->SetLineWidth(2);
 
         graph->Draw("SAME");
+        canvas->Update();
     }
-
+    gPad->SetFixedAspectRatio();
     canvas->Update();
 }

@@ -30,6 +30,24 @@ void TRestDetectorExperimentalReadoutPixel::InitializeVertices(const std::vector
     // compute convex hull
     std::vector<TVector2> convexHull = findConvexHull(vertices);
     fVertices = convexHull;
+
+    // compute center and radius
+    TVector2 center(0, 0);
+    for (auto& vertex : fVertices) {
+        center += vertex;
+    }
+    center *= 1. / double(fVertices.size());
+    fCenter = center;
+
+    // the radius is the maximum distance from the center to any vertex
+    double radius = 0;
+    for (auto& vertex : fVertices) {
+        double distance = (vertex - center).Mod();
+        if (distance > radius) {
+            radius = distance;
+        }
+    }
+    fRadius = radius;
 }
 
 std::vector<TVector2> TRestDetectorExperimentalReadoutPixel::GetRectangularVertices(
@@ -41,6 +59,10 @@ std::vector<TVector2> TRestDetectorExperimentalReadoutPixel::GetRectangularVerti
                                       {center.X() - size.first / 2, center.Y() + size.second / 2}};
 
     return vertices;
+}
+
+bool TRestDetectorExperimentalReadoutPixel::IsInside(const TVector2& point) const {
+    return readout::IsPointInsideConvexHull(point, fVertices);
 }
 
 // tools
@@ -100,5 +122,24 @@ std::vector<TVector2> findConvexHull(const std::vector<TVector2>& _points) {
     }
 
     return convexHull;
+}
+
+bool IsPointInsideConvexHull(const TVector2& point, const std::vector<TVector2>& convexHull) {
+    // Iterate through each edge of the convex hull
+    for (size_t i = 0; i < convexHull.size(); ++i) {
+        const TVector2& vertex1 = convexHull[i];
+        const TVector2& vertex2 = convexHull[(i + 1) % convexHull.size()];
+
+        // Calculate the cross product of the point with the current edge
+        double crossProductValue = readout::crossProduct(vertex1, vertex2, point);
+
+        // If the cross product is negative for any edge, the point is outside the convex hull
+        if (crossProductValue < 0.0) {
+            return false;
+        }
+    }
+
+    // If the point is not outside any edge, it is inside the convex hull
+    return true;
 }
 }  // namespace readout

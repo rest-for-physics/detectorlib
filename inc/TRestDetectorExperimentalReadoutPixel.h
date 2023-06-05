@@ -18,6 +18,8 @@ typedef unsigned short id;
 class TRestDetectorExperimentalReadoutPixel {
    private:
     std::vector<TVector2> fVertices;
+    TVector2 fCenter;
+    double fRadius;
 
     void InitializeVertices(const std::vector<TVector2>& vertices);
 
@@ -35,16 +37,12 @@ class TRestDetectorExperimentalReadoutPixel {
     TRestDetectorExperimentalReadoutPixel() = default;
     virtual ~TRestDetectorExperimentalReadoutPixel() = default;
 
-    TVector2 GetCenter() const {
-        TVector2 center(0, 0);
-        for (auto& vertex : fVertices) {
-            center += vertex;
-        }
-        center *= 1. / fVertices.size();
-        return center;
-    }
+    TVector2 GetCenter() const { return fCenter; }
+    double GetRadius() const { return fRadius; }
 
     std::vector<TVector2> GetVertices() const { return fVertices; }
+
+    bool IsInside(const TVector2& point) const;
 
     ClassDef(TRestDetectorExperimentalReadoutPixel, 1);
 };
@@ -61,5 +59,8 @@ double squaredDistance(const TVector2& A, const TVector2& B);
 bool comparePoints(const TVector2& A, const TVector2& B, const TVector2& anchor);
 // Function to find the convex hull of a set of points using the Graham's scan algorithm
 std::vector<TVector2> findConvexHull(const std::vector<TVector2>& _points);
+
+bool IsPointInsideConvexHull(const TVector2& point, const std::vector<TVector2>& convexHull);
+
 }  // namespace readout
 #endif  // REST_TRESTDETECTOREXPERIMENTALREADOUTPIXEL_H

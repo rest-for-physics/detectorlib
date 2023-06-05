@@ -6,8 +6,11 @@
 #define REST_TRESTDETECTOREXPERIMENTALREADOUTMODULE_H
 
 #include <map>
+#include <memory>
 
 #include "TRestDetectorExperimentalReadoutPixel.h"
+
+class KDTree;
 
 class TRestDetectorExperimentalReadoutModule {
    private:
@@ -18,21 +21,42 @@ class TRestDetectorExperimentalReadoutModule {
     double fHeight;      // height of the module (drift distance)
     std::pair<TVector3, TVector3> fCoordinateAxes;
 
+    // auxiliary data structures
+    // std::unique_ptr<MyKDTree> fKDTree;
+    KDTree* fKDTree = nullptr;
+    double fSearchRadius = 0;
+    std::vector<TVector2> fConvexHull;
+
+    void BuildKDTree();
+    std::vector<TVector2> ComputeConvexHull();
+
    public:
     TRestDetectorExperimentalReadoutModule(const TVector3& position, double height, const TVector3& normal,
                                            double rotationInDegrees = 0);
 
     // needed for root
     TRestDetectorExperimentalReadoutModule() = default;
-    virtual ~TRestDetectorExperimentalReadoutModule() = default;
+    virtual ~TRestDetectorExperimentalReadoutModule() {
+        // delete fKDTree;
+    }
 
     size_t GetNumberOfPixels() const { return fPixels.size(); }
 
     std::vector<TRestDetectorExperimentalReadoutPixel> GetPixels() const { return fPixels; }
 
-    void InsertPixel(const TRestDetectorExperimentalReadoutPixel& pixel);
+    void SetPixels(const std::vector<TRestDetectorExperimentalReadoutPixel>&);
 
-    std::vector<TVector2> GetConvexHull() const;
+    std::vector<TVector2> GetConvexHull() const { return fConvexHull; }
+
+    std::vector<TRestDetectorExperimentalReadoutPixel> GetPixelsInPoint(const TVector2& point) const;
+
+    double GetZ(const TVector3& point) const;
+
+    bool IsInside(const TVector2& point) const;
+    bool IsInside(const TVector3& point) const;
+
+    TVector2 TransformToModuleCoordinates(const TVector3& point) const;
+    TVector3 TransformToAbsoluteCoordinates(const TVector2& point) const;
 
     ClassDef(TRestDetectorExperimentalReadoutModule, 1);
 };
