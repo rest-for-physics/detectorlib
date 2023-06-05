@@ -104,17 +104,10 @@ jobs:
           cd ${{ env.DETECTOR_LIB_PATH }}/pipeline/readout
           restManager --c generateReadout.rml --o readout.root
           echo "Generating print.txt"
-          ls
-          restRoot -b -q PrintReadout.C'("readout.root")' >& print.txt
-          ls
-          tail -n +25 print.txt >& print.txt
-          ls
-          echo "Generating output.txt"
-          ls
-          diff print.txt validation.txt |& tee output.txt
+          restRoot -b -q PrintReadout.C'("readout.root")'
           ls
           echo "Validating"
-          python3 checkLines.py
+          python3 compareFiles.py
       # We need to introduce basic validation here
       #    - diff validation.txt print.txt
       # - name: Basic Readout
