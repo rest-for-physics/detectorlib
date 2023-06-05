@@ -31,7 +31,7 @@ for line in file_1_text:
         print("YY:" + file_2_text[n].rstrip())
         result = 1
     n = n + 1
-    if( n > maxN ):
+    if n > maxN:
         print("Readout validation result " + str(result))
         sys.exit(result)
 
