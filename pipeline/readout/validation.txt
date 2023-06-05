@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Processing PrintReadout.C("readout.root")...
 +++++++++++++++++++++++++++++++++++++++++++++
 TRestDetectorReadout content
