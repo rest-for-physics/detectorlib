@@ -5,7 +5,7 @@ a=$(diff validation.txt print.txt | wc -l)
 echo "Number of lines different: $a"
 echo "Validation limit: $sizeLimit"
 if [ "$a" -gt "$sizeLimit" ]; then
-    exit 1
+    return 1
 else
-    exit 0
+    return 0
 fi
