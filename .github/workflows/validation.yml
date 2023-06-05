@@ -98,7 +98,7 @@ jobs:
           cd ${{ env.DETECTOR_LIB_PATH }}/pipeline/readout
           restManager --c generateReadout.rml --o readout.root
           restRoot -b -q PrintReadout.C'("readout.root")' > print.txt
-          diff print.txt validation.txt
+          source check_readout.sh
       # We need to introduce basic validation here
       #    - diff validation.txt print.txt
       # - name: Basic Readout
