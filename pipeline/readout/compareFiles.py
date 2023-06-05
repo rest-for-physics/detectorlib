@@ -23,6 +23,7 @@ while not stop_removing:
     file_2_text.pop(0)
 
 result = 0
+maxN = 2700
 n = 0
 for line in file_1_text:
     if line.rstrip() != file_2_text[n].rstrip():
@@ -30,6 +31,10 @@ for line in file_1_text:
         print("YY:" + file_2_text[n].rstrip())
         result = 1
     n = n + 1
+    if( n > maxN ):
+        print("Readout validation result " + str(result))
+        sys.exit(result)
+
 
 print("Readout validation result " + str(result))
 sys.exit(result)
