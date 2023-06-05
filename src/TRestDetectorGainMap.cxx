@@ -53,7 +53,7 @@ void TRestDetectorGainMap::DrawChannelGainMap(TRestDetectorReadoutModule* mod) {
             gr->SetPoint(i, x, y, 1);
         }
 
-        for (int i = 0; i < mod->GetNumberOfChannels(); i++) {
+        for (size_t i = 0; i < mod->GetNumberOfChannels(); i++) {
             TRestDetectorReadoutChannel* channel = mod->GetChannel(i);
             int id = channel->GetDaqID();
             if (fChannelGain.count(id) == 0) fChannelGain[id] = 1;
