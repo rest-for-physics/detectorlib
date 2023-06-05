@@ -1,5 +1,5 @@
 sizeLimit=12
-echo $sizeLimit
+echo "Size : $sizeLimit"
 a=$(diff validation.txt print.txt | wc -l)
 
 echo "Number of lines different: $a"
