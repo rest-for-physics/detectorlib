@@ -105,9 +105,9 @@ jobs:
           restManager --c generateReadout.rml --o readout.root
           echo "Generating print.txt"
           ls
-          restRoot -b -q PrintReadout.C'("readout.root")' |& tee print.txt
+          restRoot -b -q PrintReadout.C'("readout.root")' >& print.txt
           ls
-          tail -n +25 print.txt |& tee print.txt
+          tail -n +25 print.txt >& print.txt
           ls
           echo "Generating output.txt"
           ls
