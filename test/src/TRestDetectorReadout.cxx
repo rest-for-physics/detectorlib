@@ -49,7 +49,7 @@ TEST(TRestDetectorReadout, Initialize) {
 
     module.SetPixels(pixels);
 
-    module.GetPixelsInPoint({0, 0});
+    module.GetPixelsForPoint({0, 0});
     return;
 
     auto canvas = new TCanvas("canvas", "Shape Canvas", 800, 600);

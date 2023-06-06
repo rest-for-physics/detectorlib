@@ -132,15 +132,15 @@ void TRestDetectorExperimentalReadoutModule::BuildKDTree() {
     fKDTree = new KDTree(centers);
 }
 
-std::vector<TRestDetectorExperimentalReadoutPixel> TRestDetectorExperimentalReadoutModule::GetPixelsInPoint(
-    const TVector2& point) const {
+std::vector<const TRestDetectorExperimentalReadoutPixel*>
+TRestDetectorExperimentalReadoutModule::GetPixelsForPoint(const TVector2& point) const {
     auto indices = fKDTree->queryIndices(point, fSearchRadius);
     cout << "Found " << indices.size() << " pixels in point" << endl;
 
-    std::vector<TRestDetectorExperimentalReadoutPixel> pixels;
+    std::vector<const TRestDetectorExperimentalReadoutPixel*> pixels;
     pixels.reserve(indices.size());
     for (auto& index : indices) {
-        pixels.push_back(fPixels[index]);
+        pixels.push_back(&fPixels[index]);
     }
 
     return pixels;
@@ -214,4 +214,10 @@ void TRestDetectorExperimentalReadoutModule::UpdateAxes() {
     // rotate around normal by rotation angle
     fCoordinateAxes.first.Rotate(fRotation * TMath::DegToRad(), fNormal);
     fCoordinateAxes.second.Rotate(fRotation * TMath::DegToRad(), fNormal);
+}
+
+std::vector<const TRestDetectorExperimentalReadoutPixel*>
+TRestDetectorExperimentalReadoutModule::GetPixelsForPoint(const TVector3& point) const {
+    const TVector2 pointInModuleCoordinates = TransformToModuleCoordinates(point);
+    return GetPixelsForPoint(pointInModuleCoordinates);
 }

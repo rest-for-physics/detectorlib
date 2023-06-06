@@ -92,7 +92,8 @@ class TRestDetectorExperimentalReadoutModule {
      * @param point The point to check.
      * @return The pixels containing the point.
      */
-    std::vector<TRestDetectorExperimentalReadoutPixel> GetPixelsInPoint(const TVector2& point) const;
+    std::vector<const TRestDetectorExperimentalReadoutPixel*> GetPixelsForPoint(const TVector2& point) const;
+    std::vector<const TRestDetectorExperimentalReadoutPixel*> GetPixelsForPoint(const TVector3& point) const;
 
     /**
      * @brief Returns the Z coordinate of a given point inside the module.
