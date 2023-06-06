@@ -121,10 +121,10 @@ class KDTree {
    public:
     KDTree(std::vector<TVector2>& _points) : points(_points) {
         std::vector<int> indices(points.size());
-        for (int i = 0; i < points.size(); ++i) {
+        for (size_t i = 0; i < points.size(); ++i) {
             indices[i] = i;
         }
-        root = buildTree(indices, 0, points.size() - 1, 0);
+        root = buildTree(indices, 0, int(points.size()) - 1, 0);
     }
 
     std::vector<int> queryIndices(const TVector2& target, double distance) {
