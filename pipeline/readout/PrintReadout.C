@@ -15,7 +15,6 @@ void PrintReadout(TString fName) {
         exit(1);
     }
 
-    /*
     fstream file;
     file.open("print.txt", ios::out);
     string line;
@@ -24,33 +23,13 @@ void PrintReadout(TString fName) {
     streambuf* stream_buffer_file = file.rdbuf();
 
     cout.rdbuf(stream_buffer_file);
-    */
-
-    cout << "Filename : " << fileName << endl;
 
     TRestRun run(fname);
     TRestDetectorReadout* r = (TRestDetectorReadout*)run.GetMetadata("Prototype_2020_06");
     r->PrintMetadata(3);
-    /*
-    TFile* f = new TFile(fileName);
-
-    TIter nextkey(f->GetListOfKeys());
-    TKey* key;
-    int n = 0;
-    while ((key = (TKey*)nextkey())) {
-        if (((string)(key->GetClassName())).find("TRestDetectorReadout") != -1) {
-            TObject* obj = f->Get(key->GetName());
-            TRestDetectorReadout& readout = *(TRestDetectorReadout*)obj;
-            readout[0].Print(1);
-        }
-        n++;
-    }
-
-    f->Close();
 
     cout.rdbuf(stream_buffer_cout);  // back to the old buffer
     file.close();
-    */
 
     return 0;
 }
