@@ -61,6 +61,12 @@ jobs:
         run: |
           source ${{ env.REST_PATH }}/thisREST.sh
           restRoot -b -q
+      - name: Cache framework installation
+        id: detectorlib-install-cache
+        uses: actions/cache@v3
+        with:
+          key: ${{ env.BRANCH_NAME }}-${{ github.sha }}
+          path: ${{ env.REST_PATH }}
 
   readout:
     name: "Readout"
@@ -98,7 +104,8 @@ jobs:
           cd ${{ env.DETECTOR_LIB_PATH }}/pipeline/readout
           restManager --c generateReadout.rml --o readout.root
           restRoot -b -q PrintReadout.C'("readout.root")' > print.txt
-          source check_readout.sh
+          diff print.txt validation.txt > output.txt
+          python3 checkLines.py
       # We need to introduce basic validation here
       #    - diff validation.txt print.txt
       # - name: Basic Readout
