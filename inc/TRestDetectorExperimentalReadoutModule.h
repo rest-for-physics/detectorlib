@@ -21,13 +21,14 @@ class TRestDetectorExperimentalReadoutModule {
    private:
     std::vector<TRestDetectorExperimentalReadoutPixel> fPixels; /**< The pixels of the module. */
 
-    TVector3 fPosition;                            /**< The position of the module in 3D space. */
-    TVector3 fNormal;                              /**< The normal vector to the module. */
-    double fHeight;                                /**< The height of the module (drift distance). */
-    std::pair<TVector3, TVector3> fCoordinateAxes; /**< The coordinate axes of the module. */
-
+    TVector3 fPosition = {0, 0, 0}; /**< The position of the module in 3D space. */
+    TVector3 fNormal = {0, 0, 1};   /**< The normal vector to the module. */
+    double fHeight = 1.0;           /**< The height of the module (drift distance). */
+    std::pair<TVector3, TVector3> fCoordinateAxes = {{1, 0, 0},
+                                                     {0, 1, 0}}; /**< The coordinate axes of the module. */
+    double fRotation =
+        0; /**< The rotation angle of the module with respect to the normal vector in degrees. */
     // auxiliary data structures
-    // std::unique_ptr<MyKDTree> fKDTree;
     KDTree* fKDTree = nullptr;         /**< The KDTree used for spatial queries. */
     double fSearchRadius = 0;          /**< The search radius for spatial queries. */
     std::vector<TVector2> fConvexHull; /**< The convex hull of the module. */
@@ -43,23 +44,25 @@ class TRestDetectorExperimentalReadoutModule {
      */
     std::vector<TVector2> ComputeConvexHull();
 
-   public:
-    /**
-     * @brief Constructs a TRestDetectorExperimentalReadoutModule object with the specified parameters.
-     * @param position The position of the module in 3D space.
-     * @param height The height of the module (drift distance).
-     * @param normal The normal vector to the module.
-     * @param rotationInDegrees The rotation angle of the module in degrees (default: 0).
-     */
-    TRestDetectorExperimentalReadoutModule(const TVector3& position, double height, const TVector3& normal,
-                                           double rotationInDegrees = 0);
+    void UpdateAxes();
 
+   public:
     // needed for root
     TRestDetectorExperimentalReadoutModule() = default;
     virtual ~TRestDetectorExperimentalReadoutModule() {
         // delete fKDTree;
     }
 
+    void SetPosition(const TVector3& position) { fPosition = position; }
+    void SetNormal(const TVector3& normal);
+    void SetHeight(double height);
+    void SetRotation(double rotationInDegrees);
+
+    TVector3 GetPosition() const { return fPosition; }
+    TVector3 GetNormal() const { return fNormal; }
+    double GetHeight() const { return fHeight; }
+    std::pair<TVector3, TVector3> GetCoordinateAxes() const { return fCoordinateAxes; }
+    double GetRotation() const { return fRotation; }
     /**
      * @brief Returns the number of pixels in the module.
      * @return The number of pixels.

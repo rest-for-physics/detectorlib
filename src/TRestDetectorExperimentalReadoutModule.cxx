@@ -5,21 +5,6 @@ using namespace readout;
 
 ClassImp(TRestDetectorExperimentalReadoutModule);
 
-TRestDetectorExperimentalReadoutModule::TRestDetectorExperimentalReadoutModule(const TVector3& position,
-                                                                               double height,
-                                                                               const TVector3& normal,
-                                                                               double rotationInDegrees) {
-    fPosition = position;
-    fHeight = height;
-    fNormal = normal;
-
-    fCoordinateAxes = {{1, 0, 0}, {0, 1, 0}};
-
-    // rotate the coordinate axes by rotationInDegrees around the normal vector
-    fCoordinateAxes.first.Rotate(rotationInDegrees * TMath::RadToDeg(), fNormal);
-    fCoordinateAxes.second.Rotate(rotationInDegrees * TMath::RadToDeg(), fNormal);
-}
-
 void TRestDetectorExperimentalReadoutModule::SetPixels(
     const std::vector<TRestDetectorExperimentalReadoutPixel>& pixels) {
     fPixels = pixels;
@@ -186,4 +171,47 @@ TVector3 TRestDetectorExperimentalReadoutModule::TransformToAbsoluteCoordinates(
 
 double TRestDetectorExperimentalReadoutModule::GetZ(const TVector3& point) const {
     (point - fPosition).Dot(fNormal);
+}
+
+void TRestDetectorExperimentalReadoutModule::SetNormal(const TVector3& normal) {
+    fNormal = normal.Unit();
+    UpdateAxes();
+}
+
+void TRestDetectorExperimentalReadoutModule::SetRotation(double rotationInDegrees) {
+    fRotation = rotationInDegrees;
+    UpdateAxes();
+}
+
+void TRestDetectorExperimentalReadoutModule::SetHeight(double height) {
+    if (height <= 0) {
+        cerr << "TRestDetectorExperimentalReadoutModule::SetHeight: Height must be positive" << endl;
+        return;
+    }
+    fHeight = height;
+}
+
+void TRestDetectorExperimentalReadoutModule::UpdateAxes() {
+    // idempotent
+
+    fCoordinateAxes.first = {1, 0, 0};
+    fCoordinateAxes.second = {0, 1, 0};
+
+    // Check if fNormal is different from the original normal
+    const TVector3 originalNormal = {0, 0, 1};
+    if (fNormal != originalNormal) {
+        // Calculate the rotation axis by taking the cross product between the original normal and fNormal
+        TVector3 rotationAxis = originalNormal.Cross(fNormal);
+
+        // Calculate the rotation angle using the dot product between the original normal and fNormal
+        double rotationAngle = acos(originalNormal.Dot(fNormal) / (originalNormal.Mag() * fNormal.Mag()));
+
+        // Rotate the axes around the rotation axis by the rotation angle
+        fCoordinateAxes.first.Rotate(rotationAngle, rotationAxis);
+        fCoordinateAxes.second.Rotate(rotationAngle, rotationAxis);
+    }
+
+    // rotate around normal by rotation angle
+    fCoordinateAxes.first.Rotate(fRotation * TMath::DegToRad(), fNormal);
+    fCoordinateAxes.second.Rotate(fRotation * TMath::DegToRad(), fNormal);
 }
