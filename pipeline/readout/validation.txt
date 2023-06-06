@@ -1,16 +1,5 @@
-= Loading libraries ...
- - /home/jgalan/rest-framework/install/lib/libRestDetector.so
-Heed:
-    Database path: /programas/garfield/6.26.06/share/Heed/database
- - /home/jgalan/rest-framework/install/lib/libRestFramework.so
- - /home/jgalan/rest-framework/install/lib/libRestRaw.so
- - /home/jgalan/rest-framework/install/lib/libRestGeant4.so
- - /home/jgalan/rest-framework/install/lib/libRestConnectors.so
- - /home/jgalan/rest-framework/install/lib/libRestAxion.so
-
-
-Processing PrintReadout.C("output.root")...
-Filename : output.root
+<<<<<<< HEAD
+Processing PrintReadout.C("readout.root")...
 +++++++++++++++++++++++++++++++++++++++++++++
 TRestDetectorReadout content
 Config file : generateReadout.rml
@@ -20,7 +9,7 @@ Title : PANDA readout 7module
 REST Version : 2.3.15
 REST Official release: No
 Clean state: No
-REST Commit : 2aae3c43
+REST Commit : 2bac46ca
 REST Library version : 1.9
 ---------------------------------------
 Number of readout planes : 1
