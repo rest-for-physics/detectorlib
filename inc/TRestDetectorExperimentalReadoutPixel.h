@@ -29,6 +29,7 @@ class TRestDetectorExperimentalReadoutPixel {
     double fRadius;   /**< The radius of the pixel in mm. A pixel is guaranteed to be inside a circle with
                          center fCenter and radius fRadius. */
 
+    unsigned short fChannel; /**< The channel of the pixel. */
     /**
 
     @brief Initializes the vertices of the pixel.
@@ -51,21 +52,23 @@ class TRestDetectorExperimentalReadoutPixel {
     @brief Constructs a TRestDetectorExperimentalReadoutPixel object with given vertices.
     @param vertices The vertices of the pixel.
     */
-    explicit TRestDetectorExperimentalReadoutPixel(const std::vector<TVector2>& vertices);
+    explicit TRestDetectorExperimentalReadoutPixel(const std::vector<TVector2>& vertices,
+                                                   unsigned short channel = 0);
     /**
 
     @brief Constructs a rectangular TRestDetectorExperimentalReadoutPixel object.
     @param center The center of the pixel.
     @param size The size of the pixel (width, height).
     */
-    TRestDetectorExperimentalReadoutPixel(const TVector2& center, const std::pair<double, double>& size);
+    TRestDetectorExperimentalReadoutPixel(const TVector2& center, const std::pair<double, double>& size,
+                                          unsigned short channel = 0);
     /**
 
     @brief Constructs a square TRestDetectorExperimentalReadoutPixel object.
     @param center The center of the pixel.
     @param size The size of the pixel (width and height).
     */
-    TRestDetectorExperimentalReadoutPixel(const TVector2& center, double size);
+    TRestDetectorExperimentalReadoutPixel(const TVector2& center, double size, unsigned short channel = 0);
     // needed for root
     TRestDetectorExperimentalReadoutPixel() = default;
     virtual ~TRestDetectorExperimentalReadoutPixel() = default;
@@ -95,6 +98,9 @@ class TRestDetectorExperimentalReadoutPixel {
     @return True if the point is inside the pixel, false otherwise.
     */
     bool IsInside(const TVector2& point) const;
+
+    unsigned short GetChannel() const { return fChannel; }
+
     ClassDef(TRestDetectorExperimentalReadoutPixel, 1);
 };
 

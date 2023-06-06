@@ -6,20 +6,22 @@ using namespace readout;
 ClassImp(TRestDetectorExperimentalReadoutPixel);
 
 TRestDetectorExperimentalReadoutPixel::TRestDetectorExperimentalReadoutPixel(
-    const std::vector<TVector2>& vertices) {
+    const std::vector<TVector2>& vertices, unsigned short channel)
+    : fChannel(channel) {
     InitializeVertices(vertices);
 }
 
 TRestDetectorExperimentalReadoutPixel::TRestDetectorExperimentalReadoutPixel(
-    const TVector2& center, const std::pair<double, double>& size) {
+    const TVector2& center, const std::pair<double, double>& size, unsigned short channel)
+    : TRestDetectorExperimentalReadoutPixel(GetRectangularVertices(center, size), channel) {
     // rectangular pixel
-    InitializeVertices(GetRectangularVertices(center, size));
 }
 
 TRestDetectorExperimentalReadoutPixel::TRestDetectorExperimentalReadoutPixel(const TVector2& center,
-                                                                             double size) {
+                                                                             double size,
+                                                                             unsigned short channel)
+    : TRestDetectorExperimentalReadoutPixel(GetRectangularVertices(center, {size, size}), channel) {
     // square pixel
-    InitializeVertices(GetRectangularVertices(center, {size, size}));
 }
 
 void TRestDetectorExperimentalReadoutPixel::InitializeVertices(const std::vector<TVector2>& vertices) {

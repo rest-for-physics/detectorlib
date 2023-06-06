@@ -35,5 +35,9 @@ vector<const TRestDetectorExperimentalReadoutPixel*> TRestDetectorExperimentalRe
 vector<unsigned short> TRestDetectorExperimentalReadout::GetChannelsForPoint(const TVector3& point) const {
     vector<unsigned short> channels;
 
+    for (const auto& pixel : GetPixelsForPoint(point)) {
+        channels.push_back(pixel->GetChannel());
+    }
+
     return channels;
 }

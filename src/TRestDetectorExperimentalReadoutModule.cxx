@@ -10,6 +10,12 @@ void TRestDetectorExperimentalReadoutModule::SetPixels(
     fPixels = pixels;
     fConvexHull = ComputeConvexHull();
 
+    // build map of pixels by channel (a pixel channel cannot be updated so this will remain current)
+    fChannelToPixels.clear();
+    for (auto& pixel : fPixels) {
+        fChannelToPixels[pixel.GetChannel()].push_back(&pixel);
+    }
+
     // search radius is the maximum radius of all pixels
     double searchRadius = 0;
     for (auto& pixel : fPixels) {
@@ -220,4 +226,19 @@ std::vector<const TRestDetectorExperimentalReadoutPixel*>
 TRestDetectorExperimentalReadoutModule::GetPixelsForPoint(const TVector3& point) const {
     const TVector2 pointInModuleCoordinates = TransformToModuleCoordinates(point);
     return GetPixelsForPoint(pointInModuleCoordinates);
+}
+
+std::vector<const TRestDetectorExperimentalReadoutPixel*>
+TRestDetectorExperimentalReadoutModule::GetPixelsForChannel(unsigned short channel) const {
+    std::vector<const TRestDetectorExperimentalReadoutPixel*> pixels;
+    // if channel is not in map, return
+    if (fChannelToPixels.find(channel) == fChannelToPixels.end()) {
+        return pixels;
+    }
+
+    pixels.reserve(fChannelToPixels.at(channel).size());
+    for (const auto& pixel : fChannelToPixels.at(channel)) {
+        pixels.push_back(pixel);
+    }
+    return pixels;
 }

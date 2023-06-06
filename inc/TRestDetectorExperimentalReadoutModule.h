@@ -32,7 +32,8 @@ class TRestDetectorExperimentalReadoutModule {
     KDTree* fKDTree = nullptr;         /**< The KDTree used for spatial queries. */
     double fSearchRadius = 0;          /**< The search radius for spatial queries. */
     std::vector<TVector2> fConvexHull; /**< The convex hull of the module. */
-
+    std::map<unsigned short, std::vector<TRestDetectorExperimentalReadoutPixel*>>
+        fChannelToPixels; /**< A map from channel to pixels. */
     /**
      * @brief Builds the KDTree for the module.
      */
@@ -94,6 +95,8 @@ class TRestDetectorExperimentalReadoutModule {
      */
     std::vector<const TRestDetectorExperimentalReadoutPixel*> GetPixelsForPoint(const TVector2& point) const;
     std::vector<const TRestDetectorExperimentalReadoutPixel*> GetPixelsForPoint(const TVector3& point) const;
+    std::vector<const TRestDetectorExperimentalReadoutPixel*> GetPixelsForChannel(
+        unsigned short channel) const;
 
     /**
      * @brief Returns the Z coordinate of a given point inside the module.
