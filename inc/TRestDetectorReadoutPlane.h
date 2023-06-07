@@ -76,13 +76,17 @@ class TRestDetectorReadoutPlane {
     /// Sets the readout plane position
     void SetPosition(const TVector3& position) { fPosition = position; }
 
-    /// Sets the cathode plane position. By default is parallel to the readout
-    /// plane.
+    /// Sets the cathode plane position. By default is parallel to the readout plane.
     void SetCathodePosition(const TVector3& position) { fCathodePosition = position; }
 
-    /// Sets the orientation of the readout plane, and defines the side of the
-    /// active volume.
-    void SetPlaneVector(const TVector3& vect) { fNormal = vect.Unit(); }
+    /// Sets the orientation of the readout plane, and defines the side of the active volume.
+    void SetNormal(const TVector3& vect) { fNormal = vect.Unit(); }
+
+    /// Sets the vector contained in the plane that defines the internal X-axis
+    void SetAxisX(const TVector3& vect) { fAxisX = vect.Unit(); }
+
+    /// Sets the vector contained in the plane that defines the internal Y-axis
+    void SetAxisY(const TVector3& vect) { fAxisY = vect.Unit(); }
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
@@ -100,8 +104,14 @@ class TRestDetectorReadoutPlane {
     /// Returns a TVector3 with the cathode position
     inline TVector3 GetCathodePosition() const { return fCathodePosition; }
 
-    /// Returns a TVector3 with a std::vector normal to the readout plane
-    inline TVector3 GetPlaneVector() const { return fNormal; }
+    /// Returns a TVector3 with a vector normal to the readout plane
+    inline TVector3 GetNormal() const { return fNormal; }
+
+    /// Returns a TVector3 with a vector that defines the X-axis plane coordinate system
+    inline TVector3 GetAxisX() const { return fAxisX; }
+
+    /// Returns a TVector3 with a vector that defines the Y-axis plane coordinate system
+    inline TVector3 GetAxisY() const { return fAxisY; }
 
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }
