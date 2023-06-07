@@ -35,27 +35,35 @@
 /// allows to integrate any number of independent readout modules.
 class TRestDetectorReadoutPlane {
    private:
-    Int_t fPlaneID;  ///< The readout plane id. The id number is imposed by the
-                     ///< order of creation. Being the first id=0.
+    /// The plane id number imposed by the order of creation. Being the first id=0.
+    Int_t fId = -1;  //<
 
-    TVector3 fPosition;            ///< The position of the readout plane. The relative position
-                                   ///< of the modules will be shifted by this value.
-    TVector3 fPlaneVector;         ///< The plane std::vector defining the plane orientation
-                                   ///< and the side of the active volume.
-    TVector3 fCathodePosition;     ///< The cathode position which delimites the active
-                                   ///< volume together with the readout plane.
-    Double_t fChargeCollection;    ///< A parameter between 0 and 1 defining how
-                                   ///< much charge should be collected from a
-                                   ///< charge hit. It might be used to distribute
-                                   ///< the charge between different readout planes.
-    Double_t fTotalDriftDistance;  ///< A parameter storing the total drift distance,
-                                   ///< defined between cathode and readout plane.
+    /// The position of the readout plane that defines the origin (0,0) in plane coordinates
+    TVector3 fPosition = {0, 0, 0};  //<
 
-    Int_t fNModules;  ///< The number of modules that have been added to the
-                      ///< readout plane
-    std::vector<TRestDetectorReadoutModule>
-        fReadoutModules;  ///< A std::vector of the instances of TRestDetectorReadoutModule
-                          ///< contained in the readout plane.
+    /// A vector that defines the plane orientation and the side of the active volume.
+    TVector3 fNormal;  //<
+
+    /// A vector contained in the plane that defines the plane local reference system
+    TVector3 fAxisX;  //<
+
+    /// An orthonormal to fAxisX contained in the plane. It is calculated internally
+    TVector3 fAxisY;  //!
+
+    /// The cathode position which delimites the active volume together with the readout plane.
+    TVector3 fCathodePosition;  //<
+
+    /// The fraction of charge/energy this readout plane collects from a hit postion.
+    Double_t fChargeCollection;  //<
+
+    /// The total drift distance defined between cathode and readout plane. It is calculated internally.
+    Double_t fTotalDriftDistance;  //!
+
+    /// Keeps track of the number of modules that have been added to the readout plane
+    Int_t fNModules;  //<
+
+    ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
+    std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
 
     void Initialize();
 
@@ -63,7 +71,7 @@ class TRestDetectorReadoutPlane {
    public:
     // Setters
     /// Sets the planeId. This is done by TRestDetectorReadout during initialization
-    void SetID(int id) { fPlaneID = id; }
+    void SetID(int id) { fId = id; }
 
     /// Sets the readout plane position
     void SetPosition(const TVector3& position) { fPosition = position; }
@@ -74,7 +82,7 @@ class TRestDetectorReadoutPlane {
 
     /// Sets the orientation of the readout plane, and defines the side of the
     /// active volume.
-    void SetPlaneVector(const TVector3& vect) { fPlaneVector = vect.Unit(); }
+    void SetPlaneVector(const TVector3& vect) { fNormal = vect.Unit(); }
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
@@ -84,7 +92,7 @@ class TRestDetectorReadoutPlane {
 
     // Getters
     /// Returns an integer with the plane id number.
-    inline Int_t GetID() const { return fPlaneID; }
+    inline Int_t GetID() const { return fId; }
 
     /// Returns a TVector3 with the readout plane position
     inline TVector3 GetPosition() const { return fPosition; }
@@ -93,7 +101,7 @@ class TRestDetectorReadoutPlane {
     inline TVector3 GetCathodePosition() const { return fCathodePosition; }
 
     /// Returns a TVector3 with a std::vector normal to the readout plane
-    inline TVector3 GetPlaneVector() const { return fPlaneVector; }
+    inline TVector3 GetPlaneVector() const { return fNormal; }
 
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }
@@ -168,6 +176,6 @@ class TRestDetectorReadoutPlane {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 2);
+    ClassDef(TRestDetectorReadoutPlane, 3);
 };
 #endif

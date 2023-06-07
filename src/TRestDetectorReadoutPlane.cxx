@@ -63,7 +63,7 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 void TRestDetectorReadoutPlane::Initialize() {
     fCathodePosition = TVector3(0, 0, 0);
     fPosition = TVector3(0, 0, 0);
-    fPlaneVector = TVector3(0, 0, 0);
+    fNormal = TVector3(0, 0, 0);
 
     fNModules = 0;
     fReadoutModules.clear();
@@ -365,8 +365,8 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, "
                      << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Vector : X = " << fPlaneVector.X() << " mm, "
-                     << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Vector : X = " << fNormal.X() << " mm, "
+                     << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
                      << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
                      << RESTendl;
