@@ -258,7 +258,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
         // For the moment this will only be valid for a TPC with its axis (field
         // direction) being in z
-        Double_t fieldZDirection = plane->GetPlaneVector().Z();
+        Double_t fieldZDirection = plane->GetNormal().Z();
         Double_t zPosition = plane->GetPosition().Z();
 
         Double_t x = plane->GetX(readoutModule, readoutChannel);
