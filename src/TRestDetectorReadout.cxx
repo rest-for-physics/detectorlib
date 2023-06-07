@@ -470,8 +470,16 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetPosition(Get3DVectorParameterWithUnits("position", planeDefinition));
         plane.SetCathodePosition(Get3DVectorParameterWithUnits("cathodePosition", planeDefinition));
         plane.SetNormal(StringTo3DVector(GetFieldValue("normal", planeDefinition)));
-        plane.SetAxisX(StringTo3DVector(GetFieldValue("axisX", planeDefinition)));
-        plane.SetAxisY(plane.GetAxisX().Cross(plane.GetNormal()));
+
+        TVector3 reference = {1, 0, 0};
+        TVector3 normal = plane.GetNormal();
+
+        TVector3 xAxis = reference.Cross(normal).Cross(normal);
+        TVector3 yAxis = normal.Cross(xAxis);
+
+        plane.SetAxisX(xAxis);
+        plane.SetAxisY(yAxis);
+
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
 
         Double_t tDriftDistance = plane.GetDistanceTo(plane.GetCathodePosition());
