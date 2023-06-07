@@ -42,25 +42,25 @@ class TRestDetectorReadoutPlane {
     TVector3 fPosition = {0, 0, 0};  //<
 
     /// A vector that defines the plane orientation and the side of the active volume.
-    TVector3 fNormal;  //<
+    TVector3 fNormal = {0, 0, 1};  //<
 
     /// A vector contained in the plane that defines the plane local reference system
-    TVector3 fAxisX;  //<
+    TVector3 fAxisX = {1, 0, 0};  //<
 
     /// An orthonormal to fAxisX contained in the plane. It is calculated internally
-    TVector3 fAxisY;  //!
+    TVector3 fAxisY = {0, 1, 0};  //!
 
     /// The cathode position which delimites the active volume together with the readout plane.
-    TVector3 fCathodePosition;  //<
+    TVector3 fCathodePosition = {0, 0, 1};  //<
 
     /// The fraction of charge/energy this readout plane collects from a hit postion.
-    Double_t fChargeCollection;  //<
+    Double_t fChargeCollection = 1;  //<
 
     /// The total drift distance defined between cathode and readout plane. It is calculated internally.
-    Double_t fTotalDriftDistance;  //!
+    Double_t fTotalDriftDistance = 0;  //!
 
     /// Keeps track of the number of modules that have been added to the readout plane
-    Int_t fNModules;  //<
+    Int_t fNModules = 0;  //<
 
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
