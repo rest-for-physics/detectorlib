@@ -369,7 +369,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
                      << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
         RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, "
                      << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.Y() << " mm, "
+        RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, "
                      << " Y : " << fAxisY.Y() << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
                      << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
