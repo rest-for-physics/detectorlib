@@ -70,14 +70,12 @@ class TRestDetectorReadoutPlane {
     /// Sets the readout plane position
     void SetPosition(const TVector3& position) { fPosition = position; }
 
-    /// Sets the orientation of the readout plane, and defines the side of the active volume.
     void SetNormal(const TVector3& vect);
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
 
-    /// Sets the value for the total drift distance
-    void SetHeight(Double_t d) { fHeight = d; }
+    void SetHeight(Double_t d);
 
     // Getters
     /// Returns an integer with the plane id number.
@@ -108,7 +106,7 @@ class TRestDetectorReadoutPlane {
     inline Double_t GetHeight() const { return fHeight; }
 
     /// Returns the perpendicular distance to the readout plane from a given position *pos*.
-    Double_t GetDistanceTo(TVector3 position);
+    Double_t GetDistanceTo(const TVector3& pos);
 
     /// Returns the perpendicular distance to the readout plane from a given position *x*, *y*, *z*.
     Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z);

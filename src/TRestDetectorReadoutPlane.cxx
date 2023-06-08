@@ -88,6 +88,19 @@ void TRestDetectorReadoutPlane::SetNormal(const TVector3& vect) {
 }
 
 ///////////////////////////////////////////////
+/// \brief Used to define the height of the readout volume with sign crosscheck.
+///
+void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
+    if (height < 0) {
+        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
+        RESTError << "Setting height equal to zero!" << RESTendl;
+        fHeight = 0;
+    } else {
+        fHeight = height;
+    }
+}
+
+///////////////////////////////////////////////
 /// \brief Returns a pointer to a module using its internal module id
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
@@ -269,13 +282,6 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
     return (pos - GetPosition()).Dot(GetNormal());
 }
 
-void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
-    if (height < 0) {
-        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
-        exit(1);
-    }
-    fHeight = height;
-}
 ///////////////////////////////////////////////
 /// \brief This method determines if a given position in *z* is inside the drift
 /// volume drifting distance for this readout plane.
