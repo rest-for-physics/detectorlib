@@ -474,8 +474,8 @@ void TRestDetectorReadout::InitFromConfigFile() {
         TVector3 reference = {1, 0, 0};
         TVector3 normal = plane.GetNormal();
 
-        TVector3 xAxis = reference.Cross(normal).Cross(normal);
-        TVector3 yAxis = normal.Cross(xAxis);
+        TVector3 xAxis = normal.Cross(reference.Cross(normal));
+        TVector3 yAxis = xAxis.Cross(normal);
 
         plane.SetAxisX(xAxis);
         plane.SetAxisY(yAxis);
