@@ -50,10 +50,10 @@ class TRestDetectorReadoutPlane {
     /// An orthonormal to fAxisX contained in the plane. It is calculated internally
     TVector3 fAxisY = {0, 1, 0};  //!
 
-    /// The cathode position which delimites the active volume together with the readout plane.
+    /// The cathode position which delimits the active volume together with the readout plane.
     TVector3 fCathodePosition = {0, 0, 1};  //<
 
-    /// The fraction of charge/energy this readout plane collects from a hit postion.
+    /// The fraction of charge/energy this readout plane collects from a hit position.
     Double_t fChargeCollection = 1;  //<
 
     /// The total drift distance defined between cathode and readout plane. It is calculated internally.
