@@ -67,8 +67,9 @@ void TRestDetectorReadoutPlane::Initialize() {}
 ///
 Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
     Int_t nChannels = 0;
-    for (size_t md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
         nChannels += fReadoutModules[md].GetNumberOfChannels();
+    }
     return nChannels;
 }
 
@@ -155,7 +156,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
                 if (deltaY < deltaX) x = rModule->GetPixelCenter(chID, 0).X();
             }
         } else {
-            // we choose to ouput x only when deltaY > deltaX under non-90 deg rotation
+            // we choose to output x only when deltaY > deltaX under non-90 deg rotation
             // otherwise it is a y channel and should return nan
             if (deltaY > deltaX) x = rModule->GetPixelCenter(chID, 0).X();
         }
@@ -225,7 +226,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
@@ -264,10 +265,17 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(TVector3 pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
     return (pos - GetPosition()).Dot(GetNormal());
 }
 
+void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
+    if (height < 0) {
+        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
+        exit(1);
+    }
+    fHeight = height;
+}
 ///////////////////////////////////////////////
 /// \brief This method determines if a given position in *z* is inside the drift
 /// volume drifting distance for this readout plane.
@@ -347,8 +355,11 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
     Double_t distance = GetDistanceTo(posNew);
 
     if (distance > 0 && distance < fHeight) {
-        for (size_t m = 0; m < GetNumberOfModules(); m++)
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
+        for (size_t m = 0; m < GetNumberOfModules(); m++) {
+            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) {
+                return fReadoutModules[m].GetModuleID();
+            }
+        }
     }
 
     return -1;
@@ -379,7 +390,9 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (size_t i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -389,7 +402,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
 void TRestDetectorReadoutPlane::Draw() { this->GetReadoutHistogram()->Draw(); }
 
 ///////////////////////////////////////////////
-/// \brief Creates and resturns a TH2Poly object with the
+/// \brief Creates and returns a TH2Poly object with the
 /// readout pixel description.
 ///
 TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {

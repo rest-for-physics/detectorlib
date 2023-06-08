@@ -123,7 +123,9 @@ class TRestDetectorReadoutPlane {
 
     /// Returns a pointer to a readout module using its std::vector index
     TRestDetectorReadoutModule* GetModule(size_t mod) {
-        if (mod >= GetNumberOfModules()) return nullptr;
+        if (mod >= GetNumberOfModules()) {
+            return nullptr;
+        }
         return &fReadoutModules[mod];
     }
 
@@ -149,8 +151,6 @@ class TRestDetectorReadoutPlane {
     Int_t GetModuleIDFromPosition(TVector3 position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
-
-    void SetDriftDistance();
 
     void Draw();
 

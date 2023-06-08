@@ -446,7 +446,6 @@ void TRestDetectorReadout::AddReadoutPlane(TRestDetectorReadoutPlane plane) {
 void TRestDetectorReadout::InitFromConfigFile() {
     fMappingNodes = StringToInteger(GetParameter("mappingNodes", "0"));
 
-#pragma region ParseModuledefinition
     TiXmlElement* moduleDefinition = GetElement("readoutModule");
     while (moduleDefinition != nullptr) {
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
@@ -461,7 +460,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
         fModuleDefinitions.push_back(module);
         moduleDefinition = GetNextElement(moduleDefinition);
     }
-#pragma endregion
 
     TiXmlElement* planeDefinition = GetElement("readoutPlane");
     std::vector<TRestDetectorReadoutModule> moduleVector;
@@ -494,18 +492,16 @@ void TRestDetectorReadout::InitFromConfigFile() {
             fModuleDefinitions[mid].SetOrigin(StringTo2DVector(GetFieldValue("origin", moduleDefinition)));
             fModuleDefinitions[mid].SetRotation(StringToDouble(GetFieldValue("rotation", moduleDefinition)));
 
-#pragma region SetupDecodingFile
-
             Int_t firstDaqChannel = StringToInteger(GetFieldValue("firstDaqChannel", moduleDefinition));
             if (firstDaqChannel == -1) firstDaqChannel = addedChannels;
 
             std::string decodingFile = GetFieldValue("decodingFile", moduleDefinition);
-            if (decodingFile == "Not defined" || decodingFile == "" || RESTREADOUT_DECODINGFILE_ERROR)
+            if (decodingFile == "Not defined" || decodingFile.empty() || RESTREADOUT_DECODINGFILE_ERROR)
                 fDecoding = false;
             else
                 fDecoding = true;
 
-            if (fDecoding && !TRestTools::fileExists(decodingFile.c_str())) {
+            if (fDecoding && !TRestTools::fileExists(decodingFile)) {
                 RESTWarning << "The decoding file does not exist!" << RESTendl;
                 RESTWarning << "--------------------------------" << RESTendl;
                 RESTWarning << "File : " << decodingFile << RESTendl;
@@ -522,7 +518,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
             std::vector<Int_t> rChannel;
             std::vector<Int_t> dChannel;
-            if (fDecoding && TRestTools::fileExists(decodingFile.c_str())) {
+            if (fDecoding && TRestTools::fileExists(decodingFile)) {
                 FILE* f = fopen(decodingFile.c_str(), "r");
 
                 Int_t daq, readout;
@@ -574,7 +570,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetDaqID(dChannel[ch]);
                 fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetChannelID(rChannel[ch]);
 
-#pragma endregion
                 addedChannels++;
             }
             fModuleDefinitions[mid].SetMinMaxDaqIDs();
@@ -589,18 +584,9 @@ void TRestDetectorReadout::InitFromConfigFile() {
         // missing numbers in a multi-module readout plane. Modules can have their
         // special "id", e.g. M0, M2, M3, M4 in SJTU proto. We don't have M1
 
-        for (Int_t i(0); i < (Int_t)moduleVector.size(); i++) {
-            plane.AddModule(moduleVector[i]);
-            // for ( Int_t j(0); j< (Int_t) moduleVector.size(); j++)
-            //{
-            //	if ( moduleVector[j].GetModuleID() == i )
-            //	{
-            //
-            //		break;
-            //	}
-            //}
+        for (auto& i : moduleVector) {
+            plane.AddModule(i);
         }
-#pragma endregion
 
         this->AddReadoutPlane(plane);
         planeDefinition = GetNextElement(planeDefinition);
@@ -620,7 +606,6 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
     Double_t pixelTolerance = StringToDouble(GetFieldValue("pixelTolerance", moduleDefinition));
     if (pixelTolerance == -1) pixelTolerance = 1.e-6;
 
-#pragma region addChannel
     std::vector<TRestDetectorReadoutChannel> channelVector;
     std::vector<int> channelIDVector;
     TiXmlElement* channelDefinition = GetElement("readoutChannel", moduleDefinition);
@@ -631,7 +616,6 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         if (id != -1) channelIDVector.push_back(id);
         channel.SetDaqID(-1);
 
-#pragma region addPixel
         std::vector<TRestDetectorReadoutPixel> pixelVector;
         std::vector<int> pixelIDVector;
         TiXmlElement* pixelDefinition = GetElement("addPixel", channelDefinition);
@@ -676,7 +660,6 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
                       << RESTendl;
             exit(0);
         }
-#pragma endregion
 
         channelVector.push_back(channel);
         channelDefinition = GetNextElement(channelDefinition);
@@ -712,7 +695,6 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
 
         exit(0);
     }
-#pragma endregion
 
     return mod;
 }
