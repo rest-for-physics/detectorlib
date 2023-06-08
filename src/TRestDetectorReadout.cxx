@@ -468,7 +468,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         plane.SetID(GetNumberOfReadoutPlanes());
         plane.SetPosition(Get3DVectorParameterWithUnits("position", planeDefinition));
-        plane.SetCathodePosition(Get3DVectorParameterWithUnits("cathodePosition", planeDefinition));
+        plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetNormal(StringTo3DVector(GetFieldValue("normal", planeDefinition)));
 
         TVector3 reference = {1, 0, 0};
@@ -483,7 +483,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
 
         Double_t tDriftDistance = plane.GetDistanceTo(plane.GetCathodePosition());
-        plane.SetTotalDriftDistance(tDriftDistance);
+        plane.SetHeight(tDriftDistance);
 
 #pragma region addReadoutModuleToPlane
 

@@ -61,9 +61,9 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 /// \brief TRestDetectorReadoutPlane initialization
 ///
 void TRestDetectorReadoutPlane::Initialize() {
-    fCathodePosition = TVector3(0, 0, 0);
     fPosition = TVector3(0, 0, 0);
-    fNormal = TVector3(0, 0, 0);
+    fNormal = TVector3(0, 0, 1);
+    fHeight = 0;
 
     fReadoutModules.clear();
 }
@@ -77,14 +77,6 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
         nChannels += fReadoutModules[md].GetNumberOfChannels();
     }
     return nChannels;
-}
-
-///////////////////////////////////////////////
-/// \brief Calculates the drift distance between readout plane and cathode
-///
-void TRestDetectorReadoutPlane::SetDriftDistance() {
-    Double_t tDriftDistance = this->GetDistanceTo(this->GetCathodePosition());
-    this->SetTotalDriftDistance(tDriftDistance);
 }
 
 ///////////////////////////////////////////////
@@ -265,10 +257,17 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(TVector3 pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
     return (pos - GetPosition()).Dot(GetNormal());
 }
 
+void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
+    if (height < 0) {
+        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
+        exit(1);
+    }
+    fHeight = height;
+}
 ///////////////////////////////////////////////
 /// \brief This method determines if a given position in *z* is inside the drift
 /// volume drifting distance for this readout plane.
@@ -310,7 +309,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) return 1;
+    if (distance > 0 && distance < fHeight) return 1;
 
     return 0;
 }
@@ -347,9 +346,12 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) {
-        for (size_t m = 0; m < GetNumberOfModules(); m++)
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
+    if (distance > 0 && distance < fHeight) {
+        for (size_t m = 0; m < GetNumberOfModules(); m++) {
+            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) {
+                return fReadoutModules[m].GetModuleID();
+            }
+        }
     }
 
     return -1;
@@ -371,16 +373,19 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
                      << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, "
                      << " Y : " << fAxisY.Y() << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
-                     << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
+        const TVector3 cathodePosition = GetCathodePosition();
+        RESTMetadata << "-- Cathode Position : X = " << cathodePosition.X() << " mm, "
+                     << " Y : " << cathodePosition.Y() << " mm, Z : " << cathodePosition.Z() << " mm"
                      << RESTendl;
-        RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
+        RESTMetadata << "-- Total drift distance : " << fHeight << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (size_t i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -390,7 +395,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
 void TRestDetectorReadoutPlane::Draw() { this->GetReadoutHistogram()->Draw(); }
 
 ///////////////////////////////////////////////
-/// \brief Creates and resturns a TH2Poly object with the
+/// \brief Creates and returns a TH2Poly object with the
 /// readout pixel description.
 ///
 TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
