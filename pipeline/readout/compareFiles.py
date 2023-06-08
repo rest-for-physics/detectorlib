@@ -32,15 +32,14 @@ for line in file_1_text:
 
     if( numeric_string_1.find("132") == 0):
         # removing color codes
-        numeric_string_1 = numeric_string_1[3:len(numeric_string_1)-1]
-
+        numeric_string_1 = numeric_string_1[3 : len(numeric_string_1) - 1]
 
     numeric_filter_2 = filter(str.isdigit, file_2_text[n].rstrip())
     numeric_string_2 = "".join(numeric_filter_2)
 
     if( numeric_string_2.find("132") == 0):
         # removing color codes
-        numeric_string_2 = numeric_string_2[3:len(numeric_string_2)-1]
+        numeric_string_2 = numeric_string_2[3 : len(numeric_string_2) - 1]
 
     if numeric_string_1 != numeric_string_2:
         print("xx:" + numeric_string_1)
