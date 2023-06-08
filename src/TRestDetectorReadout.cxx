@@ -471,19 +471,16 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetNormal(StringTo3DVector(GetFieldValue("normal", planeDefinition)));
 
-        TVector3 reference = {1, 0, 0};
-        TVector3 normal = plane.GetNormal();
+        const TVector3 reference = {1, 0, 0};
+        const TVector3& normal = plane.GetNormal();
 
-        TVector3 xAxis = reference.Cross(normal).Cross(normal);
-        TVector3 yAxis = normal.Cross(xAxis);
+        const TVector3 xAxis = reference.Cross(normal).Cross(normal);
+        const TVector3 yAxis = normal.Cross(xAxis);
 
         plane.SetAxisX(xAxis);
         plane.SetAxisY(yAxis);
 
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
-
-        Double_t tDriftDistance = plane.GetDistanceTo(plane.GetCathodePosition());
-        plane.SetHeight(tDriftDistance);
 
 #pragma region addReadoutModuleToPlane
 
@@ -510,12 +507,12 @@ void TRestDetectorReadout::InitFromConfigFile() {
             if (firstDaqChannel == -1) firstDaqChannel = addedChannels;
 
             std::string decodingFile = GetFieldValue("decodingFile", moduleDefinition);
-            if (decodingFile == "Not defined" || decodingFile == "" || RESTREADOUT_DECODINGFILE_ERROR)
+            if (decodingFile == "Not defined" || decodingFile.empty() || RESTREADOUT_DECODINGFILE_ERROR)
                 fDecoding = false;
             else
                 fDecoding = true;
 
-            if (fDecoding && !TRestTools::fileExists(decodingFile.c_str())) {
+            if (fDecoding && !TRestTools::fileExists(decodingFile)) {
                 RESTWarning << "The decoding file does not exist!" << RESTendl;
                 RESTWarning << "--------------------------------" << RESTendl;
                 RESTWarning << "File : " << decodingFile << RESTendl;
@@ -532,7 +529,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
             std::vector<Int_t> rChannel;
             std::vector<Int_t> dChannel;
-            if (fDecoding && TRestTools::fileExists(decodingFile.c_str())) {
+            if (fDecoding && TRestTools::fileExists(decodingFile)) {
                 FILE* f = fopen(decodingFile.c_str(), "r");
 
                 Int_t daq, readout;
