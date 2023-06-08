@@ -44,23 +44,17 @@ class TRestDetectorReadoutPlane {
     /// A vector that defines the plane orientation and the side of the active volume.
     TVector3 fNormal = {0, 0, 1};  //<
 
-    /// A vector contained in the plane that defines the plane local reference system
+    /// A vector contained in the plane that defines the plane local reference system. Calculated internally.
     TVector3 fAxisX = {1, 0, 0};  //<
 
-    /// An orthonormal to fAxisX contained in the plane. It is calculated internally
-    TVector3 fAxisY = {0, 1, 0};  //!
-
-    /// The cathode position which delimites the active volume together with the readout plane.
-    TVector3 fCathodePosition = {0, 0, 1};  //<
+    /// An orthonormal to fAxisX contained in the plane. Calculated internally.
+    TVector3 fAxisY = {0, 1, 0};  //<
 
     /// The fraction of charge/energy this readout plane collects from a hit postion.
     Double_t fChargeCollection = 1;  //<
 
-    /// The total drift distance defined between cathode and readout plane. It is calculated internally.
-    Double_t fTotalDriftDistance = 0;  //!
-
-    /// Keeps track of the number of modules that have been added to the readout plane
-    Int_t fNModules = 0;  //<
+    /// A length in mm that confers a 3rd dimension to the readout plane and defines a volume.
+    Double_t fHeight = 0;  //<
 
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
@@ -76,23 +70,14 @@ class TRestDetectorReadoutPlane {
     /// Sets the readout plane position
     void SetPosition(const TVector3& position) { fPosition = position; }
 
-    /// Sets the cathode plane position. By default is parallel to the readout plane.
-    void SetCathodePosition(const TVector3& position) { fCathodePosition = position; }
-
     /// Sets the orientation of the readout plane, and defines the side of the active volume.
-    void SetNormal(const TVector3& vect) { fNormal = vect.Unit(); }
-
-    /// Sets the vector contained in the plane that defines the internal X-axis
-    void SetAxisX(const TVector3& vect) { fAxisX = vect.Unit(); }
-
-    /// Sets the vector contained in the plane that defines the internal Y-axis
-    void SetAxisY(const TVector3& vect) { fAxisY = vect.Unit(); }
+    void SetNormal(const TVector3& vect);
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
 
     /// Sets the value for the total drift distance
-    void SetTotalDriftDistance(Double_t d) { fTotalDriftDistance = d; }
+    void SetHeight(Double_t d) { fHeight = d; }
 
     // Getters
     /// Returns an integer with the plane id number.
@@ -102,7 +87,7 @@ class TRestDetectorReadoutPlane {
     inline TVector3 GetPosition() const { return fPosition; }
 
     /// Returns a TVector3 with the cathode position
-    inline TVector3 GetCathodePosition() const { return fCathodePosition; }
+    inline TVector3 GetCathodePosition() const { return fPosition + fHeight * fNormal; }
 
     /// Returns a TVector3 with a vector normal to the readout plane
     inline TVector3 GetNormal() const { return fNormal; }
@@ -116,15 +101,16 @@ class TRestDetectorReadoutPlane {
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }
 
-    /// Returns the total drift distance
-    inline Double_t GetTotalDriftDistance() const { return fTotalDriftDistance; }
+    /// Returns the total drift distance. Equivalent to the height of the readout volume.
+    inline Double_t GetDriftDistance() const { return fHeight; }
 
-    /// Returns the perpendicular distance to the readout plane from a given
-    /// position *pos*.
+    /// Returns the height of the readout volume.
+    inline Double_t GetHeight() const { return fHeight; }
+
+    /// Returns the perpendicular distance to the readout plane from a given position *pos*.
     Double_t GetDistanceTo(TVector3 position);
 
-    /// Returns the perpendicular distance to the readout plane from a given
-    /// position *x*, *y*, *z*.
+    /// Returns the perpendicular distance to the readout plane from a given position *x*, *y*, *z*.
     Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z);
 
     /// Returns a TVector2 oriented as the shortest distance of a given position
@@ -145,10 +131,7 @@ class TRestDetectorReadoutPlane {
     size_t GetNumberOfModules() { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
-    void AddModule(TRestDetectorReadoutModule& rModule) {
-        fReadoutModules.push_back(rModule);
-        fNModules++;
-    }
+    void AddModule(TRestDetectorReadoutModule& rModule) { fReadoutModules.push_back(rModule); }
 
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }
@@ -186,6 +169,6 @@ class TRestDetectorReadoutPlane {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 3);
+    ClassDef(TRestDetectorReadoutPlane, 4);
 };
 #endif

@@ -401,6 +401,9 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
     return nullptr;
 }
 
+///////////////////////////////////////////////
+/// \brief Returns a pointer to the readout channel by daq id
+///
 TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithDaqID(int daqId) {
     int planeID = -1, moduleID = -1, channelID = -1;
 
@@ -468,22 +471,9 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         plane.SetID(GetNumberOfReadoutPlanes());
         plane.SetPosition(Get3DVectorParameterWithUnits("position", planeDefinition));
-        plane.SetCathodePosition(Get3DVectorParameterWithUnits("cathodePosition", planeDefinition));
-        plane.SetNormal(StringTo3DVector(GetFieldValue("normal", planeDefinition)));
-
-        TVector3 reference = {1, 0, 0};
-        TVector3 normal = plane.GetNormal();
-
-        TVector3 xAxis = normal.Cross(reference.Cross(normal));
-        TVector3 yAxis = xAxis.Cross(normal);
-
-        plane.SetAxisX(xAxis);
-        plane.SetAxisY(yAxis);
-
+        plane.SetNormal(Get3DVectorParameterWithUnits("normal", planeDefinition));
+        plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
-
-        Double_t tDriftDistance = plane.GetDistanceTo(plane.GetCathodePosition());
-        plane.SetTotalDriftDistance(tDriftDistance);
 
 #pragma region addReadoutModuleToPlane
 
@@ -816,25 +806,32 @@ Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitp
     return -1;
 }
 
+///////////////////////////////////////////////
+/// \brief It returns the physical X-coordinate corresponding to
+/// a given signal id in plane coordinates.
+///
 Double_t TRestDetectorReadout::GetX(Int_t signalID) {
     Int_t planeID, readoutChannel = -1, readoutModule;
     GetPlaneModuleChannel(signalID, planeID, readoutModule, readoutChannel);
     if (readoutChannel == -1) {
-        // std::cout << "REST Warning : Readout channel not found for daq ID : " << signalID << std::endl;
         return std::numeric_limits<Double_t>::quiet_NaN();
     }
     return GetX(planeID, readoutModule, readoutChannel);
 }
 
+///////////////////////////////////////////////
+/// \brief It returns the physical Y-coordinate corresponding to
+/// a given signal id in plane coordinates.
+///
 Double_t TRestDetectorReadout::GetY(Int_t signalID) {
     Int_t planeID, readoutChannel = -1, readoutModule;
     GetPlaneModuleChannel(signalID, planeID, readoutModule, readoutChannel);
     if (readoutChannel == -1) {
-        // std::cout << "REST Warning : Readout channel not found for daq ID : " << signalID << std::endl;
         return std::numeric_limits<Double_t>::quiet_NaN();
     }
     return GetY(planeID, readoutModule, readoutChannel);
 }
+
 ///////////////////////////////////////////////
 /// \brief It returns the x-coordinate for the given readout
 /// plane, *plane*, a given module, *modID*, and a given

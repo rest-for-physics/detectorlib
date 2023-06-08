@@ -60,14 +60,7 @@ TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
 ///////////////////////////////////////////////
 /// \brief TRestDetectorReadoutPlane initialization
 ///
-void TRestDetectorReadoutPlane::Initialize() {
-    fCathodePosition = TVector3(0, 0, 0);
-    fPosition = TVector3(0, 0, 0);
-    fNormal = TVector3(0, 0, 0);
-
-    fNModules = 0;
-    fReadoutModules.clear();
-}
+void TRestDetectorReadoutPlane::Initialize() {}
 
 ///////////////////////////////////////////////
 /// \brief Returns the total number of channels in the readout plane
@@ -80,11 +73,17 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
 }
 
 ///////////////////////////////////////////////
-/// \brief Calculates the drift distance between readout plane and cathode
+/// \brief It updates the value of the normal vector and recalculates
+/// the correspoding X and Y axis.
 ///
-void TRestDetectorReadoutPlane::SetDriftDistance() {
-    Double_t tDriftDistance = this->GetDistanceTo(this->GetCathodePosition());
-    this->SetTotalDriftDistance(tDriftDistance);
+void TRestDetectorReadoutPlane::SetNormal(const TVector3& vect) {
+    fNormal = vect;
+    TVector3 reference = {1, 0, 0};
+    const TVector3& normal = GetNormal();
+    if (normal == TVector3(1, 0, 0)) reference = {0, 1, 0};
+
+    fAxisX = reference.Cross(normal).Cross(normal);
+    fAxisY = normal.Cross(fAxisX);
 }
 
 ///////////////////////////////////////////////
@@ -310,7 +309,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) return 1;
+    if (distance > 0 && distance < fHeight) return 1;
 
     return 0;
 }
@@ -347,7 +346,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) {
+    if (distance > 0 && distance < fHeight) {
         for (size_t m = 0; m < GetNumberOfModules(); m++)
             if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
     }
@@ -371,10 +370,10 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
                      << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, "
                      << " Y : " << fAxisY.Y() << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
-                     << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
-                     << RESTendl;
-        RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
+        RESTMetadata << "-- Cathode Position : X = " << GetCathodePosition().X() << " mm, "
+                     << " Y : " << GetCathodePosition().Y() << " mm, Z : " << GetCathodePosition().Z()
+                     << " mm" << RESTendl;
+        RESTMetadata << "-- Height : " << fHeight << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
