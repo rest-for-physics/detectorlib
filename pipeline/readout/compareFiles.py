@@ -33,7 +33,10 @@ for line in file_1_text:
     numeric_filter_2 = filter(str.isdigit, file_2_text[n].rstrip())
     numeric_string_2 = "".join(numeric_filter_2)
 
+   
     if numeric_string_1 != numeric_string_2:
+        print( "xx:" + numeric_string_1 )
+        print( "yy:" + numeric_string_2 )
         print("XX:" + line.rstrip())
         print("YY:" + file_2_text[n].rstrip())
         result = 1
