@@ -156,7 +156,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
                 if (deltaY < deltaX) x = rModule->GetPixelCenter(chID, 0).X();
             }
         } else {
-            // we choose to ouput x only when deltaY > deltaX under non-90 deg rotation
+            // we choose to output x only when deltaY > deltaX under non-90 deg rotation
             // otherwise it is a y channel and should return nan
             if (deltaY > deltaX) x = rModule->GetPixelCenter(chID, 0).X();
         }
@@ -226,7 +226,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
