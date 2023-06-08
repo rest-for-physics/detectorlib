@@ -59,9 +59,6 @@ class TRestDetectorReadoutPlane {
     /// The total drift distance defined between cathode and readout plane. It is calculated internally.
     Double_t fTotalDriftDistance = 0;  //!
 
-    /// Keeps track of the number of modules that have been added to the readout plane
-    Int_t fNModules = 0;  //<
-
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
 
@@ -137,7 +134,9 @@ class TRestDetectorReadoutPlane {
 
     /// Returns a pointer to a readout module using its std::vector index
     TRestDetectorReadoutModule* GetModule(size_t mod) {
-        if (mod >= GetNumberOfModules()) return nullptr;
+        if (mod >= GetNumberOfModules()) {
+            return nullptr;
+        }
         return &fReadoutModules[mod];
     }
 
@@ -147,7 +146,6 @@ class TRestDetectorReadoutPlane {
     /// Adds a new module to the readout plane
     void AddModule(TRestDetectorReadoutModule& rModule) {
         fReadoutModules.push_back(rModule);
-        fNModules++;
     }
 
     /// Prints the readout plane description

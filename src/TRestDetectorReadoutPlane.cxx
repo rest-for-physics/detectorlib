@@ -65,7 +65,6 @@ void TRestDetectorReadoutPlane::Initialize() {
     fPosition = TVector3(0, 0, 0);
     fNormal = TVector3(0, 0, 0);
 
-    fNModules = 0;
     fReadoutModules.clear();
 }
 
@@ -74,8 +73,9 @@ void TRestDetectorReadoutPlane::Initialize() {
 ///
 Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
     Int_t nChannels = 0;
-    for (size_t md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
         nChannels += fReadoutModules[md].GetNumberOfChannels();
+    }
     return nChannels;
 }
 
