@@ -171,6 +171,6 @@ class TRestDetectorReadoutPlane {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 4);
+    ClassDef(TRestDetectorReadoutPlane, 5);
 };
 #endif
