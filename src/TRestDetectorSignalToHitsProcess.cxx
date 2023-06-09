@@ -267,10 +267,10 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         REST_HitType type = XYZ;
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(readoutModule);
         if (TMath::IsNaN(x)) {
-            x = mod->GetPlaneCoordinates(TVector2(mod->GetModuleSizeX() / 2, mod->GetModuleSizeY() / 2)).X();
+            x = mod->GetPlaneCoordinates(TVector2(mod->GetSizeX() / 2, mod->GetSizeZ() / 2)).X();
             type = YZ;
         } else if (TMath::IsNaN(y)) {
-            y = mod->GetPlaneCoordinates(TVector2(mod->GetModuleSizeX() / 2, mod->GetModuleSizeY() / 2)).Y();
+            y = mod->GetPlaneCoordinates(TVector2(mod->GetSizeX() / 2, mod->GetSizeZ() / 2)).Y();
             type = XZ;
         }
 

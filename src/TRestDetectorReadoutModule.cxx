@@ -66,10 +66,10 @@ TRestDetectorReadoutModule::~TRestDetectorReadoutModule() {}
 ///
 void TRestDetectorReadoutModule::Initialize() {
     fReadoutChannel.clear();
-    fModuleID = -1;
+    fId = -1;
 
-    fModuleOrigin = {0, 0};
-    fModuleSize = {0, 0};
+    fOrigin = {0, 0};
+    fSize = {0, 0};
 
     fRotation = 0;
 
@@ -127,7 +127,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     cout << "Total number of pixels : " << totalNumberOfPixels << endl;
     cout << "Nodes : " << nodes << endl;
 
-    fMapping.Initialize(nodes, nodes, GetModuleSizeX(), GetModuleSizeY());
+    fMapping.Initialize(nodes, nodes, GetSizeX(), GetSizeZ());
 
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++) {
         for (int px = 0; px < this->GetChannel(ch)->GetNumberOfPixels(); px++) {
@@ -322,8 +322,8 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
 Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
     TVector2 positionRotated = TransformToModuleCoordinates(position);
 
-    if (positionRotated.X() >= 0 && positionRotated.X() <= fModuleSize.X() && positionRotated.Y() >= 0 &&
-        positionRotated.Y() <= fModuleSize.Y())
+    if (positionRotated.X() >= 0 && positionRotated.X() <= fSize.X() && positionRotated.Y() >= 0 &&
+        positionRotated.Y() <= fSize.Y())
         return true;
 
     return false;
@@ -372,13 +372,13 @@ TVector2 TRestDetectorReadoutModule::GetDistanceToModule(const TVector2& positio
     Double_t dx = 0, dy = 0;
     if (newPos.X() < 0)
         dx = -newPos.X();
-    else if (fModuleSize.X() - newPos.X() < 0)
-        dx = fModuleSize.X() - newPos.X();
+    else if (fSize.X() - newPos.X() < 0)
+        dx = fSize.X() - newPos.X();
 
     if (newPos.Y() < 0)
         dy = -newPos.Y();
-    else if (fModuleSize.Y() - newPos.Y() < 0)
-        dy = fModuleSize.Y() - newPos.Y();
+    else if (fSize.Y() - newPos.Y() < 0)
+        dy = fSize.Y() - newPos.Y();
 
     TVector2 dist = TVector2(dx, dy);
     return dist;
@@ -402,7 +402,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, 
     TVector2 pixPosition = GetChannel(channel)->GetPixel(pixel)->GetVertex(vertex);
 
     pixPosition = pixPosition.Rotate(fRotation);
-    pixPosition = pixPosition + fModuleOrigin;
+    pixPosition = pixPosition + fOrigin;
     return pixPosition;
 }
 
@@ -417,7 +417,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) 
     TVector2 pixCenter = GetChannel(channel)->GetPixel(pixel)->GetCenter();
 
     pixCenter = pixCenter.Rotate(fRotation);
-    pixCenter = pixCenter + fModuleOrigin;
+    pixCenter = pixCenter + fOrigin;
     return pixCenter;
 }
 
@@ -441,7 +441,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(TRestDetectorReadoutPixel* p
 TVector2 TRestDetectorReadoutModule::GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex) {
     TVector2 pixPosition = pix->GetVertex(vertex);
     pixPosition = pixPosition.Rotate(fRotation);
-    pixPosition = pixPosition + fModuleOrigin;
+    pixPosition = pixPosition + fOrigin;
     return pixPosition;
 }
 
@@ -465,22 +465,22 @@ Bool_t TRestDetectorReadoutModule::GetPixelTriangle(TRestDetectorReadoutPixel* p
 ///
 TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
     TVector2 vertex(0, 0);
-    const TVector2& origin = fModuleOrigin;
+    const TVector2& origin = fOrigin;
 
     if (n % 4 == 0)
         return origin;
     else if (n % 4 == 1) {
-        vertex.Set(fModuleSize.X(), 0);
+        vertex.Set(fSize.X(), 0);
         vertex = vertex.Rotate(fRotation);
 
         vertex = vertex + origin;
     } else if (n % 4 == 2) {
-        vertex.Set(fModuleSize.X(), fModuleSize.Y());
+        vertex.Set(fSize.X(), fSize.Y());
         vertex = vertex.Rotate(fRotation);
 
         vertex = vertex + origin;
     } else if (n % 4 == 3) {
-        vertex.Set(0, fModuleSize.Y());
+        vertex.Set(0, fSize.Y());
         vertex = vertex.Rotate(fRotation);
 
         vertex = vertex + origin;
@@ -500,14 +500,14 @@ void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& rChanne
         Double_t sX = rChannel.GetPixel(i)->GetVertex(1).X();
         Double_t sY = rChannel.GetPixel(i)->GetVertex(1).Y();
 
-        if (oX + fTolerance < 0 || oY + fTolerance < 0 || sX - fTolerance > fModuleSize.X() ||
-            sY - fTolerance > fModuleSize.Y()) {
+        if (oX + fTolerance < 0 || oY + fTolerance < 0 || sX - fTolerance > fSize.X() ||
+            sY - fTolerance > fSize.Y()) {
             if (showWarnings) {
                 cout << "REST Warning (AddChannel) pixel outside the module boundaries" << endl;
                 cout << "Channel: " << fReadoutChannel.size() << ", Pixel : " << i << endl;
                 cout << "Pixel origin = (" << oX << " , " << oY << ")" << endl;
                 cout << "Pixel size = (" << sX << " , " << sY << ")" << endl;
-                cout << "Module size = (" << fModuleSize.X() << " , " << fModuleSize.Y() << ")" << endl;
+                cout << "Module size = (" << fSize.X() << " , " << fSize.Y() << ")" << endl;
             }
         }
     }
@@ -527,9 +527,9 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
         RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
-        RESTMetadata << "-- Origin position : X = " << fModuleOrigin.X() << " mm "
-                     << " Y : " << fModuleOrigin.Y() << " mm" << RESTendl;
-        RESTMetadata << "-- Size : X = " << fModuleSize.X() << " Y : " << fModuleSize.Y() << RESTendl;
+        RESTMetadata << "-- Origin position : X = " << fOrigin.X() << " mm "
+                     << " Y : " << fOrigin.Y() << " mm" << RESTendl;
+        RESTMetadata << "-- Size : X = " << fSize.X() << " Y : " << fSize.Y() << RESTendl;
         RESTMetadata << "-- Rotation : " << fRotation * units("degrees") << " degrees" << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "-- Tolerance : " << fTolerance << RESTendl;
