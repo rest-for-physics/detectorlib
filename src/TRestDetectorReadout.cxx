@@ -472,6 +472,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetNormal(Get3DVectorParameterWithUnits("normal", planeDefinition));
         plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
+        plane.SetRotation(GetDblParameterWithUnits(GetFieldValue("rotation", planeDefinition)));
 
 #pragma region addReadoutModuleToPlane
 
