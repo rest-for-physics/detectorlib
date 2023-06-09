@@ -225,6 +225,6 @@ class TRestDetectorReadoutModule {
     // Destructor
     virtual ~TRestDetectorReadoutModule();
 
-    ClassDef(TRestDetectorReadoutModule, 2);
+    ClassDef(TRestDetectorReadoutModule, 3);
 };
 #endif
