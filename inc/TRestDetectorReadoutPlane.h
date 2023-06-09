@@ -106,10 +106,10 @@ class TRestDetectorReadoutPlane {
     inline Double_t GetHeight() const { return fHeight; }
 
     /// Returns the perpendicular distance to the readout plane from a given position *pos*.
-    Double_t GetDistanceTo(const TVector3& pos);
+    Double_t GetDistanceTo(const TVector3& pos) const;
 
     /// Returns the perpendicular distance to the readout plane from a given position *x*, *y*, *z*.
-    Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z);
+    Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z) const;
 
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
@@ -146,7 +146,7 @@ class TRestDetectorReadoutPlane {
 
     Bool_t isDaqIDInside(Int_t daqId);
 
-    Int_t GetModuleIDFromPosition(TVector3 position);
+    Int_t GetModuleIDFromPosition(const TVector3& position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 

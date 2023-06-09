@@ -55,7 +55,7 @@ TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() { Initialize(); }
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane destructor
 ///
-TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
+TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() = default;
 
 ///////////////////////////////////////////////
 /// \brief TRestDetectorReadoutPlane initialization
@@ -270,7 +270,7 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// *x*, *y*, *z* position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double_t z) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double_t z) const {
     return GetDistanceTo(TVector3(x, y, z));
 }
 
@@ -278,7 +278,7 @@ Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) {
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) const {
     return (pos - GetPosition()).Dot(GetNormal());
 }
 
@@ -355,7 +355,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& pos) {
     TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
 
     Double_t distance = GetDistanceTo(posNew);
