@@ -429,7 +429,7 @@ TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
         }
     }
 
-    readoutHistogram->SetStats(0);
+    readoutHistogram->SetStats(false);
 
     return readoutHistogram;
 }
@@ -476,13 +476,13 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
         fCoordinateAxes.second.Rotate(rotationAngle, rotationAxis);
     }
 
-    // rotate around normal by rotation angle
-    fCoordinateAxes.first.Rotate(fRotation * TMath::DegToRad(), fNormal);
-    fCoordinateAxes.second.Rotate(fRotation * TMath::DegToRad(), fNormal);
+    // rotate around normal by rotation angle (angle in radians)
+    fCoordinateAxes.first.Rotate(fRotation, fNormal);
+    fCoordinateAxes.second.Rotate(fRotation, fNormal);
 }
 
-void TRestDetectorReadoutPlane::SetRotation(Double_t degrees) {
+void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
     // modulo 360.0
-    fRotation = degrees - 360.0 * floor(degrees / 360.0);
+    fRotation = radians - TMath::TwoPi() * TMath::Floor(radians / TMath::TwoPi());
     UpdateAxes();
 }

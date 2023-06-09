@@ -56,7 +56,7 @@ class TRestDetectorReadoutPlane {
     /// A length in mm that confers a 3rd dimension to the readout plane and defines a volume.
     Double_t fHeight = 0;  //<
 
-    /// Rotation in degrees of the readout plane around the normal vector.
+    /// Rotation (in radians) of the readout plane around the normal vector.
     Double_t fRotation = 0;  //<
 
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
@@ -79,7 +79,7 @@ class TRestDetectorReadoutPlane {
 
     void SetHeight(Double_t d);
 
-    void SetRotation(Double_t degrees);
+    void SetRotation(Double_t radians);
 
     // Getters
     /// Returns an integer with the plane id number.
@@ -88,7 +88,7 @@ class TRestDetectorReadoutPlane {
     /// Returns a TVector3 with the readout plane position
     inline TVector3 GetPosition() const { return fPosition; }
 
-    /// Returns the rotation angle in degrees of the reference frame with respect to the normal vector
+    /// Returns the rotation angle in radians of the reference frame with respect to the normal vector
     Double_t GetRotation() const { return fRotation; }
 
     /// Returns a TVector3 with the cathode position
