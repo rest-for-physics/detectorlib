@@ -73,8 +73,7 @@ void TRestDetectorReadoutModule::Initialize() {
 
     fRotation = 0;
 
-    fMaximumDaqId = -1;
-    fMinimumDaqId = -1;
+    fDaqIdRange = {-1, -1};
 
     fTolerance = 1.e-3;
 
@@ -89,13 +88,15 @@ void TRestDetectorReadoutModule::SetMinMaxDaqIDs() {
     Int_t minID = GetChannel(0)->GetDaqID();
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++) {
         Int_t daqID = GetChannel(ch)->GetDaqID();
-        if (daqID > maxID) maxID = daqID;
-
-        if (daqID < minID) minID = daqID;
+        if (daqID > maxID) {
+            maxID = daqID;
+        }
+        if (daqID < minID) {
+            minID = daqID;
+        }
     }
 
-    fMaximumDaqId = maxID;
-    fMinimumDaqId = minID;
+    fDaqIdRange = {minID, maxID};
 }
 
 ///////////////////////////////////////////////
@@ -107,7 +108,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     ///////////////////////////////////////////////////////////////////////////////
     // We initialize the mapping readout net to sqrt(numberOfPixels)
     // However this might not be good for readouts where the pixels are
-    // assymmetric
+    // asymmetric
     // /////////////////////////////////////////////////////////////////////////////
     Int_t totalNumberOfPixels = 0;
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++)
@@ -217,7 +218,9 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
 /// \brief Determines if a given *daqID* number is in the range of the module
 ///
 Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
-    if (daqID >= fMinimumDaqId && daqID <= fMaximumDaqId) return true;
+    if (daqID >= GetMinDaqID() && daqID <= GetMaxDaqID()) {
+        return true;
+    }
     return false;
 }
 
@@ -229,7 +232,9 @@ Bool_t TRestDetectorReadoutModule::isDaqIDInside(Int_t daqID) {
 /// the pixel where coordinates absX and absY fall in.
 ///
 Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
-    if (!isInside(position)) return -1;
+    if (!isInside(position)) {
+        return -1;
+    }
 
     const auto transformedCoordinates = TransformToModuleCoordinates(position);
     const auto& x = transformedCoordinates.X();

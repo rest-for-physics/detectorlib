@@ -46,9 +46,8 @@ class TRestDetectorReadoutModule {
     /// The rotation of the module around the module origin (fModuleOriginX, fModuleOriginY) in radians.
     Double_t fRotation = 0;  //<
 
-    Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
-                          ///< module.
-    Int_t fMaximumDaqId;  ///< The maximum daq channel id associated to the module.
+    std::pair<Int_t, Int_t> fDaqIdRange = {
+        -1, -1};  ///< The minimum and maximum daq channel ids associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
         fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
@@ -110,15 +109,18 @@ class TRestDetectorReadoutModule {
     inline Double_t GetTolerance() const { return fTolerance; }
 
     /// Returns the minimum daq id number
-    inline Int_t GetMinDaqID() const { return fMinimumDaqId; }
+    inline Int_t GetMinDaqID() const { return fDaqIdRange.first; }
 
     /// Returns the maximum daq id number
-    inline Int_t GetMaxDaqID() const { return fMaximumDaqId; }
+    inline Int_t GetMaxDaqID() const { return fDaqIdRange.second; }
 
     /// Returns the physical readout channel index for a given daq id channel number
     inline Int_t DaqToReadoutChannel(Int_t daqChannel) {
-        for (size_t n = 0; n < GetNumberOfChannels(); n++)
-            if (GetChannel(n)->GetDaqID() == daqChannel) return n;
+        for (size_t n = 0; n < GetNumberOfChannels(); n++) {
+            if (GetChannel(n)->GetDaqID() == daqChannel) {
+                return n;
+            }
+        }
         return -1;
     }
 
