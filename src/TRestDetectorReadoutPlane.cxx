@@ -50,17 +50,15 @@ ClassImp(TRestDetectorReadoutPlane);
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane constructor
 ///
-TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() { Initialize(); }
+TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() {
+    // We call UpdateAxes() to calculate the X and Y axis from the normal vector and rotation.
+    UpdateAxes();
+}
 
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane destructor
 ///
 TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() = default;
-
-///////////////////////////////////////////////
-/// \brief TRestDetectorReadoutPlane initialization
-///
-void TRestDetectorReadoutPlane::Initialize() {}
 
 ///////////////////////////////////////////////
 /// \brief Returns the total number of channels in the readout plane
@@ -75,16 +73,11 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
 
 ///////////////////////////////////////////////
 /// \brief It updates the value of the normal vector and recalculates
-/// the correspoding X and Y axis.
+/// the corresponding X and Y axis.
 ///
-void TRestDetectorReadoutPlane::SetNormal(const TVector3& vect) {
-    fNormal = vect;
-    TVector3 reference = {1, 0, 0};
-    const TVector3& normal = GetNormal();
-    if (normal == TVector3(1, 0, 0)) reference = {0, 1, 0};
-
-    fAxisX = reference.Cross(normal).Cross(normal);
-    fAxisY = normal.Cross(fAxisX);
+void TRestDetectorReadoutPlane::SetNormal(const TVector3& normal) {
+    fNormal = normal.Unit();
+    UpdateAxes();
 }
 
 ///////////////////////////////////////////////
@@ -383,10 +376,12 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
                      << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Normal vector : X = " << fNormal.X() << " mm, "
                      << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, "
-                     << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, "
-                     << " Y : " << fAxisY.Y() << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- X-axis vector : X = " << fCoordinateAxes.first.X() << " mm, "
+                     << " Y : " << fCoordinateAxes.first.Y() << " mm, Z : " << fCoordinateAxes.first.Z()
+                     << " mm" << RESTendl;
+        RESTMetadata << "-- Y-axis vector : Y = " << fCoordinateAxes.second.X() << " mm, "
+                     << " Y : " << fCoordinateAxes.second.Y() << " mm, Z : " << fCoordinateAxes.second.Z()
+                     << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << GetCathodePosition().X() << " mm, "
                      << " Y : " << GetCathodePosition().Y() << " mm, Z : " << GetCathodePosition().Z()
                      << " mm" << RESTendl;
@@ -468,4 +463,33 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
             if (y[v] > ymax) ymax = y[v];
         }
     }
+}
+
+void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
+    fCoordinateAxes.first = {1, 0, 0};
+    fCoordinateAxes.second = {0, 1, 0};
+
+    // Check if fNormal is different from the original normal
+    const TVector3 originalNormal = {0, 0, 1};
+    if (fNormal != originalNormal) {
+        // Calculate the rotation axis by taking the cross product between the original normal and fNormal
+        TVector3 rotationAxis = originalNormal.Cross(fNormal);
+
+        // Calculate the rotation angle using the dot product between the original normal and fNormal
+        double rotationAngle = acos(originalNormal.Dot(fNormal) / (originalNormal.Mag() * fNormal.Mag()));
+
+        // Rotate the axes around the rotation axis by the rotation angle
+        fCoordinateAxes.first.Rotate(rotationAngle, rotationAxis);
+        fCoordinateAxes.second.Rotate(rotationAngle, rotationAxis);
+    }
+
+    // rotate around normal by rotation angle
+    fCoordinateAxes.first.Rotate(fRotation * TMath::DegToRad(), fNormal);
+    fCoordinateAxes.second.Rotate(fRotation * TMath::DegToRad(), fNormal);
+}
+
+void TRestDetectorReadoutPlane::SetRotation(Double_t degrees) {
+    // modulo 360.0
+    fRotation = degrees - 360.0 * floor(degrees / 360.0);
+    UpdateAxes();
 }

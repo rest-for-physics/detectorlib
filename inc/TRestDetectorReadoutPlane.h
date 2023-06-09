@@ -44,24 +44,26 @@ class TRestDetectorReadoutPlane {
     /// A vector that defines the plane orientation and the side of the active volume.
     TVector3 fNormal = {0, 0, 1};  //<
 
-    /// A vector contained in the plane that defines the plane local reference system. Calculated internally.
-    TVector3 fAxisX = {1, 0, 0};  //<
+    /// Coordinate axes are orthonormal vectors contained in the plane (and perpendicular to the normal
+    /// vector). They are calculated internally from the normal vector and the rotation angle. A normal vector
+    /// of (0,0,1) and a rotation of 0 degrees will result in a plane with axes (1,0,0) and (0,1,0). See the
+    /// TRestDetectorReadoutPlane::UpdateAxes() method for details.
+    std::pair<TVector3, TVector3> fCoordinateAxes;  //<
 
-    /// An orthonormal to fAxisX contained in the plane. Calculated internally.
-    TVector3 fAxisY = {0, 1, 0};  //<
-
-    /// The fraction of charge/energy this readout plane collects from a hit postion.
+    /// The fraction of charge/energy this readout plane collects from a hit position.
     Double_t fChargeCollection = 1;  //<
 
     /// A length in mm that confers a 3rd dimension to the readout plane and defines a volume.
     Double_t fHeight = 0;  //<
 
+    /// Rotation in degrees of the readout plane around the normal vector.
+    Double_t fRotation = 0;  //<
+
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
 
-    void Initialize();
+    void UpdateAxes();
 
-   protected:
    public:
     // Setters
     /// Sets the planeId. This is done by TRestDetectorReadout during initialization
@@ -70,12 +72,14 @@ class TRestDetectorReadoutPlane {
     /// Sets the readout plane position
     void SetPosition(const TVector3& position) { fPosition = position; }
 
-    void SetNormal(const TVector3& vect);
+    void SetNormal(const TVector3& normal);
 
     /// Sets the value for the charge collection.
     void SetChargeCollection(Double_t charge) { fChargeCollection = charge; }
 
     void SetHeight(Double_t d);
+
+    void SetRotation(Double_t degrees);
 
     // Getters
     /// Returns an integer with the plane id number.
@@ -84,6 +88,9 @@ class TRestDetectorReadoutPlane {
     /// Returns a TVector3 with the readout plane position
     inline TVector3 GetPosition() const { return fPosition; }
 
+    /// Returns the rotation angle in degrees of the reference frame with respect to the normal vector
+    Double_t GetRotation() const { return fRotation; }
+
     /// Returns a TVector3 with the cathode position
     inline TVector3 GetCathodePosition() const { return fPosition + fHeight * fNormal; }
 
@@ -91,10 +98,10 @@ class TRestDetectorReadoutPlane {
     inline TVector3 GetNormal() const { return fNormal; }
 
     /// Returns a TVector3 with a vector that defines the X-axis plane coordinate system
-    inline TVector3 GetAxisX() const { return fAxisX; }
+    inline TVector3 GetAxisX() const { return fCoordinateAxes.first; }
 
     /// Returns a TVector3 with a vector that defines the Y-axis plane coordinate system
-    inline TVector3 GetAxisY() const { return fAxisY; }
+    inline TVector3 GetAxisY() const { return fCoordinateAxes.second; }
 
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }
