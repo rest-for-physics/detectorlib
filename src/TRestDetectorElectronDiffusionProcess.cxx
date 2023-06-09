@@ -147,7 +147,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 if (plane->isZInsideDriftVolume(z)) {
                     Double_t xDiff, yDiff, zDiff;
 
-                    Double_t driftDistance = plane->GetDistanceTo(x, y, z);
+                    Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
                     Int_t numberOfElectrons;
                     if (fPoissonElectronExcitation) {

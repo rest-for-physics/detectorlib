@@ -115,9 +115,6 @@ class TRestDetectorReadoutPlane {
     /// Returns the perpendicular distance to the readout plane from a given position *pos*.
     Double_t GetDistanceTo(const TVector3& pos) const;
 
-    /// Returns the perpendicular distance to the readout plane from a given position *x*, *y*, *z*.
-    Double_t GetDistanceTo(Double_t x, Double_t y, Double_t z) const;
-
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
     TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) {
