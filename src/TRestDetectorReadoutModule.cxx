@@ -128,7 +128,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     cout << "Total number of pixels : " << totalNumberOfPixels << endl;
     cout << "Nodes : " << nodes << endl;
 
-    fMapping.Initialize(nodes, nodes, GetSizeX(), GetSizeZ());
+    fMapping.Initialize(nodes, nodes, GetSize().X(), GetSize().Y());
 
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++) {
         for (int px = 0; px < this->GetChannel(ch)->GetNumberOfPixels(); px++) {

@@ -133,12 +133,6 @@ class TRestDetectorReadoutModule {
     /// Returns the module size (x, y) in mm
     inline TVector2 GetSize() const { return fSize; }
 
-    /// Returns the module size x-coordinate
-    inline Double_t GetSizeX() const { return fSize.X(); }
-
-    /// Returns the module size y-coordinate
-    inline Double_t GetSizeZ() const { return fSize.Y(); }
-
     /// Returns the module rotation in degrees
     inline Double_t GetRotation() const { return fRotation; }
 
