@@ -44,7 +44,7 @@ class TRestDetectorReadoutModule {
     TVector2 fModuleSize;  ///< The module (x, y) size. All pixels should be contained within this size.
 
     /// The rotation of the module around the module origin (fModuleOriginX, fModuleOriginY) in radians.
-    Double_t fModuleRotation = 0;  //<
+    Double_t fRotation = 0;  //<
 
     Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
                           ///< module.
@@ -68,7 +68,7 @@ class TRestDetectorReadoutModule {
     /// system to the readout module reference system.
     inline TVector2 TransformToModuleCoordinates(const TVector2& xyPhysical) const {
         auto coords = xyPhysical - fModuleOrigin;
-        TVector2 rot = coords.Rotate(-fModuleRotation);
+        TVector2 rot = coords.Rotate(-fRotation);
 
         return rot;
     }
@@ -78,7 +78,7 @@ class TRestDetectorReadoutModule {
     inline TVector2 TransformToPlaneCoordinates(Double_t xMod, Double_t yMod) const {
         TVector2 coords(xMod, yMod);
 
-        coords = coords.Rotate(fModuleRotation);
+        coords = coords.Rotate(fRotation);
         coords += fModuleOrigin;
 
         return coords;
@@ -101,7 +101,7 @@ class TRestDetectorReadoutModule {
     inline void SetOrigin(Double_t x, Double_t y) { SetOrigin({x, y}); }
 
     /// Sets the module rotation in degrees
-    inline void SetRotation(Double_t rotation) { fModuleRotation = rotation; }
+    inline void SetRotation(Double_t rotation) { fRotation = rotation; }
 
     /// Sets the name of the readout module
     inline void SetName(const TString& name) { fModuleName = name; }
@@ -148,7 +148,7 @@ class TRestDetectorReadoutModule {
     inline Double_t GetModuleSizeY() const { return fModuleSize.Y(); }
 
     /// Returns the module rotation in degrees
-    inline Double_t GetModuleRotation() const { return fModuleRotation; }
+    inline Double_t GetModuleRotation() const { return fRotation; }
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
