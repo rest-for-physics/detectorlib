@@ -43,9 +43,8 @@ class TRestDetectorReadoutModule {
 
     TVector2 fModuleSize;  ///< The module (x, y) size. All pixels should be contained within this size.
 
-    Double_t fModuleRotation;  ///< The rotation of the module around the
-                               ///< position=(fModuleOriginX, fModuleOriginY) in
-                               ///< degrees.
+    /// The rotation of the module around the module origin (fModuleOriginX, fModuleOriginY) in radians.
+    Double_t fModuleRotation = 0;  //<
 
     Int_t fMinimumDaqId;  ///< The minimum daq channel id associated to the
                           ///< module.
@@ -69,7 +68,7 @@ class TRestDetectorReadoutModule {
     /// system to the readout module reference system.
     inline TVector2 TransformToModuleCoordinates(const TVector2& xyPhysical) const {
         auto coords = xyPhysical - fModuleOrigin;
-        TVector2 rot = coords.Rotate(-fModuleRotation * TMath::Pi() / 180.);
+        TVector2 rot = coords.Rotate(-fModuleRotation);
 
         return rot;
     }
@@ -79,7 +78,7 @@ class TRestDetectorReadoutModule {
     inline TVector2 TransformToPlaneCoordinates(Double_t xMod, Double_t yMod) const {
         TVector2 coords(xMod, yMod);
 
-        coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
+        coords = coords.Rotate(fModuleRotation);
         coords += fModuleOrigin;
 
         return coords;

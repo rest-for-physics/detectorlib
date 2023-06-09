@@ -401,7 +401,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(Int_t channel, Int_t pixel) 
 TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, Int_t vertex) {
     TVector2 pixPosition = GetChannel(channel)->GetPixel(pixel)->GetVertex(vertex);
 
-    pixPosition = pixPosition.Rotate(fModuleRotation * TMath::Pi() / 180.);
+    pixPosition = pixPosition.Rotate(fModuleRotation);
     pixPosition = pixPosition + fModuleOrigin;
     return pixPosition;
 }
@@ -416,7 +416,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelVertex(Int_t channel, Int_t pixel, 
 TVector2 TRestDetectorReadoutModule::GetPixelCenter(Int_t channel, Int_t pixel) {
     TVector2 pixCenter = GetChannel(channel)->GetPixel(pixel)->GetCenter();
 
-    pixCenter = pixCenter.Rotate(fModuleRotation * TMath::Pi() / 180.);
+    pixCenter = pixCenter.Rotate(fModuleRotation);
     pixCenter = pixCenter + fModuleOrigin;
     return pixCenter;
 }
@@ -440,7 +440,7 @@ TVector2 TRestDetectorReadoutModule::GetPixelOrigin(TRestDetectorReadoutPixel* p
 
 TVector2 TRestDetectorReadoutModule::GetPixelVertex(TRestDetectorReadoutPixel* pix, Int_t vertex) {
     TVector2 pixPosition = pix->GetVertex(vertex);
-    pixPosition = pixPosition.Rotate(fModuleRotation * TMath::Pi() / 180.);
+    pixPosition = pixPosition.Rotate(fModuleRotation);
     pixPosition = pixPosition + fModuleOrigin;
     return pixPosition;
 }
@@ -471,17 +471,17 @@ TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
         return origin;
     else if (n % 4 == 1) {
         vertex.Set(fModuleSize.X(), 0);
-        vertex = vertex.Rotate(fModuleRotation * TMath::Pi() / 180.);
+        vertex = vertex.Rotate(fModuleRotation);
 
         vertex = vertex + origin;
     } else if (n % 4 == 2) {
         vertex.Set(fModuleSize.X(), fModuleSize.Y());
-        vertex = vertex.Rotate(fModuleRotation * TMath::Pi() / 180.);
+        vertex = vertex.Rotate(fModuleRotation);
 
         vertex = vertex + origin;
     } else if (n % 4 == 3) {
         vertex.Set(0, fModuleSize.Y());
-        vertex = vertex.Rotate(fModuleRotation * TMath::Pi() / 180.);
+        vertex = vertex.Rotate(fModuleRotation);
 
         vertex = vertex + origin;
     }
@@ -530,7 +530,7 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Origin position : X = " << fModuleOrigin.X() << " mm "
                      << " Y : " << fModuleOrigin.Y() << " mm" << RESTendl;
         RESTMetadata << "-- Size : X = " << fModuleSize.X() << " Y : " << fModuleSize.Y() << RESTendl;
-        RESTMetadata << "-- Rotation : " << fModuleRotation << " degrees" << RESTendl;
+        RESTMetadata << "-- Rotation : " << fModuleRotation * units("degrees") << " degrees" << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "-- Tolerance : " << fTolerance << RESTendl;
         RESTMetadata << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;

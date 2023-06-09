@@ -472,7 +472,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetNormal(Get3DVectorParameterWithUnits("normal", planeDefinition));
         plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
-        plane.SetRotation(GetDblParameterWithUnits(GetFieldValue("rotation", planeDefinition)));
+        plane.SetRotation(GetDblParameterWithUnits("rotation", planeDefinition));
 
 #pragma region addReadoutModuleToPlane
 
@@ -491,7 +491,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
             fModuleDefinitions[mid].SetModuleID(StringToInteger(GetFieldValue("id", moduleDefinition)));
             fModuleDefinitions[mid].SetOrigin(StringTo2DVector(GetFieldValue("origin", moduleDefinition)));
-            fModuleDefinitions[mid].SetRotation(StringToDouble(GetFieldValue("rotation", moduleDefinition)));
+            fModuleDefinitions[mid].SetRotation(GetDblParameterWithUnits("rotation", moduleDefinition));
 
             Int_t firstDaqChannel = StringToInteger(GetFieldValue("firstDaqChannel", moduleDefinition));
             if (firstDaqChannel == -1) firstDaqChannel = addedChannels;
