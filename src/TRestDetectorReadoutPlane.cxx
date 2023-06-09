@@ -85,9 +85,9 @@ void TRestDetectorReadoutPlane::SetNormal(const TVector3& normal) {
 ///
 void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
     if (height < 0) {
-        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
-        RESTError << "Setting height equal to zero!" << RESTendl;
         fHeight = 0;
+        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
+        exit(1);
     } else {
         fHeight = height;
     }
@@ -97,8 +97,9 @@ void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
 /// \brief Returns a pointer to a module using its internal module id
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
-    for (size_t md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
         if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
+    }
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
     return nullptr;
