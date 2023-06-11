@@ -1,24 +1,3 @@
-/*************************************************************************
- * This file is part of the REST software framework.                     *
- *                                                                       *
- * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
- * For more information see http://gifna.unizar.es/trex                  *
- *                                                                       *
- * REST is free software: you can redistribute it and/or modify          *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * REST is distributed in the hope that it will be useful,               *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
- * GNU General Public License for more details.                          *
- *                                                                       *
- * You should have a copy of the GNU General Public License along with   *
- * REST in $REST_PATH/LICENSE.                                           *
- * If not, see http://www.gnu.org/licenses/.                             *
- * For the list of contributors see $REST_PATH/CREDITS.                  *
- *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
 ///
@@ -26,6 +5,16 @@
 /// position, orientation, and cathode position. It contains
 /// a vector of TRestDetectorReadoutModule with the readout modules that are
 /// implemented in the readout plane.
+///
+/// ### Coordinate axes
+///
+/// In order to define 2-dimensional components in an arbitrary readout plane
+/// orientation we use coordinate axes which are orthonormal vectors contained
+/// in the plane, `fAxisX` and `fAxisY`, therefore perpendicular to the normal
+/// vector. They are calculated internally from the normal vector and the
+/// plane rotation. A normal vector of (0,0,1) and a rotation of 0 degrees
+/// will result in a plane with axes (1,0,0) and (0,1,0). See the
+/// TRestDetectorReadoutPlane::UpdateAxes() method for details.
 ///
 ///--------------------------------------------------------------------------
 ///
@@ -50,10 +39,7 @@ ClassImp(TRestDetectorReadoutPlane);
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane constructor
 ///
-TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() {
-    // We call UpdateAxes() to calculate the X and Y axis from the normal vector and rotation.
-    UpdateAxes();
-}
+TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() {}
 
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane destructor
@@ -369,12 +355,10 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
                      << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Normal vector : X = " << fNormal.X() << " mm, "
                      << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- X-axis vector : X = " << fCoordinateAxes.first.X() << " mm, "
-                     << " Y : " << fCoordinateAxes.first.Y() << " mm, Z : " << fCoordinateAxes.first.Z()
-                     << " mm" << RESTendl;
-        RESTMetadata << "-- Y-axis vector : Y = " << fCoordinateAxes.second.X() << " mm, "
-                     << " Y : " << fCoordinateAxes.second.Y() << " mm, Z : " << fCoordinateAxes.second.Z()
-                     << " mm" << RESTendl;
+        RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, "
+                     << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, Y : " << fAxisY.Y()
+                     << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << GetCathodePosition().X() << " mm, "
                      << " Y : " << GetCathodePosition().Y() << " mm, Z : " << GetCathodePosition().Z()
                      << " mm" << RESTendl;
@@ -459,8 +443,10 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
-    fCoordinateAxes.first = {1, 0, 0};
-    fCoordinateAxes.second = {0, 1, 0};
+    if (fNormal == TVector3(0, 0, 0)) return;
+
+    fAxisX = {1, 0, 0};
+    fAxisY = {0, 1, 0};
 
     // Check if fNormal is different from the original normal
     const TVector3 originalNormal = {0, 0, 1};
@@ -472,17 +458,16 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
         double rotationAngle = acos(originalNormal.Dot(fNormal) / (originalNormal.Mag() * fNormal.Mag()));
 
         // Rotate the axes around the rotation axis by the rotation angle
-        fCoordinateAxes.first.Rotate(rotationAngle, rotationAxis);
-        fCoordinateAxes.second.Rotate(rotationAngle, rotationAxis);
+        fAxisX.Rotate(rotationAngle, rotationAxis);
+        fAxisY.Rotate(rotationAngle, rotationAxis);
     }
 
     // rotate around normal by rotation angle (angle in radians)
-    fCoordinateAxes.first.Rotate(fRotation, fNormal);
-    fCoordinateAxes.second.Rotate(fRotation, fNormal);
+    fAxisX.Rotate(fRotation, fNormal);
+    fAxisY.Rotate(fRotation, fNormal);
 }
 
 void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
-    // modulo 360.0
-    fRotation = radians - TMath::TwoPi() * TMath::Floor(radians / TMath::TwoPi());
+    fRotation = radians;
     UpdateAxes();
 }

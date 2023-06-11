@@ -44,11 +44,11 @@ class TRestDetectorReadoutPlane {
     /// A vector that defines the plane orientation and the side of the active volume.
     TVector3 fNormal = {0, 0, 1};  //<
 
-    /// Coordinate axes are orthonormal vectors contained in the plane (and perpendicular to the normal
-    /// vector). They are calculated internally from the normal vector and the rotation angle. A normal vector
-    /// of (0,0,1) and a rotation of 0 degrees will result in a plane with axes (1,0,0) and (0,1,0). See the
-    /// TRestDetectorReadoutPlane::UpdateAxes() method for details.
-    std::pair<TVector3, TVector3> fCoordinateAxes;  //<
+    /// A vector contained in the plane that defines the plane X-axis
+    TVector3 fAxisX = {0, 0, 0};  //<
+
+    /// A vector contained in the plane that defines the plane Y-axis
+    TVector3 fAxisY = {0, 0, 0};  //<
 
     /// The fraction of charge/energy this readout plane collects from a hit position.
     Double_t fChargeCollection = 1;  //<
@@ -98,10 +98,10 @@ class TRestDetectorReadoutPlane {
     inline TVector3 GetNormal() const { return fNormal; }
 
     /// Returns a TVector3 with a vector that defines the X-axis plane coordinate system
-    inline TVector3 GetAxisX() const { return fCoordinateAxes.first; }
+    inline TVector3 GetAxisX() const { return fAxisX; }
 
     /// Returns a TVector3 with a vector that defines the Y-axis plane coordinate system
-    inline TVector3 GetAxisY() const { return fCoordinateAxes.second; }
+    inline TVector3 GetAxisY() const { return fAxisY; }
 
     /// Returns the charge collection ratio at this readout plane
     inline Double_t GetChargeCollection() const { return fChargeCollection; }
