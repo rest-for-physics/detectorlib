@@ -449,8 +449,6 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
-    if (fNormal == TVector3(0, 0, 0)) return;
-
     fAxisX = {1, 0, 0};
     fAxisY = {0, 1, 0};
 
@@ -471,6 +469,23 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
     // rotate around normal by rotation angle (angle in radians)
     fAxisX.Rotate(fRotation, fNormal);
     fAxisY.Rotate(fRotation, fNormal);
+
+    // verify that fNormal, fAxisX and fAxisY are orthogonal and unitary
+    constexpr double tolerance = 1E-6;
+    if (TMath::Abs(fNormal.Mag2() - 1.0) > tolerance || TMath::Abs(fAxisX.Mag2() - 1.0) > tolerance ||
+        TMath::Abs(fAxisY.Mag2() - 1.0) > tolerance) {
+        RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
+                  << "The normal vector, the X-axis vector and the Y-axis vector must be unitary."
+                  << RESTendl;
+        exit(1);
+    }
+    if (TMath::Abs(fNormal.Dot(fAxisX)) > tolerance || TMath::Abs(fNormal.Dot(fAxisY)) > tolerance ||
+        TMath::Abs(fAxisX.Dot(fAxisY)) > tolerance) {
+        RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
+                  << "The normal vector, the X-axis vector and the Y-axis vector must be orthogonal."
+                  << RESTendl;
+        exit(1);
+    }
 }
 
 void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
