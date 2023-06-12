@@ -474,8 +474,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
         plane.SetRotation(GetDblParameterWithUnits("rotation", planeDefinition));
 
-#pragma region addReadoutModuleToPlane
-
         moduleVector.clear();
         TiXmlElement* moduleDefinition = GetElement("addReadoutModule", planeDefinition);
         while (moduleDefinition != nullptr) {
@@ -597,7 +595,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {
-    TRestDetectorReadoutModule* mod = new TRestDetectorReadoutModule();
+    auto mod = new TRestDetectorReadoutModule();
     TRestDetectorReadoutModule& module = *mod;
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Warning) module.EnableWarnings();
 
@@ -636,7 +634,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
             pixelDefinition = GetNextElement(pixelDefinition);
         }
 
-        if (pixelIDVector.size() > 0 && pixelIDVector.size() != pixelVector.size()) {
+        if (!pixelIDVector.empty() && pixelIDVector.size() != pixelVector.size()) {
             RESTError
                 << "pixel id definition may be wrong! It must be coherent and starts from 0. Check your "
                    "readout module definition!"
@@ -666,7 +664,7 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         channelDefinition = GetNextElement(channelDefinition);
     }
 
-    if (channelIDVector.size() > 0 && channelIDVector.size() != channelVector.size()) {
+    if (!channelIDVector.empty() && channelIDVector.size() != channelVector.size()) {
         RESTError << "TRestDetectorReadout::ParseModuleDefinition. Channel id definition may be wrong!"
                   << "check your readout module definition!" << RESTendl;
         RESTError << " " << RESTendl;
