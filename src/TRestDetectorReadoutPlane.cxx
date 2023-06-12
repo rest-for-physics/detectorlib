@@ -63,6 +63,12 @@ Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
 ///
 void TRestDetectorReadoutPlane::SetNormal(const TVector3& normal) {
     fNormal = normal.Unit();
+    // prevent user from declaring the zero vector as normal
+    if (TMath::Abs(fNormal.Mag2() - 1.0) > 1E-6) {
+        // only the zero vector will have a magnitude different from 1.0 after normalization
+        RESTError << "TRestDetectorReadoutPlane::SetNormal : normal vector cannot be zero." << RESTendl;
+        exit(1);
+    }
     UpdateAxes();
 }
 
