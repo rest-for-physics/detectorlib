@@ -139,7 +139,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
         Double_t deltaX = abs(x2 - x1);
         Double_t deltaY = abs(y2 - y1);
 
-        Int_t rotation = (Int_t)rModule->GetRotation();
+        Int_t rotation = (Int_t)(std::round(rModule->GetRotation() * units("degrees")));
         if (rotation % 90 == 0) {
             if (rotation / 90 % 2 == 0)  // rotation is 0, 180, 360...
             {
@@ -209,7 +209,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
         Double_t deltaX = abs(x2 - x1);
         Double_t deltaY = abs(y2 - y1);
 
-        Int_t rotation = (Int_t)rModule->GetRotation();
+        Int_t rotation = (Int_t)std::round(rModule->GetRotation() * units("degrees"));
         if (rotation % 90 == 0) {
             if (rotation / 90 % 2 == 0)  // rotation is 0, 180, 360...
             {
