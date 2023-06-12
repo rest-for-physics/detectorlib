@@ -45,10 +45,10 @@ class TRestDetectorReadoutPlane {
     TVector3 fNormal = {0, 0, 1};  //<
 
     /// A vector contained in the plane that defines the plane X-axis
-    TVector3 fAxisX = {0, 0, 0};  //<
+    TVector3 fAxisX;  //<
 
     /// A vector contained in the plane that defines the plane Y-axis
-    TVector3 fAxisY = {0, 0, 0};  //<
+    TVector3 fAxisY;  //<
 
     /// The fraction of charge/energy this readout plane collects from a hit position.
     Double_t fChargeCollection = 1;  //<
