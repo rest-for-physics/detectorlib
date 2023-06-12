@@ -449,12 +449,20 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
+    const TVector3 originalNormal = {0, 0, 1};
     fAxisX = {1, 0, 0};
     fAxisY = {0, 1, 0};
 
+    constexpr double tolerance = 1E-6;
+
     // Check if fNormal is different from the original normal
-    const TVector3 originalNormal = {0, 0, 1};
-    if (fNormal != originalNormal) {
+    if ((fNormal - originalNormal).Mag2() < tolerance) {
+        // do nothing
+    } else if ((fNormal + originalNormal).Mag2() < tolerance) {
+        // normal vector is opposite to the original normal (0,0,-1), we must also flip the axes
+        fAxisX *= -1;
+        fAxisY *= -1;
+    } else {
         // Calculate the rotation axis by taking the cross product between the original normal and fNormal
         TVector3 rotationAxis = originalNormal.Cross(fNormal);
 
@@ -471,7 +479,6 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
     fAxisY.Rotate(fRotation, fNormal);
 
     // verify that fNormal, fAxisX and fAxisY are orthogonal and unitary
-    constexpr double tolerance = 1E-6;
     if (TMath::Abs(fNormal.Mag2() - 1.0) > tolerance || TMath::Abs(fAxisX.Mag2() - 1.0) > tolerance ||
         TMath::Abs(fAxisY.Mag2() - 1.0) > tolerance) {
         RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
@@ -484,6 +491,14 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
         RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
                   << "The normal vector, the X-axis vector and the Y-axis vector must be orthogonal."
                   << RESTendl;
+        exit(1);
+    }
+    // verify that the correct order of axes is being used: X cross Y = normal (and not - normal)
+    if ((fAxisX.Cross(fAxisY) - fNormal).Mag2() > tolerance) {
+        RESTError
+            << "TRestDetectorReadoutPlane::UpdateAxes() : "
+            << "The normal vector is not the cross product between the X-axis vector and the Y-axis vector."
+            << RESTendl;
         exit(1);
     }
 }
