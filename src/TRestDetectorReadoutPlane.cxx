@@ -504,7 +504,8 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
 }
 
 void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
-    fRotation = radians;
+    // sets fRotation modulo 2pi
+    fRotation = TVector2::Phi_0_2pi(radians);
     UpdateAxes();
 }
 
