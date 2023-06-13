@@ -507,3 +507,18 @@ void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
     fRotation = radians;
     UpdateAxes();
 }
+
+TVector2 TRestDetectorReadoutPlane::GetPositionInPlane(const TVector3& point) const {
+    // Given a point in space, returns the position of the point in the plane using the plane's axes
+    // The position is returned in the plane's local coordinates (in mm)
+    return {fAxisX.Dot(point - fPosition),
+            fAxisY.Dot(point - fPosition)};  // dot product between vectors is the projection
+}
+
+TVector3 TRestDetectorReadoutPlane::GetPositionInWorld(const TVector2& point, Double_t height) const {
+    return fPosition + point.X() * fAxisX + point.Y() * fAxisY + height * fNormal;
+}
+
+Double_t TRestDetectorReadoutPlane::GetDistanceToPlane(const TVector3& point) const {
+    return (point - fPosition).Dot(fNormal);
+}

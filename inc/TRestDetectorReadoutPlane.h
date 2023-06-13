@@ -154,6 +154,11 @@ class TRestDetectorReadoutPlane {
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
 
+    TVector2 GetPositionInPlane(const TVector3& point) const;
+    Double_t GetDistanceToPlane(const TVector3& point) const;
+
+    TVector3 GetPositionInWorld(const TVector2& point, Double_t height = 0) const;
+
     void Draw();
 
     void Print(Int_t DetailLevel = 0);
