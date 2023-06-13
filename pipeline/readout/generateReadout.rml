@@ -30,7 +30,7 @@ Finally we call the method TRestRun::FormOutputFile() through TRestManager to sa
             <constant name="pitch" value="3"/>
             <constant name="pixelSize" value="3/sqrt(2.)"/>
             <readoutModule name="module" file="microbulkModule.rml"/>
-            <readoutPlane position="(0,0,990)mm" normal="(0,0,-1)mm" chargeCollection="1" height="99cm">
+            <readoutPlane position="(0,0,990)mm" normal="(0,0,-1)" chargeCollection="1" height="99cm">
 
         new readout plane configuration
         down to up view
