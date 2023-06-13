@@ -449,25 +449,25 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
-    const TVector3 originalNormal = {0, 0, 1};
+    const TVector3 zUnit = {0, 0, 1};
     fAxisX = {1, 0, 0};
     fAxisY = {0, 1, 0};
 
     constexpr double tolerance = 1E-6;
 
-    // Check if fNormal is different from the original normal
-    if ((fNormal - originalNormal).Mag2() < tolerance) {
+    // Check if fNormal is different from (0,0,1)
+    if ((fNormal - zUnit).Mag2() < tolerance) {
         // do nothing
-    } else if ((fNormal + originalNormal).Mag2() < tolerance) {
-        // normal vector is opposite to the original normal (0,0,-1), we must also flip the axes
+    } else if ((fNormal + zUnit).Mag2() < tolerance) {
+        // normal vector is opposite to (0,0,1), we must also flip the axes
         fAxisX = {0, -1, 0};
         fAxisY = {-1, 0, 0};
     } else {
         // Calculate the rotation axis by taking the cross product between the original normal and fNormal
-        TVector3 rotationAxis = originalNormal.Cross(fNormal);
+        TVector3 rotationAxis = zUnit.Cross(fNormal);
 
         // Calculate the rotation angle using the dot product between the original normal and fNormal
-        double rotationAngle = acos(originalNormal.Dot(fNormal) / (originalNormal.Mag() * fNormal.Mag()));
+        double rotationAngle = acos(zUnit.Dot(fNormal) / (zUnit.Mag() * fNormal.Mag()));
 
         // Rotate the axes around the rotation axis by the rotation angle
         fAxisX.Rotate(rotationAngle, rotationAxis);
