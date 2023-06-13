@@ -40,13 +40,13 @@ Finally we call the method TRestRun::FormOutputFile() through TRestManager to sa
         (-292.175,194.65)
         (292.175,1.15)
 
-        <addReadoutModule id="0" name="module" origin="(-292.175,-1.525)" rotation="-90" decodingFile="dummy.dec" firstDaqChannel="136*4"/>
-        <addReadoutModule id="2" name="module" origin="(292.175,-194.65)" rotation="90" decodingFile="dummy.dec" firstDaqChannel="136*3"/>
-        <addReadoutModule id="3" name="module" origin="(-292.175,194.65)" rotation="-90" decodingFile="dummy.dec" firstDaqChannel="136*5"/>
-        <addReadoutModule id="4" name="module" origin="(292.175,1.15)" rotation="90" decodingFile="dummy.dec" firstDaqChannel="136*2"/>
-        <addReadoutModule id="6" name="module" origin="(-96.75,-96.375)" rotation="0" decodingFile="dummy.dec" firstDaqChannel="136*1"/>
-        <addReadoutModule id="8" name="module" origin="(96.75,292.175)" rotation="180" decodingFile="dummy.dec" firstDaqChannel="136*6+68"/>
-        <addReadoutModule id="9" name="module" origin="(-96.75,-292.175)" rotation="0" decodingFile="dummy.dec" firstDaqChannel="136*0"/>
+        <addReadoutModule id="0" name="module" origin="(-292.175,-1.525)" rotation="-90degrees" decodingFile="dummy.dec" firstDaqChannel="136*4"/>
+        <addReadoutModule id="2" name="module" origin="(292.175,-194.65)" rotation="90deg" decodingFile="dummy.dec" firstDaqChannel="136*3"/>
+        <addReadoutModule id="3" name="module" origin="(-292.175,194.65)" rotation="-90deg" decodingFile="dummy.dec" firstDaqChannel="136*5"/>
+        <addReadoutModule id="4" name="module" origin="(292.175,1.15)" rotation="90degrees" decodingFile="dummy.dec" firstDaqChannel="136*2"/>
+        <addReadoutModule id="6" name="module" origin="(-96.75,-96.375)" rotation="0degrees" decodingFile="dummy.dec" firstDaqChannel="136*1"/>
+        <addReadoutModule id="8" name="module" origin="(96.75,292.175)" rotation="180degrees" decodingFile="dummy.dec" firstDaqChannel="136*6+68"/>
+        <addReadoutModule id="9" name="module" origin="(-96.75,-292.175)" rotation="0degrees" decodingFile="dummy.dec" firstDaqChannel="136*0"/>
 
       </readoutPlane>
         </TRestDetectorReadout>
