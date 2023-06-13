@@ -523,3 +523,17 @@ TVector3 TRestDetectorReadoutPlane::GetPositionInWorld(const TVector2& point, Do
 Double_t TRestDetectorReadoutPlane::GetDistanceToPlane(const TVector3& point) const {
     return (point - fPosition).Dot(fNormal);
 }
+
+void TRestDetectorReadoutPlane::SetAxisX(const TVector3& axis) {
+    const TVector3 axisInPlane = (axis - axis.Dot(fNormal) * fNormal).Unit();
+    if (axisInPlane.Mag2() < 1E-6) {
+        RESTError << "TRestDetectorReadoutPlane::SetAxisX() : "
+                  << "The X-axis vector must not be parallel to the normal vector." << RESTendl;
+        exit(1);
+    }
+
+    // compute the angle between the new axis and the old axis
+    const Double_t angle = fAxisX.Angle(axisInPlane);
+
+    SetRotation(fRotation - angle);
+}
