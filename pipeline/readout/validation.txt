@@ -17,8 +17,8 @@
 [1m[32m                                   ----------------------------------------------------------------------------------------------------                                   [0m
 [1m[32m                                   ||                         -- Position : X = 0 mm,  Y : 0 mm, Z : 990 mm                          ||                                   [0m
 [1m[32m                                   ||                       -- Normal vector : X = 0 mm,  Y : 0 mm, Z : -1 mm                        ||                                   [0m
-[1m[32m                                   ||                       -- X-axis vector : X = -1 mm,  Y : 0 mm, Z : 0 mm                        ||                                   [0m
-[1m[32m                                   ||                        -- Y-axis vector : Y = 0 mm,  Y : 1 mm, Z : 0 mm                        ||                                   [0m
+[1m[32m                                   ||                       -- X-axis vector : X = 0 mm,  Y : -1 mm, Z : 0 mm                        ||                                   [0m
+[1m[32m                                   ||                        -- Y-axis vector : Y = -1 mm,  Y : 0 mm, Z : 0 mm                        ||                                   [0m
 [1m[32m                                   ||                      -- Cathode Position : X = 0 mm,  Y : 0 mm, Z : 0 mm                       ||                                   [0m
 [1m[32m                                   ||                                 -- Total drift distance : 990 mm                                 ||                                   [0m
 [1m[32m                                   ||                                    -- Charge collection : 1                                    ||                                   [0m
