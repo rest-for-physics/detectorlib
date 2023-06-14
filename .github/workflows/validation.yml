@@ -55,7 +55,7 @@ jobs:
       - name: Build and install
         uses: rest-for-physics/framework/.github/actions/build@master
         with:
-          cmake-flags: "-DCMAKE_INSTALL_PREFIX=${{ env.REST_PATH }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DREST_WELCOME=ON -DRESTLIB_DETECTOR=ON"
+          cmake-flags: "-DCMAKE_INSTALL_PREFIX=${{ env.REST_PATH }} -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} -DREST_WELCOME=ON -DRESTLIB_DETECTOR=ON -DREST_GARFIELD=ON"
           branch: ${{ env.BRANCH_NAME }}
       - name: Load REST libraries
         run: |
@@ -67,6 +67,19 @@ jobs:
         with:
           key: ${{ env.BRANCH_NAME }}-${{ github.sha }}
           path: ${{ env.REST_PATH }}
+
+          #- name: Load Gas
+          # run: |
+          #source ${{ env.REST_PATH }}/thisREST.sh
+          #cd framework/pipeline/metadata/gas/
+          #restRoot -b -q LoadGasFromServerAndValidate.C
+          # Not working, not used in gitlab pipeline
+          #- name: Generate Gas
+          #  run: |
+          #    source ${{ env.REST_PATH }}/thisREST.sh
+          #    source $(root-config --bindir)/thisroot.sh
+          #    cd framework/pipeline/metadata/gas/
+          #    restRoot -b -q GenerateDummyGas.C
 
   readout:
     name: "Readout"
@@ -86,19 +99,7 @@ jobs:
         with:
           key: ${{ env.BRANCH_NAME }}-${{ github.sha }}
           path: ${{ env.REST_PATH }}
-          #- name: Load Gas
-          # run: |
-          #source ${{ env.REST_PATH }}/thisREST.sh
-          #cd framework/pipeline/metadata/gas/
-          #restRoot -b -q LoadGasFromServerAndValidate.C
-          # Not working, not used in gitlab pipeline
-          #- name: Generate Gas
-          #  run: |
-          #    source ${{ env.REST_PATH }}/thisREST.sh
-          #    source $(root-config --bindir)/thisroot.sh
-          #    cd framework/pipeline/metadata/gas/
-          #    restRoot -b -q GenerateDummyGas.C
-      - name: Generate Readout
+      - name: Manager readout generation
         run: |
           source ${{ env.REST_PATH }}/thisREST.sh
           cd ${{ env.DETECTOR_LIB_PATH }}/pipeline/readout
@@ -108,6 +109,14 @@ jobs:
           ls
           echo "Validating"
           python3 compareFiles.py
+      - name: Basic Readout repository tests
+        run: |
+          source ${{ env.REST_PATH }}/thisREST.sh
+          git clone https://github.com/rest-for-physics/basic-readouts.git
+          cd basic-readouts/
+          restRoot -b -q GenerateReadouts.C'("basic.root")'
+          restRoot -b -q BasicValidation.C'("basic.root", "pixelDecoding")'
+
       # We need to introduce basic validation here
       #    - diff validation.txt print.txt
       # - name: Basic Readout

@@ -258,7 +258,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
         // For the moment this will only be valid for a TPC with its axis (field
         // direction) being in z
-        Double_t fieldZDirection = plane->GetPlaneVector().Z();
+        Double_t fieldZDirection = plane->GetNormal().Z();
         Double_t zPosition = plane->GetPosition().Z();
 
         Double_t x = plane->GetX(readoutModule, readoutChannel);
@@ -267,10 +267,10 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         REST_HitType type = XYZ;
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(readoutModule);
         if (TMath::IsNaN(x)) {
-            x = mod->GetPlaneCoordinates(TVector2(mod->GetModuleSizeX() / 2, mod->GetModuleSizeY() / 2)).X();
+            x = mod->GetPlaneCoordinates(TVector2(mod->GetSize().X() / 2, mod->GetSize().Y() / 2)).X();
             type = YZ;
         } else if (TMath::IsNaN(y)) {
-            y = mod->GetPlaneCoordinates(TVector2(mod->GetModuleSizeX() / 2, mod->GetModuleSizeY() / 2)).Y();
+            y = mod->GetPlaneCoordinates(TVector2(mod->GetSize().X() / 2, mod->GetSize().Y() / 2)).Y();
             type = XZ;
         }
 

@@ -237,7 +237,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
             if (fabs(planeZpos - matrixZpos) > 1)
                 continue;  // we search for fReadout entry at same Z position
             rdPlaneFound = true;
-            planeZvec = readoutplane->GetPlaneVector().z();
+            planeZvec = readoutplane->GetNormal().z();
             cout << "     planeZvec " << planeZvec << endl;
         }
 

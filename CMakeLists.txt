@@ -1,4 +1,4 @@
-set(LibraryVersion "1.9")
+set(LibraryVersion "2.0")
 add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
 
 # find garfield libs and includes

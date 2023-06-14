@@ -1,24 +1,3 @@
-/*************************************************************************
- * This file is part of the REST software framework.                     *
- *                                                                       *
- * Copyright (C) 2016 GIFNA/TREX (University of Zaragoza)                *
- * For more information see http://gifna.unizar.es/trex                  *
- *                                                                       *
- * REST is free software: you can redistribute it and/or modify          *
- * it under the terms of the GNU General Public License as published by  *
- * the Free Software Foundation, either version 3 of the License, or     *
- * (at your option) any later version.                                   *
- *                                                                       *
- * REST is distributed in the hope that it will be useful,               *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          *
- * GNU General Public License for more details.                          *
- *                                                                       *
- * You should have a copy of the GNU General Public License along with   *
- * REST in $REST_PATH/LICENSE.                                           *
- * If not, see http://www.gnu.org/licenses/.                             *
- * For the list of contributors see $REST_PATH/CREDITS.                  *
- *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
 ///
@@ -26,6 +5,16 @@
 /// position, orientation, and cathode position. It contains
 /// a vector of TRestDetectorReadoutModule with the readout modules that are
 /// implemented in the readout plane.
+///
+/// ### Coordinate axes
+///
+/// In order to define 2-dimensional components in an arbitrary readout plane
+/// orientation we use coordinate axes which are orthonormal vectors contained
+/// in the plane, `fAxisX` and `fAxisY`, therefore perpendicular to the normal
+/// vector. They are calculated internally from the normal vector and the
+/// plane rotation. A normal vector of (0,0,1) and a rotation of 0 degrees
+/// will result in a plane with axes (1,0,0) and (0,1,0). See the
+/// TRestDetectorReadoutPlane::UpdateAxes() method for details.
 ///
 ///--------------------------------------------------------------------------
 ///
@@ -50,49 +39,59 @@ ClassImp(TRestDetectorReadoutPlane);
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane constructor
 ///
-TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() { Initialize(); }
+TRestDetectorReadoutPlane::TRestDetectorReadoutPlane() { UpdateAxes(); }
 
 ///////////////////////////////////////////////
 /// \brief Default TRestDetectorReadoutPlane destructor
 ///
-TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() {}
-
-///////////////////////////////////////////////
-/// \brief TRestDetectorReadoutPlane initialization
-///
-void TRestDetectorReadoutPlane::Initialize() {
-    fCathodePosition = TVector3(0, 0, 0);
-    fPosition = TVector3(0, 0, 0);
-    fPlaneVector = TVector3(0, 0, 0);
-
-    fNModules = 0;
-    fReadoutModules.clear();
-}
+TRestDetectorReadoutPlane::~TRestDetectorReadoutPlane() = default;
 
 ///////////////////////////////////////////////
 /// \brief Returns the total number of channels in the readout plane
 ///
 Int_t TRestDetectorReadoutPlane::GetNumberOfChannels() {
     Int_t nChannels = 0;
-    for (size_t md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
         nChannels += fReadoutModules[md].GetNumberOfChannels();
+    }
     return nChannels;
 }
 
 ///////////////////////////////////////////////
-/// \brief Calculates the drift distance between readout plane and cathode
+/// \brief It updates the value of the normal vector and recalculates
+/// the corresponding X and Y axis.
 ///
-void TRestDetectorReadoutPlane::SetDriftDistance() {
-    Double_t tDriftDistance = this->GetDistanceTo(this->GetCathodePosition());
-    this->SetTotalDriftDistance(tDriftDistance);
+void TRestDetectorReadoutPlane::SetNormal(const TVector3& normal) {
+    fNormal = normal.Unit();
+    // prevent user from declaring the zero vector as normal
+    if (TMath::Abs(fNormal.Mag2() - 1.0) > 1E-6) {
+        // only the zero vector will have a magnitude different from 1.0 after normalization
+        RESTError << "TRestDetectorReadoutPlane::SetNormal : normal vector cannot be zero." << RESTendl;
+        exit(1);
+    }
+    UpdateAxes();
+}
+
+///////////////////////////////////////////////
+/// \brief Used to define the height of the readout volume with sign crosscheck.
+///
+void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
+    if (height < 0) {
+        fHeight = 0;
+        RESTError << "TRestDetectorReadoutPlane::SetHeight : height cannot be negative." << RESTendl;
+        exit(1);
+    } else {
+        fHeight = height;
+    }
 }
 
 ///////////////////////////////////////////////
 /// \brief Returns a pointer to a module using its internal module id
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
-    for (size_t md = 0; md < GetNumberOfModules(); md++)
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
         if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
+    }
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
     return nullptr;
@@ -146,7 +145,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
         Double_t deltaX = abs(x2 - x1);
         Double_t deltaY = abs(y2 - y1);
 
-        Int_t rotation = (Int_t)rModule->GetModuleRotation();
+        Int_t rotation = (Int_t)(std::round(rModule->GetRotation() * units("degrees")));
         if (rotation % 90 == 0) {
             if (rotation / 90 % 2 == 0)  // rotation is 0, 180, 360...
             {
@@ -156,7 +155,7 @@ Double_t TRestDetectorReadoutPlane::GetX(Int_t modID, Int_t chID) {
                 if (deltaY < deltaX) x = rModule->GetPixelCenter(chID, 0).X();
             }
         } else {
-            // we choose to ouput x only when deltaY > deltaX under non-90 deg rotation
+            // we choose to output x only when deltaY > deltaX under non-90 deg rotation
             // otherwise it is a y channel and should return nan
             if (deltaY > deltaX) x = rModule->GetPixelCenter(chID, 0).X();
         }
@@ -216,7 +215,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
         Double_t deltaX = abs(x2 - x1);
         Double_t deltaY = abs(y2 - y1);
 
-        Int_t rotation = (Int_t)rModule->GetModuleRotation();
+        Int_t rotation = (Int_t)std::round(rModule->GetRotation() * units("degrees"));
         if (rotation % 90 == 0) {
             if (rotation / 90 % 2 == 0)  // rotation is 0, 180, 360...
             {
@@ -226,7 +225,7 @@ Double_t TRestDetectorReadoutPlane::GetY(Int_t modID, Int_t chID) {
                 if (deltaY > deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
             }
         } else {
-            // we choose to ouput y only when deltaY < deltaX under non-90 deg rotation
+            // we choose to output y only when deltaY < deltaX under non-90 deg rotation
             // otherwise it is a x channel and should return nan
             if (deltaY < deltaX) y = rModule->GetPixelCenter(chID, 0).Y();
         }
@@ -255,18 +254,10 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 
 ///////////////////////////////////////////////
 /// \brief Returns the perpendicular distance to the readout plane of a given
-/// *x*, *y*, *z* position
-///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(Double_t x, Double_t y, Double_t z) {
-    return GetDistanceTo(TVector3(x, y, z));
-}
-
-///////////////////////////////////////////////
-/// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(TVector3 pos) {
-    return (pos - GetPosition()).Dot(GetPlaneVector());
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) const {
+    return (pos - GetPosition()).Dot(GetNormal());
 }
 
 ///////////////////////////////////////////////
@@ -310,7 +301,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) return 1;
+    if (distance > 0 && distance < fHeight) return 1;
 
     return 0;
 }
@@ -342,14 +333,17 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y,
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(TVector3 pos) {
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& pos) {
     TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fTotalDriftDistance) {
-        for (size_t m = 0; m < GetNumberOfModules(); m++)
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) return fReadoutModules[m].GetModuleID();
+    if (distance > 0 && distance < fHeight) {
+        for (size_t m = 0; m < GetNumberOfModules(); m++) {
+            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) {
+                return fReadoutModules[m].GetModuleID();
+            }
+        }
     }
 
     return -1;
@@ -365,18 +359,24 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, "
                      << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Vector : X = " << fPlaneVector.X() << " mm, "
-                     << " Y : " << fPlaneVector.Y() << " mm, Z : " << fPlaneVector.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Cathode Position : X = " << fCathodePosition.X() << " mm, "
-                     << " Y : " << fCathodePosition.Y() << " mm, Z : " << fCathodePosition.Z() << " mm"
-                     << RESTendl;
-        RESTMetadata << "-- Total drift distance : " << fTotalDriftDistance << " mm" << RESTendl;
+        RESTMetadata << "-- Normal vector : X = " << fNormal.X() << " mm, "
+                     << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, "
+                     << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, Y : " << fAxisY.Y()
+                     << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Cathode Position : X = " << GetCathodePosition().X() << " mm, "
+                     << " Y : " << GetCathodePosition().Y() << " mm, Z : " << GetCathodePosition().Z()
+                     << " mm" << RESTendl;
+        RESTMetadata << "-- Height : " << fHeight << " mm" << RESTendl;
         RESTMetadata << "-- Charge collection : " << fChargeCollection << RESTendl;
         RESTMetadata << "-- Total modules : " << GetNumberOfModules() << RESTendl;
         RESTMetadata << "-- Total channels : " << GetNumberOfChannels() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
 
-        for (size_t i = 0; i < GetNumberOfModules(); i++) fReadoutModules[i].Print(DetailLevel - 1);
+        for (size_t i = 0; i < GetNumberOfModules(); i++) {
+            fReadoutModules[i].Print(DetailLevel - 1);
+        }
     }
 }
 
@@ -386,7 +386,7 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
 void TRestDetectorReadoutPlane::Draw() { this->GetReadoutHistogram()->Draw(); }
 
 ///////////////////////////////////////////////
-/// \brief Creates and resturns a TH2Poly object with the
+/// \brief Creates and returns a TH2Poly object with the
 /// readout pixel description.
 ///
 TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
@@ -419,7 +419,7 @@ TH2Poly* TRestDetectorReadoutPlane::GetReadoutHistogram() {
         }
     }
 
-    readoutHistogram->SetStats(0);
+    readoutHistogram->SetStats(false);
 
     return readoutHistogram;
 }
@@ -446,4 +446,94 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
             if (y[v] > ymax) ymax = y[v];
         }
     }
+}
+
+void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
+    const TVector3 zUnit = {0, 0, 1};
+    fAxisX = {1, 0, 0};
+    fAxisY = {0, 1, 0};
+
+    constexpr double tolerance = 1E-6;
+
+    // Check if fNormal is different from (0,0,1)
+    if ((fNormal - zUnit).Mag2() < tolerance) {
+        // do nothing
+    } else if ((fNormal + zUnit).Mag2() < tolerance) {
+        // normal vector is opposite to (0,0,1), we must also flip the axes
+        fAxisX = {0, -1, 0};
+        fAxisY = {-1, 0, 0};
+    } else {
+        // Calculate the rotation axis by taking the cross product between the original normal and fNormal
+        TVector3 rotationAxis = zUnit.Cross(fNormal);
+
+        // Calculate the rotation angle using the dot product between the original normal and fNormal
+        double rotationAngle = acos(zUnit.Dot(fNormal) / (zUnit.Mag() * fNormal.Mag()));
+
+        // Rotate the axes around the rotation axis by the rotation angle
+        fAxisX.Rotate(rotationAngle, rotationAxis);
+        fAxisY.Rotate(rotationAngle, rotationAxis);
+    }
+
+    // rotate around normal by rotation angle (angle in radians)
+    fAxisX.Rotate(fRotation, fNormal);
+    fAxisY.Rotate(fRotation, fNormal);
+
+    // verify that fNormal, fAxisX and fAxisY are orthogonal and unitary
+    if (TMath::Abs(fNormal.Mag2() - 1.0) > tolerance || TMath::Abs(fAxisX.Mag2() - 1.0) > tolerance ||
+        TMath::Abs(fAxisY.Mag2() - 1.0) > tolerance) {
+        RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
+                  << "The normal vector, the X-axis vector and the Y-axis vector must be unitary."
+                  << RESTendl;
+        exit(1);
+    }
+    if (TMath::Abs(fNormal.Dot(fAxisX)) > tolerance || TMath::Abs(fNormal.Dot(fAxisY)) > tolerance ||
+        TMath::Abs(fAxisX.Dot(fAxisY)) > tolerance) {
+        RESTError << "TRestDetectorReadoutPlane::UpdateAxes() : "
+                  << "The normal vector, the X-axis vector and the Y-axis vector must be orthogonal."
+                  << RESTendl;
+        exit(1);
+    }
+    // verify that the correct order of axes is being used: X cross Y = normal (and not - normal)
+    if ((fAxisX.Cross(fAxisY) - fNormal).Mag2() > tolerance) {
+        RESTError
+            << "TRestDetectorReadoutPlane::UpdateAxes() : "
+            << "The normal vector is not the cross product between the X-axis vector and the Y-axis vector."
+            << RESTendl;
+        exit(1);
+    }
+}
+
+void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
+    // sets fRotation modulo 2pi
+    fRotation = TVector2::Phi_0_2pi(radians);
+    UpdateAxes();
+}
+
+TVector2 TRestDetectorReadoutPlane::GetPositionInPlane(const TVector3& point) const {
+    // Given a point in space, returns the position of the point in the plane using the plane's axes
+    // The position is returned in the plane's local coordinates (in mm)
+    return {fAxisX.Dot(point - fPosition),
+            fAxisY.Dot(point - fPosition)};  // dot product between vectors is the projection
+}
+
+TVector3 TRestDetectorReadoutPlane::GetPositionInWorld(const TVector2& point, Double_t height) const {
+    return fPosition + point.X() * fAxisX + point.Y() * fAxisY + height * fNormal;
+}
+
+Double_t TRestDetectorReadoutPlane::GetDistanceToPlane(const TVector3& point) const {
+    return (point - fPosition).Dot(fNormal);
+}
+
+void TRestDetectorReadoutPlane::SetAxisX(const TVector3& axis) {
+    const TVector3 axisInPlane = (axis - axis.Dot(fNormal) * fNormal).Unit();
+    if (axisInPlane.Mag2() < 1E-6) {
+        RESTError << "TRestDetectorReadoutPlane::SetAxisX() : "
+                  << "The X-axis vector must not be parallel to the normal vector." << RESTendl;
+        exit(1);
+    }
+
+    // compute the angle between the new axis and the old axis
+    const Double_t angle = fAxisX.Angle(axisInPlane);
+
+    SetRotation(fRotation - angle);
 }
