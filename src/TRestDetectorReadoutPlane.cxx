@@ -449,25 +449,25 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
 }
 
 void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
-    const TVector3 originalNormal = {0, 0, 1};
+    const TVector3 zUnit = {0, 0, 1};
     fAxisX = {1, 0, 0};
     fAxisY = {0, 1, 0};
 
     constexpr double tolerance = 1E-6;
 
-    // Check if fNormal is different from the original normal
-    if ((fNormal - originalNormal).Mag2() < tolerance) {
+    // Check if fNormal is different from (0,0,1)
+    if ((fNormal - zUnit).Mag2() < tolerance) {
         // do nothing
-    } else if ((fNormal + originalNormal).Mag2() < tolerance) {
-        // normal vector is opposite to the original normal (0,0,-1), we must also flip the axes
+    } else if ((fNormal + zUnit).Mag2() < tolerance) {
+        // normal vector is opposite to (0,0,1), we must also flip the axes
         fAxisX = {0, -1, 0};
         fAxisY = {-1, 0, 0};
     } else {
         // Calculate the rotation axis by taking the cross product between the original normal and fNormal
-        TVector3 rotationAxis = originalNormal.Cross(fNormal);
+        TVector3 rotationAxis = zUnit.Cross(fNormal);
 
         // Calculate the rotation angle using the dot product between the original normal and fNormal
-        double rotationAngle = acos(originalNormal.Dot(fNormal) / (originalNormal.Mag() * fNormal.Mag()));
+        double rotationAngle = acos(zUnit.Dot(fNormal) / (zUnit.Mag() * fNormal.Mag()));
 
         // Rotate the axes around the rotation axis by the rotation angle
         fAxisX.Rotate(rotationAngle, rotationAxis);
@@ -504,6 +504,36 @@ void TRestDetectorReadoutPlane::UpdateAxes() {  // idempotent
 }
 
 void TRestDetectorReadoutPlane::SetRotation(Double_t radians) {
-    fRotation = radians;
+    // sets fRotation modulo 2pi
+    fRotation = TVector2::Phi_0_2pi(radians);
     UpdateAxes();
+}
+
+TVector2 TRestDetectorReadoutPlane::GetPositionInPlane(const TVector3& point) const {
+    // Given a point in space, returns the position of the point in the plane using the plane's axes
+    // The position is returned in the plane's local coordinates (in mm)
+    return {fAxisX.Dot(point - fPosition),
+            fAxisY.Dot(point - fPosition)};  // dot product between vectors is the projection
+}
+
+TVector3 TRestDetectorReadoutPlane::GetPositionInWorld(const TVector2& point, Double_t height) const {
+    return fPosition + point.X() * fAxisX + point.Y() * fAxisY + height * fNormal;
+}
+
+Double_t TRestDetectorReadoutPlane::GetDistanceToPlane(const TVector3& point) const {
+    return (point - fPosition).Dot(fNormal);
+}
+
+void TRestDetectorReadoutPlane::SetAxisX(const TVector3& axis) {
+    const TVector3 axisInPlane = (axis - axis.Dot(fNormal) * fNormal).Unit();
+    if (axisInPlane.Mag2() < 1E-6) {
+        RESTError << "TRestDetectorReadoutPlane::SetAxisX() : "
+                  << "The X-axis vector must not be parallel to the normal vector." << RESTendl;
+        exit(1);
+    }
+
+    // compute the angle between the new axis and the old axis
+    const Double_t angle = fAxisX.Angle(axisInPlane);
+
+    SetRotation(fRotation - angle);
 }

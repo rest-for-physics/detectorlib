@@ -81,6 +81,8 @@ class TRestDetectorReadoutPlane {
 
     void SetRotation(Double_t radians);
 
+    void SetAxisX(const TVector3& axis);
+
     // Getters
     /// Returns an integer with the plane id number.
     inline Int_t GetID() const { return fId; }
@@ -153,6 +155,11 @@ class TRestDetectorReadoutPlane {
     Int_t GetModuleIDFromPosition(const TVector3& position);
 
     Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
+
+    TVector2 GetPositionInPlane(const TVector3& point) const;
+    Double_t GetDistanceToPlane(const TVector3& point) const;
+
+    TVector3 GetPositionInWorld(const TVector2& point, Double_t height = 0) const;
 
     void Draw();
 

@@ -54,3 +54,43 @@ TEST(TRestDetectorReadout, Axes) {
         EXPECT_TRUE(AreEqual(plane.GetAxisY(), {0, 0.99995, -0.0099995}));
     }
 }
+
+TEST(TRestDetectorReadout, SetAxisX) {
+    TRestDetectorReadoutPlane plane;
+    plane.SetNormal({0, 0.5, 1});
+    plane.SetPosition({10.0, 5.0, 50.0});
+    plane.SetRotation(TMath::DegToRad() * 32.0);
+    plane.SetHeight(10.0);
+    plane.PrintMetadata();
+    // default values
+
+    // axis will be projected into the plane
+    const TVector3 newXAxis = {1.0, -2.0, 5.0};
+
+    plane.SetAxisX(newXAxis);
+
+    const TVector3 axisX = plane.GetAxisX();
+    const TVector3 newXAxisProjected =
+        (newXAxis - plane.GetNormal() * newXAxis.Dot(plane.GetNormal())).Unit();
+    cout << "axisX: " << axisX.X() << ", " << axisX.Y() << ", " << axisX.Z() << endl;
+    cout << "axisXProjected: " << newXAxisProjected.X() << ", " << newXAxisProjected.Y() << ", "
+         << newXAxisProjected.Z() << endl;
+    EXPECT_TRUE(AreEqual(plane.GetAxisX(), newXAxisProjected));
+}
+
+TEST(TRestDetectorReadout, Module) {
+    TRestDetectorReadoutPlane plane;
+    plane.SetNormal({0, 0, 1});
+    plane.SetPosition({10.0, 5.0, 50.0});
+    plane.SetRotation(TMath::DegToRad() * 90.0);
+    plane.SetHeight(10.0);
+
+    plane.PrintMetadata();
+
+    const TVector3 worldPoint = {0, 0, 100.0};
+    const TVector2 local = plane.GetPositionInPlane(worldPoint);
+    cout << "local: " << local.X() << ", " << local.Y() << endl;
+
+    const auto distance = plane.GetDistanceToPlane(worldPoint);
+    cout << "distance: " << distance << endl;
+}
