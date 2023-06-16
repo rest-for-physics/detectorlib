@@ -6,7 +6,7 @@ execute_process(
     ERROR_VARIABLE gitstatuserr)
 
 string(REPLACE "\n" "" LibraryVersion ${LibraryVersion})
-message("Raw library version: ${LibraryVersion}")
+message("Detector library version: ${LibraryVersion}")
 add_definitions(-DLIBRARY_VERSION="${LibraryVersion}")
 
 # find garfield libs and includes
