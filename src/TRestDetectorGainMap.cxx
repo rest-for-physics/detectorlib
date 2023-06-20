@@ -35,7 +35,7 @@ void TRestDetectorGainMap::DrawChannelGainMap(TRestDetectorReadoutModule* mod) {
         }
         h->Draw();
     } else {
-        double xmin = 0, xmax = mod->GetModuleSizeX(), ymin = 0, ymax = mod->GetModuleSizeY();
+        double xmin = 0, xmax = mod->GetSize().X(), ymin = 0, ymax = mod->GetSize().Y();
         cout << xmin << " " << xmax << " " << ymin << " " << ymax << endl;
 
         TCanvas* c1 = new TCanvas();
@@ -53,7 +53,7 @@ void TRestDetectorGainMap::DrawChannelGainMap(TRestDetectorReadoutModule* mod) {
             gr->SetPoint(i, x, y, 1);
         }
 
-        for (int i = 0; i < mod->GetNumberOfChannels(); i++) {
+        for (size_t i = 0; i < mod->GetNumberOfChannels(); i++) {
             TRestDetectorReadoutChannel* channel = mod->GetChannel(i);
             int id = channel->GetDaqID();
             if (fChannelGain.count(id) == 0) fChannelGain[id] = 1;

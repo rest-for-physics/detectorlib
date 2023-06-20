@@ -117,7 +117,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
         daqChannel = fSignalEvent->GetSignal(i)->GetSignalID();
 
         TRestDetectorReadoutPlane* plane = &(*fReadout)[planeId];
-        for (int m = 0; m < plane->GetNumberOfModules(); m++) {
+        for (size_t m = 0; m < plane->GetNumberOfModules(); m++) {
             module = &(*plane)[m];
 
             if (module->isDaqIDInside(daqChannel)) break;
@@ -179,7 +179,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
 TRestDetectorReadoutChannel* TRestDetectorReadoutEventViewer::GetChannel(int readoutChannel) {
     TRestDetectorReadoutPlane* plane = &(*fReadout)[0];
-    for (int n = 0; n < plane->GetNumberOfModules(); n++) {
+    for (size_t n = 0; n < plane->GetNumberOfModules(); n++) {
         if ((*plane)[n].GetChannel(readoutChannel) == nullptr) continue;
         return (*plane)[n].GetChannel(readoutChannel);
     }

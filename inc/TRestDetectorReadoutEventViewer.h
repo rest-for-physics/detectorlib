@@ -17,19 +17,17 @@
 
 #include <TCanvas.h>
 #include <TPad.h>
+#include <TRestEventViewer.h>
 
-#include "TRestDetectorSignalEvent.h"
-#include "TRestEventViewer.h"
-// #include "TRestDecoding.h"
 #include "TH2Poly.h"
 #include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 class TRestDetectorReadoutEventViewer : public TRestEventViewer {
    protected:
     TCanvas* fCanvasXY;
     TCanvas* fCanvasXZYZ;
 
-    // TRestDecoding *fDecoding;
     TRestDetectorReadout* fReadout;
 
     TRestDetectorSignalEvent* fSignalEvent;
@@ -38,16 +36,16 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     TH2D* fHistoXZ;
     TH2D* fHistoYZ;
 
-    bool isfirstEvent;
+    bool isFirstevent;
 
     double xmin, xmax, ymin, ymax, zmin, zmax;
 
    public:
-    void Initialize();
+    void Initialize() override;
     // Finalize initialization based on arg. TRestDetectorReadout
     void SetReadout(TRestDetectorReadout* readout);
 
-    void AddEvent(TRestEvent* ev);
+    void AddEvent(TRestEvent* ev) override;
     void DrawReadoutPulses();
     TRestDetectorReadoutChannel* GetChannel(int readoutChannel);
     TRestDetectorReadoutModule* GetModule(int readoutChannel);
@@ -55,9 +53,9 @@ class TRestDetectorReadoutEventViewer : public TRestEventViewer {
     // Constructor
     TRestDetectorReadoutEventViewer();
     // Destructor
-    ~TRestDetectorReadoutEventViewer();
+    ~TRestDetectorReadoutEventViewer() override;
 
-    ClassDef(TRestDetectorReadoutEventViewer, 1);  // class inherited from
-                                                   // TRestEventViewer
+    ClassDefOverride(TRestDetectorReadoutEventViewer, 1);  // class inherited from
+                                                           // TRestEventViewer
 };
 #endif

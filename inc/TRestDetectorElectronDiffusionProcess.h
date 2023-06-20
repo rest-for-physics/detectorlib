@@ -21,7 +21,6 @@
 
 class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
@@ -29,7 +28,6 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     TRestDetectorReadout* fReadout;  //!
 
     TRandom3* fRandom;  //!
-#endif
 
     void InitFromConfigFile() override;
 

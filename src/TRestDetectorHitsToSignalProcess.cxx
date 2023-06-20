@@ -237,7 +237,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
             if (daqId >= 0) {
                 Double_t energy = fHitsEvent->GetEnergy(hit);
 
-                Double_t time = plane->GetDistanceTo(x, y, z) / fDriftVelocity + t;
+                Double_t time = plane->GetDistanceTo({x, y, z}) / fDriftVelocity + t;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId

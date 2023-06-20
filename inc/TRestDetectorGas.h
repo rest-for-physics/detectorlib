@@ -236,10 +236,8 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return fGasComponentFraction[n];
     }
 
-#ifndef __CINT__
     /// Return pointer to Garfield::MediumGas for gas properties
     inline MediumMagboltz* GetGasMedium() const { return fGasMedium; };
-#endif
 
     /// Return reference name of the corresponding material in GDML file
     inline TString GetGDMLMaterialRef() const { return fGDMLMaterialRef; };
