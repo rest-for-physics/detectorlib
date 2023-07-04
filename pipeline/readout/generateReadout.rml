@@ -22,7 +22,6 @@ Finally we call the method TRestRun::FormOutputFile() through TRestManager to sa
         <variable name="CHANNELS" value="64" overwrite="false"/>
         <!-- The number of pixels per side PxP -->
     </globals>
-    <TRestRun name="readoutrun">
         <TRestDetectorReadout name="Prototype_2020_06" title="PANDA readout 7module">
             <parameter name="verboseLevel" value="info"/>
             <parameter name="mappingNodes" value="0"/>
@@ -49,7 +48,7 @@ Finally we call the method TRestRun::FormOutputFile() through TRestManager to sa
         <addReadoutModule id="9" name="module" origin="(-96.75,-292.175)" rotation="0degrees" decodingFile="dummy.dec" firstDaqChannel="136*0"/>
 
       </readoutPlane>
-        </TRestDetectorReadout>
-    </TRestRun>
-    <addTask command="readoutrun-&gt;FormOutputFile()" value="ON"/>
+      </TRestDetectorReadout>
+    <addTask command="Prototype_2020_06-&gt;GenerateReadout()" value="ON"/>
+    <addTask command="Prototype_2020_06-&gt;Export(&#34;readout.root&#34;)" value="ON"/>
 </TRestManager>
