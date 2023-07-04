@@ -48,6 +48,8 @@
 
 #include "TRestDetectorReadoutModule.h"
 
+bool RESTREADOUT_DECODINGFILE_ERROR = false;
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutModule);
@@ -78,6 +80,16 @@ void TRestDetectorReadoutModule::Initialize() {
     fTolerance = 1.e-3;
 
     showWarnings = false;
+
+    fFirstDaqChannel = 0;
+
+    fMappingNodes = 0;
+
+    fDecoding = false;
+
+    fDecodingFile = "";
+
+    fMappingNodes = 0;
 }
 
 ///////////////////////////////////////////////
@@ -104,7 +116,7 @@ void TRestDetectorReadoutModule::SetMinMaxDaqIDs() {
 /// is computationally expensive but it greatly optimizes the FindChannel
 /// process later on.
 ///
-void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
+void TRestDetectorReadoutModule::DoReadoutMapping( ) {
     ///////////////////////////////////////////////////////////////////////////////
     // We initialize the mapping readout net to sqrt(numberOfPixels)
     // However this might not be good for readouts where the pixels are
@@ -114,9 +126,9 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++)
         totalNumberOfPixels += GetChannel(ch)->GetNumberOfPixels();
 
-    if (nodes == 0) {
-        nodes = TMath::Sqrt(totalNumberOfPixels);
-        nodes = 2 * nodes;
+    if (fMappingNodes == 0) {
+        fMappingNodes = TMath::Sqrt(totalNumberOfPixels);
+        fMappingNodes = 2 * fMappingNodes;
     }
 
     cout << "Performing readout mapping optimization (This might require long "
@@ -126,9 +138,9 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
             "--------------"
          << endl;
     cout << "Total number of pixels : " << totalNumberOfPixels << endl;
-    cout << "Nodes : " << nodes << endl;
+    cout << "Nodes : " << fMappingNodes << endl;
 
-    fMapping.Initialize(nodes, nodes, GetSize().X(), GetSize().Y());
+    fMapping.Initialize(fMappingNodes, fMappingNodes, GetSize().X(), GetSize().Y());
 
     for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++) {
         for (int px = 0; px < this->GetChannel(ch)->GetNumberOfPixels(); px++) {
@@ -164,10 +176,10 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         }
     }
 
-    for (int i = 0; i < nodes; i++) {
-        printf("Completed : %.2lf %%\r", 100. * (i * (Double_t)nodes) / nodes / nodes);
+    for (int i = 0; i < fMappingNodes; i++) {
+        printf("Completed : %.2lf %%\r", 100. * (i * (Double_t)fMappingNodes) / fMappingNodes / fMappingNodes);
         fflush(stdout);
-        for (int j = 0; j < nodes; j++) {
+        for (int j = 0; j < fMappingNodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
             const auto transformedCoordinates = TransformToPlaneCoordinates(x, y);
@@ -190,8 +202,8 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
     else
         cout << "All Nodes set" << endl;
 
-    for (int i = 0; i < nodes; i++)
-        for (int j = 0; j < nodes; j++) {
+    for (int i = 0; i < fMappingNodes; i++)
+        for (int j = 0; j < fMappingNodes; j++) {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
@@ -212,6 +224,80 @@ void TRestDetectorReadoutModule::DoReadoutMapping(Int_t nodes) {
         }
 
     cout << "Nodes not set : " << fMapping.GetNumberOfNodesNotSet() << endl;
+}
+
+///////////////////////////////////////////////
+/// \brief Determines if a given *daqID* number is in the range of the module
+///
+void TRestDetectorReadoutModule::UpdateDecoding(){
+
+  if (fDecodingFile == "Not defined" || fDecodingFile.empty() || RESTREADOUT_DECODINGFILE_ERROR) {
+    fDecoding = false;
+  } else {
+    fDecoding = true;
+  }
+
+  if (fDecoding && !TRestTools::fileExists(fDecodingFile)) {
+    RESTWarning << "The decoding file does not exist!" << RESTendl;
+    RESTWarning << "--------------------------------" << RESTendl;
+    RESTWarning << "File : " << fDecodingFile << RESTendl;
+    RESTWarning << "Default decoding will be used. readoutChannel=daqChannel" << RESTendl;
+    RESTWarning << "To avoid this message and use the default decoding define : "
+                   "decodingFile=\"\""<< RESTendl;
+    RESTWarning << "--------------------------------" << RESTendl;
+    RESTWarning << "Press a KEY to continue..." << RESTendl;
+    GetChar();
+    fDecoding = false;
+    RESTREADOUT_DECODINGFILE_ERROR = true;
+  }
+
+  std::vector<std::pair<Int_t ,Int_t>> rdChannel;
+    if (fDecoding && TRestTools::fileExists(fDecodingFile)) {
+      FILE* f = fopen(fDecodingFile.c_str(), "r");
+      Int_t daq, readout;
+        while (!feof(f)) {
+          if (fscanf(f, "%d\t%d\n", &daq, &readout) <= 0) {
+            RESTError << "TRestDetectorReadoutModule::UpdateDecoding. Problem reading decoding"
+            << RESTendl;
+            RESTError << "This error might need support at REST forum" << RESTendl;
+            exit(-1);
+          }
+        // we skip blank daq channels if readout id is <0
+        // e.g. daq id: 22, readout id: -1
+          if (readout >= 0) {
+            rdChannel.push_back(std::make_pair(readout, daq + fFirstDaqChannel) );
+          }
+        }
+      fclose(f);
+    }
+
+      if (fDecoding && (unsigned int)this->GetNumberOfChannels() != rdChannel.size()) {
+         RESTError << "TRestDetectorReadout."
+         << " The number of channels defined in the readout is not the same"
+         << " as the number of channels found in the decoding." << RESTendl;
+         exit(1);
+      }
+
+      for (size_t ch = 0; ch < this->GetNumberOfChannels(); ch++) {
+        if (!fDecoding) {
+          Int_t id = ch;
+          rdChannel.push_back(std::make_pair( id, id + fFirstDaqChannel) );
+        }
+
+        // WRONG version before -->
+        // fModuleDefinitions[mid].GetChannel(ch)->SetID( rChannel[ch] );
+        const auto &[readout, daq] = rdChannel[ch];
+          if (!this->GetChannel(readout)) {
+             RESTError << "Problem setting readout channel " << readout
+             << " with daq id: " << daq << RESTendl;
+             continue;
+          }
+                this->GetChannel(readout)->SetDaqID(daq);
+                this->GetChannel(readout)->SetChannelID(readout);
+       }
+
+     this->SetMinMaxDaqIDs();
+
 }
 
 ///////////////////////////////////////////////
@@ -532,6 +618,15 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
         RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
+        RESTMetadata << "-- Decoding File: " << fDecodingFile << RESTendl;
+        RESTMetadata << "Decoding was defined : ";
+          if (fDecoding) {
+            RESTMetadata << "YES" << RESTendl;
+          } else{
+            RESTMetadata << "NO" << RESTendl;
+          }
+        RESTMetadata << "-- First DAQ Channel: " << fFirstDaqChannel << RESTendl;
+        RESTMetadata << "-- Number of  mapping nodes: " << fMappingNodes << RESTendl;
         RESTMetadata << "-- Origin position : X = " << fOrigin.X() << " mm "
                      << " Y : " << fOrigin.Y() << " mm" << RESTendl;
         RESTMetadata << "-- Size : X = " << fSize.X() << " Y : " << fSize.Y() << RESTendl;

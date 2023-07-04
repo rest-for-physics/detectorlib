@@ -172,6 +172,25 @@
 /// readout plane. This may allow to re-use a decoding file for different
 /// readout modules in case we have a repetitive connection pattern.
 ///
+/// New method has been added to update the decoding in an already generated
+/// readout. The following lines give an example of how to do it:
+///
+/// \code
+/// TFile *f = TFile::Open("myReadout.root", "UPDATE");
+/// TRestDetectorReadout* readout = (TRestDetectorReadout*)f->Get("readoutName");
+///   for( int p = 0; p < readout->GetNumberOfReadoutPlanes(); p++ ){
+///     TRestDetectorReadoutPlane *plane = readout->GetReadoutPlane( p );
+///       for( int m = 0; m < plane->GetNumberOfModules(); m++ ) {
+///         TRestDetectorReadoutModule* module = &(*plane)[m];
+///         module->SetDecodingFile(decodingFile);
+///         module->UpdateDecoding();
+///       }
+///   }
+/// readout->Write("newDecoding");
+/// f->Close();
+/// \endcode
+///
+///
 /// ### Using the readout class
 ///
 /// Once TRestDetectorReadout has been initialized, through and RML file or a
@@ -266,8 +285,6 @@
 
 #include "TRestDetectorReadout.h"
 
-bool RESTREADOUT_DECODINGFILE_ERROR = false;
-
 ClassImp(TRestDetectorReadout);
 ///////////////////////////////////////////////
 /// \brief TRestDetectorReadout default constructor
@@ -322,8 +339,6 @@ TRestDetectorReadout::TRestDetectorReadout(const char* configFilename, std::stri
 void TRestDetectorReadout::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
-
-    fDecoding = false;
 
     fNReadoutPlanes = 0;
     fReadoutPlanes.clear();
@@ -456,14 +471,14 @@ void TRestDetectorReadout::InitFromConfigFile() {
         }
 
         TRestDetectorReadoutModule module = *ParseModuleDefinition(moduleDefinition);
-        module.DoReadoutMapping(fMappingNodes);
+        module.SetMappingNodes(fMappingNodes);
         fModuleDefinitions.push_back(module);
         moduleDefinition = GetNextElement(moduleDefinition);
     }
 
     TiXmlElement* planeDefinition = GetElement("readoutPlane");
-    std::vector<TRestDetectorReadoutModule> moduleVector;
     Int_t addedChannels = 0;
+    std::vector<TRestDetectorReadoutModule> moduleVector;
     while (planeDefinition != nullptr) {
         TRestDetectorReadoutPlane plane;
 
@@ -492,88 +507,18 @@ void TRestDetectorReadout::InitFromConfigFile() {
             fModuleDefinitions[mid].SetRotation(GetDblParameterWithUnits("rotation", moduleDefinition));
 
             Int_t firstDaqChannel = StringToInteger(GetFieldValue("firstDaqChannel", moduleDefinition));
-            if (firstDaqChannel == -1) firstDaqChannel = addedChannels;
+
+            if(firstDaqChannel == -1) {
+              fModuleDefinitions[mid].SetFirstDaqChannel(addedChannels);
+            } else {
+              fModuleDefinitions[mid].SetFirstDaqChannel(firstDaqChannel);
+            }
 
             std::string decodingFile = GetFieldValue("decodingFile", moduleDefinition);
-            if (decodingFile == "Not defined" || decodingFile.empty() || RESTREADOUT_DECODINGFILE_ERROR)
-                fDecoding = false;
-            else
-                fDecoding = true;
+            fModuleDefinitions[mid].SetDecodingFile(decodingFile);
+            addedChannels += fModuleDefinitions[mid].GetNumberOfChannels();
 
-            if (fDecoding && !TRestTools::fileExists(decodingFile)) {
-                RESTWarning << "The decoding file does not exist!" << RESTendl;
-                RESTWarning << "--------------------------------" << RESTendl;
-                RESTWarning << "File : " << decodingFile << RESTendl;
-                RESTWarning << "Default decoding will be used. readoutChannel=daqChannel" << RESTendl;
-                RESTWarning << "To avoid this message and use the default decoding define : "
-                               "decodingFile=\"\""
-                            << RESTendl;
-                RESTWarning << "--------------------------------" << RESTendl;
-                RESTWarning << "Press a KEY to continue..." << RESTendl;
-                getchar();
-                fDecoding = false;
-                RESTREADOUT_DECODINGFILE_ERROR = true;
-            }
-
-            std::vector<Int_t> rChannel;
-            std::vector<Int_t> dChannel;
-            if (fDecoding && TRestTools::fileExists(decodingFile)) {
-                FILE* f = fopen(decodingFile.c_str(), "r");
-
-                Int_t daq, readout;
-                while (!feof(f)) {
-                    if (fscanf(f, "%d\t%d\n", &daq, &readout) <= 0) {
-                        RESTError << "TRestDetectorReadout::InitFromConfigFile. Problem reading decoding"
-                                  << RESTendl;
-                        RESTError << "This error might need support at REST forum" << RESTendl;
-                        exit(-1);
-                    }
-                    // we skip blank daq channels if readout id is <0
-                    // e.g. daq id: 22, readout id: -1
-                    if (readout >= 0) {
-                        rChannel.push_back(readout);
-                        dChannel.push_back(daq + firstDaqChannel);
-                    }
-                }
-                fclose(f);
-            }
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-                std::cout << "------module-----------------" << std::endl;
-                std::cout << moduleDefinition << std::endl;
-                std::cout << "-----------------------------" << std::endl;
-                getchar();
-            }
-
-            if (fDecoding && (unsigned int)fModuleDefinitions[mid].GetNumberOfChannels() != rChannel.size()) {
-                RESTError << "TRestDetectorReadout."
-                          << " The number of channels defined in the readout is not the same"
-                          << " as the number of channels found in the decoding." << RESTendl;
-                exit(1);
-            }
-
-            for (size_t ch = 0; ch < fModuleDefinitions[mid].GetNumberOfChannels(); ch++) {
-                if (!fDecoding) {
-                    Int_t id = ch;
-                    rChannel.push_back(id);
-                    dChannel.push_back(id + firstDaqChannel);
-                }
-
-                // WRONG version before -->
-                // fModuleDefinitions[mid].GetChannel(ch)->SetID( rChannel[ch] );
-                if (!fModuleDefinitions[mid].GetChannel(rChannel[ch])) {
-                    RESTError << "Problem setting readout channel " << rChannel[ch]
-                              << " with daq id: " << dChannel[ch] << RESTendl;
-                    continue;
-                }
-                fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetDaqID(dChannel[ch]);
-                fModuleDefinitions[mid].GetChannel(rChannel[ch])->SetChannelID(rChannel[ch]);
-
-                addedChannels++;
-            }
-            fModuleDefinitions[mid].SetMinMaxDaqIDs();
-
-            moduleVector.push_back(fModuleDefinitions[mid]);
+            moduleVector.push_back(std::move(fModuleDefinitions[mid]));
             // plane.AddModule( fModuleDefinitions[mid] );
 
             moduleDefinition = GetNextElement(moduleDefinition);
@@ -583,15 +528,31 @@ void TRestDetectorReadout::InitFromConfigFile() {
         // missing numbers in a multi-module readout plane. Modules can have their
         // special "id", e.g. M0, M2, M3, M4 in SJTU proto. We don't have M1
 
-        for (auto& i : moduleVector) {
-            plane.AddModule(i);
+        for (auto & mod : moduleVector) {
+            plane.AddModule(mod);
         }
 
-        this->AddReadoutPlane(plane);
+        this->AddReadoutPlane(std::move(plane));
         planeDefinition = GetNextElement(planeDefinition);
+
     }
 
-    ValidateReadout();
+}
+
+///////////////////////////////////////////////
+/// \brief This function is used to generate the
+/// readout after opening the rml file
+///
+void TRestDetectorReadout::GenerateReadout() {
+
+  for(auto && plane : fReadoutPlanes){
+    for(size_t m = 0; m < plane.GetNumberOfModules(); m++){
+      plane[m].DoReadoutMapping();
+      plane[m].UpdateDecoding();
+    }
+  }
+
+  ValidateReadout();
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {
@@ -842,11 +803,6 @@ void TRestDetectorReadout::PrintMetadata(Int_t DetailLevel) {
         TRestMetadata::PrintMetadata();
 
         RESTMetadata << "Number of readout planes : " << fNReadoutPlanes << RESTendl;
-        RESTMetadata << "Decoding was defined : ";
-        if (fDecoding)
-            RESTMetadata << "YES" << RESTendl;
-        else
-            RESTMetadata << "NO" << RESTendl;
         RESTMetadata << "-----------------------------------" << RESTendl;
         for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) fReadoutPlanes[p].Print(DetailLevel - 1);
         RESTMetadata << "****************************************" << RESTendl;

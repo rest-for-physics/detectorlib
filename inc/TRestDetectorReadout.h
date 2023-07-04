@@ -36,9 +36,6 @@ class TRestDetectorReadout : public TRestMetadata {
 
     void Initialize() override;
 
-    Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
-                       ///< between a physical readout channel id and a signal daq id
-
     Int_t fNReadoutPlanes;  ///< Number of readout planes present on the readout
     std::vector<TRestDetectorReadoutPlane>
         fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
@@ -55,6 +52,8 @@ class TRestDetectorReadout : public TRestMetadata {
 
     TRestDetectorReadoutPlane* GetReadoutPlane(int p);
     void AddReadoutPlane(TRestDetectorReadoutPlane plane);
+
+    void GenerateReadout();
 
     /////////////////////////////////////
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
@@ -99,6 +98,6 @@ class TRestDetectorReadout : public TRestMetadata {
     // Destructor
     ~TRestDetectorReadout() override;
 
-    ClassDefOverride(TRestDetectorReadout, 1);
+    ClassDefOverride(TRestDetectorReadout, 2);
 };
 #endif
