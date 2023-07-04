@@ -24,7 +24,7 @@ void PrintReadout(TString fName) {
 
     cout.rdbuf(stream_buffer_file);
 
-    TFile *f = TFile::Open(fName);
+    TFile* f = TFile::Open(fName);
     TRestDetectorReadout* r = (TRestDetectorReadout*)f->Get("Prototype_2020_06");
     r->PrintMetadata(3);
 
