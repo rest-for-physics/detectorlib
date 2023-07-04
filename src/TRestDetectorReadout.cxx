@@ -508,10 +508,10 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
             Int_t firstDaqChannel = StringToInteger(GetFieldValue("firstDaqChannel", moduleDefinition));
 
-            if(firstDaqChannel == -1) {
-              fModuleDefinitions[mid].SetFirstDaqChannel(addedChannels);
+            if (firstDaqChannel == -1) {
+                fModuleDefinitions[mid].SetFirstDaqChannel(addedChannels);
             } else {
-              fModuleDefinitions[mid].SetFirstDaqChannel(firstDaqChannel);
+                fModuleDefinitions[mid].SetFirstDaqChannel(firstDaqChannel);
             }
 
             std::string decodingFile = GetFieldValue("decodingFile", moduleDefinition);
@@ -528,15 +528,13 @@ void TRestDetectorReadout::InitFromConfigFile() {
         // missing numbers in a multi-module readout plane. Modules can have their
         // special "id", e.g. M0, M2, M3, M4 in SJTU proto. We don't have M1
 
-        for (auto & mod : moduleVector) {
+        for (auto& mod : moduleVector) {
             plane.AddModule(mod);
         }
 
         this->AddReadoutPlane(std::move(plane));
         planeDefinition = GetNextElement(planeDefinition);
-
     }
-
 }
 
 ///////////////////////////////////////////////
@@ -544,15 +542,14 @@ void TRestDetectorReadout::InitFromConfigFile() {
 /// readout after opening the rml file
 ///
 void TRestDetectorReadout::GenerateReadout() {
-
-  for(auto && plane : fReadoutPlanes){
-    for(size_t m = 0; m < plane.GetNumberOfModules(); m++){
-      plane[m].DoReadoutMapping();
-      plane[m].UpdateDecoding();
+    for (auto&& plane : fReadoutPlanes) {
+        for (size_t m = 0; m < plane.GetNumberOfModules(); m++) {
+            plane[m].DoReadoutMapping();
+            plane[m].UpdateDecoding();
+        }
     }
-  }
 
-  ValidateReadout();
+    ValidateReadout();
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {

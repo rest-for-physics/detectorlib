@@ -61,11 +61,11 @@ class TRestDetectorReadoutModule {
     Bool_t showWarnings;  //!///< Flag to enable/disable warning outputs. Disabled by
                           //! default. REST_Warning in TRestDetectorReadout will enable it.
 
-    Int_t fFirstDaqChannel = 0; ///< First DAQ channel
+    Int_t fFirstDaqChannel = 0;  ///< First DAQ channel
 
-    std::string fDecodingFile = ""; ///< Decoding file
+    std::string fDecodingFile = "";  ///< Decoding file
 
-    Int_t fMappingNodes = 0; ///< Number of nodes
+    Int_t fMappingNodes = 0;  ///< Number of nodes
 
     Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
                        ///< between a physical readout channel id and a signal daq id
@@ -121,7 +121,7 @@ class TRestDetectorReadoutModule {
     inline void SetMappingNodes(Int_t nodes) { fMappingNodes = nodes; }
 
     /// Sets decoding file
-    inline void SetDecodingFile(const std::string &decodingFile) { fDecodingFile = decodingFile; }
+    inline void SetDecodingFile(const std::string& decodingFile) { fDecodingFile = decodingFile; }
 
     /// Gets the tolerance for independent pixel overlaps
     inline Double_t GetTolerance() const { return fTolerance; }
@@ -189,7 +189,7 @@ class TRestDetectorReadoutModule {
     /// Disables warning output
     inline void DisableWarnings() { showWarnings = false; }
 
-    void DoReadoutMapping( );
+    void DoReadoutMapping();
 
     void UpdateDecoding();
 
