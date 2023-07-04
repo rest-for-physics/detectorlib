@@ -91,6 +91,8 @@ class TRestDetectorReadout : public TRestMetadata {
 
     void Draw();
 
+    void Export(const std::string &fileName);
+
     // Constructor
     TRestDetectorReadout();
     explicit TRestDetectorReadout(const char* configFilename);

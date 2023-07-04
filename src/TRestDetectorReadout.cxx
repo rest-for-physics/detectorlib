@@ -284,6 +284,7 @@
 ///
 
 #include "TRestDetectorReadout.h"
+#include "TFile.h"
 
 ClassImp(TRestDetectorReadout);
 ///////////////////////////////////////////////
@@ -820,4 +821,19 @@ void TRestDetectorReadout::Draw() {
     std::cout << std::endl;
     std::cout << " Or you can access directly a readout plane and draw using : " << std::endl;
     std::cout << " readout->GetReadoutPlane( 0 )->Draw( ); " << std::endl;
+}
+
+///////////////////////////////////////////////
+/// \brief Export readout to a root file
+///
+void TRestDetectorReadout::Export(const std::string &fileName){
+
+    if (TRestTools::GetFileNameExtension(fileName) == "root") {
+        TFile* f = TFile::Open(fileName.c_str(), "UPDATE");
+        this->Write();
+        f->Close();
+    } else {
+      RESTWarning << "Can only export readout as a root file, skipping..." << RESTendl;
+    }
+
 }
