@@ -53,8 +53,6 @@ class TRestDetectorReadout : public TRestMetadata {
     TRestDetectorReadoutPlane* GetReadoutPlane(int p);
     void AddReadoutPlane(TRestDetectorReadoutPlane plane);
 
-    void GenerateReadout();
-
     /////////////////////////////////////
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
     TRestDetectorReadoutModule* GetReadoutModuleWithID(int id);

@@ -49,6 +49,5 @@ Finally we call the method TRestRun::FormOutputFile() through TRestManager to sa
 
       </readoutPlane>
       </TRestDetectorReadout>
-    <addTask command="Prototype_2020_06-&gt;GenerateReadout()" value="ON"/>
     <addTask command="Prototype_2020_06-&gt;Export(&#34;readout.root&#34;)" value="ON"/>
 </TRestManager>

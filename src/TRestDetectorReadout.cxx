@@ -473,6 +473,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
         TRestDetectorReadoutModule module = *ParseModuleDefinition(moduleDefinition);
         module.SetMappingNodes(fMappingNodes);
+        module.DoReadoutMapping();
         fModuleDefinitions.push_back(module);
         moduleDefinition = GetNextElement(moduleDefinition);
     }
@@ -536,20 +537,8 @@ void TRestDetectorReadout::InitFromConfigFile() {
         this->AddReadoutPlane(std::move(plane));
         planeDefinition = GetNextElement(planeDefinition);
     }
-}
 
-///////////////////////////////////////////////
-/// \brief This function is used to generate the
-/// readout after opening the rml file
-///
-void TRestDetectorReadout::GenerateReadout() {
-    for (auto&& plane : fReadoutPlanes) {
-        for (size_t m = 0; m < plane.GetNumberOfModules(); m++) {
-            plane[m].DoReadoutMapping();
-        }
-    }
-
-    ValidateReadout();
+  ValidateReadout();
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {
