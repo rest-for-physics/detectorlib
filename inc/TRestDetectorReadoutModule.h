@@ -120,9 +120,6 @@ class TRestDetectorReadoutModule {
     /// Sets number of nodes
     inline void SetMappingNodes(Int_t nodes) { fMappingNodes = nodes; }
 
-    /// Sets decoding file
-    inline void SetDecodingFile(const std::string& decodingFile) { fDecodingFile = decodingFile; }
-
     /// Gets the tolerance for independent pixel overlaps
     inline Double_t GetTolerance() const { return fTolerance; }
 
@@ -191,7 +188,7 @@ class TRestDetectorReadoutModule {
 
     void DoReadoutMapping();
 
-    void UpdateDecoding();
+    void SetDecodingFile(const std::string& decodingFile);
 
     Bool_t isInside(const TVector2& position);
 

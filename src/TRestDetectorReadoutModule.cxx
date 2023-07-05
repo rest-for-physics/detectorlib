@@ -228,9 +228,11 @@ void TRestDetectorReadoutModule::DoReadoutMapping() {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if a given *daqID* number is in the range of the module
+/// \brief Set the decoding file in the readout module
 ///
-void TRestDetectorReadoutModule::UpdateDecoding() {
+void TRestDetectorReadoutModule::SetDecodingFile(const std::string& decodingFile) {
+    fDecodingFile = decodingFile;
+
     if (fDecodingFile == "Not defined" || fDecodingFile.empty() || RESTREADOUT_DECODINGFILE_ERROR) {
         fDecoding = false;
     } else {

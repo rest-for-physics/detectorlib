@@ -183,7 +183,6 @@
 ///       for( int m = 0; m < plane->GetNumberOfModules(); m++ ) {
 ///         TRestDetectorReadoutModule* module = &(*plane)[m];
 ///         module->SetDecodingFile(decodingFile);
-///         module->UpdateDecoding();
 ///       }
 ///   }
 /// readout->Write("newDecoding");
@@ -518,7 +517,6 @@ void TRestDetectorReadout::InitFromConfigFile() {
 
             std::string decodingFile = GetFieldValue("decodingFile", moduleDefinition);
             fModuleDefinitions[mid].SetDecodingFile(decodingFile);
-            fModuleDefinitions[mid].UpdateDecoding();
             addedChannels += fModuleDefinitions[mid].GetNumberOfChannels();
 
             moduleVector.push_back(std::move(fModuleDefinitions[mid]));

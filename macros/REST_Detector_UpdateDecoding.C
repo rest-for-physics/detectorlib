@@ -10,7 +10,6 @@ void REST_Detector_UpdateDecoding(const std::string& rootFile, const std::string
         for (int m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* module = &(*plane)[m];
             module->SetDecodingFile(decodingFile);
-            module->UpdateDecoding();
         }
     }
 
