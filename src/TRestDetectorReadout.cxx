@@ -538,7 +538,7 @@ void TRestDetectorReadout::InitFromConfigFile() {
         planeDefinition = GetNextElement(planeDefinition);
     }
 
-  ValidateReadout();
+    ValidateReadout();
 }
 
 TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlElement* moduleDefinition) {
