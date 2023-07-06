@@ -61,6 +61,15 @@ class TRestDetectorReadoutModule {
     Bool_t showWarnings;  //!///< Flag to enable/disable warning outputs. Disabled by
                           //! default. REST_Warning in TRestDetectorReadout will enable it.
 
+    Int_t fFirstDaqChannel = 0;  ///< First DAQ channel
+
+    std::string fDecodingFile = "";  ///< Decoding file
+
+    Int_t fMappingNodes = 0;  ///< Number of nodes
+
+    Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
+                       ///< between a physical readout channel id and a signal daq id
+
     void Initialize();
 
     /// Converts the coordinates (xPhys,yPhys) in the readout plane reference
@@ -105,6 +114,12 @@ class TRestDetectorReadoutModule {
     /// Sets the tolerance for independent pixel overlaps
     inline void SetTolerance(Double_t tolerance) { fTolerance = tolerance; }
 
+    /// Sets first DAQ channel
+    inline void SetFirstDaqChannel(Int_t firstDaqChannel) { fFirstDaqChannel = firstDaqChannel; }
+
+    /// Sets number of nodes
+    inline void SetMappingNodes(Int_t nodes) { fMappingNodes = nodes; }
+
     /// Gets the tolerance for independent pixel overlaps
     inline Double_t GetTolerance() const { return fTolerance; }
 
@@ -113,6 +128,8 @@ class TRestDetectorReadoutModule {
 
     /// Returns the maximum daq id number
     inline Int_t GetMaxDaqID() const { return fDaqIdRange.second; }
+
+    inline Int_t GetMappingNodes() const { return fMappingNodes; }
 
     /// Returns the physical readout channel index for a given daq id channel number
     inline Int_t DaqToReadoutChannel(Int_t daqChannel) {
@@ -169,7 +186,9 @@ class TRestDetectorReadoutModule {
     /// Disables warning output
     inline void DisableWarnings() { showWarnings = false; }
 
-    void DoReadoutMapping(Int_t nodes = 0);
+    void DoReadoutMapping();
+
+    void SetDecodingFile(const std::string& decodingFile);
 
     Bool_t isInside(const TVector2& position);
 
@@ -213,6 +232,6 @@ class TRestDetectorReadoutModule {
     // Destructor
     virtual ~TRestDetectorReadoutModule();
 
-    ClassDef(TRestDetectorReadoutModule, 3);
+    ClassDef(TRestDetectorReadoutModule, 4);
 };
 #endif
