@@ -75,7 +75,7 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 
         position -= fCenter;
-        position.Rotate(position, fAxis);
+        position.Rotate(fAngle, fAxis);
         position += fCenter;
 
         fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),

@@ -30,10 +30,10 @@
 class TRestDetectorHitsRotationProcess : public TRestEventProcess {
    private:
     /// A pointer to the process input event
-    TRestDetectorHitsEvent* fInputHitsEvent;  //!
+    TRestDetectorHitsEvent* fInputEvent;  //!
 
     /// A pointer to the process output event
-    TRestDetectorHitsEvent* fOutputHitsEvent;  //!
+    TRestDetectorHitsEvent* fOutputEvent;  //!
 
     void InitFromConfigFile() override;
     void Initialize() override;
@@ -49,8 +49,8 @@ class TRestDetectorHitsRotationProcess : public TRestEventProcess {
     TVector3 fAxis = {0, 0, 1};  //<
 
    public:
-    any GetInputEvent() const override { return fInputHitsEvent; }
-    any GetOutputEvent() const override { return fOutputHitsEvent; }
+    any GetInputEvent() const override { return fInputEvent; }
+    any GetOutputEvent() const override { return fOutputEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
