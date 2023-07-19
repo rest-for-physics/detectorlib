@@ -20,14 +20,14 @@
  * For the list of contributors see $REST_PATH/CREDITS.                  *
  *************************************************************************/
 
-#ifndef RestCore_TRestDetectorHitsRotateProcess
-#define RestCore_TRestDetectorHitsRotateProcess
+#ifndef RestCore_TRestDetectorHitsRotationProcess
+#define RestCore_TRestDetectorHitsRotationProcess
 
 #include <TRestDetectorHitsEvent.h>
 #include <TRestEventProcess.h>
 
 /// A process to rotate hits from a given center and axis
-class TRestDetectorHitsRotateProcess : public TRestEventProcess {
+class TRestDetectorHitsRotationProcess : public TRestEventProcess {
    private:
     /// A pointer to the process input event
     TRestDetectorHitsEvent* fInputHitsEvent;  //!
@@ -62,10 +62,10 @@ class TRestDetectorHitsRotateProcess : public TRestEventProcess {
     inline TVector3 GetAxis() const { return fAxis; }
     inline TVector3 GetCenter() const { return fCenter; }
 
-    TRestDetectorHitsRotateProcess();
-    TRestDetectorHitsRotateProcess(const char* configFilename);
-    ~TRestDetectorHitsRotateProcess();
+    TRestDetectorHitsRotationProcess();
+    TRestDetectorHitsRotationProcess(const char* configFilename);
+    ~TRestDetectorHitsRotationProcess();
 
-    ClassDefOverride(TRestDetectorHitsRotateProcess, 1);
+    ClassDefOverride(TRestDetectorHitsRotationProcess, 1);
 };
 #endif

@@ -21,12 +21,12 @@
  *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
-/// TRestDetectorHitsRotateProcess will add a rotation of the x,y,z hits
+/// TRestDetectorHitsRotationProcess will add a rotation of the x,y,z hits
 /// in the space. The rotation will be done respect to a center and an
 /// axis provided by the user.
 ///
 /// \code
-///    <addProcess type="TRestDetectorHitsRotateProcess" name="rotZ45"
+///    <addProcess type="TRestDetectorHitsRotationProcess" name="rotZ45"
 ///                title="A 45 degrees rotation">
 ///        <parameter name="axis" value="(0,0,1)" />
 ///        <parameter name="center" value="(3,3,0)" />
@@ -40,26 +40,26 @@
 ///
 /// History of developments:
 ///
-/// 2023-July: First implementation of TRestDetectorHitsRotateProcess
+/// 2023-July: First implementation of TRestDetectorHitsRotationProcess
 /// \author Javier Galan
 ///
-/// \class TRestDetectorHitsRotateProcess
+/// \class TRestDetectorHitsRotationProcess
 ///
 /// <hr>
 ///
-#include "TRestDetectorHitsRotateProcess.h"
+#include "TRestDetectorHitsRotationProcess.h"
 
 using namespace std;
 
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorHitsRotateProcess);
+ClassImp(TRestDetectorHitsRotationProcess);
 
-TRestDetectorHitsRotateProcess::TRestDetectorHitsRotateProcess() { Initialize(); }
+TRestDetectorHitsRotationProcess::TRestDetectorHitsRotationProcess() { Initialize(); }
 
-TRestDetectorHitsRotateProcess::~TRestDetectorHitsRotateProcess() {}
+TRestDetectorHitsRotationProcess::~TRestDetectorHitsRotationProcess() {}
 
-void TRestDetectorHitsRotateProcess::Initialize() {
+void TRestDetectorHitsRotationProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
@@ -67,7 +67,7 @@ void TRestDetectorHitsRotateProcess::Initialize() {
     fOutputEvent = new TRestDetectorHitsEvent();
 }
 
-TRestEvent* TRestDetectorHitsRotateProcess::ProcessEvent(TRestEvent* inputEvent) {
+TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEvent) {
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
@@ -84,14 +84,14 @@ TRestEvent* TRestDetectorHitsRotateProcess::ProcessEvent(TRestEvent* inputEvent)
     return fOutputEvent;
 }
 
-void TRestDetectorHitsRotateProcess::InitFromConfigFile() {
+void TRestDetectorHitsRotationProcess::InitFromConfigFile() {
     TRestEventProcess::InitFromConfigFile();
 
     fAxis = Get3DVectorParameterWithUnits("axis", {0, 0, 1});
     fCenter = Get3DVectorParameterWithUnits("center", {0, 0, 1});
 }
 
-void TRestDetectorHitsRotateProcess::PrintMetadata() {
+void TRestDetectorHitsRotationProcess::PrintMetadata() {
     BeginPrintProcess();
 
     RESTMetadata << " - Rotation center : ( " << fCenter.X() << ", " << fCenter.Y() << ", " << fCenter.Z()
