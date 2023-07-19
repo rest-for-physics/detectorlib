@@ -41,7 +41,7 @@
 /// right the original hits after a clock-wise rotation of 45 degrees with
 /// center at (-25,25,0). The axis for both rotations is along the Z-axis.
 ///
-/// \htmlonly <style>div.image img[src="rotation.png"]{width:500px;}</style> \endhtmlonly
+/// \htmlonly <style>div.image img[src="rotation.png"]{width:1000px;}</style> \endhtmlonly
 /// ![The effect of different rotation processes](rotation.png)
 ///
 ///--------------------------------------------------------------------------

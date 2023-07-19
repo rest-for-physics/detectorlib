@@ -42,7 +42,7 @@
 /// but the plane position has been shifted by 5mm to the bottom. Black
 /// lines identify the specular planes.
 ///
-/// \htmlonly <style>div.image img[src="specular.png"]{width:500px;}</style> \endhtmlonly
+/// \htmlonly <style>div.image img[src="specular.png"]{width:800px;}</style> \endhtmlonly
 /// ![The effect of different specular processes](specular.png)
 ///
 ///--------------------------------------------------------------------------

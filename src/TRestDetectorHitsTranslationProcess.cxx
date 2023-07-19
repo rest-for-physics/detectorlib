@@ -29,6 +29,14 @@
 ///                translation="(5,5,0)mm" />
 /// \endcode
 ///
+/// The following figure has been produced using the `translation.C`
+/// defined under `detector/pipeline/hits/translation/`. On the left we
+/// have the original hits event distribution. On the right the hits
+/// distribution after a translation by a vector of (-1.5,0.5,0)cm.
+///
+/// \htmlonly <style>div.image img[src="translation.png"]{width:1000px;}</style> \endhtmlonly
+/// ![The effect of translation process](translation.png)
+///
 ///--------------------------------------------------------------------------
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
@@ -51,6 +59,23 @@ using namespace std;
 ClassImp(TRestDetectorHitsTranslationProcess);
 
 TRestDetectorHitsTranslationProcess::TRestDetectorHitsTranslationProcess() { Initialize(); }
+
+///////////////////////////////////////////////
+/// \brief Constructor loading data from a config file
+///
+/// If no configuration path is defined using TRestMetadata::SetConfigFilePath
+/// the path to the config file must be specified using full path, absolute or
+/// relative.
+///
+/// The default behaviour is that the config file must be specified with
+/// full path, absolute or relative.
+///
+/// \param configFilename A const char* giving the path to an RML file.
+///
+TRestDetectorHitsTranslationProcess::TRestDetectorHitsTranslationProcess(const char* configFilename) {
+    Initialize();
+    LoadConfigFromFile(configFilename);
+}
 
 TRestDetectorHitsTranslationProcess::~TRestDetectorHitsTranslationProcess() {}
 
