@@ -57,6 +57,23 @@ ClassImp(TRestDetectorHitsRotationProcess);
 
 TRestDetectorHitsRotationProcess::TRestDetectorHitsRotationProcess() { Initialize(); }
 
+///////////////////////////////////////////////
+/// \brief Constructor loading data from a config file
+///
+/// If no configuration path is defined using TRestMetadata::SetConfigFilePath
+/// the path to the config file must be specified using full path, absolute or
+/// relative.
+///
+/// The default behaviour is that the config file must be specified with
+/// full path, absolute or relative.
+///
+/// \param configFilename A const char* giving the path to an RML file.
+///
+TRestDetectorHitsRotationProcess::TRestDetectorHitsRotationProcess(const char* configFilename) {
+    Initialize();
+    LoadConfigFromFile(configFilename);
+}
+
 TRestDetectorHitsRotationProcess::~TRestDetectorHitsRotationProcess() {}
 
 void TRestDetectorHitsRotationProcess::Initialize() {
