@@ -21,16 +21,15 @@
  *************************************************************************/
 
 //////////////////////////////////////////////////////////////////////////
-/// TRestDetectorHitsRotationProcess will add a rotation of the x,y,z hits
-/// in the space. The rotation will be done respect to a center and an
-/// axis provided by the user.
+/// TRestDetectorHitsSpecularProcess will update the hits position using
+/// a specular image respect to a plane defined using its `normal` and
+/// a `position` that is contained in the plane.
 ///
 /// \code
-///    <addProcess type="TRestDetectorHitsRotationProcess" name="rotZ45"
-///                title="A 45 degrees rotation">
-///        <parameter name="axis" value="(0,0,1)" />
-///        <parameter name="center" value="(3,3,0)" />
-///        <parameter name="angle" value="45degrees" />
+///    <addProcess type="TRestDetectorHitsSpecularProcess" name="spec45"
+///                title="A 45 degrees specular hits image">
+///        <parameter name="position" value="(0,0,0)" />
+///        <parameter name="normal" value="(0.5,0.5,0)" />
 ///    </addProcess>
 /// \endcode
 ///
@@ -40,26 +39,26 @@
 ///
 /// History of developments:
 ///
-/// 2023-July: First implementation of TRestDetectorHitsRotationProcess
+/// 2023-July: First implementation of TRestDetectorHitsSpecularProcess
 /// \author Javier Galan
 ///
-/// \class TRestDetectorHitsRotationProcess
+/// \class TRestDetectorHitsSpecularProcess
 ///
 /// <hr>
 ///
-#include "TRestDetectorHitsRotationProcess.h"
+#include "TRestDetectorHitsSpecularProcess.h"
 
 using namespace std;
 
 #include <TRandom3.h>
 
-ClassImp(TRestDetectorHitsRotationProcess);
+ClassImp(TRestDetectorHitsSpecularProcess);
 
-TRestDetectorHitsRotationProcess::TRestDetectorHitsRotationProcess() { Initialize(); }
+TRestDetectorHitsSpecularProcess::TRestDetectorHitsSpecularProcess() { Initialize(); }
 
-TRestDetectorHitsRotationProcess::~TRestDetectorHitsRotationProcess() {}
+TRestDetectorHitsSpecularProcess::~TRestDetectorHitsSpecularProcess() {}
 
-void TRestDetectorHitsRotationProcess::Initialize() {
+void TRestDetectorHitsSpecularProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
@@ -67,16 +66,18 @@ void TRestDetectorHitsRotationProcess::Initialize() {
     fOutputEvent = new TRestDetectorHitsEvent();
 }
 
-TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEvent) {
+TRestEvent* TRestDetectorHitsSpecularProcess::ProcessEvent(TRestEvent* inputEvent) {
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 
-        position -= fCenter;
-        position.Rotate(position, fAxis);
-        position += fCenter;
+        TVector3 V = position - fPosition;
+        Double_t vByN = V.Dot(fNormal);
+        TVector3 reflectionVector = V - 2 * vByN * fNormal;
+
+        position = fPosition + reflectionVector;
 
         fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),
                              fInputEvent->GetTime(hit), fInputEvent->GetType(hit));
@@ -84,22 +85,21 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
     return fOutputEvent;
 }
 
-void TRestDetectorHitsRotationProcess::InitFromConfigFile() {
+void TRestDetectorHitsSpecularProcess::InitFromConfigFile() {
     TRestEventProcess::InitFromConfigFile();
 
-    fAxis = Get3DVectorParameterWithUnits("axis", {0, 0, 1});
-    fAxis.Unit();
-    fCenter = Get3DVectorParameterWithUnits("center", {0, 0, 1});
+    fNormal = Get3DVectorParameterWithUnits("normal", {0, 0, 1});
+    fNormal.Unit();
+    fPosition = Get3DVectorParameterWithUnits("position", {0, 0, 1});
 }
 
-void TRestDetectorHitsRotationProcess::PrintMetadata() {
+void TRestDetectorHitsSpecularProcess::PrintMetadata() {
     BeginPrintProcess();
 
-    RESTMetadata << " - Rotation center : ( " << fCenter.X() << ", " << fCenter.Y() << ", " << fCenter.Z()
+    RESTMetadata << " - Plane normal : ( " << fNormal.X() << ", " << fNormal.Y() << ", " << fNormal.Z()
                  << ") mm" << RESTendl;
-    RESTMetadata << " - Rotation axis : ( " << fAxis.X() << ", " << fAxis.Y() << ", " << fAxis.Z() << ")"
-                 << RESTendl;
-    RESTMetadata << " - Rotation angle : " << fAngle * units("degrees") << " degrees" << RESTendl;
+    RESTMetadata << " - Plane position : ( " << fPosition.X() << ", " << fPosition.Y() << ", "
+                 << fPosition.Z() << ")" << RESTendl;
 
     EndPrintProcess();
 }
