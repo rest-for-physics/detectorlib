@@ -33,6 +33,18 @@
 ///    </addProcess>
 /// \endcode
 ///
+/// The following figure has been produced using the `specular.C` defined
+/// under `detector/pipeline/hits/specular/`. On the left-top corner we
+/// have the original hits event distribution. On the right-top the hits
+/// using a specular plane vector defined as (1,1,0) (or y=-x). On the
+/// left-bottom a specular image respect to the X-axis, using the normal
+/// plane vector (0,1,0). On the right-bottom image the same axis is used
+/// but the plane position has been shifted by 5mm to the bottom. Black
+/// lines identify the specular planes.
+///
+/// \htmlonly <style>div.image img[src="specular.png"]{width:500px;}</style> \endhtmlonly
+/// ![The effect of different specular processes](specular.png)
+///
 ///--------------------------------------------------------------------------
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
@@ -55,6 +67,23 @@ using namespace std;
 ClassImp(TRestDetectorHitsSpecularProcess);
 
 TRestDetectorHitsSpecularProcess::TRestDetectorHitsSpecularProcess() { Initialize(); }
+
+///////////////////////////////////////////////
+/// \brief Constructor loading data from a config file
+///
+/// If no configuration path is defined using TRestMetadata::SetConfigFilePath
+/// the path to the config file must be specified using full path, absolute or
+/// relative.
+///
+/// The default behaviour is that the config file must be specified with
+/// full path, absolute or relative.
+///
+/// \param configFilename A const char* giving the path to an RML file.
+///
+TRestDetectorHitsSpecularProcess::TRestDetectorHitsSpecularProcess(const char* configFilename) {
+    Initialize();
+    LoadConfigFromFile(configFilename);
+}
 
 TRestDetectorHitsSpecularProcess::~TRestDetectorHitsSpecularProcess() {}
 
@@ -89,7 +118,7 @@ void TRestDetectorHitsSpecularProcess::InitFromConfigFile() {
     TRestEventProcess::InitFromConfigFile();
 
     fNormal = Get3DVectorParameterWithUnits("normal", {0, 0, 1});
-    fNormal.Unit();
+    fNormal = fNormal.Unit();
     fPosition = Get3DVectorParameterWithUnits("position", {0, 0, 1});
 }
 

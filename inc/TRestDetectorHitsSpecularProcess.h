@@ -53,9 +53,13 @@ class TRestDetectorHitsSpecularProcess : public TRestEventProcess {
 
     void PrintMetadata() override;
 
+    /// It returns the given process name
     const char* GetProcessName() const override { return "specularProcess"; }
 
+    /// It returns the plane normal
     inline TVector3 GetNormal() const { return fNormal; }
+
+    /// It returns the position of the point contained in the plane
     inline TVector3 GetPosition() const { return fPosition; }
 
     TRestDetectorHitsSpecularProcess();
