@@ -34,6 +34,16 @@
 ///    </addProcess>
 /// \endcode
 ///
+/// The following figure has been produced using the `rotation.C` defined
+/// under `detector/pipeline/hits/rotation/`. On the left we have the
+/// original hits event distribution. On the middle the hits
+/// with a 90 degrees clock-wise rotation with center at (0,0,0). On the
+/// right the original hits after a clock-wise rotation of 45 degrees with
+/// center at (-25,25,0). The axis for both rotations is along the Z-axis.
+///
+/// \htmlonly <style>div.image img[src="rotation.png"]{width:500px;}</style> \endhtmlonly
+/// ![The effect of different rotation processes](rotation.png)
+///
 ///--------------------------------------------------------------------------
 ///
 /// RESTsoft - Software for Rare Event Searches with TPCs
