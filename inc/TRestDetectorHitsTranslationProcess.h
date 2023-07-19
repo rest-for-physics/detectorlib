@@ -20,14 +20,14 @@
  * For the list of contributors see $REST_PATH/CREDITS.                  *
  *************************************************************************/
 
-#ifndef RestCore_TRestDetectorHitsRotationProcess
-#define RestCore_TRestDetectorHitsRotationProcess
+#ifndef RestCore_TRestDetectorHitsTranslationProcess
+#define RestCore_TRestDetectorHitsTranslationProcess
 
 #include <TRestDetectorHitsEvent.h>
 #include <TRestEventProcess.h>
 
-/// A process to rotate hits from a given center and axis
-class TRestDetectorHitsRotationProcess : public TRestEventProcess {
+/// A process to translate hits by a given user amount
+class TRestDetectorHitsTranslationProcess : public TRestEventProcess {
    private:
     /// A pointer to the process input event
     TRestDetectorHitsEvent* fInputHitsEvent;  //!
@@ -39,14 +39,8 @@ class TRestDetectorHitsRotationProcess : public TRestEventProcess {
     void Initialize() override;
 
    protected:
-    /// Angle of rotation respect to the given axis
-    Double_t fAngle = 0;  //<
-
-    /// Center of rotation
-    TVector3 fCenter = {0, 0, 0};  //<
-
-    /// Axis of rotation
-    TVector3 fAxis = {0, 0, 1};  //<
+    /// The amount to be translated every hit
+    TVector3 fTranslation = {0, 0, 0};  //<
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }
@@ -56,16 +50,14 @@ class TRestDetectorHitsRotationProcess : public TRestEventProcess {
 
     void PrintMetadata() override;
 
-    const char* GetProcessName() const override { return "rotationProcess"; }
+    const char* GetProcessName() const override { return "translationProcess"; }
 
-    inline Double_t GetAngle() const { return fAngle; }
-    inline TVector3 GetAxis() const { return fAxis; }
-    inline TVector3 GetCenter() const { return fCenter; }
+    inline TVector3 GetTranslation() const { return fTranslation; }
 
-    TRestDetectorHitsRotationProcess();
-    TRestDetectorHitsRotationProcess(const char* configFilename);
-    ~TRestDetectorHitsRotationProcess();
+    TRestDetectorHitsTranslationProcess();
+    TRestDetectorHitsTranslationProcess(const char* configFilename);
+    ~TRestDetectorHitsTranslationProcess();
 
-    ClassDefOverride(TRestDetectorHitsRotationProcess, 1);
+    ClassDefOverride(TRestDetectorHitsTranslationProcess, 1);
 };
 #endif
