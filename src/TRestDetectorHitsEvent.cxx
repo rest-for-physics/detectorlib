@@ -1057,7 +1057,7 @@ TH2F* TRestDetectorHitsEvent::GetXYHistogram(std::vector<float> ranges, Double_t
 ///
 /// The border gives an additional margin to the automatic minX, maxX, minZ, maxZ found.
 ///
-TH2F* TRestDetectorHitsEvent::GetYZHistogram(std::vector<float> ranges, Double_t pitch, Double_t border) {
+TH2F* TRestDetectorHitsEvent::GetXZHistogram(std::vector<float> ranges, Double_t pitch, Double_t border) {
     double maxX, minX, maxZ, minZ;
     int nBinsX, nBinsZ;
 
