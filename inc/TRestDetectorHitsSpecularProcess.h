@@ -26,7 +26,7 @@
 #include <TRestDetectorHitsEvent.h>
 #include <TRestEventProcess.h>
 
-/// A process to rotate hits from a given center and axis
+/// A process to create specular hit images using a plane definition
 class TRestDetectorHitsSpecularProcess : public TRestEventProcess {
    private:
     /// A pointer to the process input event
