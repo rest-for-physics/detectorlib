@@ -29,6 +29,12 @@
 ///                translation="(5,5,0)mm" />
 /// \endcode
 ///
+/// \warning This process will only be valid for those detector hits
+/// of type XYZ, where the (x,y,z) coordinates take simultaneously physical
+/// values. When the hits contain a non-valid (undetermined) coordinate
+/// component this transformation will have non-sense and this process
+/// will do nothing.
+///
 /// The following figure has been produced using the `translation.C`
 /// defined under `detector/pipeline/hits/translation/`. On the left we
 /// have the original hits event distribution. On the right the hits

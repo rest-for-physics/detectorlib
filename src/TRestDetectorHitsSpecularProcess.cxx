@@ -25,10 +25,6 @@
 /// a specular image respect to a plane defined using its `normal` and
 /// a `position` that is contained in the plane.
 ///
-/// \warning This process will only be valid for those detector hits
-/// of type XYZ, where the (x,y,z) coordinates take simultaneously physical
-/// values. When the hits contain a non-valid (undetermined) coordinate
-///
 /// \code
 ///    <addProcess type="TRestDetectorHitsSpecularProcess" name="spec45"
 ///                title="A 45 degrees specular hits image">
@@ -36,6 +32,12 @@
 ///        <parameter name="normal" value="(0.5,0.5,0)" />
 ///    </addProcess>
 /// \endcode
+///
+/// \warning This process will only be valid for those detector hits
+/// of type XYZ, where the (x,y,z) coordinates take simultaneously physical
+/// values. When the hits contain a non-valid (undetermined) coordinate
+/// component this transformation will have non-sense and this process
+/// will do nothing.
 ///
 /// The following figure has been produced using the `specular.C` defined
 /// under `detector/pipeline/hits/specular/`. On the left-top corner we
