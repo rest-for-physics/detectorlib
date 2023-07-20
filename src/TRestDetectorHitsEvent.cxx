@@ -202,6 +202,7 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 /// A XYZ hit compatible are those hits that have valid X, Y and Z coordinates.
 ///
 /// \return It returns back a TRestHits structure with the hits fulfilling the XYZ condition.
+///
 TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
     fXYZHits->RemoveHits();
 

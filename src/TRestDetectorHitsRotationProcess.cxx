@@ -98,12 +98,17 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
+    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() == 0 ? false : true;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 
-        position -= fCenter;
-        position.Rotate(fAngle, fAxis);
-        position += fCenter;
+        if (xyzEvent) {
+            position -= fCenter;
+            position.Rotate(fAngle, fAxis);
+            position += fCenter;
+        } else {
+            this->SetError("TRestDetectorHitsRotationProcess. Only XYZ hits can be transformed");
+        }
 
         fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),
                              fInputEvent->GetTime(hit), fInputEvent->GetType(hit));

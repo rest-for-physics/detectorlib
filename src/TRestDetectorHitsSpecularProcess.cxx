@@ -25,6 +25,10 @@
 /// a specular image respect to a plane defined using its `normal` and
 /// a `position` that is contained in the plane.
 ///
+/// \warning This process will only be valid for those detector hits
+/// of type XYZ, where the (x,y,z) coordinates take simultaneously physical
+/// values. When the hits contain a non-valid (undetermined) coordinate
+///
 /// \code
 ///    <addProcess type="TRestDetectorHitsSpecularProcess" name="spec45"
 ///                title="A 45 degrees specular hits image">
@@ -99,14 +103,19 @@ TRestEvent* TRestDetectorHitsSpecularProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
+    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() == 0 ? false : true;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 
-        TVector3 V = position - fPosition;
-        Double_t vByN = V.Dot(fNormal);
-        TVector3 reflectionVector = V - 2 * vByN * fNormal;
+        if (xyzEvent) {
+            TVector3 V = position - fPosition;
+            Double_t vByN = V.Dot(fNormal);
+            TVector3 reflectionVector = V - 2 * vByN * fNormal;
 
-        position = fPosition + reflectionVector;
+            position = fPosition + reflectionVector;
+        } else {
+            this->SetError("TRestDetectorHitsSpecularProcess. Only XYZ hits can be transformed");
+        }
 
         fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),
                              fInputEvent->GetTime(hit), fInputEvent->GetType(hit));
