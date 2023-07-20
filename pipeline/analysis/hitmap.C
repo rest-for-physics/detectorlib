@@ -1,5 +1,5 @@
 
-Int_t transform(Bool_t draw = false) {
+Int_t hitmap(Bool_t draw = false) {
     TRestDetectorHitsEvent* ev = new TRestDetectorHitsEvent();
 
     Double_t xCenter = 5;

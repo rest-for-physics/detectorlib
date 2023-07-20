@@ -20,8 +20,8 @@
  * For the list of contributors see $REST_PATH/CREDITS.                  *
  *************************************************************************/
 
-#ifndef RestCore_TRestDetectorHitmapTransformationProcess
-#define RestCore_TRestDetectorHitmapTransformationProcess
+#ifndef RestCore_TRestDetectorHitmapAnalysisProcess
+#define RestCore_TRestDetectorHitmapAnalysisProcess
 
 #include <TRestDetectorHitsEvent.h>
 
@@ -46,7 +46,7 @@ struct HitTransformation {
 };
 
 //! An analysis process to apply rotation/translation/specular to mean hit positions
-class TRestDetectorHitmapTransformationProcess : public TRestEventProcess {
+class TRestDetectorHitmapAnalysisProcess : public TRestEventProcess {
    private:
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorHitsEvent* fHitsEvent;  //!
@@ -79,10 +79,10 @@ class TRestDetectorHitmapTransformationProcess : public TRestEventProcess {
 
     const char* GetProcessName() const override { return "hitsTransformation"; }
 
-    TRestDetectorHitmapTransformationProcess();
-    TRestDetectorHitmapTransformationProcess(const char* configFilename);
-    ~TRestDetectorHitmapTransformationProcess();
+    TRestDetectorHitmapAnalysisProcess();
+    TRestDetectorHitmapAnalysisProcess(const char* configFilename);
+    ~TRestDetectorHitmapAnalysisProcess();
 
-    ClassDefOverride(TRestDetectorHitmapTransformationProcess, 1);
+    ClassDefOverride(TRestDetectorHitmapAnalysisProcess, 1);
 };
 #endif

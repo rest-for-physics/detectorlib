@@ -42,7 +42,7 @@
 /// illustrated in the following example:
 ///
 /// \code
-///     <TRestDetectorHitmapTransformationProcess name="hitmap"
+///     <TRestDetectorHitmapAnalysisProcess name="hitmap"
 ///                                             title="A properly oriented hitmap">
 ///        <specular name="specY" position="(0,0,0)mm" vector="(0,1,0)" />
 ///        <rotation name="rot25" position="(0,0,0)mm" vector="(0,1,0)" angle="25deg" />
@@ -50,7 +50,7 @@
 ///        <rotation name="rot10" position="(10,20,0)mm" vector="(0,1,0)" angle="10deg" />
 ///
 ///        <parameter name="transformations" value="{specY,rot25,up10,rot10}" />
-///    </TRestDetectorHitmapTransformationProcess>
+///    </TRestDetectorHitmapAnalysisProcess>
 /// \endcode
 ///
 /// The transformations to be applied, and the order in which those transformations will
@@ -71,28 +71,28 @@
 ///
 /// 2023-July: First implementation
 ///
-/// \class      TRestDetectorHitmapTransformationProcess
+/// \class      TRestDetectorHitmapAnalysisProcess
 /// \author     Javier Galan
 ///
 ///______________________________________________________________________________
 ///
 //////////////////////////////////////////////////////////////////////////
 
-#include "TRestDetectorHitmapTransformationProcess.h"
+#include "TRestDetectorHitmapAnalysisProcess.h"
 
 using namespace std;
 
-ClassImp(TRestDetectorHitmapTransformationProcess);
+ClassImp(TRestDetectorHitmapAnalysisProcess);
 
 ///////////////////////////////////////////////
 /// \brief Default constructor
 ///
-TRestDetectorHitmapTransformationProcess::TRestDetectorHitmapTransformationProcess() { Initialize(); }
+TRestDetectorHitmapAnalysisProcess::TRestDetectorHitmapAnalysisProcess() { Initialize(); }
 
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
-TRestDetectorHitmapTransformationProcess::~TRestDetectorHitmapTransformationProcess() {}
+TRestDetectorHitmapAnalysisProcess::~TRestDetectorHitmapAnalysisProcess() {}
 
 ///////////////////////////////////////////////
 /// \brief Constructor loading data from a config file
@@ -106,8 +106,7 @@ TRestDetectorHitmapTransformationProcess::~TRestDetectorHitmapTransformationProc
 ///
 /// \param configFilename A const char* giving the path to an RML file.
 ///
-TRestDetectorHitmapTransformationProcess::TRestDetectorHitmapTransformationProcess(
-    const char* configFilename) {
+TRestDetectorHitmapAnalysisProcess::TRestDetectorHitmapAnalysisProcess(const char* configFilename) {
     Initialize();
     LoadConfigFromFile(configFilename);
 }
@@ -115,7 +114,7 @@ TRestDetectorHitmapTransformationProcess::TRestDetectorHitmapTransformationProce
 ///////////////////////////////////////////////
 /// \brief Function to initialize input/output event members and define the section name
 ///
-void TRestDetectorHitmapTransformationProcess::Initialize() {
+void TRestDetectorHitmapAnalysisProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
@@ -125,7 +124,7 @@ void TRestDetectorHitmapTransformationProcess::Initialize() {
 ///////////////////////////////////////////////
 /// \brief The main processing event function
 ///
-TRestEvent* TRestDetectorHitmapTransformationProcess::ProcessEvent(TRestEvent* inputEvent) {
+TRestEvent* TRestDetectorHitmapAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
     fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     TVector3 hitMean = fHitsEvent->GetMeanPosition();
@@ -152,8 +151,7 @@ TRestEvent* TRestDetectorHitmapTransformationProcess::ProcessEvent(TRestEvent* i
 /// \brief It performs a specular transformation of the given `pos` in the argument and the transformation
 /// properties stored in the HitTransformation.
 ///
-TVector3 TRestDetectorHitmapTransformationProcess::Specular(const TVector3& pos,
-                                                            const HitTransformation& tr) {
+TVector3 TRestDetectorHitmapAnalysisProcess::Specular(const TVector3& pos, const HitTransformation& tr) {
     if (tr.type != "specular") return {0, 0, 0};
 
     TVector3 V = pos - tr.position;
@@ -166,8 +164,7 @@ TVector3 TRestDetectorHitmapTransformationProcess::Specular(const TVector3& pos,
 /// \brief It performs a rotation of the given `pos` in the argument and the transformation properties
 /// stored in the HitTransformation.
 ///
-TVector3 TRestDetectorHitmapTransformationProcess::Rotation(const TVector3& pos,
-                                                            const HitTransformation& tr) {
+TVector3 TRestDetectorHitmapAnalysisProcess::Rotation(const TVector3& pos, const HitTransformation& tr) {
     if (tr.type != "rotation") return {0, 0, 0};
 
     TVector3 position = pos - tr.position;
@@ -181,8 +178,7 @@ TVector3 TRestDetectorHitmapTransformationProcess::Rotation(const TVector3& pos,
 /// \brief It performs a translation of the given `pos` in the argument and the transformation properties
 /// stored in the HitTransformation.
 ///
-TVector3 TRestDetectorHitmapTransformationProcess::Translation(const TVector3& pos,
-                                                               const HitTransformation& tr) {
+TVector3 TRestDetectorHitmapAnalysisProcess::Translation(const TVector3& pos, const HitTransformation& tr) {
     if (tr.type != "translation") return {0, 0, 0};
 
     TVector3 position = pos + tr.vector;
@@ -192,7 +188,7 @@ TVector3 TRestDetectorHitmapTransformationProcess::Translation(const TVector3& p
 ///////////////////////////////////////////////
 /// \brief It returns the transformation structure that matches the name in the argument
 ///
-HitTransformation TRestDetectorHitmapTransformationProcess::GetTransformation(const std::string& name) {
+HitTransformation TRestDetectorHitmapAnalysisProcess::GetTransformation(const std::string& name) {
     for (const auto& t : fTransDefinitions) {
         if (t.name == name) return t;
     }
@@ -204,7 +200,7 @@ HitTransformation TRestDetectorHitmapTransformationProcess::GetTransformation(co
 ///////////////////////////////////////////////
 /// \brief A custom initalization from a config file
 ///
-void TRestDetectorHitmapTransformationProcess::InitFromConfigFile() {
+void TRestDetectorHitmapAnalysisProcess::InitFromConfigFile() {
     TRestEventProcess::InitFromConfigFile();
 
     auto specularDef = GetElement("specular");
@@ -301,7 +297,7 @@ void TRestDetectorHitmapTransformationProcess::InitFromConfigFile() {
 ///////////////////////////////////////////////
 /// \brief Prints out the metadata member values
 ///
-void TRestDetectorHitmapTransformationProcess::PrintMetadata() {
+void TRestDetectorHitmapAnalysisProcess::PrintMetadata() {
     BeginPrintProcess();
 
     if (!fTransDefinitions.empty()) {
