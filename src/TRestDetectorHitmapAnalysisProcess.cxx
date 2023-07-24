@@ -53,6 +53,9 @@
 ///    </TRestDetectorHitmapAnalysisProcess>
 /// \endcode
 ///
+/// \htmlonly <style>div.image img[src="transformedHitmap.png"]{width:800px;}</style> \endhtmlonly
+/// ![The effect of different transfromation processes](transformedHitmap.png)
+///
 /// The transformations to be applied, and the order in which those transformations will
 /// be applied are defined inside the parameter `transformations` that contains a list
 /// with the names from the transformation definitions.
