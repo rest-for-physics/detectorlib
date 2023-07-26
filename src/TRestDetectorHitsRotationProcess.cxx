@@ -29,7 +29,7 @@
 ///    <addProcess type="TRestDetectorHitsRotationProcess" name="rotZ45"
 ///                title="A 45 degrees rotation">
 ///        <parameter name="axis" value="(0,0,1)" />
-///        <parameter name="center" value="(3,3,0)" />
+///        <parameter name="center" value="(0,0,0)" />
 ///        <parameter name="angle" value="45degrees" />
 ///    </addProcess>
 /// \endcode
