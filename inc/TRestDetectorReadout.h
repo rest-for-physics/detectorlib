@@ -36,7 +36,6 @@ class TRestDetectorReadout : public TRestMetadata {
 
     void Initialize() override;
 
-    Int_t fNReadoutPlanes;  ///< Number of readout planes present on the readout
     std::vector<TRestDetectorReadoutPlane>
         fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
 
@@ -45,13 +44,13 @@ class TRestDetectorReadout : public TRestMetadata {
     std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
                                                                  //! TRestDetectorReadoutModule definitions.
 
-    void ValidateReadout();
+    void ValidateReadout() const;
 
    public:
     TRestDetectorReadoutPlane& operator[](int p) { return fReadoutPlanes[p]; }
 
     TRestDetectorReadoutPlane* GetReadoutPlane(int p);
-    void AddReadoutPlane(TRestDetectorReadoutPlane plane);
+    void AddReadoutPlane(const TRestDetectorReadoutPlane& plane);
 
     /////////////////////////////////////
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
@@ -63,7 +62,7 @@ class TRestDetectorReadout : public TRestMetadata {
     Int_t GetNumberOfModules();
     Int_t GetNumberOfChannels();
 
-    Int_t GetModuleDefinitionId(TString name);
+    Int_t GetModuleDefinitionId(const TString& name);
 
     /////////////////////////////////////
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
@@ -94,10 +93,10 @@ class TRestDetectorReadout : public TRestMetadata {
     // Constructor
     TRestDetectorReadout();
     explicit TRestDetectorReadout(const char* configFilename);
-    TRestDetectorReadout(const char* configFilename, std::string name);
+    TRestDetectorReadout(const char* configFilename, const std::string& name);
     // Destructor
     ~TRestDetectorReadout() override;
 
-    ClassDefOverride(TRestDetectorReadout, 2);
+    ClassDefOverride(TRestDetectorReadout, 3);
 };
 #endif
