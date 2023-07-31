@@ -134,10 +134,10 @@ class TRestDetectorReadoutPlane {
     }
 
     /// Returns the total number of modules in the readout plane
-    size_t GetNumberOfModules() { return fReadoutModules.size(); }
+    size_t GetNumberOfModules() const { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
-    void AddModule(TRestDetectorReadoutModule& rModule) { fReadoutModules.push_back(rModule); }
+    void AddModule(const TRestDetectorReadoutModule& module) { fReadoutModules.emplace_back(module); }
 
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }
