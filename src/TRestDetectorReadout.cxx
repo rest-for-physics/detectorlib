@@ -351,11 +351,6 @@ void TRestDetectorReadout::Initialize() {
 TRestDetectorReadout::~TRestDetectorReadout() = default;
 
 ///////////////////////////////////////////////
-/// \brief Returns the number of readout planes defined on the readout
-///
-Int_t TRestDetectorReadout::GetNumberOfReadoutPlanes() { return fReadoutPlanes.size(); }
-
-///////////////////////////////////////////////
 /// \brief Returns the **total** number of modules implemented in **all**
 /// the readout planes.
 ///

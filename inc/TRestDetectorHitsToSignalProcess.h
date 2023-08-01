@@ -39,7 +39,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    /// A pointer to the detector readout definition accesible to TRestRun
+    /// A pointer to the detector readout definition available to TRestRun
     TRestDetectorReadout* fReadout;  //!
 
     /// A pointer to the detector gas definition accessible to TRestRun

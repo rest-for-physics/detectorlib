@@ -125,7 +125,9 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(const char* c
         LoadDefaultConfig();
     }
 
-    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
+    if (fReadout == nullptr) {
+        fReadout = new TRestDetectorReadout(configFilename);
+    }
 }
 
 ///////////////////////////////////////////////
@@ -179,8 +181,12 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
             << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                "TRestDetectorHitsToSignalProcess"
             << RESTendl;
-        if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
-        if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
+        if (!fGas->GetError()) {
+            fGas->SetError("REST was not compiled with Garfield.");
+        }
+        if (!this->GetError()) {
+            this->SetError("Attempt to use TRestDetectorGas without Garfield");
+        }
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
@@ -209,7 +215,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
     fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fHitsEvent);
 
-    if (!fReadout) return nullptr;
+    if (!fReadout) {
+        return nullptr;
+    }
 
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fHitsEvent->GetNumberOfHits() << endl;
@@ -222,9 +230,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         Double_t z = fHitsEvent->GetZ(hit);
         Double_t t = fHitsEvent->GetTime(hit);
 
-        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20) {
             cout << "Hit : " << hit << " x : " << x << " y : " << y << " z : " << z << " t : " << t << endl;
-
+        }
         Int_t moduleId = -1;
         Int_t channelId = -1;
 
@@ -260,9 +268,10 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
             } else {
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     RESTDebug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position ("
                               << x << ", " << y << ", " << z << ")!" << RESTendl;
+                }
             }
         }
     }
@@ -276,7 +285,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
              << endl;
     }
 
-    if (fSignalEvent->GetNumberOfSignals() == 0) return nullptr;
+    if (fSignalEvent->GetNumberOfSignals() == 0) {
+        return nullptr;
+    }
 
     return fSignalEvent;
 }
