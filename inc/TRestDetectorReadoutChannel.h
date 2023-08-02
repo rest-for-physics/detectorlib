@@ -50,6 +50,9 @@ class TRestDetectorReadoutChannel {
 
     Short_t fChannelId = -1;  ///< It stores the corresponding physical readout channel
 
+    std::string fName = "";  // Name of the signal
+    std::string fType = "";  // Type of the signal
+
     void Initialize();
 
    public:
@@ -58,6 +61,12 @@ class TRestDetectorReadoutChannel {
 
     /// Returns the corresponding channel id
     inline Int_t GetChannelId() const { return fChannelId; }
+
+    std::string GetChannelName() const { return fName; }
+    std::string GetChannelType() const { return fType; }
+
+    void SetChannelName(const std::string& name) { fName = name; }
+    void SetChannelType(const std::string& type) { fType = type; }
 
     /// Returns the total number of pixels inside the readout channel
     Int_t GetNumberOfPixels() { return fReadoutPixel.size(); }
@@ -97,6 +106,6 @@ class TRestDetectorReadoutChannel {
     // Destructor
     virtual ~TRestDetectorReadoutChannel();
 
-    ClassDef(TRestDetectorReadoutChannel, 4);  // REST run class
+    ClassDef(TRestDetectorReadoutChannel, 5);  // REST run class
 };
 #endif

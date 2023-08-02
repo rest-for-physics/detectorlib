@@ -93,7 +93,6 @@ void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, 
     Int_t signalIndex = GetSignalIndex(signalID);
     if (signalIndex == -1) {
         signalIndex = GetNumberOfSignals();
-
         TRestDetectorSignal signal;
         signal.SetSignalID(signalID);
         AddSignal(signal);
@@ -106,12 +105,8 @@ void TRestDetectorSignalEvent::PrintEvent() {
     TRestEvent::PrintEvent();
 
     for (int i = 0; i < GetNumberOfSignals(); i++) {
-        cout << "================================================" << endl;
-        cout << "Signal ID : " << fSignal[i].GetSignalID() << endl;
-        cout << "Integral : " << fSignal[i].GetIntegral() << endl;
-        cout << "------------------------------------------------" << endl;
-        fSignal[i].Print();
-        cout << "================================================" << endl;
+        const auto& signal = fSignal[i];
+        signal.Print();
     }
 }
 

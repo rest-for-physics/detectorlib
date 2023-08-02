@@ -423,13 +423,15 @@ TRestDetectorReadoutModule* TRestDetectorReadout::GetReadoutModuleWithID(int id)
 /// \brief Returns a pointer to the readout channel by daq id
 ///
 TRestDetectorReadoutChannel* TRestDetectorReadout::GetReadoutChannelWithDaqID(int daqId) {
-    int planeID = -1, moduleID = -1, channelID = -1;
-
-    GetPlaneModuleChannel(daqId, planeID, moduleID, channelID);
-    if (channelID >= 0) {
-        return &fReadoutPlanes[planeID][moduleID][channelID];
+    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+        for (size_t m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++) {
+            for (size_t c = 0; c < fReadoutPlanes[p][m].GetNumberOfChannels(); c++) {
+                if (fReadoutPlanes[p][m][c].GetDaqID() == daqId) {
+                    return &fReadoutPlanes[p][m][c];
+                }
+            }
+        }
     }
-
     return nullptr;
 }
 

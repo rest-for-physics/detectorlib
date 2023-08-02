@@ -247,25 +247,33 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
                 Double_t time = plane->GetDistanceTo({x, y, z}) / fDriftVelocity + t;
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
                          << endl;
+                }
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Energy : " << energy << " time : " << time << endl;
-
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
+                }
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20) {
                     printf(
                         " TRestDetectorHitsToSignalProcess: x %lf y %lf z %lf energy %lf t %lf "
                         "fDriftVelocity %lf fSampling %lf time %lf\n",
                         x, y, z, energy, t, fDriftVelocity, fSampling, time);
+                }
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
-
+                }
                 time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
+
+                auto signal = fSignalEvent->GetSignalById(daqId);
+                auto channel = fReadout->GetReadoutChannelWithDaqID(daqId);
+
+                signal->SetSignalName(channel->GetChannelName());
+                signal->SetSignalType(channel->GetChannelType());
 
             } else {
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
@@ -277,6 +285,8 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
     }
 
     fSignalEvent->SortSignals();
+
+    fSignalEvent->PrintEvent();
 
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsToSignalProcess : Number of signals added : "

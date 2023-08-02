@@ -39,6 +39,9 @@ class TRestDetectorSignal {
     std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
     std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
 
+    std::string fName = "";  // Name of the signal
+    std::string fType = "";  // Type of the signal
+
    public:
     TGraph* fGraph;  //!
 
@@ -53,6 +56,12 @@ class TRestDetectorSignal {
     TVector2 GetMaxGauss();
     TVector2 GetMaxLandau();
     TVector2 GetMaxAget();
+
+    std::string GetSignalName() const { return fName; }
+    std::string GetSignalType() const { return fType; }
+
+    void SetSignalName(const std::string& name) { fName = name; }
+    void SetSignalType(const std::string& type) { fType = type; }
 
     // Getters
     TVector2 GetPoint(Int_t n) {
@@ -73,7 +82,7 @@ class TRestDetectorSignal {
         fSignalCharge[bin] += data;
     }
 
-    Int_t GetNumberOfPoints() {
+    Int_t GetNumberOfPoints() const {
         if (fSignalTime.size() != fSignalCharge.size()) {
             std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
             std::cout << "WARNING, the two std::vector sizes did not match" << std::endl;
@@ -83,7 +92,7 @@ class TRestDetectorSignal {
     }
 
     Double_t GetIntegralWithTime(Double_t startTime, Double_t endTime);
-    Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0);
+    Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0) const;
 
     void Normalize(Double_t scale = 1.);
 
@@ -104,8 +113,8 @@ class TRestDetectorSignal {
     Double_t GetMinTime();
     Double_t GetMaxTime();
 
-    Double_t GetData(Int_t index) { return (double)fSignalCharge[index]; }
-    Double_t GetTime(Int_t index) { return (double)fSignalTime[index]; }
+    Double_t GetData(Int_t index) const { return (double)fSignalCharge[index]; }
+    Double_t GetTime(Int_t index) const { return (double)fSignalTime[index]; }
 
     // Setters
     void SetSignalID(Int_t sID) { fSignalID = sID; }
@@ -147,8 +156,8 @@ class TRestDetectorSignal {
         fSignalCharge.clear();
     }
 
-    void WriteSignalToTextFile(TString filename);
-    void Print();
+    void WriteSignalToTextFile(const TString& filename);
+    void Print() const;
 
     TGraph* GetGraph(Int_t color = 1);
 
@@ -157,6 +166,6 @@ class TRestDetectorSignal {
     // Destructor
     ~TRestDetectorSignal();
 
-    ClassDef(TRestDetectorSignal, 2);
+    ClassDef(TRestDetectorSignal, 3);
 };
 #endif
