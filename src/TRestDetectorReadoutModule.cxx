@@ -46,8 +46,9 @@
 #include <unistd.h>
 #endif
 
-#include "TRestDetectorReadoutModule.h"
+#include <vector>
 
+#include "TRestDetectorReadoutModule.h"
 bool RESTREADOUT_DECODINGFILE_ERROR = false;
 
 using namespace std;
@@ -183,7 +184,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping() {
         for (int j = 0; j < fMappingNodes; j++) {
             Double_t x = fMapping.GetX(i);
             Double_t y = fMapping.GetY(j);
-            const auto transformedCoordinates = TransformToPlaneCoordinates(x, y);
+            const auto transformedCoordinates = TransformToPlaneCoordinates({x, y});
 
             if (!fMapping.isNodeSet(i, j)) {
                 for (size_t ch = 0; ch < GetNumberOfChannels() && !fMapping.isNodeSet(i, j); ch++) {
@@ -208,7 +209,7 @@ void TRestDetectorReadoutModule::DoReadoutMapping() {
             if (!fMapping.isNodeSet(i, j)) {
                 Double_t x = fMapping.GetX(i);
                 Double_t y = fMapping.GetY(j);
-                const auto transformedCoordinates = TransformToPlaneCoordinates(x, y);
+                const auto transformedCoordinates = TransformToPlaneCoordinates({x, y});
 
                 cout << "Node NOT SET : " << i << " , " << j << " Mapping x : " << x << " y : " << y << endl;
 
