@@ -411,22 +411,11 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
 /// \brief Determines if the position TVector2 *pos* relative to the readout
 /// plane are inside this readout module.
 ///
-Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) {
+Bool_t TRestDetectorReadoutModule::isInside(const TVector2& position) const {
     TVector2 positionRotated = TransformToModuleCoordinates(position);
 
-    if (positionRotated.X() >= 0 && positionRotated.X() <= fSize.X() && positionRotated.Y() >= 0 &&
-        positionRotated.Y() <= fSize.Y())
-        return true;
-
-    return false;
-}
-
-///////////////////////////////////////////////
-/// \brief Determines if the position *x,y* is found in any of the pixels
-/// of the readout *channel* index given.
-///
-Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Double_t y) {
-    return isInsideChannel(channel, {x, y});
+    return (positionRotated.X() >= 0 && positionRotated.X() <= fSize.X() && positionRotated.Y() >= 0 &&
+            positionRotated.Y() <= fSize.Y());
 }
 
 ///////////////////////////////////////////////
@@ -435,8 +424,11 @@ Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, Double_t x, Do
 ///
 Bool_t TRestDetectorReadoutModule::isInsideChannel(Int_t channel, const TVector2& position) {
     TVector2 pos = TransformToModuleCoordinates(position);
-    for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++)
-        if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) return true;
+    for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++) {
+        if (GetChannel(channel)->GetPixel(idx)->isInside(pos)) {
+            return true;
+        }
+    }
     return false;
 }
 

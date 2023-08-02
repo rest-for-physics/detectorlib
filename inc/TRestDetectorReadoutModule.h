@@ -190,15 +190,12 @@ class TRestDetectorReadoutModule {
 
     void SetDecodingFile(const std::string& decodingFile);
 
-    Bool_t isInside(const TVector2& position);
-
     ///////////////////////////////////////////////
     /// \brief Determines if the position *x,y* relative to the readout
     /// plane are inside this readout module.
     ///
-    inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
+    Bool_t isInside(const TVector2& position) const;
 
-    Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
     Bool_t isInsideChannel(Int_t channel, const TVector2& position);
 
     Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);

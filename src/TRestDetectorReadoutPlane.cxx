@@ -307,41 +307,24 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 }
 
 ///////////////////////////////////////////////
-/// \brief This method returns the module id where the hits with coordinates
-/// (x,y,z) is found. The z-coordinate must be found in between the cathode and
-/// the readout plane. The *x* and *y* values must be found inside one of the
-/// readout modules defined inside the readout plane.
-///
-/// \param x,y,z Three Double_t defining the position.
-///
-/// \return the module *id* where the hit is found. If no module *id* is found
-/// it returns -1.
-///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) {
-    TVector3 pos = TVector3(x, y, z);
-
-    return GetModuleIDFromPosition(pos);
-}
-///////////////////////////////////////////////
 /// \brief This method returns the module id where *pos* is found.
 /// The z-coordinate must be found in between
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 defining the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
-
-    Double_t distance = GetDistanceTo(posNew);
-
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) const {
+    Double_t distance = GetDistanceTo(position);
     if (distance > 0 && distance < fHeight) {
+        const TVector2 positionInPlane = GetPositionInPlane(position);
         for (size_t m = 0; m < GetNumberOfModules(); m++) {
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) {
-                return fReadoutModules[m].GetModuleID();
+            auto& module = fReadoutModules[m];
+            if (module.isInside(positionInPlane)) {
+                return module.GetModuleID();
             }
         }
     }

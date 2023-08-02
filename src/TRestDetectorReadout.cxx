@@ -684,7 +684,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& p
                                               Int_t& channelID) {
     for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
         TRestDetectorReadoutPlane* plane = &fReadoutPlanes[p];
-        int m = plane->GetModuleIDFromPosition(position.X(), position.Y(), position.Z());
+        int m = plane->GetModuleIDFromPosition(position);
         if (m >= 0) {
             // TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
             TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
@@ -722,14 +722,24 @@ Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitp
     }
 
     TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
-    int m = plane->GetModuleIDFromPosition(hitpos.X(), hitpos.Y(), hitpos.Z());
+    int m = plane->GetModuleIDFromPosition(hitpos);
     if (m >= 0) {
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
-        Int_t readoutChannel = mod->FindChannel({hitpos.X(), hitpos.Y()});
-        if (readoutChannel >= 0) {
+
+        TRestDetectorReadoutChannel* channel = nullptr;
+        int channelIndex = -1;
+        if (mod->GetNumberOfChannels() == 1) {
+            // workaround for vetos which only have one channel
+            channelIndex = 0;
+            channel = mod->GetChannel(channelIndex);
+        } else {
+            channelIndex = mod->FindChannel({hitpos.X(), hitpos.Y()});
+            channel = mod->GetChannel(channelIndex);
+        }
+        if (channel != nullptr) {
             moduleID = mod->GetModuleID();
-            channelID = readoutChannel;
-            return mod->GetChannel(readoutChannel)->GetDaqID();
+            channelID = channelIndex;
+            return channel->GetDaqID();
         }
     }
     return -1;
