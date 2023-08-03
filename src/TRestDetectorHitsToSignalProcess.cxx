@@ -188,16 +188,24 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
             this->SetError("Attempt to use TRestDetectorGas without Garfield");
         }
 #endif
-        if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
-        if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
+        if (fGasPressure <= 0) {
+            fGasPressure = fGas->GetPressure();
+        }
+        if (fElectricField <= 0) {
+            fElectricField = fGas->GetElectricField();
+        }
 
         fGas->SetPressure(fGasPressure);
         fGas->SetElectricField(fElectricField);
 
-        if (fDriftVelocity <= 0) fDriftVelocity = fGas->GetDriftVelocity();
+        if (fDriftVelocity <= 0) {
+            fDriftVelocity = fGas->GetDriftVelocity();
+        }
     } else {
         if (fDriftVelocity < 0) {
-            if (!this->GetError()) this->SetError("Drift velocity is negative.");
+            if (!this->GetError()) {
+                this->SetError("Drift velocity is negative.");
+            }
         }
     }
 
@@ -243,9 +251,22 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
 
             if (daqId >= 0) {
-                Double_t energy = fHitsEvent->GetEnergy(hit);
+                auto channel = fReadout->GetReadoutChannelWithDaqID(daqId);
 
-                Double_t time = plane->GetDistanceTo({x, y, z}) / fDriftVelocity + t;
+                const bool isVeto = (channel->GetChannelType() == "veto");
+
+                Double_t energy = fHitsEvent->GetEnergy(hit);
+                const auto distance = plane->GetDistanceTo({x, y, z});
+                auto velocity = fDriftVelocity;
+                if (isVeto) {
+                    velocity = fVetoEffectiveLightSpeed;
+                    // attenuation
+                    if (fVetoLightAttenuationLength > 0) {
+                        energy *= TMath::Exp(-1.0 * distance / fVetoLightAttenuationLength);
+                    }
+                }
+
+                Double_t time = t + distance / velocity;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
@@ -270,8 +291,6 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
                 auto signal = fSignalEvent->GetSignalById(daqId);
-                auto channel = fReadout->GetReadoutChannelWithDaqID(daqId);
-
                 signal->SetSignalName(channel->GetChannelName());
                 signal->SetSignalType(channel->GetChannelType());
 
@@ -285,8 +304,6 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
     }
 
     fSignalEvent->SortSignals();
-
-    fSignalEvent->PrintEvent();
 
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsToSignalProcess : Number of signals added : "

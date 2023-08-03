@@ -29,6 +29,7 @@
 #include "TRestDetectorHitsEvent.h"
 #include "TRestDetectorReadout.h"
 #include "TRestDetectorSignalEvent.h"
+#include "TRestPhysics.h"
 
 //! A process to transform a x,y,z coordinate hits into daq identified physical time signals
 class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
@@ -62,6 +63,17 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     /// The drift velocity in mm/us. If it is negative, it will be calculated from TRestDetectorGas.
     Double_t fDriftVelocity = -1;  // mm/us
 
+    /// Effective light speed for veto signals. Used to compute travel time from the interaction point to the
+    /// veto readout.
+    Double_t fVetoEffectiveLightSpeed = REST_Physics::lightSpeed;  // mm/us
+
+    /// Light attenuation in the veto.
+    /// Used to reduce the signal amplitude in the veto readout proportionally to the distance between the
+    /// interaction point and the veto readout. One attenuation length corresponds to 1/e of the original
+    /// signal amplitude.
+    /// A reference value for EJ-208 is 400cm
+    Double_t fVetoLightAttenuationLength = 0.0;  // mm
+
    public:
     any GetInputEvent() const override { return fHitsEvent; }
     any GetOutputEvent() const override { return fSignalEvent; }
@@ -77,6 +89,10 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
         RESTMetadata << "Electric field : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
         RESTMetadata << "Gas pressure : " << fGasPressure << " atm" << RESTendl;
         RESTMetadata << "Drift velocity : " << fDriftVelocity << " mm/us" << RESTendl;
+        RESTMetadata << "Veto effective light speed : " << fVetoEffectiveLightSpeed * units("m/s") << " m/s"
+                     << RESTendl;
+        RESTMetadata << "Veto light attenuation length : " << fVetoLightAttenuationLength * units("cm")
+                     << " cm" << RESTendl;
 
         EndPrintProcess();
     }
@@ -90,6 +106,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestDetectorHitsToSignalProcess(const char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDefOverride(TRestDetectorHitsToSignalProcess, 1);
+    ClassDefOverride(TRestDetectorHitsToSignalProcess, 2);
 };
 #endif
