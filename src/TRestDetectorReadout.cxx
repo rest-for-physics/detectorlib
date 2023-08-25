@@ -715,36 +715,51 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& p
 /// \return the value of the daq id corresponding to the readout channel
 //
 ///
-Int_t TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(const TVector3& hitpos, Int_t& moduleID,
-                                                            Int_t& channelID, Int_t planeId) {
+std::tuple<Int_t, Int_t, Int_t> TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(
+    const TVector3& position, Int_t planeId) {
     if (planeId > GetNumberOfReadoutPlanes()) {
         RESTWarning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << RESTendl;
         RESTWarning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << RESTendl;
-        return -1;
+        return std::make_tuple(-1, -1, -1);
     }
 
+    set<Int_t> daqIds;
+    Int_t moduleID = -1;
+    Int_t channelID = -1;
+
     TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
-    int m = plane->GetModuleIDFromPosition(hitpos);
+    int m = plane->GetModuleIDFromPosition(position);
     if (m >= 0) {
         TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
 
         TRestDetectorReadoutChannel* channel = nullptr;
         int channelIndex = -1;
         if (mod->GetNumberOfChannels() == 1) {
-            // workaround for vetos which only have one channel
+            // workaround for vetoes which only have one channel
             channelIndex = 0;
             channel = mod->GetChannel(channelIndex);
         } else {
-            channelIndex = mod->FindChannel({hitpos.X(), hitpos.Y()});
+            channelIndex = mod->FindChannel({position.X(), position.Y()});
             channel = mod->GetChannel(channelIndex);
         }
         if (channel != nullptr) {
             moduleID = mod->GetModuleID();
             channelID = channelIndex;
-            return channel->GetDaqID();
+            daqIds.insert(channel->GetDaqID());
         }
     }
-    return -1;
+
+    if (daqIds.empty()) {
+        return std::make_tuple(-1, -1, -1);
+    } else if (daqIds.size() == 1) {
+        Int_t daqId = *daqIds.begin();
+        return std::make_tuple(daqId, moduleID, channelID);
+    } else {
+        cerr << "TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane. More than one daq channel found for "
+                "the given position. This means there is a problem with the readout definition."
+             << endl;
+        exit(1);
+    }
 }
 
 ///////////////////////////////////////////////

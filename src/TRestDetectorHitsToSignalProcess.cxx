@@ -241,12 +241,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20) {
             cout << "Hit : " << hit << " x : " << x << " y : " << y << " z : " << z << " t : " << t << endl;
         }
-        Int_t moduleId = -1;
-        Int_t channelId = -1;
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
-            Int_t daqId =
-                fReadout->GetHitsDaqChannelAtReadoutPlane(TVector3(x, y, z), moduleId, channelId, p);
+            auto [daqId, moduleId, channelId] = fReadout->GetHitsDaqChannelAtReadoutPlane({x, y, z}, p);
 
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
 
