@@ -94,7 +94,7 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 ///
 /// It adds a new hit with coordinates `x`,`y`,`z` in mm, and energy `en` in keV, to this
 /// TRestDetectorHitsEvent
-/// structure. Additionaly a time delay value in `us` may be added to the hits.
+/// structure. Additionally a time delay value in `us` may be added to the hits.
 void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
                                     REST_HitType type) {
     fHits->AddHit(x, y, z, en, t, type);
@@ -104,9 +104,10 @@ void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t
 /// \brief Adds a new hit to this event
 ///
 /// It adds a new hit with position `pos` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
-/// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(TVector3 pos, Double_t en, Double_t t, REST_HitType type) {
-    fHits->AddHit(pos, en, t, type);
+/// structure. Additionally a time delay value in `us` may be added to the hits.
+void TRestDetectorHitsEvent::AddHit(const TVector3& position, Double_t energy, Double_t time,
+                                    REST_HitType type) {
+    fHits->AddHit(position, energy, time, type);
 }
 
 ///////////////////////////////////////////////

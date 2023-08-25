@@ -150,8 +150,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
         if (type == REST_HitType::VETO) {
             // do not drift veto hits
-            fOutputHitsEvent->AddHit(x, y, z, eDep, hits->GetTime(n), hits->GetType(n));
-            continue;
+            fOutputHitsEvent->AddHit({x, y, z}, eDep, hits->GetTime(n), hits->GetType(n));
         }
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {

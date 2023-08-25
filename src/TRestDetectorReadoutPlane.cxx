@@ -256,8 +256,12 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) const {
-    return (pos - GetPosition()).Dot(GetNormal());
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& position) const {
+    const TVector3 diff = position - fPosition;
+    // cout << "diff : " << diff.X() << " " << diff.Y() << " " << diff.Z() << endl;
+    const double dot = diff.Dot(fNormal);
+    // cout << "dot : " << dot << endl;
+    return dot;
 }
 
 ///////////////////////////////////////////////
@@ -321,7 +325,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 ///
 Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) const {
     Double_t distance = GetDistanceTo(position);
-    if (distance > 0 && distance < fHeight) {
+    if (distance >= 0 && distance <= fHeight) {
         const TVector2 positionInPlane = GetPositionInPlane(position);
         for (size_t m = 0; m < GetNumberOfModules(); m++) {
             auto& module = fReadoutModules[m];

@@ -245,7 +245,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             auto [daqId, moduleId, channelId] = fReadout->GetHitsDaqChannelAtReadoutPlane({x, y, z}, p);
 
-            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
+            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
 
             if (daqId >= 0) {
                 auto channel = fReadout->GetReadoutChannelWithDaqID(daqId);
@@ -256,11 +256,7 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 const auto distance = plane->GetDistanceTo({x, y, z});
                 auto velocity = fDriftVelocity;
                 if (isVeto) {
-                    velocity = fVetoEffectiveLightSpeed;
-                    // attenuation
-                    if (fVetoLightAttenuationLength > 0) {
-                        energy *= TMath::Exp(-1.0 * distance / fVetoLightAttenuationLength);
-                    }
+                    velocity = REST_Physics::lightSpeed;
                 }
 
                 Double_t time = t + distance / velocity;

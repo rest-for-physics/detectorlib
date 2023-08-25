@@ -96,7 +96,9 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
 }
 
 void TRestDetectorHitsSmearingProcess::InitProcess() {
-    if (fRandom != nullptr) delete fRandom;
+    if (fRandom != nullptr) {
+        delete fRandom;
+    }
     fRandom = new TRandom3(fSeed);
     fSeed = fRandom->TRandom::GetSeed();
 }
