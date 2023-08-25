@@ -331,7 +331,7 @@ Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t
     // TODO verify this
     TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(readoutPlane);
     for (size_t md = 0; md < plane->GetNumberOfModules(); md++) {
-        if ((*plane)[md].isInside({x, y})) {
+        if ((*plane)[md].IsInside({x, y})) {
             return md;
         }
     }

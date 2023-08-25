@@ -186,13 +186,13 @@ class TRestDetectorReadoutModule {
     /// \brief Determines if the position *x,y* relative to the readout
     /// plane are inside this readout module.
     ///
-    Bool_t isInside(const TVector2& position) const;
+    Bool_t IsInside(const TVector2& position) const;
 
-    Bool_t isInsideChannel(Int_t channel, const TVector2& position);
+    Bool_t IsInsideChannel(Int_t channel, const TVector2& position);
 
-    Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
+    Bool_t IsInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
 
-    Bool_t isDaqIDInside(Int_t daqID);
+    Bool_t IsDaqIDInside(Int_t daqID);
     Int_t FindChannel(const TVector2& position);
     TVector2 GetDistanceToModule(const TVector2& position);
 

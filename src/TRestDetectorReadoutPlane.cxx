@@ -282,7 +282,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
     for (size_t m = 0; m < GetNumberOfModules(); m++)
-        if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
+        if (fReadoutModules[m].IsDaqIDInside(daqId)) return true;
 
     return false;
 }
@@ -301,7 +301,9 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fHeight) return 1;
+    if (distance > 0 && distance < fHeight) {
+        return 1;
+    }
 
     return 0;
 }
@@ -323,7 +325,7 @@ Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& positio
         const TVector2 positionInPlane = GetPositionInPlane(position);
         for (size_t m = 0; m < GetNumberOfModules(); m++) {
             auto& module = fReadoutModules[m];
-            if (module.isInside(positionInPlane)) {
+            if (module.IsInside(positionInPlane)) {
                 return module.GetModuleID();
             }
         }
@@ -519,4 +521,19 @@ void TRestDetectorReadoutPlane::SetAxisX(const TVector3& axis) {
     const Double_t angle = fAxisX.Angle(axisInPlane);
 
     SetRotation(fRotation - angle);
+}
+
+bool TRestDetectorReadoutPlane::IsInside(const TVector3& point) const {
+    const double distance = GetDistanceToPlane(point);
+    if (distance < 0 || distance > fHeight) {
+        // point is outside the volume defined by the plane
+        return false;
+    }
+    const TVector2 pointInPlane = GetPositionInPlane(point);
+    for (size_t moduleIndex = 0; moduleIndex < GetNumberOfModules(); moduleIndex++) {
+        if (fReadoutModules[moduleIndex].IsInside(pointInPlane)) {
+            return true;
+        }
+    }
+    return false;
 }

@@ -101,7 +101,7 @@ class TRestDetectorReadoutPixel {
     /// Sets the value of the tolerance in mm. Used in IsInside method.
     void SetTolerance(Double_t tol) { fTolerance = tol; }
 
-    Bool_t isInside(const TVector2& pos);
+    Bool_t IsInside(const TVector2& pos);
 
     TVector2 TransformToPixelCoordinates(const TVector2& pixel) const;
 

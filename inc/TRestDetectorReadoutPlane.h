@@ -59,6 +59,9 @@ class TRestDetectorReadoutPlane {
     /// Rotation (in radians) of the readout plane around the normal vector.
     Double_t fRotation = 0;  //<
 
+    /// a string to help analysis processes know if this is a readout plane or a veto
+    std::string fType = "micromegas";  //<
+
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
 
@@ -117,6 +120,9 @@ class TRestDetectorReadoutPlane {
     /// Returns the perpendicular distance to the readout plane from a given position *pos*.
     Double_t GetDistanceTo(const TVector3& pos) const;
 
+    /// Check if the point is inside any module of the readout plane
+    bool IsInside(const TVector3& point) const;
+
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
     TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) {
@@ -145,6 +151,10 @@ class TRestDetectorReadoutPlane {
     Int_t GetNumberOfChannels();
 
     TRestDetectorReadoutModule* GetModuleByID(Int_t modID);
+
+    std::string GetType() const { return fType; }
+
+    void SetType(const std::string& type) { fType = type; }
 
     Int_t isZInsideDriftVolume(Double_t z);
 
@@ -176,6 +186,6 @@ class TRestDetectorReadoutPlane {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 5);
+    ClassDef(TRestDetectorReadoutPlane, 6);
 };
 #endif

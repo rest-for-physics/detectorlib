@@ -294,7 +294,7 @@ int TRestDetectorSignalRecoveryProcess::GetAdjacentSignalIds(Int_t signalId, Int
             TRestDetectorReadoutModule* mod = plane->GetModule(m);
             // We iterate over all readout modules searching for the one that contains
             // our signal id
-            if (mod->isDaqIDInside(signalId)) {
+            if (mod->IsDaqIDInside(signalId)) {
                 // If we find it we use the readoutModule id, and the signalId
                 // corresponding to the physical readout channel
                 Int_t readoutChannelID = mod->DaqToReadoutChannel(signalId);

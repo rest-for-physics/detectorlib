@@ -67,7 +67,7 @@ void TRestDetectorReadoutChannel::Initialize() { fDaqID = -1; }
 ///
 Int_t TRestDetectorReadoutChannel::isInside(Double_t x, Double_t y) {
     for (unsigned int i = 0; i < fReadoutPixel.size(); i++) {
-        if (fReadoutPixel[i].isInside({x, y})) {
+        if (fReadoutPixel[i].IsInside({x, y})) {
             return true;
         }
     }

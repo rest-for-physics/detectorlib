@@ -172,6 +172,10 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         auto time = hits->GetTime(n);
         auto type = hits->GetType(n);
 
+        // do not analyze veto hits
+        if (type == VETO) {
+            continue;
+        }
         fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
     }
 
@@ -325,7 +329,26 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         GetChar();
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) {
+        return nullptr;
+    }
+
+    for (unsigned int n = 0; n < hits->GetNumberOfHits(); n++) {
+        Double_t eDep = hits->GetEnergy(n);
+
+        Double_t x = hits->GetX(n);
+        Double_t y = hits->GetY(n);
+        Double_t z = hits->GetZ(n);
+
+        auto time = hits->GetTime(n);
+        auto type = hits->GetType(n);
+
+        // add back missing hits from veto
+        if (type != VETO) {
+            continue;
+        }
+        fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
+    }
 
     return fOutputHitsEvent;
 }

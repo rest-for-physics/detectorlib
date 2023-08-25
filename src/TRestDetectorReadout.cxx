@@ -248,7 +248,7 @@
 ///                TRestDetectorReadoutModule *mod = plane->GetModule( m );
 ///
 ///                // We iterate over all readout modules searching for the one
-///                that contains our signal id if( mod->isDaqIDInside( signalID
+///                that contains our signal id if( mod->IsDaqIDInside( signalID
 ///                ) )
 ///                {
 ///                    // If we find it we use the readoutModule id, and the
@@ -673,7 +673,7 @@ void TRestDetectorReadout::GetPlaneModuleChannel(Int_t signalID, Int_t& planeID,
         for (size_t m = 0; m < plane->GetNumberOfModules(); m++) {
             TRestDetectorReadoutModule* mod = &(*plane)[m];
 
-            if (mod->isDaqIDInside(signalID)) {
+            if (mod->IsDaqIDInside(signalID)) {
                 planeID = plane->GetID();
                 moduleID = mod->GetModuleID();
                 channelID = mod->DaqToReadoutChannel(signalID);

@@ -119,7 +119,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) return nullptr;
+    if (nHits <= 0) {
+        return nullptr;
+    }
 
     Int_t isAttached;
 
@@ -136,72 +138,81 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
         Double_t eDep = hits->GetEnergy(n);
 
-        if (eDep > 0) {
-            const Double_t x = hits->GetX(n);
-            const Double_t y = hits->GetY(n);
-            const Double_t z = hits->GetZ(n);
+        if (eDep <= 0) {
+            continue;
+        }
 
-            for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
-                TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
+        const Double_t x = hits->GetX(n);
+        const Double_t y = hits->GetY(n);
+        const Double_t z = hits->GetZ(n);
 
-                if (plane->isZInsideDriftVolume(z)) {
-                    Double_t xDiff, yDiff, zDiff;
+        const auto type = hits->GetType(n);
 
-                    Double_t driftDistance = plane->GetDistanceTo({x, y, z});
+        if (type == REST_HitType::VETO) {
+            // do not drift veto hits
+            fOutputHitsEvent->AddHit(x, y, z, eDep, hits->GetTime(n), hits->GetType(n));
+            continue;
+        }
 
-                    Int_t numberOfElectrons;
-                    if (fPoissonElectronExcitation) {
-                        numberOfElectrons = fRandom->Poisson(eDep * REST_Units::eV / fWvalue);
-                        if (wValue != fWvalue) {
-                            // reduce the number of electrons to improve speed
-                            numberOfElectrons = round(numberOfElectrons * fWvalue / wValue);
-                        }
-                        if (numberOfElectrons == 0 && eDep > 0) numberOfElectrons = 1;
+        for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
+            TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
+
+            if (!plane->IsInside({x, y, z})) {
+                continue;
+            }
+
+            Double_t xDiff, yDiff, zDiff;
+            Double_t driftDistance = plane->GetDistanceTo({x, y, z});
+
+            Int_t numberOfElectrons;
+            if (fPoissonElectronExcitation) {
+                numberOfElectrons = fRandom->Poisson(eDep * REST_Units::eV / fWvalue);
+                if (wValue != fWvalue) {
+                    // reduce the number of electrons to improve speed
+                    numberOfElectrons = round(numberOfElectrons * fWvalue / wValue);
+                }
+                if (numberOfElectrons == 0 && eDep > 0) numberOfElectrons = 1;
+            } else {
+                numberOfElectrons = (Int_t)(eDep * REST_Units::eV / wValue);
+                if (numberOfElectrons == 0 && eDep > 0) {
+                    numberOfElectrons = 1;
+                }
+            }
+
+            Double_t localWValue = eDep * REST_Units::eV / numberOfElectrons;
+
+            while (numberOfElectrons > 0) {
+                numberOfElectrons--;
+
+                Double_t longHitDiffusion = 10. * TMath::Sqrt(driftDistance / 10.) * fLonglDiffCoeff;  // mm
+
+                Double_t transHitDiffusion = 10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
+
+                if (fAttachment)
+                    isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
+                else
+                    isAttached = 0;
+
+                if (isAttached == 0) {
+                    xDiff = x + fRandom->Gaus(0, transHitDiffusion);
+
+                    yDiff = y + fRandom->Gaus(0, transHitDiffusion);
+
+                    zDiff = z + fRandom->Gaus(0, longHitDiffusion);
+
+                    if (fUnitElectronEnergy) {
+                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                            cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
+                                 << " (unit energy)" << endl;
+                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, hits->GetTime(n), hits->GetType(n));
                     } else {
-                        numberOfElectrons = (Int_t)(eDep * REST_Units::eV / wValue);
-                        if (numberOfElectrons == 0 && eDep > 0) numberOfElectrons = 1;
-                    }
-
-                    Double_t localWValue = eDep * REST_Units::eV / numberOfElectrons;
-
-                    while (numberOfElectrons > 0) {
-                        numberOfElectrons--;
-
-                        Double_t longHitDiffusion =
-                            10. * TMath::Sqrt(driftDistance / 10.) * fLonglDiffCoeff;  // mm
-
-                        Double_t transHitDiffusion =
-                            10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
-
-                        if (fAttachment)
-                            isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
-                        else
-                            isAttached = 0;
-
-                        if (isAttached == 0) {
-                            xDiff = x + fRandom->Gaus(0, transHitDiffusion);
-
-                            yDiff = y + fRandom->Gaus(0, transHitDiffusion);
-
-                            zDiff = z + fRandom->Gaus(0, longHitDiffusion);
-
-                            if (fUnitElectronEnergy) {
-                                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
-                                    cout << "Adding hit. x : " << xDiff << " y : " << yDiff
-                                         << " z : " << zDiff << " (unit energy)" << endl;
-                                fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, hits->GetTime(n),
-                                                         hits->GetType(n));
-                            } else {
-                                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
-                                    cout << "Adding hit. x : " << xDiff << " y : " << yDiff
-                                         << " z : " << zDiff
-                                         << " en : " << localWValue * REST_Units::keV / REST_Units::eV
-                                         << " keV" << endl;
-                                fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff,
-                                                         localWValue * REST_Units::keV / REST_Units::eV,
-                                                         hits->GetTime(n), hits->GetType(n));
-                            }
-                        }
+                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                            cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
+                                 << " en : " << localWValue * REST_Units::keV / REST_Units::eV << " keV"
+                                 << endl;
+                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff,
+                                                 localWValue * REST_Units::keV / REST_Units::eV,
+                                                 hits->GetTime(n), hits->GetType(n));
                     }
                 }
             }

@@ -113,7 +113,7 @@ TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
 /// \brief Determines if a given TVector2 *pos* coordinates are found inside
 /// the pixel. The coordinates are referenced to the readout module system.
 ///
-Bool_t TRestDetectorReadoutPixel::isInside(const TVector2& inputPosition) {
+Bool_t TRestDetectorReadoutPixel::IsInside(const TVector2& inputPosition) {
     const auto pos = TransformToPixelCoordinates(inputPosition);
     Double_t const x = pos.X();
     if (pos.X() >= -fTolerance && pos.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
