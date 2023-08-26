@@ -959,3 +959,11 @@ void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
 
     fHits->PrintHits(nHits);
 }
+
+Double_t TRestDetectorHitsEvent::GetEnergy() const {
+    double energy = 0;
+    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
+        energy += fHits->GetEnergy(n);
+    }
+    return energy;
+}
