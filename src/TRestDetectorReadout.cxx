@@ -716,7 +716,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& p
 //
 ///
 std::tuple<Int_t, Int_t, Int_t> TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(
-    const TVector3& position, Int_t planeId) const {
+    const TVector3& position, Int_t planeId) {
     if (planeId > GetNumberOfReadoutPlanes()) {
         RESTWarning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << RESTendl;
         RESTWarning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << RESTendl;
@@ -727,23 +727,23 @@ std::tuple<Int_t, Int_t, Int_t> TRestDetectorReadout::GetHitsDaqChannelAtReadout
     Int_t moduleID = -1;
     Int_t channelID = -1;
 
-    const TRestDetectorReadoutPlane& plane = fReadoutPlanes[planeId];
+    TRestDetectorReadoutPlane& plane = fReadoutPlanes[planeId];
     int m = plane.GetModuleIDFromPosition(position);
     if (m >= 0) {
-        TRestDetectorReadoutModule mod = plane.GetModuleCopyByID(m);
+        TRestDetectorReadoutModule* mod = plane.GetModuleByID(m);
 
         TRestDetectorReadoutChannel* channel = nullptr;
         int channelIndex = -1;
-        if (mod.GetNumberOfChannels() == 1) {
+        if (mod->GetNumberOfChannels() == 1) {
             // workaround for vetoes which only have one channel
             channelIndex = 0;
-            channel = mod.GetChannel(channelIndex);
+            channel = mod->GetChannel(channelIndex);
         } else {
-            channelIndex = mod.FindChannel({position.X(), position.Y()});
-            channel = mod.GetChannel(channelIndex);
+            channelIndex = mod->FindChannel({position.X(), position.Y()});
+            channel = mod->GetChannel(channelIndex);
         }
         if (channel != nullptr) {
-            moduleID = mod.GetModuleID();
+            moduleID = mod->GetModuleID();
             channelID = channelIndex;
             daqIds.insert(channel->GetDaqID());
         }
@@ -852,12 +852,15 @@ void TRestDetectorReadout::Export(const string& fileName) {
     }
 }
 
-Int_t TRestDetectorReadout::GetDaqId(const TVector3& position) const {
+Int_t TRestDetectorReadout::GetDaqId(const TVector3& position, bool check) {
     std::vector<int> daqIds;
     for (int planeIndex = 0; planeIndex < GetNumberOfReadoutPlanes(); planeIndex++) {
         // const TRestDetectorReadoutPlane& plane = fReadoutPlanes[planeIndex];
         const auto [daqId, moduleID, channelID] = GetHitsDaqChannelAtReadoutPlane(position, planeIndex);
         if (daqId != -1) {
+            if (!check) {
+                return daqId;
+            }
             daqIds.push_back(daqId);
         }
     }

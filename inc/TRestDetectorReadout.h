@@ -71,10 +71,10 @@ class TRestDetectorReadout : public TRestMetadata {
 
     /// Returns a tuple with the DaqID, ModuleID, ChannelID
     std::tuple<Int_t, Int_t, Int_t> GetHitsDaqChannelAtReadoutPlane(const TVector3& position,
-                                                                    Int_t planeId = 0) const;
+                                                                    Int_t planeId = 0);
 
     /// \brief Returns the DaqID of the channel for position. If no channel is found returns -1
-    Int_t GetDaqId(const TVector3& position) const;
+    Int_t GetDaqId(const TVector3& position, bool check = false);
 
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
