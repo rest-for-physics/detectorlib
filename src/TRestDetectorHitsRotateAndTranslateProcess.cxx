@@ -19,6 +19,20 @@
 ///                 Javier G. Garza
 ///_______________________________________________________________________________
 
+//////////////////////////////////////////////////////////////////////////
+///
+/// This process rotates and translates hits in a TRestDetectorHitsEvent.
+/// Hits of type "VETO" are not affected by this process (we typically only want to rotate TPC hits).
+///
+/// Usage:
+///
+///    <addProcess type="TRestDetectorHitsRotateAndTranslateProcess">
+///        <parameter name="rotationCenter" value="(0,0,0)mm" />
+///        <parameter name="translation" value="(0,10,0)mm" />
+///        <parameter name="rotationZ" value="45deg" />
+///    </addProcess>
+///
+
 #include "TRestDetectorHitsRotateAndTranslateProcess.h"
 
 using namespace std;
