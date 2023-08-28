@@ -40,89 +40,78 @@ TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateP
     PrintMetadata();
 }
 
-TRestDetectorHitsRotateAndTranslateProcess::~TRestDetectorHitsRotateAndTranslateProcess() {
-    // TRestDetectorHitsRotateAndTranslateProcess destructor
-}
+TRestDetectorHitsRotateAndTranslateProcess::~TRestDetectorHitsRotateAndTranslateProcess() = default;
 
-void TRestDetectorHitsRotateAndTranslateProcess::LoadDefaultConfig() {
-    SetTitle("Default config");
-
-    fDeltaX = 1.0;
-    fDeltaY = 1.0;
-    fDeltaZ = 1.0;
-    fAlpha = 0.;
-    fBeta = 0.;
-    fGamma = 0.;
-}
+void TRestDetectorHitsRotateAndTranslateProcess::LoadDefaultConfig() { SetTitle("Default config"); }
 
 void TRestDetectorHitsRotateAndTranslateProcess::Initialize() {
     SetSectionName(this->ClassName());
     SetLibraryVersion(LIBRARY_VERSION);
 
-    fDeltaX = 1.0;
-    fDeltaY = 1.0;
-    fDeltaZ = 1.0;
-    fAlpha = 0.;
-    fBeta = 0.;
-    fGamma = 0.;
-
     fInputHitsEvent = nullptr;
     fOutputHitsEvent = nullptr;
+
+    // Get volume name from parameter
 }
 
-void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(string configFilename) {
-    if (LoadConfigFromFile(configFilename)) LoadDefaultConfig();
+void TRestDetectorHitsRotateAndTranslateProcess::LoadConfig(const string& configFilename) {
+    if (LoadConfigFromFile(configFilename)) {
+        LoadDefaultConfig();
+    }
 
     PrintMetadata();
 }
 
-void TRestDetectorHitsRotateAndTranslateProcess::InitProcess() {
-    // Function to be executed once at the beginning of process
-    // (before starting the process of the events)
-
-    // Start by calling the InitProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::InitProcess();
-}
+void TRestDetectorHitsRotateAndTranslateProcess::InitProcess() {}
 
 TRestEvent* TRestDetectorHitsRotateAndTranslateProcess::ProcessEvent(TRestEvent* inputEvent) {
     fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
-
     fOutputHitsEvent = fInputHitsEvent;
-    // fInputHitsEvent->CloneTo(fOutputHitsEvent);
 
-    TVector3 meanPosition = fOutputHitsEvent->GetMeanPosition();
-    for (unsigned int hit = 0; hit < fOutputHitsEvent->GetNumberOfHits(); hit++) {
-        fOutputHitsEvent->GetHits()->RotateIn3D(hit, fAlpha, fBeta, fGamma, meanPosition);
-        fOutputHitsEvent->GetHits()->Translate(hit, fDeltaX, fDeltaY, fDeltaZ);
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) {
+        return nullptr;
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
+    for (unsigned int hit = 0; hit < fOutputHitsEvent->GetNumberOfHits(); hit++) {
+        const auto& type = fOutputHitsEvent->GetHits()->GetType(hit);
+        if (type == VETO) {
+            // Do not rotate VETO hits (we typically only rotate TPC hits)
+            continue;
+        }
+        fOutputHitsEvent->GetHits()->RotateIn3D(hit, fRotationVector.X(), fRotationVector.Y(),
+                                                fRotationVector.Z(), fRotationCenter);
+        fOutputHitsEvent->GetHits()->Translate(hit, fTranslationVector.X(), fTranslationVector.Y(),
+                                               fTranslationVector.Z());
+    }
 
-    RESTDebug << "Number of hits rotated: " << fInputHitsEvent->GetNumberOfHits() << RESTendl;
     return fOutputHitsEvent;
 }
 
-void TRestDetectorHitsRotateAndTranslateProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
-}
+void TRestDetectorHitsRotateAndTranslateProcess::EndProcess() {}
 
 void TRestDetectorHitsRotateAndTranslateProcess::InitFromConfigFile() {
-    fDeltaX = GetDblParameterWithUnits("deltaX");
-    fDeltaY = GetDblParameterWithUnits("deltaY");
-    fDeltaZ = GetDblParameterWithUnits("deltaZ");
+    fRotationCenter = Get3DVectorParameterWithUnits("rotationCenter", fRotationCenter);
+    fTranslationVector = Get3DVectorParameterWithUnits("translation", fTranslationVector);
 
-    fAlpha = StringToDouble(GetParameter("alpha"));  // rotation angle around Z
-    fBeta = StringToDouble(GetParameter("beta"));    // rotation angle around Y
-    fGamma = StringToDouble(GetParameter("gamma"));  // rotation angle around X
+    // rotation units should be specified in the rml (e.g. "90deg")
+    double rotationX = GetDblParameterWithUnits("rotationX", fRotationVector.X());
+    double rotationY = GetDblParameterWithUnits("rotationY", fRotationVector.Y());
+    double rotationZ = GetDblParameterWithUnits("rotationZ", fRotationVector.Z());
+    fRotationVector = {rotationX, rotationY, rotationZ};
 
-    // Conversion to radians
-    fAlpha = fAlpha * TMath::Pi() / 180.;
-    fBeta = fBeta * TMath::Pi() / 180.;
-    fGamma = fGamma * TMath::Pi() / 180.;
+    // legacy (maybe deprecated soon)
+    if (fTranslationVector.Mag2() == 0) {
+        fTranslationVector = {
+            GetDblParameterWithUnits("deltaX", 0),  //
+            GetDblParameterWithUnits("deltaY", 0),  //
+            GetDblParameterWithUnits("deltaZ", 0),  //
+        };
+    }
+    if (fRotationVector.Mag2() == 0) {
+        fRotationVector = {
+            GetDblParameterWithUnits("alpha", 0),  //
+            GetDblParameterWithUnits("beta", 0),   //
+            GetDblParameterWithUnits("gamma", 0),  //
+        };
+    }
 }

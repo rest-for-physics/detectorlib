@@ -26,13 +26,9 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     TRestDetectorHitsEvent* fInputHitsEvent;   //!
     TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
-    Double_t fDeltaX;  ///< shift in X-axis
-    Double_t fDeltaY;  ///< shift in X-axis
-    Double_t fDeltaZ;  ///< shift in X-axis
-
-    Double_t fAlpha;  ///< rotation angle around z-axis
-    Double_t fBeta;   ///< rotation angle around y-axis
-    Double_t fGamma;  ///< rotation angle around x-axis
+    TVector3 fTranslationVector = {0, 0, 0};  ///< translation vector (x,y,z)
+    TVector3 fRotationVector = {0, 0, 0};     ///< rotation vector around axis (x,y,z) in radians
+    TVector3 fRotationCenter = {0, 0, 0};     ///< rotation center (x,y,z)
 
     void InitFromConfigFile() override;
     void Initialize() override;
@@ -49,39 +45,35 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
     void EndProcess() override;
 
-    void LoadConfig(std::string configFilename);
+    void LoadConfig(const std::string& configFilename);
 
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        RESTMetadata << " delta x : " << fDeltaX << RESTendl;
-        RESTMetadata << " delta y : " << fDeltaY << RESTendl;
-        RESTMetadata << " delta z : " << fDeltaZ << RESTendl;
-        RESTMetadata << " alpha : " << fAlpha << RESTendl;
-        RESTMetadata << " beta : " << fBeta << RESTendl;
-        RESTMetadata << " gamma : " << fGamma << RESTendl;
+        RESTMetadata << "Translation vector (mm): (" << fTranslationVector.X() << ", "
+                     << fTranslationVector.Y() << ", " << fTranslationVector.Z() << ")" << RESTendl;
+        TVector3 rotationVectorDegrees = fRotationVector * (180. / TMath::Pi());
+        RESTMetadata << "Rotation vector (degrees): (" << rotationVectorDegrees.X() << ", "
+                     << rotationVectorDegrees.Y() << ", " << rotationVectorDegrees.Z() << ")" << RESTendl;
 
         EndPrintProcess();
     }
 
-    const char* GetProcessName() const override { return "rotateAndTraslate"; }
+    const char* GetProcessName() const override { return "rotateAndTranslate"; }
 
-    inline Double_t GetDeltaX() const { return fDeltaX; }
-    inline Double_t GetDeltaY() const { return fDeltaY; }
-    inline Double_t GetDeltaZ() const { return fDeltaZ; }
+    inline Double_t GetTranslationX() const { return fTranslationVector.X(); }
+    inline Double_t GetTranslationY() const { return fTranslationVector.Y(); }
+    inline Double_t GetTranslationZ() const { return fTranslationVector.Z(); }
 
-    inline Double_t GetAlpha() const { return fAlpha; }
-    inline Double_t GetBeta() const { return fBeta; }
-    inline Double_t GetGamma() const { return fGamma; }
+    inline Double_t GetRotationX() const { return fRotationVector.X(); }
+    inline Double_t GetRotationY() const { return fRotationVector.Y(); }
+    inline Double_t GetRotationZ() const { return fRotationVector.Z(); }
 
-    // Constructor
     TRestDetectorHitsRotateAndTranslateProcess();
-    TRestDetectorHitsRotateAndTranslateProcess(const char* configFilename);
-    // Destructor
+    explicit TRestDetectorHitsRotateAndTranslateProcess(const char* configFilename);
     ~TRestDetectorHitsRotateAndTranslateProcess();
 
-    ClassDefOverride(TRestDetectorHitsRotateAndTranslateProcess,
-                     1);  // Template for a REST "event process" class inherited from
-                          // TRestEventProcess
+    ClassDefOverride(TRestDetectorHitsRotateAndTranslateProcess, 2);
 };
+
 #endif
