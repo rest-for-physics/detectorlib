@@ -114,18 +114,18 @@ void TRestDetectorHitsRotateAndTranslateProcess::InitFromConfigFile() {
     fRotationVector = {rotationX, rotationY, rotationZ};
 
     // legacy (maybe deprecated soon)
-    if (fTranslationVector.Mag2() == 0) {
+    if (fTranslationVector.Mag2() == 0.0) {
         fTranslationVector = {
-            GetDblParameterWithUnits("deltaX", 0),  //
-            GetDblParameterWithUnits("deltaY", 0),  //
-            GetDblParameterWithUnits("deltaZ", 0),  //
+            GetDblParameterWithUnits("deltaX", 0.0),  //
+            GetDblParameterWithUnits("deltaY", 0.0),  //
+            GetDblParameterWithUnits("deltaZ", 0.0),  //
         };
     }
-    if (fRotationVector.Mag2() == 0) {
+    if (fRotationVector.Mag2() == 0.0) {
         fRotationVector = {
-            GetDblParameterWithUnits("alpha", 0),  //
-            GetDblParameterWithUnits("beta", 0),   //
-            GetDblParameterWithUnits("gamma", 0),  //
+            GetDblParameterWithUnits("alpha", 0.0),  //
+            GetDblParameterWithUnits("beta", 0.0),   //
+            GetDblParameterWithUnits("gamma", 0.0),  //
         };
     }
 }
