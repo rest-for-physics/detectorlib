@@ -152,6 +152,8 @@ class TRestDetectorReadoutPlane {
 
     TRestDetectorReadoutModule* GetModuleByID(Int_t modID);
 
+    TRestDetectorReadoutModule GetModuleCopyByID(Int_t modID) const;
+
     std::string GetType() const { return fType; }
 
     void SetType(const std::string& type) { fType = type; }

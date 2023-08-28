@@ -716,7 +716,7 @@ Int_t TRestDetectorReadout::GetHitsDaqChannel(const TVector3& position, Int_t& p
 //
 ///
 std::tuple<Int_t, Int_t, Int_t> TRestDetectorReadout::GetHitsDaqChannelAtReadoutPlane(
-    const TVector3& position, Int_t planeId) {
+    const TVector3& position, Int_t planeId) const {
     if (planeId > GetNumberOfReadoutPlanes()) {
         RESTWarning << "TRestDetectorReadout. Fail trying to retrieve planeId : " << planeId << RESTendl;
         RESTWarning << "Number of readout planes: " << GetNumberOfReadoutPlanes() << RESTendl;
@@ -727,23 +727,23 @@ std::tuple<Int_t, Int_t, Int_t> TRestDetectorReadout::GetHitsDaqChannelAtReadout
     Int_t moduleID = -1;
     Int_t channelID = -1;
 
-    TRestDetectorReadoutPlane* plane = &fReadoutPlanes[planeId];
-    int m = plane->GetModuleIDFromPosition(position);
+    const TRestDetectorReadoutPlane& plane = fReadoutPlanes[planeId];
+    int m = plane.GetModuleIDFromPosition(position);
     if (m >= 0) {
-        TRestDetectorReadoutModule* mod = plane->GetModuleByID(m);
+        TRestDetectorReadoutModule mod = plane.GetModuleCopyByID(m);
 
         TRestDetectorReadoutChannel* channel = nullptr;
         int channelIndex = -1;
-        if (mod->GetNumberOfChannels() == 1) {
+        if (mod.GetNumberOfChannels() == 1) {
             // workaround for vetoes which only have one channel
             channelIndex = 0;
-            channel = mod->GetChannel(channelIndex);
+            channel = mod.GetChannel(channelIndex);
         } else {
-            channelIndex = mod->FindChannel({position.X(), position.Y()});
-            channel = mod->GetChannel(channelIndex);
+            channelIndex = mod.FindChannel({position.X(), position.Y()});
+            channel = mod.GetChannel(channelIndex);
         }
         if (channel != nullptr) {
-            moduleID = mod->GetModuleID();
+            moduleID = mod.GetModuleID();
             channelID = channelIndex;
             daqIds.insert(channel->GetDaqID());
         }
@@ -849,5 +849,27 @@ void TRestDetectorReadout::Export(const string& fileName) {
         f->Close();
     } else {
         RESTWarning << "Can only export readout as a root file, skipping..." << RESTendl;
+    }
+}
+
+Int_t TRestDetectorReadout::GetDaqId(const TVector3& position) const {
+    std::vector<int> daqIds;
+    for (int planeIndex = 0; planeIndex < GetNumberOfReadoutPlanes(); planeIndex++) {
+        // const TRestDetectorReadoutPlane& plane = fReadoutPlanes[planeIndex];
+        const auto [daqId, moduleID, channelID] = GetHitsDaqChannelAtReadoutPlane(position, planeIndex);
+        if (daqId != -1) {
+            daqIds.push_back(daqId);
+        }
+    }
+
+    if (daqIds.empty()) {
+        return -1;
+    } else if (daqIds.size() == 1) {
+        return daqIds[0];
+    } else {
+        cerr << "TRestDetectorReadout::GetDaqId. More than one daq channel found for "
+                "the given position. This means there is a problem with the readout definition."
+             << endl;
+        exit(1);
     }
 }

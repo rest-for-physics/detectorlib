@@ -90,7 +90,9 @@ void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
     for (size_t md = 0; md < GetNumberOfModules(); md++) {
-        if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
+        if (fReadoutModules[md].GetModuleID() == modID) {
+            return &fReadoutModules[md];
+        }
     }
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
@@ -540,4 +542,15 @@ bool TRestDetectorReadoutPlane::IsInside(const TVector3& point) const {
         }
     }
     return false;
+}
+
+TRestDetectorReadoutModule TRestDetectorReadoutPlane::GetModuleCopyByID(Int_t modID) const {
+    for (size_t md = 0; md < GetNumberOfModules(); md++) {
+        if (fReadoutModules[md].GetModuleID() == modID) {
+            return fReadoutModules[md];
+        }
+    }
+
+    cerr << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
+    exit(1);
 }
