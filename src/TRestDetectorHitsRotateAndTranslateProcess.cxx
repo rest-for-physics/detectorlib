@@ -37,8 +37,6 @@
 
 using namespace std;
 
-#include <TRandom3.h>
-
 ClassImp(TRestDetectorHitsRotateAndTranslateProcess);
 
 TRestDetectorHitsRotateAndTranslateProcess::TRestDetectorHitsRotateAndTranslateProcess() { Initialize(); }
