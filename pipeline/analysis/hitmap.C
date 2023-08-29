@@ -15,8 +15,7 @@ Int_t hitmap(Bool_t draw = false) {
 
     // Initializing processes
     string cfgFile1 = "transform.rml";
-    TRestDetectorHitsTransformationProcess* t =
-        new TRestDetectorHitsTransformationProcess((char*)cfgFile1.c_str());
+    TRestDetectorHitmapAnalysisProcess* t = new TRestDetectorHitmapAnalysisProcess((char*)cfgFile1.c_str());
     t->PrintMetadata();
 
     TRestDetectorHitsEvent* tEv = (TRestDetectorHitsEvent*)t->ProcessEvent(ev);

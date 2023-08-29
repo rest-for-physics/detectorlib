@@ -44,12 +44,18 @@
 /// \code
 ///     <TRestDetectorHitmapAnalysisProcess name="hitmap"
 ///                                             title="A properly oriented hitmap">
+///
 ///        <specular name="specY" position="(0,0,0)mm" vector="(0,1,0)" />
 ///        <rotation name="rot25" position="(0,0,0)mm" vector="(0,1,0)" angle="25deg" />
 ///        <translation name="up10" vector="(0,10,0)mm" />
 ///        <rotation name="rot10" position="(10,20,0)mm" vector="(0,1,0)" angle="10deg" />
 ///
 ///        <parameter name="transformations" value="{specY,rot25,up10,rot10}" />
+///
+///        <observable name="xMean" value="on" />
+///        <observable name="yMean" value="on" />
+///        <observable name="zMean" value="on" />
+///
 ///    </TRestDetectorHitmapAnalysisProcess>
 /// \endcode
 ///
