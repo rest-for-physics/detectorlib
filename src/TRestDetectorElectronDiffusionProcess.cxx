@@ -118,43 +118,66 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
-    Int_t nHits = fInputHitsEvent->GetNumberOfHits();
-    if (nHits <= 0) {
+    set<unsigned int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
+    for (int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+        if (fInputHitsEvent->GetType(n) == REST_HitType::VETO) {
+            // keep unprocessed hits as they are
+            fOutputHitsEvent->AddHit(fInputHitsEvent->GetX(n), fInputHitsEvent->GetY(n),
+                                     fInputHitsEvent->GetZ(n), fInputHitsEvent->GetEnergy(n),
+                                     fInputHitsEvent->GetTime(n), fInputHitsEvent->GetType(n));
+        } else {
+            hitsToProcess.insert(n);
+        }
+    }
+
+    if (hitsToProcess.empty()) {
         return nullptr;
     }
 
-    Int_t isAttached;
+    double totalEnergy = 0;
+    for (const auto& hitIndex : hitsToProcess) {
+        totalEnergy += fInputHitsEvent->GetEnergy(hitIndex);
+    }
 
-    Int_t totalElectrons = fInputHitsEvent->GetEnergy() * REST_Units::eV / fWvalue;
+    bool isAttached;
 
+    const unsigned int totalElectrons = (totalEnergy * REST_Units::eV) / fWvalue;
+
+    // TODO: double check this
     Double_t wValue = fWvalue;
     if (fMaxHits > 0 && totalElectrons > fMaxHits) {
         // set a fake w-value if max hits are limited. this fake w-value will be larger
-        wValue = fInputHitsEvent->GetEnergy() * REST_Units::eV / fMaxHits;
+        wValue = (totalEnergy * REST_Units::eV) / fMaxHits;
     }
 
-    for (int n = 0; n < nHits; n++) {
+    for (const auto& hitIndex : hitsToProcess) {
         TRestHits* hits = fInputHitsEvent->GetHits();
 
-        Double_t eDep = hits->GetEnergy(n);
+        const auto energy = hits->GetEnergy(hitIndex);
+        const auto time = hits->GetTime(hitIndex);
+        const auto type = hits->GetType(hitIndex);
 
-        if (eDep <= 0) {
+        if (energy <= 0) {
             continue;
         }
 
-        const Double_t x = hits->GetX(n);
-        const Double_t y = hits->GetY(n);
-        const Double_t z = hits->GetZ(n);
-
-        const auto type = hits->GetType(n);
+        const Double_t x = hits->GetX(hitIndex);
+        const Double_t y = hits->GetY(hitIndex);
+        const Double_t z = hits->GetZ(hitIndex);
 
         if (type == REST_HitType::VETO) {
             // do not drift veto hits
-            fOutputHitsEvent->AddHit({x, y, z}, eDep, hits->GetTime(n), hits->GetType(n));
+            fOutputHitsEvent->AddHit({x, y, z}, energy, time, type);
+            continue;
         }
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
+            const auto planeType = plane->GetType();
+            if (planeType == "veto") {
+                // do not drift veto planes
+                continue;
+            }
 
             if (!plane->IsInside({x, y, z})) {
                 continue;
@@ -165,53 +188,54 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             Int_t numberOfElectrons;
             if (fPoissonElectronExcitation) {
-                numberOfElectrons = fRandom->Poisson(eDep * REST_Units::eV / fWvalue);
+                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWvalue);
                 if (wValue != fWvalue) {
                     // reduce the number of electrons to improve speed
                     numberOfElectrons = round(numberOfElectrons * fWvalue / wValue);
                 }
-                if (numberOfElectrons == 0 && eDep > 0) numberOfElectrons = 1;
+                if (numberOfElectrons == 0 && energy > 0) numberOfElectrons = 1;
             } else {
-                numberOfElectrons = (Int_t)(eDep * REST_Units::eV / wValue);
-                if (numberOfElectrons == 0 && eDep > 0) {
+                numberOfElectrons = (Int_t)(energy * REST_Units::eV / wValue);
+                if (numberOfElectrons == 0 && energy > 0) {
                     numberOfElectrons = 1;
                 }
             }
 
-            Double_t localWValue = eDep * REST_Units::eV / numberOfElectrons;
+            Double_t localWValue = energy * REST_Units::eV / numberOfElectrons;
 
             while (numberOfElectrons > 0) {
                 numberOfElectrons--;
 
-                Double_t longHitDiffusion = 10. * TMath::Sqrt(driftDistance / 10.) * fLonglDiffCoeff;  // mm
+                Double_t longitudinalDiffusion =
+                    10. * TMath::Sqrt(driftDistance / 10.) * fLonglDiffCoeff;  // mm
+                Double_t transversalDiffusion =
+                    10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
 
-                Double_t transHitDiffusion = 10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
-
-                if (fAttachment)
+                if (fAttachment > 0) {
                     isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
-                else
-                    isAttached = 0;
+                } else {
+                    isAttached = false;
+                }
 
-                if (isAttached == 0) {
-                    xDiff = x + fRandom->Gaus(0, transHitDiffusion);
-
-                    yDiff = y + fRandom->Gaus(0, transHitDiffusion);
-
-                    zDiff = z + fRandom->Gaus(0, longHitDiffusion);
+                if (!isAttached) {
+                    xDiff = x + fRandom->Gaus(0, transversalDiffusion);
+                    yDiff = y + fRandom->Gaus(0, transversalDiffusion);
+                    zDiff = z + fRandom->Gaus(0, longitudinalDiffusion);
 
                     if (fUnitElectronEnergy) {
-                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                             cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
                                  << " (unit energy)" << endl;
-                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, hits->GetTime(n), hits->GetType(n));
+                        }
+                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, time, type);
                     } else {
-                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                             cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
                                  << " en : " << localWValue * REST_Units::keV / REST_Units::eV << " keV"
                                  << endl;
+                        }
                         fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff,
-                                                 localWValue * REST_Units::keV / REST_Units::eV,
-                                                 hits->GetTime(n), hits->GetType(n));
+                                                 localWValue * REST_Units::keV / REST_Units::eV, time, type);
                     }
                 }
             }
@@ -249,7 +273,8 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fLonglDiffCoeff == -1)
         fLonglDiffCoeff = StringToDouble(GetParameter("longDiff", "-1"));
     else {
-        RESTWarning << "longitudinalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon dissapear."
+                    << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : longDiff" << RESTendl;
     }
 
@@ -257,7 +282,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fTransDiffCoeff == -1)
         fTransDiffCoeff = StringToDouble(GetParameter("transDiff", "-1"));
     else {
-        RESTWarning << "transversalDiffusionCoeffient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon dissapear." << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : transDiff" << RESTendl;
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
