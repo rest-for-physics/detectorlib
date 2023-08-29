@@ -260,10 +260,7 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 ///
 Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& position) const {
     const TVector3 diff = position - fPosition;
-    // cout << "diff : " << diff.X() << " " << diff.Y() << " " << diff.Z() << endl;
-    const double dot = diff.Dot(fNormal);
-    // cout << "dot : " << dot << endl;
-    return dot;
+    return diff.Dot(fNormal);
 }
 
 ///////////////////////////////////////////////

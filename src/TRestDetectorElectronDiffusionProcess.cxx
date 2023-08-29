@@ -60,7 +60,9 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
 }
 
 void TRestDetectorElectronDiffusionProcess::LoadConfig(const string& configFilename, const string& name) {
-    if (LoadConfigFromFile(configFilename, name)) LoadDefaultConfig();
+    if (LoadConfigFromFile(configFilename, name)) {
+        LoadDefaultConfig();
+    }
 }
 
 void TRestDetectorElectronDiffusionProcess::InitProcess() {
@@ -141,10 +143,10 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
     bool isAttached;
 
-    const unsigned int totalElectrons = (totalEnergy * REST_Units::eV) / fWvalue;
+    Double_t wValue = fWvalue;
+    const unsigned int totalElectrons = totalEnergy * REST_Units::eV / wValue;
 
     // TODO: double check this
-    Double_t wValue = fWvalue;
     if (fMaxHits > 0 && totalElectrons > fMaxHits) {
         // set a fake w-value if max hits are limited. this fake w-value will be larger
         wValue = (totalEnergy * REST_Units::eV) / fMaxHits;
@@ -164,12 +166,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         const Double_t x = hits->GetX(hitIndex);
         const Double_t y = hits->GetY(hitIndex);
         const Double_t z = hits->GetZ(hitIndex);
-
-        if (type == REST_HitType::VETO) {
-            // do not drift veto hits
-            fOutputHitsEvent->AddHit({x, y, z}, energy, time, type);
-            continue;
-        }
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
@@ -191,17 +187,17 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWvalue);
                 if (wValue != fWvalue) {
                     // reduce the number of electrons to improve speed
-                    numberOfElectrons = round(numberOfElectrons * fWvalue / wValue);
+                    numberOfElectrons = numberOfElectrons * fWvalue / wValue;
                 }
-                if (numberOfElectrons == 0 && energy > 0) numberOfElectrons = 1;
             } else {
-                numberOfElectrons = (Int_t)(energy * REST_Units::eV / wValue);
-                if (numberOfElectrons == 0 && energy > 0) {
-                    numberOfElectrons = 1;
-                }
+                numberOfElectrons = energy * REST_Units::eV / wValue;
             }
 
-            Double_t localWValue = energy * REST_Units::eV / numberOfElectrons;
+            if (numberOfElectrons <= 0) {
+                numberOfElectrons = 1;
+            }
+
+            const Double_t energyPerElectron = energy * REST_Units::eV / numberOfElectrons;
 
             while (numberOfElectrons > 0) {
                 numberOfElectrons--;
@@ -212,57 +208,48 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
 
                 if (fAttachment > 0) {
+                    // TODO: where is this formula from?
                     isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
                 } else {
                     isAttached = false;
                 }
 
-                if (!isAttached) {
-                    xDiff = x + fRandom->Gaus(0, transversalDiffusion);
-                    yDiff = y + fRandom->Gaus(0, transversalDiffusion);
-                    zDiff = z + fRandom->Gaus(0, longitudinalDiffusion);
-
-                    if (fUnitElectronEnergy) {
-                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
-                            cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
-                                 << " (unit energy)" << endl;
-                        }
-                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, 1, time, type);
-                    } else {
-                        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
-                            cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
-                                 << " en : " << localWValue * REST_Units::keV / REST_Units::eV << " keV"
-                                 << endl;
-                        }
-                        fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff,
-                                                 localWValue * REST_Units::keV / REST_Units::eV, time, type);
-                    }
+                if (isAttached) {
+                    continue;
                 }
+
+                xDiff = x + fRandom->Gaus(0, transversalDiffusion);
+                yDiff = y + fRandom->Gaus(0, transversalDiffusion);
+                zDiff = z + fRandom->Gaus(0, longitudinalDiffusion);
+
+                const double electronEnergy =
+                    fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
+
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
+                    cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
+                         << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
+                         << endl;
+                }
+                fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, electronEnergy, time, type);
             }
         }
     }
 
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-        cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : " << fInputHitsEvent->GetEnergy()
+        cout << "TRestDetectorElectronDiffusionProcess. Processed hits total energy : " << totalEnergy
              << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Hits processed : " << hitsToProcess.size() << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
-             << endl;
-        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
+            GetChar();
+        }
     }
 
     return fOutputHitsEvent;
 }
 
-void TRestDetectorElectronDiffusionProcess::EndProcess() {
-    // Function to be executed once at the end of the process
-    // (after all events have been processed)
-
-    // Start by calling the EndProcess function of the abstract class.
-    // Comment this if you don't want it.
-    // TRestEventProcess::EndProcess();
-}
+void TRestDetectorElectronDiffusionProcess::EndProcess() {}
 
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
