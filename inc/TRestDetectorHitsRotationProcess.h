@@ -56,7 +56,7 @@ class TRestDetectorHitsRotationProcess : public TRestEventProcess {
 
     void PrintMetadata() override;
 
-    const char* GetProcessName() const override { return "rotationProcess"; }
+    const char* GetProcessName() const override { return "hitsRotation"; }
 
     inline Double_t GetAngle() const { return fAngle; }
     inline TVector3 GetAxis() const { return fAxis; }

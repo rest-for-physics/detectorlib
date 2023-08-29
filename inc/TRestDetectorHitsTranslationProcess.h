@@ -50,7 +50,7 @@ class TRestDetectorHitsTranslationProcess : public TRestEventProcess {
 
     void PrintMetadata() override;
 
-    const char* GetProcessName() const override { return "translationProcess"; }
+    const char* GetProcessName() const override { return "hitsTranslation"; }
 
     inline TVector3 GetTranslation() const { return fTranslation; }
 
