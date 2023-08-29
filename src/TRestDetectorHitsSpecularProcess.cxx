@@ -68,8 +68,6 @@
 
 using namespace std;
 
-#include <TRandom3.h>
-
 ClassImp(TRestDetectorHitsSpecularProcess);
 
 TRestDetectorHitsSpecularProcess::TRestDetectorHitsSpecularProcess() { Initialize(); }
@@ -105,7 +103,7 @@ TRestEvent* TRestDetectorHitsSpecularProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() == 0 ? false : true;
+    const Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 

@@ -102,7 +102,7 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
+    const Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position = {fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit)};
         const auto type = fInputEvent->GetType(hit);
