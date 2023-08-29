@@ -16,8 +16,7 @@
 #include <TRestDetectorGas.h>
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
-
-#include "TRestEventProcess.h"
+#include <TRestEventProcess.h>
 
 class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
    private:
@@ -39,15 +38,15 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fElectricField;
     Double_t fAttachment;
     Double_t fGasPressure;
-    Double_t fWvalue;
-    Double_t fLonglDiffCoeff;
-    Double_t fTransDiffCoeff;
+    Double_t fWValue;
+    Double_t fLongitudinalDiffusionCoefficient;
+    Double_t fTransversalDiffusionCoefficient;
     Bool_t fPoissonElectronExcitation;
     Bool_t fUnitElectronEnergy;
 
     Int_t fMaxHits;
-
     Double_t fSeed = 0;
+    Bool_t fCheckIsInside = true;
 
    public:
     any GetInputEvent() const override { return fInputHitsEvent; }
@@ -65,9 +64,11 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
         RESTMetadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
         RESTMetadata << " attachment coeficient : " << fAttachment << " V/cm" << RESTendl;
         RESTMetadata << " gas pressure : " << fGasPressure << " atm" << RESTendl;
-        RESTMetadata << " longitudinal diffusion coefficient : " << fLonglDiffCoeff << " cm^1/2" << RESTendl;
-        RESTMetadata << " transversal diffusion coefficient : " << fTransDiffCoeff << " cm^1/2" << RESTendl;
-        RESTMetadata << " W value : " << fWvalue << " eV" << RESTendl;
+        RESTMetadata << " longitudinal diffusion coefficient : " << fLongitudinalDiffusionCoefficient
+                     << " cm^1/2" << RESTendl;
+        RESTMetadata << " transversal diffusion coefficient : " << fTransversalDiffusionCoefficient
+                     << " cm^1/2" << RESTendl;
+        RESTMetadata << " W value : " << fWValue << " eV" << RESTendl;
 
         RESTMetadata << " Maximum number of hits : " << fMaxHits << RESTendl;
 
@@ -90,7 +91,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
-    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 3);  // Template for a REST "event process" class
+    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 4);  // Template for a REST "event process" class
                                                                  // inherited from TRestEventProcess
 };
 #endif

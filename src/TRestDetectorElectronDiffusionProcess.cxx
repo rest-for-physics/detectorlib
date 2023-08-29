@@ -46,9 +46,9 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fAttachment = 0;
     fGasPressure = 1;
 
-    fTransDiffCoeff = 0;
-    fLonglDiffCoeff = 0;
-    fWvalue = 0;
+    fTransversalDiffusionCoefficient = 0;
+    fLongitudinalDiffusionCoefficient = 0;
+    fWValue = 0;
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
     fInputHitsEvent = nullptr;
@@ -70,7 +70,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
 
     fGas = GetMetadata<TRestDetectorGas>();
     if (fGas == nullptr) {
-        if (fLonglDiffCoeff == -1 || fTransDiffCoeff == -1) {
+        if (fLongitudinalDiffusionCoefficient == -1 || fTransversalDiffusionCoefficient == -1) {
             RESTWarning << "Gas has not been initialized" << RESTendl;
             RESTError
                 << "TRestDetectorElectronDiffusionProcess: diffusion parameters are not defined in the rml "
@@ -78,7 +78,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
                 << RESTendl;
             exit(-1);
         }
-        if (fWvalue == -1) {
+        if (fWValue == -1) {
             RESTWarning << "Gas has not been initialized" << RESTendl;
             RESTError
                 << "TRestDetectorElectronDiffusionProcess: gas work function has not been defined in the "
@@ -98,15 +98,19 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
-        if (fWvalue <= 0) fWvalue = fGas->GetWvalue();
+        if (fWValue <= 0) fWValue = fGas->GetWvalue();
 
         fGas->SetPressure(fGasPressure);
         fGas->SetElectricField(fElectricField);
-        fGas->SetW(fWvalue);
+        fGas->SetW(fWValue);
 
-        if (fLonglDiffCoeff <= 0) fLonglDiffCoeff = fGas->GetLongitudinalDiffusion();  // (cm)^1/2
+        if (fLongitudinalDiffusionCoefficient <= 0) {
+            fLongitudinalDiffusionCoefficient = fGas->GetLongitudinalDiffusion();
+        }  // (cm)^1/2
 
-        if (fTransDiffCoeff <= 0) fTransDiffCoeff = fGas->GetTransversalDiffusion();  // (cm)^1/2
+        if (fTransversalDiffusionCoefficient <= 0) {
+            fTransversalDiffusionCoefficient = fGas->GetTransversalDiffusion();
+        }  // (cm)^1/2
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
@@ -143,7 +147,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
     bool isAttached;
 
-    Double_t wValue = fWvalue;
+    Double_t wValue = fWValue;
     const unsigned int totalElectrons = totalEnergy * REST_Units::eV / wValue;
 
     // TODO: double check this
@@ -175,7 +179,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 continue;
             }
 
-            if (!plane->IsInside({x, y, z})) {
+            if (fCheckIsInside && !plane->IsInside({x, y, z})) {
                 continue;
             }
 
@@ -184,10 +188,10 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             Int_t numberOfElectrons;
             if (fPoissonElectronExcitation) {
-                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWvalue);
-                if (wValue != fWvalue) {
+                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
+                if (wValue != fWValue) {
                     // reduce the number of electrons to improve speed
-                    numberOfElectrons = numberOfElectrons * fWvalue / wValue;
+                    numberOfElectrons = numberOfElectrons * fWValue / wValue;
                 }
             } else {
                 numberOfElectrons = energy * REST_Units::eV / wValue;
@@ -203,9 +207,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 numberOfElectrons--;
 
                 Double_t longitudinalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fLonglDiffCoeff;  // mm
+                    10. * TMath::Sqrt(driftDistance / 10.) * fLongitudinalDiffusionCoefficient;  // mm
                 Double_t transversalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fTransDiffCoeff;  // mm
+                    10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
 
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
@@ -226,8 +230,20 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 };
                 if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
                     // electron has been moved under the plane
-                    positionAfterDiffusion.SetZ(plane->GetPosition().Z() +
-                                                1E-6);  // add a delta to make sure readout finds it
+                    positionAfterDiffusion.SetZ(
+                        plane->GetPosition().Z() +
+                        1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
+                }
+                if (plane->GetDistanceTo(positionAfterDiffusion) > plane->GetHeight()) {
+                    // electron has been moved over the plane
+                    positionAfterDiffusion.SetZ(
+                        plane->GetPosition().Z() + plane->GetHeight() -
+                        1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
+                }
+
+                if (!fCheckIsInside && !plane->IsInside(positionAfterDiffusion)) {
+                    // electron has been moved outside the readout plane
+                    continue;
                 }
 
                 const double electronEnergy =
@@ -264,20 +280,21 @@ void TRestDetectorElectronDiffusionProcess::EndProcess() {}
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
-    fWvalue = GetDblParameterWithUnits("Wvalue", (double)0) * REST_Units::eV;
+    fWValue = GetDblParameterWithUnits("WValue", 0.0) * REST_Units::eV;
     fAttachment = StringToDouble(GetParameter("attachment", "0"));
-    fLonglDiffCoeff = StringToDouble(GetParameter("longitudinalDiffusionCoefficient", "-1"));
-    if (fLonglDiffCoeff == -1)
-        fLonglDiffCoeff = StringToDouble(GetParameter("longDiff", "-1"));
+    fLongitudinalDiffusionCoefficient =
+        StringToDouble(GetParameter("longitudinalDiffusionCoefficient", "-1"));
+    if (fLongitudinalDiffusionCoefficient == -1)
+        fLongitudinalDiffusionCoefficient = StringToDouble(GetParameter("longDiff", "-1"));
     else {
         RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon dissapear."
                     << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : longDiff" << RESTendl;
     }
 
-    fTransDiffCoeff = StringToDouble(GetParameter("transversalDiffusionCoefficient", "-1"));
-    if (fTransDiffCoeff == -1)
-        fTransDiffCoeff = StringToDouble(GetParameter("transDiff", "-1"));
+    fTransversalDiffusionCoefficient = StringToDouble(GetParameter("transversalDiffusionCoefficient", "-1"));
+    if (fTransversalDiffusionCoefficient == -1)
+        fTransversalDiffusionCoefficient = StringToDouble(GetParameter("transDiff", "-1"));
     else {
         RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon dissapear." << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : transDiff" << RESTendl;
@@ -286,4 +303,5 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fSeed = StringToDouble(GetParameter("seed", "0"));
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
+    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
 }
