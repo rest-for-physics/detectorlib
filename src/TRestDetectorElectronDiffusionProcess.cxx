@@ -218,19 +218,29 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     continue;
                 }
 
-                xDiff = x + fRandom->Gaus(0, transversalDiffusion);
-                yDiff = y + fRandom->Gaus(0, transversalDiffusion);
-                zDiff = z + fRandom->Gaus(0, longitudinalDiffusion);
+                TVector3 positionAfterDiffusion = {x, y, z};
+                positionAfterDiffusion += {
+                    fRandom->Gaus(0, transversalDiffusion),  //
+                    fRandom->Gaus(0, transversalDiffusion),  //
+                    fRandom->Gaus(0, longitudinalDiffusion)  //
+                };
+                if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
+                    // electron has been moved under the plane
+                    positionAfterDiffusion.SetZ(plane->GetPosition().Z() +
+                                                1E-6);  // add a delta to make sure readout finds it
+                }
 
                 const double electronEnergy =
                     fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
-                    cout << "Adding hit. x : " << xDiff << " y : " << yDiff << " z : " << zDiff
+                    cout << "Adding hit. x : " << positionAfterDiffusion.X()
+                         << " y : " << positionAfterDiffusion.Y() << " z : " << positionAfterDiffusion.Z()
                          << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
                          << endl;
                 }
-                fOutputHitsEvent->AddHit(xDiff, yDiff, zDiff, electronEnergy, time, type);
+                fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
+                                         positionAfterDiffusion.Z(), electronEnergy, time, type);
             }
         }
     }

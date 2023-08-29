@@ -244,7 +244,6 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             const auto [daqId, moduleId, channelId] = fReadout->GetHitsDaqChannelAtReadoutPlane({x, y, z}, p);
-
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
 
             if (daqId >= 0) {
