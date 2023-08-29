@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<specular>
+    <TRestDetectorHitsTranslationProcess name="move" title="Translation left-up" translation="(-1.5,0.5,0)cm"/>
+</specular>

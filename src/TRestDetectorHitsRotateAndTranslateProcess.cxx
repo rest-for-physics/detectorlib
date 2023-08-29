@@ -11,7 +11,7 @@
 ///             TRestDetectorHitsRotateAndTranslateProcess
 ///             How to use: replace TRestDetectorHitsRotateAndTranslateProcess by your
 ///             name, fill the required functions following instructions and add
-///             all needed additional members and funcionality
+///             all needed additional members and functionality
 ///
 ///             march 2016:   First concept
 ///                 Created as part of the conceptualization of existing REST

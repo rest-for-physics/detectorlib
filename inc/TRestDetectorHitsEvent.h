@@ -161,6 +161,10 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     TPad* DrawEvent(const TString& option = "");
 
+    TH2F* GetXYHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
+    TH2F* GetXZHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
+    TH2F* GetYZHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
+
     void DrawHistograms(Int_t& column, const TString& histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);
 
