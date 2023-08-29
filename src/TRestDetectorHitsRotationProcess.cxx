@@ -67,8 +67,6 @@
 
 using namespace std;
 
-#include <TRandom3.h>
-
 ClassImp(TRestDetectorHitsRotationProcess);
 
 TRestDetectorHitsRotationProcess::TRestDetectorHitsRotationProcess() { Initialize(); }
@@ -104,7 +102,7 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() == 0 ? false : true;
+    Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
 
@@ -125,9 +123,9 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
 void TRestDetectorHitsRotationProcess::InitFromConfigFile() {
     TRestEventProcess::InitFromConfigFile();
 
-    fAxis = Get3DVectorParameterWithUnits("axis", {0, 0, 1});
+    fAxis = Get3DVectorParameterWithUnits("axis", fAxis);
     fAxis.Unit();
-    fCenter = Get3DVectorParameterWithUnits("center", {0, 0, 1});
+    fCenter = Get3DVectorParameterWithUnits("center", fCenter);
 }
 
 void TRestDetectorHitsRotationProcess::PrintMetadata() {
