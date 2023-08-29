@@ -104,7 +104,16 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
 
     Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
-        TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
+        TVector3 position = {fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit)};
+        const auto type = fInputEvent->GetType(hit);
+        const auto energy = fInputEvent->GetEnergy(hit);
+        const auto time = fInputEvent->GetTime(hit);
+
+        if (type == VETO) {
+            // Only TPC hits will be rotated
+            fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), energy, time, type);
+            continue;
+        }
 
         if (xyzEvent) {
             position -= fCenter;
@@ -114,9 +123,9 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
             this->SetError("TRestDetectorHitsRotationProcess. Only XYZ hits can be transformed");
         }
 
-        fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),
-                             fInputEvent->GetTime(hit), fInputEvent->GetType(hit));
+        fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), energy, time, type);
     }
+
     return fOutputEvent;
 }
 
