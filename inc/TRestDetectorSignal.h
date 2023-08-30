@@ -39,8 +39,9 @@ class TRestDetectorSignal {
     std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
     std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
 
-    std::string fName = "";  // Name of the signal
-    std::string fType = "";  // Type of the signal
+    // TODO: remove this and use readout
+    std::string fName;  // Name of the signal
+    std::string fType;  // Type of the signal
 
    public:
     TGraph* fGraph;  //!

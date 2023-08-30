@@ -207,10 +207,12 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
     fXYZHits->RemoveHits();
 
-    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
-        if (GetType(i) == XYZ)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++) {
+        if (GetType(i) == XYZ) {
             fXYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i),
                              this->GetTime(i), XYZ);
+        }
+    }
 
     return fXYZHits;
 }
@@ -959,14 +961,6 @@ void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     }
 
     fHits->PrintHits(nHits);
-}
-
-Double_t TRestDetectorHitsEvent::GetEnergy() const {
-    double energy = 0;
-    for (unsigned int n = 0; n < GetNumberOfHits(); n++) {
-        energy += fHits->GetEnergy(n);
-    }
-    return energy;
 }
 
 ///////////////////////////////////////////////

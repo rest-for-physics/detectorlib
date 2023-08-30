@@ -176,7 +176,7 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         if (type == VETO) {
             continue;
         }
-        fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
+        fOutputHitsEvent->AddHit({x, y, z}, eDep, time, type);
     }
 
     Double_t energy = fOutputHitsEvent->GetEnergy();
@@ -347,7 +347,7 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         if (type != VETO) {
             continue;
         }
-        fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
+        fOutputHitsEvent->AddHit({x, y, z}, eDep, time, type);
     }
 
     return fOutputHitsEvent;

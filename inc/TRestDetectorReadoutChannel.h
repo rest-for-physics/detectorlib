@@ -50,8 +50,8 @@ class TRestDetectorReadoutChannel {
 
     Short_t fChannelId = -1;  ///< It stores the corresponding physical readout channel
 
-    std::string fName = "";  // Name of the signal
-    std::string fType = "";  // Type of the signal
+    std::string fName;  // Name of the signal
+    std::string fType;  // Type of the signal
 
     void Initialize();
 
@@ -80,11 +80,11 @@ class TRestDetectorReadoutChannel {
     }
 
     void SetType(TRestDetectorReadoutChannelType type) {
-        // in future we may implement this
+        // in the future we may implement this
     }
 
     TRestDetectorReadoutChannelType GetType() {
-        // in future we may implement this
+        // in the future we may implement this
         return Channel_NoType;
     }
 

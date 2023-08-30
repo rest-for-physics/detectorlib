@@ -121,7 +121,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     set<unsigned int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
-    for (int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+    for (unsigned int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
         if (fInputHitsEvent->GetType(n) == REST_HitType::VETO) {
             // keep unprocessed hits as they are
             fOutputHitsEvent->AddHit(fInputHitsEvent->GetX(n), fInputHitsEvent->GetY(n),
@@ -179,7 +179,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 continue;
             }
 
-            Double_t xDiff, yDiff, zDiff;
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
             Int_t numberOfElectrons;
