@@ -80,7 +80,8 @@ Int_t TRestDetectorReadoutChannel::isInside(Double_t x, Double_t y) {
 ///
 void TRestDetectorReadoutChannel::Print(int DetailLevel) {
     if (DetailLevel >= 0) {
-        RESTMetadata << "++++ Channel : " << GetChannelId() << " Daq channel : " << GetDaqID() << RESTendl;
+        RESTMetadata << "++++ Channel : " << GetChannelId() << " Daq channel : " << GetDaqID()
+                     << " Channel name: " << GetChannelName() << " type: " << GetChannelType() << RESTendl;
 
         string typestr;
         if (GetType() == Channel_NoType)

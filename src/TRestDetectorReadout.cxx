@@ -823,7 +823,9 @@ void TRestDetectorReadout::PrintMetadata(Int_t DetailLevel) {
 
         RESTMetadata << "Number of readout planes : " << GetNumberOfReadoutPlanes() << RESTendl;
         RESTMetadata << "-----------------------------------" << RESTendl;
-        for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) fReadoutPlanes[p].Print(DetailLevel - 1);
+        for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+            fReadoutPlanes[p].Print(DetailLevel - 1);
+        }
         RESTMetadata << "****************************************" << RESTendl;
         cout << endl;
     }

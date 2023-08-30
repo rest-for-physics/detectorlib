@@ -617,12 +617,7 @@ void TRestDetectorReadoutModule::Print(Int_t DetailLevel) {
         RESTMetadata << "-- Readout module : " << GetModuleID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
         RESTMetadata << "-- Decoding File: " << fDecodingFile << RESTendl;
-        RESTMetadata << "Decoding was defined : ";
-        if (fDecoding) {
-            RESTMetadata << "YES" << RESTendl;
-        } else {
-            RESTMetadata << "NO" << RESTendl;
-        }
+        RESTMetadata << "Decoding was defined : " << (fDecoding ? "Yes" : "No") << RESTendl;
         RESTMetadata << "-- First DAQ Channel: " << fFirstDaqChannel << RESTendl;
         RESTMetadata << "-- Number of  mapping nodes: " << fMappingNodes << RESTendl;
         RESTMetadata << "-- Origin position : X = " << fOrigin.X() << " mm "
