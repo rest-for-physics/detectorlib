@@ -102,28 +102,24 @@ TRestEvent* TRestDetectorHitsRotationProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    const Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position = {fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit)};
         const auto type = fInputEvent->GetType(hit);
         const auto energy = fInputEvent->GetEnergy(hit);
         const auto time = fInputEvent->GetTime(hit);
 
-        if (type == VETO) {
-            // Only TPC hits will be rotated
-            fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), energy, time, type);
+        if (type != XYZ) {
+            fOutputEvent->AddHit(position, energy, time, type);
             continue;
         }
 
-        if (xyzEvent) {
-            position -= fCenter;
-            position.Rotate(fAngle, fAxis);
-            position += fCenter;
-        } else {
-            this->SetError("TRestDetectorHitsRotationProcess. Only XYZ hits can be transformed");
-        }
+        // veto hits won't be rotated because they are not XYZ
 
-        fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), energy, time, type);
+        position -= fCenter;
+        position.Rotate(fAngle, fAxis);
+        position += fCenter;
+
+        fOutputEvent->AddHit(position, energy, time, type);
     }
 
     return fOutputEvent;

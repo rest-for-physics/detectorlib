@@ -95,18 +95,19 @@ TRestEvent* TRestDetectorHitsTranslationProcess::ProcessEvent(TRestEvent* inputE
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    const Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
+        const auto type = fInputEvent->GetType(hit);
+        const auto energy = fInputEvent->GetEnergy(hit);
+        const auto time = fInputEvent->GetTime(hit);
 
-        if (xyzEvent) {
-            position += fTranslation;
-        } else {
-            this->SetError("TRestDetectorHitsTranslationProcess. Only XYZ hits can be transformed");
+        if (type != XYZ) {
+            fOutputEvent->AddHit(position, energy, time, type);
+            continue;
         }
 
-        fOutputEvent->AddHit(position.X(), position.Y(), position.Z(), fInputEvent->GetEnergy(hit),
-                             fInputEvent->GetTime(hit), fInputEvent->GetType(hit));
+        position += fTranslation;
+        fOutputEvent->AddHit(position, energy, time, type);
     }
     return fOutputEvent;
 }
