@@ -38,8 +38,8 @@ class TRestDetectorHitsRotateAndTranslateProcess : public TRestEventProcess {
     // add here the members of your event process
 
    public:
-    any GetInputEvent() const override { return fInputHitsEvent; }
-    any GetOutputEvent() const override { return fOutputHitsEvent; }
+    RESTValue GetInputEvent() const override { return fInputHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;

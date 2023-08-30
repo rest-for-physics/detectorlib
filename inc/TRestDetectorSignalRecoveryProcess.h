@@ -49,8 +49,8 @@ class TRestDetectorSignalRecoveryProcess : public TRestEventProcess {
     int GetAdjacentSignalIds(Int_t signalId, Int_t& idLeft, Int_t& idRight);
 
    public:
-    any GetInputEvent() const override { return fInputSignalEvent; }
-    any GetOutputEvent() const override { return fOutputSignalEvent; }
+    RESTValue GetInputEvent() const override { return fInputSignalEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputSignalEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* eventInput) override;

@@ -63,8 +63,8 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     Double_t fDriftVelocity = -1;  // mm/us
 
    public:
-    any GetInputEvent() const override { return fHitsEvent; }
-    any GetOutputEvent() const override { return fSignalEvent; }
+    RESTValue GetInputEvent() const override { return fHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fSignalEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
