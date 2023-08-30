@@ -43,8 +43,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fTransversalDiffusionCoefficient;
     Bool_t fPoissonElectronExcitation;
     Bool_t fUnitElectronEnergy;
-
-    Int_t fMaxHits;
+    UInt_t fMaxHits;
     Double_t fSeed = 0;
     Bool_t fCheckIsInside = true;
 

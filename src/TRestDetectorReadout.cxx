@@ -562,8 +562,13 @@ TRestDetectorReadoutModule* TRestDetectorReadout::ParseModuleDefinition(TiXmlEle
         TRestDetectorReadoutChannel channel;
 
         Int_t id = StringToInteger(GetFieldValue("id", channelDefinition));
-        if (id != -1) channelIDVector.push_back(id);
+        if (id != -1) {
+            channelIDVector.push_back(id);
+        }
         channel.SetDaqID(-1);
+
+        const string channelName = GetFieldValue("name", channelDefinition);
+        channel.SetChannelName(channelName);
 
         vector<TRestDetectorReadoutPixel> pixelVector;
         vector<int> pixelIDVector;
