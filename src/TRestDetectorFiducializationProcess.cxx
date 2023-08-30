@@ -84,8 +84,8 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputE
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorFiducializationProcess. Hits total energy : "
-             << fOutputHitsEvent->GetEnergy() << endl;
+        cout << "TRestDetectorFiducializationProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
+             << endl;
     }
 
     return fOutputHitsEvent;
