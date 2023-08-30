@@ -95,7 +95,6 @@ TRestEvent* TRestDetectorHitsTranslationProcess::ProcessEvent(TRestEvent* inputE
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    const Bool_t xyzEvent = fInputEvent->GetXYZHits()->GetNumberOfHits() != 0;
     for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++) {
         TVector3 position(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit));
         const auto type = fInputEvent->GetType(hit);
@@ -108,7 +107,6 @@ TRestEvent* TRestDetectorHitsTranslationProcess::ProcessEvent(TRestEvent* inputE
         }
 
         position += fTranslation;
-
         fOutputEvent->AddHit(position, energy, time, type);
     }
     return fOutputEvent;
