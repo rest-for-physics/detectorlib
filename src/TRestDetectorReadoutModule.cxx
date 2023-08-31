@@ -413,7 +413,7 @@ Int_t TRestDetectorReadoutModule::FindChannel(const TVector2& position) {
 /// plane are inside this readout module.
 ///
 Bool_t TRestDetectorReadoutModule::IsInside(const TVector2& position) const {
-    TVector2 positionRotated = TransformToModuleCoordinates(position);
+    const TVector2 positionRotated = TransformToModuleCoordinates(position);
 
     return (positionRotated.X() >= 0 && positionRotated.X() <= fSize.X() && positionRotated.Y() >= 0 &&
             positionRotated.Y() <= fSize.Y());
@@ -424,7 +424,7 @@ Bool_t TRestDetectorReadoutModule::IsInside(const TVector2& position) const {
 /// pixels of the readout *channel* index given.
 ///
 Bool_t TRestDetectorReadoutModule::IsInsideChannel(Int_t channel, const TVector2& position) {
-    TVector2 pos = TransformToModuleCoordinates(position);
+    const TVector2 pos = TransformToModuleCoordinates(position);
     for (int idx = 0; idx < GetChannel(channel)->GetNumberOfPixels(); idx++) {
         if (GetChannel(channel)->GetPixel(idx)->IsInside(pos)) {
             return true;
@@ -442,7 +442,7 @@ Bool_t TRestDetectorReadoutModule::IsInsidePixel(Int_t channel, Int_t pixel, con
         return false;
     }
 
-    TVector2 pos = TransformToModuleCoordinates(position);
+    const TVector2 pos = TransformToModuleCoordinates(position);
     if (GetChannel(channel)->GetPixel(pixel)->IsInside(pos)) {
         return true;
     }
