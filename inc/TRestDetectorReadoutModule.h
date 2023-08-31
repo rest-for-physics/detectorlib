@@ -213,7 +213,7 @@ class TRestDetectorReadoutModule {
 
     TVector2 GetVertex(int n) const;
 
-    void AddChannel(TRestDetectorReadoutChannel& rChannel);
+    void AddChannel(TRestDetectorReadoutChannel& channel);
 
     void SetMinMaxDaqIDs();
 

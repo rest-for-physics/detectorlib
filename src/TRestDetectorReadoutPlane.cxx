@@ -542,12 +542,25 @@ bool TRestDetectorReadoutPlane::IsInside(const TVector3& point) const {
 }
 
 void TRestDetectorReadoutPlane::AddModule(const TRestDetectorReadoutModule& module) {
+    cout << "Adding module" << endl;
     fReadoutModules.emplace_back(module);
     // if the module has no name or no type, add the one from the plane
-    if (fReadoutModules.back().GetName().empty()) {
-        fReadoutModules.back().SetName(fName);
+
+    auto& lastModule = fReadoutModules.back();
+    if (lastModule.GetName().empty()) {
+        lastModule.SetName(fName);
     }
-    if (fReadoutModules.back().GetType().empty()) {
-        fReadoutModules.back().SetType(fType);
+    if (lastModule.GetType().empty()) {
+        lastModule.SetType(fType);
+    }
+
+    for (size_t channelIndex = 0; channelIndex < lastModule.GetNumberOfChannels(); channelIndex++) {
+        TRestDetectorReadoutChannel* channel = lastModule.GetChannel(channelIndex);
+        if (channel->GetName().empty()) {
+            channel->SetName(lastModule.GetName());
+        }
+        if (channel->GetType().empty()) {
+            channel->SetType(lastModule.GetType());
+        }
     }
 }

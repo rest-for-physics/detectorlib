@@ -493,6 +493,11 @@ void TRestDetectorReadout::InitFromConfigFile() {
         plane.SetHeight(GetDblParameterWithUnits("height", planeDefinition));
         plane.SetChargeCollection(StringToDouble(GetFieldValue("chargeCollection", planeDefinition)));
         plane.SetRotation(GetDblParameterWithUnits("rotation", planeDefinition, 0));
+        plane.SetName(GetParameter("name", planeDefinition, plane.GetName()));
+        plane.SetType(GetParameter("type", planeDefinition, plane.GetType()));
+
+        cout << "plane name: " << plane.GetName() << endl;
+        cout << "plane type: " << plane.GetType() << endl;
 
         moduleVector.clear();
         TiXmlElement* moduleDefinition = GetElement("addReadoutModule", planeDefinition);

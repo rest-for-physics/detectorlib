@@ -154,7 +154,11 @@ class TRestDetectorReadoutPlane {
 
     std::string GetType() const { return fType; }
 
+    std::string GetName() const { return fName; }
+
     void SetType(const std::string& type) { fType = type; }
+
+    void SetName(const std::string& name) { fName = name; }
 
     Int_t isZInsideDriftVolume(Double_t z);
 

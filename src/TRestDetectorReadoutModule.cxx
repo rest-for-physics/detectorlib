@@ -580,14 +580,14 @@ TVector2 TRestDetectorReadoutModule::GetVertex(int n) const {
 ///////////////////////////////////////////////
 /// \brief Adds a new channel to the module
 ///
-void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& rChannel) {
-    for (int i = 0; i < rChannel.GetNumberOfPixels(); i++) {
+void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& channel) {
+    for (int i = 0; i < channel.GetNumberOfPixels(); i++) {
         // TODO we expect here that the user will only do pixel rotations between 0
         // and 90 degrees, we must force that on pixel definition or fix it here
-        Double_t oX = rChannel.GetPixel(i)->GetVertex(3).X();
-        Double_t oY = rChannel.GetPixel(i)->GetVertex(3).Y();
-        Double_t sX = rChannel.GetPixel(i)->GetVertex(1).X();
-        Double_t sY = rChannel.GetPixel(i)->GetVertex(1).Y();
+        Double_t oX = channel.GetPixel(i)->GetVertex(3).X();
+        Double_t oY = channel.GetPixel(i)->GetVertex(3).Y();
+        Double_t sX = channel.GetPixel(i)->GetVertex(1).X();
+        Double_t sY = channel.GetPixel(i)->GetVertex(1).Y();
 
         if (oX + fTolerance < 0 || oY + fTolerance < 0 || sX - fTolerance > fSize.X() ||
             sY - fTolerance > fSize.Y()) {
@@ -601,14 +601,14 @@ void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& rChanne
         }
     }
 
-    fReadoutChannel.emplace_back(rChannel);
-
+    fReadoutChannel.emplace_back(channel);
+    auto& lastChannel = fReadoutChannel.back();
     // if the channel has no name or type, we set the module name and type
-    if (fReadoutChannel.back().GetName().empty()) {
-        fReadoutChannel.back().SetName(fName);
+    if (lastChannel.GetName().empty()) {
+        lastChannel.SetName(fName);
     }
-    if (fReadoutChannel.back().GetType().empty()) {
-        fReadoutChannel.back().SetType(fType);
+    if (lastChannel.GetType().empty()) {
+        lastChannel.SetType(fType);
     }
 }
 
