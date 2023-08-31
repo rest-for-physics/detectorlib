@@ -139,14 +139,19 @@ Double_t TRestDetectorSignalEvent::GetMinValue() {
 Double_t TRestDetectorSignalEvent::GetMinTime() {
     Double_t minTime = 1.e10;
     for (int s = 0; s < GetNumberOfSignals(); s++)
-        if (minTime > fSignal[s].GetMinTime()) minTime = fSignal[s].GetMinTime();
+        if (minTime > fSignal[s].GetMinTime()) {
+            minTime = fSignal[s].GetMinTime();
+        }
     return minTime;
 }
 
 Double_t TRestDetectorSignalEvent::GetMaxTime() {
     Double_t maxTime = -1.e10;
-    for (int s = 0; s < GetNumberOfSignals(); s++)
-        if (maxTime < fSignal[s].GetMaxTime()) maxTime = fSignal[s].GetMaxTime();
+    for (int s = 0; s < GetNumberOfSignals(); s++) {
+        if (maxTime < fSignal[s].GetMaxTime()) {
+            maxTime = fSignal[s].GetMaxTime();
+        }
+    }
     return maxTime;
 }
 

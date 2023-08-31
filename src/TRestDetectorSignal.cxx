@@ -25,15 +25,16 @@
 
 #include "TRestDetectorSignal.h"
 
-#include "TFitResult.h"
-using namespace std;
-
+#include <TCanvas.h>
 #include <TF1.h>
+#include <TFitResult.h>
 #include <TH1.h>
 #include <TMath.h>
 #include <TRandom3.h>
 
-#include "TCanvas.h"
+#include <limits>
+
+using namespace std;
 
 ClassImp(TRestDetectorSignal);
 
@@ -158,7 +159,7 @@ Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t e
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) {
-    Double_t max = -1E10;
+    Double_t max = std::numeric_limits<double>::min();
 
     for (int i = 0; i < GetNumberOfPoints(); i++)
         if (GetTime(i) >= startTime && GetTime(i) < endTime) {
@@ -265,7 +266,7 @@ Int_t TRestDetectorSignal::GetMaxPeakWidth() {
 Double_t TRestDetectorSignal::GetMaxPeakValue() { return GetData(GetMaxIndex()); }
 
 Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
-    Double_t max = -1E10;
+    Double_t max = std::numeric_limits<double>::min();
     Int_t index = 0;
 
     if (from < 0) from = 0;
@@ -453,13 +454,6 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
              << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
              << " || " << aget->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
     }
 
     TVector2 fitParam(time, energy);
@@ -474,7 +468,7 @@ Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetT
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
 Int_t TRestDetectorSignal::GetMinIndex() {
-    Double_t min = 1E10;
+    Double_t min = numeric_limits<double>::max();
     Int_t index = 0;
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
@@ -487,18 +481,24 @@ Int_t TRestDetectorSignal::GetMinIndex() {
     return index;
 }
 
-Double_t TRestDetectorSignal::GetMinTime() {
-    Double_t minTime = 1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (minTime > fSignalTime[n]) minTime = fSignalTime[n];
+Double_t TRestDetectorSignal::GetMinTime() const {
+    Double_t minTime = numeric_limits<double>::max();
+    for (int n = 0; n < GetNumberOfPoints(); n++) {
+        if (minTime > fSignalTime[n]) {
+            minTime = fSignalTime[n];
+        }
+    }
 
     return minTime;
 }
 
-Double_t TRestDetectorSignal::GetMaxTime() {
-    Double_t maxTime = -1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (maxTime < fSignalTime[n]) maxTime = fSignalTime[n];
+Double_t TRestDetectorSignal::GetMaxTime() const {
+    Double_t maxTime = numeric_limits<double>::min();
+    for (int n = 0; n < GetNumberOfPoints(); n++) {
+        if (maxTime < fSignalTime[n]) {
+            maxTime = fSignalTime[n];
+        }
+    }
 
     return maxTime;
 }
@@ -544,8 +544,9 @@ void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSignal,
         diffSignal->IncreaseAmplitude(time, value);
     }
 
-    for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++)
+    for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++) {
         diffSignal->IncreaseAmplitude(GetTime(i), 0);
+    }
 }
 
 void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, Int_t delay) {
@@ -553,8 +554,9 @@ void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, I
 
     for (int i = 0; i < delay; i++) delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i));
 
-    for (int i = delay; i < GetNumberOfPoints(); i++)
+    for (int i = delay; i < GetNumberOfPoints(); i++) {
         delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i - delay));
+    }
 }
 
 void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints) {

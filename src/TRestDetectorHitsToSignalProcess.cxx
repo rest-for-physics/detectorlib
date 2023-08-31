@@ -212,7 +212,9 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
     fReadout = GetMetadata<TRestDetectorReadout>();
 
     if (fReadout == nullptr) {
-        if (!this->GetError()) this->SetError("The readout was not properly initialized.");
+        if (!this->GetError()) {
+            this->SetError("The readout was not properly initialized.");
+        }
     }
 }
 
@@ -259,6 +261,12 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 }
 
                 Double_t time = t + distance / velocity;
+                if (distance < 0) {
+                    cerr << "TRestDetectorHitsToSignalProcess: Negative distance to readout plane. "
+                            "This should not happen."
+                         << endl;
+                    exit(1);
+                }
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId

@@ -111,8 +111,8 @@ class TRestDetectorSignal {
     Double_t GetMaxValue() { return GetMaxPeakValue(); }
     Double_t GetMinValue() { return GetMinPeakValue(); }
 
-    Double_t GetMinTime();
-    Double_t GetMaxTime();
+    Double_t GetMinTime() const;
+    Double_t GetMaxTime() const;
 
     Double_t GetData(Int_t index) const { return (double)fSignalCharge[index]; }
     Double_t GetTime(Int_t index) const { return (double)fSignalTime[index]; }

@@ -76,6 +76,8 @@ class TRestDetectorReadout : public TRestMetadata {
     /// \brief Returns the DaqID of the channel for position. If no channel is found returns -1
     Int_t GetDaqId(const TVector3& position, bool check = false);
 
+    std::set<Int_t> GetAllDaqIds();
+
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
     /////////////////////////////////////

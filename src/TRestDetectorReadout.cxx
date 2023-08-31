@@ -888,3 +888,18 @@ Int_t TRestDetectorReadout::GetDaqId(const TVector3& position, bool check) {
         exit(1);
     }
 }
+
+set<Int_t> TRestDetectorReadout::GetAllDaqIds() {
+    set<Int_t> daqIds;
+
+    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+        for (size_t m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++) {
+            for (size_t c = 0; c < fReadoutPlanes[p][m].GetNumberOfChannels(); c++) {
+                auto channel = fReadoutPlanes[p][m][c];
+                daqIds.insert(channel.GetDaqID());
+            }
+        }
+    }
+
+    return daqIds;
+}
