@@ -540,3 +540,14 @@ bool TRestDetectorReadoutPlane::IsInside(const TVector3& point) const {
     }
     return false;
 }
+
+void TRestDetectorReadoutPlane::AddModule(const TRestDetectorReadoutModule& module) {
+    fReadoutModules.emplace_back(module);
+    // if the module has no name or no type, add the one from the plane
+    if (fReadoutModules.back().GetName().empty()) {
+        fReadoutModules.back().SetName(fName);
+    }
+    if (fReadoutModules.back().GetType().empty()) {
+        fReadoutModules.back().SetType(fType);
+    }
+}

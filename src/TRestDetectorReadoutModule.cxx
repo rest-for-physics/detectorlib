@@ -601,7 +601,15 @@ void TRestDetectorReadoutModule::AddChannel(TRestDetectorReadoutChannel& rChanne
         }
     }
 
-    fReadoutChannel.push_back(rChannel);
+    fReadoutChannel.emplace_back(rChannel);
+
+    // if the channel has no name or type, we set the module name and type
+    if (fReadoutChannel.back().GetName().empty()) {
+        fReadoutChannel.back().SetName(fName);
+    }
+    if (fReadoutChannel.back().GetType().empty()) {
+        fReadoutChannel.back().SetType(fType);
+    }
 }
 
 ///////////////////////////////////////////////

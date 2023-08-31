@@ -37,8 +37,6 @@ class TRestDetectorReadoutModule {
    private:
     Int_t fId = -1;  ///< The module id given by the readout definition.
 
-    std::string fName;  ///< The assigned module name.
-
     TVector2 fOrigin = {0, 0};  ///< The module (x, y) position relative to the readout plane position.
 
     TVector2 fSize = {0, 0};  ///< The module (x, y) size. All pixels should be contained within this size.
@@ -69,6 +67,9 @@ class TRestDetectorReadoutModule {
 
     Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
                        ///< between a physical readout channel id and a signal daq id
+
+    std::string fName;  //<
+    std::string fType;  //<
 
     void Initialize();
 
@@ -102,6 +103,9 @@ class TRestDetectorReadoutModule {
 
     /// Sets the name of the readout module
     inline void SetName(const std::string& name) { fName = name; }
+
+    /// Sets the type of the readout module
+    inline void SetType(const std::string& type) { fType = type; }
 
     /// Sets the tolerance for independent pixel overlaps
     inline void SetTolerance(Double_t tolerance) { fTolerance = tolerance; }
@@ -154,7 +158,8 @@ class TRestDetectorReadoutModule {
     TVector2 GetPlaneCoordinates(const TVector2& p) { return TransformToPlaneCoordinates(p); }
 
     /// Returns the module name
-    inline const char* GetName() const { return fName.c_str(); }
+    inline std::string GetName() const { return fName; }
+    inline std::string GetType() const { return fType; }
 
     /// Returns a pointer to the readout mapping
     inline TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
@@ -221,6 +226,6 @@ class TRestDetectorReadoutModule {
     // Destructor
     virtual ~TRestDetectorReadoutModule();
 
-    ClassDef(TRestDetectorReadoutModule, 4);
+    ClassDef(TRestDetectorReadoutModule, 5);
 };
 #endif

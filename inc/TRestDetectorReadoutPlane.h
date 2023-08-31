@@ -59,8 +59,8 @@ class TRestDetectorReadoutPlane {
     /// Rotation (in radians) of the readout plane around the normal vector.
     Double_t fRotation = 0;  //<
 
-    /// a string to help analysis processes know if this is a readout plane or a veto
-    std::string fType = "micromegas";  //<
+    std::string fName;  //<
+    std::string fType;  //<
 
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
@@ -143,7 +143,7 @@ class TRestDetectorReadoutPlane {
     size_t GetNumberOfModules() const { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
-    void AddModule(const TRestDetectorReadoutModule& module) { fReadoutModules.emplace_back(module); }
+    void AddModule(const TRestDetectorReadoutModule& module);
 
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }

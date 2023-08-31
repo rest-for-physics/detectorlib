@@ -29,16 +29,6 @@
 
 #include "TRestDetectorReadoutPixel.h"
 
-enum TRestDetectorReadoutChannelType {
-    Channel_NoType = 0,
-    Channel_Pixel = 1,
-    Channel_X = 2,
-    Channel_Y = 3,
-    Channel_U = 4,
-    Channel_V = 5,
-    Channel_W = 6,
-};
-
 /// A class to store the readout channel definition used in TRestDetectorReadoutModule.
 /// It allows to integrate any number of independent readout pixels.
 class TRestDetectorReadoutChannel {
@@ -58,6 +48,12 @@ class TRestDetectorReadoutChannel {
    public:
     /// Returns the corresponding daq channel id
     inline Int_t GetDaqID() const { return fDaqID; }
+
+    /// Returns the channel name
+    inline std::string GetName() const { return fName; }
+
+    /// Returns the channel type
+    inline std::string GetType() const { return fType; }
 
     /// Returns the corresponding channel id
     inline Int_t GetChannelId() const { return fChannelId; }
@@ -79,15 +75,6 @@ class TRestDetectorReadoutChannel {
         return &fReadoutPixel[n];
     }
 
-    void SetType(TRestDetectorReadoutChannelType type) {
-        // in the future we may implement this
-    }
-
-    TRestDetectorReadoutChannelType GetType() {
-        // in the future we may implement this
-        return Channel_NoType;
-    }
-
     /// Sets the daq channel number id
     void SetDaqID(Int_t id) { fDaqID = id; }
 
@@ -96,6 +83,12 @@ class TRestDetectorReadoutChannel {
 
     /// Adds a new pixel to the readout channel
     void AddPixel(const TRestDetectorReadoutPixel& pixel) { fReadoutPixel.emplace_back(pixel); }
+
+    /// Sets the channel name
+    void SetName(const std::string& name) { fName = name; }
+
+    /// Sets the channel type
+    void SetType(const std::string& type) { fType = type; }
 
     Int_t isInside(Double_t x, Double_t y);
 
@@ -106,6 +99,6 @@ class TRestDetectorReadoutChannel {
     // Destructor
     virtual ~TRestDetectorReadoutChannel();
 
-    ClassDef(TRestDetectorReadoutChannel, 5);  // REST run class
+    ClassDef(TRestDetectorReadoutChannel, 6);  // REST run class
 };
 #endif
