@@ -92,7 +92,7 @@ class TRestDetectorSignal {
         return fSignalTime.size();
     }
 
-    Double_t GetIntegralWithTime(Double_t startTime, Double_t endTime);
+    Double_t GetIntegralWithTime(Double_t startTime, Double_t endTime) const;
     Double_t GetIntegral(Int_t startBin = 0, Int_t endBin = 0) const;
 
     void Normalize(Double_t scale = 1.);
