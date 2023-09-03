@@ -374,7 +374,11 @@ void TRestDetectorHitsAnalysisProcess::InitFromConfigFile() {
     // convert it into radians for internal usage
     fFid_theta = std::fmod(fFid_theta, 360) * TMath::DegToRad();
 
-    if (GetParameter("cylinderFiducialization", "false") == "true") fCylinderFiducial = true;
+    if (GetParameter("cylinderFiducialization", "false") == "true") {
+        fCylinderFiducial = true;
+    }
 
-    if (GetParameter("prismFiducialization", "false") == "true") fPrismFiducial = true;
+    if (GetParameter("prismFiducialization", "false") == "true") {
+        fPrismFiducial = true;
+    }
 }
