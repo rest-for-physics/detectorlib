@@ -13,6 +13,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
 
     vector<TVector3> hitPosition;
     vector<double> hitEnergy;
+    double energyInFiducial = 0;
 
     for (size_t hit_index = 0; hit_index < fInputHitsEvent->GetNumberOfHits(); hit_index++) {
         const auto position = fInputHitsEvent->GetPosition(hit_index);
@@ -28,7 +29,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
             exit(1);
         }
 
-        const auto daqId = fReadout->GetDaqId(position);
+        const auto daqId = fReadout->GetDaqId(position, false);
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
 
         if (channelType != fChannelType) {
@@ -37,6 +38,16 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
 
         hitPosition.push_back(position);
         hitEnergy.push_back(energy);
+
+        if (fFiducialDiameter > 0) {
+            TVector3 relativePosition = position - fFiducialPosition;
+            relativePosition.SetZ(0);  // TODO: this should be relative to readout normal
+            const double distance = relativePosition.Mag();
+            if (distance > fFiducialDiameter / 2) {
+                continue;
+            }
+            energyInFiducial += energy;
+        }
     }
 
     const double readoutEnergy = accumulate(hitEnergy.begin(), hitEnergy.end(), 0.0);
@@ -75,6 +86,8 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     SetObservableValue("readoutSigmaPositionX", positionSigma.X());
     SetObservableValue("readoutSigmaPositionY", positionSigma.Y());
     SetObservableValue("readoutSigmaPositionZ", positionSigma.Z());
+
+    SetObservableValue("readoutEnergyInFiducial", energyInFiducial);
 
     return fOutputHitsEvent;
 }
