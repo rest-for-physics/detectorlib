@@ -18,7 +18,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
    private:
     TRestDetectorHitsEvent* fHitsEvent = nullptr;  //!
 
-    void InitFromConfigFile() override{};
+    void InitFromConfigFile() override;
     void Initialize() override{};
     void LoadDefaultConfig(){};
 
