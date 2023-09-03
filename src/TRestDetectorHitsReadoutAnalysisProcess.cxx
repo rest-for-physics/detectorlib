@@ -9,15 +9,17 @@
 using namespace std;
 
 TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* inputEvent) {
-    fHitsEvent = dynamic_cast<TRestDetectorHitsEvent*>(inputEvent);
+    fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
 
     vector<TVector3> hitPosition;
     vector<double> hitEnergy;
 
-    for (size_t hit_index = 0; hit_index < fHitsEvent->GetNumberOfHits(); hit_index++) {
-        const auto position = fHitsEvent->GetPosition(hit_index);
-        const auto energy = fHitsEvent->GetEnergy(hit_index);
-        // const auto time = fHitsEvent->GetTime(hit_index);
+    for (size_t hit_index = 0; hit_index < fInputHitsEvent->GetNumberOfHits(); hit_index++) {
+        const auto position = fInputHitsEvent->GetPosition(hit_index);
+        const auto energy = fInputHitsEvent->GetEnergy(hit_index);
+        const auto time = fInputHitsEvent->GetTime(hit_index);
+        const auto type = fInputHitsEvent->GetType(hit_index);
+        fOutputHitsEvent->AddHit(position, energy, time, type);
 
         if (energy <= 0) {
             // this should never happen
@@ -74,7 +76,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     SetObservableValue("readoutSigmaPositionY", positionSigma.Y());
     SetObservableValue("readoutSigmaPositionZ", positionSigma.Z());
 
-    return fHitsEvent;
+    return fOutputHitsEvent;
 }
 
 void TRestDetectorHitsReadoutAnalysisProcess::InitProcess() {
@@ -109,4 +111,12 @@ void TRestDetectorHitsReadoutAnalysisProcess::InitFromConfigFile() {
     fChannelType = GetParameter("channelType", fChannelType);
     fFiducialPosition = Get3DVectorParameterWithUnits("fiducialPosition", fFiducialPosition);
     fFiducialDiameter = GetDblParameterWithUnits("fiducialDiameter", fFiducialDiameter);
+}
+
+void TRestDetectorHitsReadoutAnalysisProcess::Initialize() {
+    SetSectionName(this->ClassName());
+    SetLibraryVersion(LIBRARY_VERSION);
+
+    fInputHitsEvent = nullptr;
+    fOutputHitsEvent = new TRestDetectorHitsEvent();
 }

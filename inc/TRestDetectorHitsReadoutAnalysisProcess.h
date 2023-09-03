@@ -16,10 +16,11 @@
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fHitsEvent = nullptr;  //!
+    TRestDetectorHitsEvent* fInputHitsEvent;   //!
+    TRestDetectorHitsEvent* fOutputHitsEvent;  //!
 
     void InitFromConfigFile() override;
-    void Initialize() override{};
+    void Initialize() override;
     void LoadDefaultConfig(){};
 
     /// \brief This process will only work on hits corresponding to this channel type (using readout)
@@ -30,8 +31,8 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
     TRestDetectorReadout* fReadout = nullptr;  //!
 
    public:
-    any GetInputEvent() const override { return fHitsEvent; }
-    any GetOutputEvent() const override { return fHitsEvent; }
+    any GetInputEvent() const override { return fInputHitsEvent; }
+    any GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
@@ -46,7 +47,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsReadoutAnalysisProcess() override = default;
 
-    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 1);
+    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 2);
 };
 
 #endif  // REST_TRESTDETECTORHITSREADOUTANALYSISPROCESS_H
