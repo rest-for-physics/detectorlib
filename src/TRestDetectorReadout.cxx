@@ -903,3 +903,17 @@ set<Int_t> TRestDetectorReadout::GetAllDaqIds() {
 
     return daqIds;
 }
+
+string TRestDetectorReadout::GetTypeForChannelDaqId(Int_t daqId) {
+    for (int p = 0; p < GetNumberOfReadoutPlanes(); p++) {
+        for (size_t m = 0; m < fReadoutPlanes[p].GetNumberOfModules(); m++) {
+            for (size_t c = 0; c < fReadoutPlanes[p][m].GetNumberOfChannels(); c++) {
+                auto channel = fReadoutPlanes[p][m][c];
+                if (channel.GetDaqID() == daqId) {
+                    return channel.GetType();
+                }
+            }
+        }
+    }
+    return {};
+}
