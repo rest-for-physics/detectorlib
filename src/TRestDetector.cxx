@@ -61,7 +61,7 @@ ClassImp(TRestDetector);
 
 void TRestDetector::PrintMetadata() {
     TRestMetadata::PrintMetadata();
-    any cl = any(this, this->ClassName());
+    auto cl = RESTValue(this, this->ClassName());
     for (int i = 0; i < cl.GetNumberOfDataMembers(); i++) {
         if (cl.GetDataMember(i).name == "fgIsA") continue;
         if (cl.GetDataMember(i).ToString() != "-1")
