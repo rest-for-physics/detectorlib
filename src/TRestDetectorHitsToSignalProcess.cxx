@@ -201,16 +201,16 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
         if (fDriftVelocity <= 0) {
             fDriftVelocity = fGas->GetDriftVelocity();
         }
-    } else {
-        if (fDriftVelocity < 0) {
-            if (!this->GetError()) {
-                this->SetError("Drift velocity is negative.");
-            }
-        }
+    }
+
+    if (fDriftVelocity <= 0) {
+        RESTError
+            << "Drift velocity not defined. Please, define it in the process metadata or in TRestDetectorGas"
+            << RESTendl;
+        exit(1);
     }
 
     fReadout = GetMetadata<TRestDetectorReadout>();
-
     if (fReadout == nullptr) {
         if (!this->GetError()) {
             this->SetError("The readout was not properly initialized.");
@@ -255,18 +255,19 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
                 Double_t energy = fHitsEvent->GetEnergy(hit);
                 const auto distance = plane->GetDistanceTo({x, y, z});
+                if (distance < 0) {
+                    RESTError << "TRestDetectorHitsToSignalProcess: Negative distance to readout plane. "
+                                 "This should not happen."
+                              << RESTendl;
+                    exit(1);
+                }
+
                 auto velocity = fDriftVelocity;
                 if (isVeto) {
                     velocity = REST_Physics::lightSpeed;
                 }
 
                 Double_t time = t + distance / velocity;
-                if (distance < 0) {
-                    cerr << "TRestDetectorHitsToSignalProcess: Negative distance to readout plane. "
-                            "This should not happen."
-                         << endl;
-                    exit(1);
-                }
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
