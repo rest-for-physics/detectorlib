@@ -23,6 +23,7 @@
 #define RestCore_TRestDetectorSignal
 
 #include <TGraph.h>
+#include <TRestStringOutput.h>
 #include <TString.h>
 #include <TVector2.h>
 
@@ -85,9 +86,8 @@ class TRestDetectorSignal {
 
     Int_t GetNumberOfPoints() const {
         if (fSignalTime.size() != fSignalCharge.size()) {
-            std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
-            std::cout << "WARNING, the two std::vector sizes did not match" << std::endl;
-            std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl;
+            RESTError << "WARNING, the two std::vector sizes did not match" << RESTendl;
+            exit(1);
         }
         return fSignalTime.size();
     }
