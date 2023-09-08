@@ -30,8 +30,8 @@ class TRestDetectorLightAttenuationProcess : public TRestEventProcess {
     void LoadDefaultConfig() {}
 
    public:
-    any GetInputEvent() const override { return fInputEvent; }
-    any GetOutputEvent() const override { return fOutputEvent; }
+    RESTValue GetInputEvent() const override { return fInputEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputEvent; }
 
     void InitProcess() override;
     void EndProcess() override {}

@@ -124,6 +124,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
     inline Double_t GetEnergyY() const { return fHits->GetEnergyY(); }
     inline Double_t GetTotalEnergy() const { return fHits->GetTotalEnergy(); }
     inline Double_t GetEnergy() const { return fHits->GetTotalEnergy(); }
+
     inline Double_t GetEnergy(int n) const { return fHits->GetEnergy(n); }
     inline Double_t GetTime(int n) const { return GetHits()->GetTime(n); }  // return value in us
 

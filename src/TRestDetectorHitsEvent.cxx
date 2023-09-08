@@ -115,7 +115,6 @@ void TRestDetectorHitsEvent::AddHit(const TVector3& position, Double_t energy, D
 ///
 void TRestDetectorHitsEvent::Initialize() {
     TRestEvent::Initialize();
-
     fHits->RemoveHits();
 
     if (fXZHits) {
@@ -231,7 +230,9 @@ TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
 /// \param radius The radius of the cylinder.
 ///
 Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
-    if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) > 0) return true;
+    if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) > 0) {
+        return true;
+    }
 
     return false;
 }
@@ -957,7 +958,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
 void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     TRestEvent::PrintEvent();
 
-    cout << "Total energy : " << GetEnergy() << endl;
+    cout << "Total energy : " << GetTotalEnergy() << endl;
     cout << "Mean position : ( " << GetMeanPositionX() << " , " << GetMeanPositionY() << " , "
          << GetMeanPositionZ() << " ) " << endl;
     cout << "Number of hits : " << fHits->GetNumberOfHits() << endl;
