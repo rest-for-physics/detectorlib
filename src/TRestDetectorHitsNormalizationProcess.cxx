@@ -85,8 +85,8 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* inpu
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsNormalizationProcess. Hits added : " << fHitsOutputEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : " << fHitsOutputEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : "
+             << fHitsOutputEvent->GetTotalEnergy() << endl;
     }
 
     return fHitsOutputEvent;

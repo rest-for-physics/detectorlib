@@ -76,7 +76,7 @@ TRestEvent* TRestDetectorPositionMappingProcess::ProcessEvent(TRestEvent* inputE
     double y = fHitsEvent->GetMeanPositionY();
     double z = fHitsEvent->GetMeanPositionZ();
 
-    double e = fHitsEvent->GetEnergy();
+    double e = fHitsEvent->GetTotalEnergy();
     double n = fHitsEvent->GetNumberOfHits();
 
     // cout << x << " " << y << " " << e << " " << n << endl;
