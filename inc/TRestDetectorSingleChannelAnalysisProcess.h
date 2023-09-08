@@ -45,8 +45,8 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
     std::map<int, double> fChannelGainError;   // [MM id, channel gain error]
 
    public:
-    any GetInputEvent() const override { return fSignalEvent; }
-    any GetOutputEvent() const override { return fSignalEvent; }
+    RESTValue GetInputEvent() const override { return fSignalEvent; }
+    RESTValue GetOutputEvent() const override { return fSignalEvent; }
 
     void FitChannelGain();
     // See comments on CXX
@@ -66,9 +66,9 @@ class TRestDetectorSingleChannelAnalysisProcess : public TRestEventProcess {
         RESTMetadata << (fCreateGainMap ? ">   " : "    ")
                      << "Create new correction std::map for each channel" << RESTendl;
         RESTMetadata << "output mapping file: " << fCalibSave << RESTendl;
-        RESTMetadata << "Energy cut for Threshold integral: " << any(fThrIntegralCutRange) << RESTendl;
-        RESTMetadata << "Energy cut for NGoodSignals: " << any(fNGoodSignalsCutRange) << RESTendl;
-        RESTMetadata << "Fit range for the spectra: " << any(fSpecFitRange) << RESTendl;
+        RESTMetadata << "Energy cut for Threshold integral: " << RESTValue(fThrIntegralCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for NGoodSignals: " << RESTValue(fNGoodSignalsCutRange) << RESTendl;
+        RESTMetadata << "Fit range for the spectra: " << RESTValue(fSpecFitRange) << RESTendl;
 
         EndPrintProcess();
     }

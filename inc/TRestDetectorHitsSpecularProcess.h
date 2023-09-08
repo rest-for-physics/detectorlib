@@ -46,8 +46,8 @@ class TRestDetectorHitsSpecularProcess : public TRestEventProcess {
     TVector3 fNormal = {0, 0, 1};  //<
 
    public:
-    any GetInputEvent() const override { return fInputEvent; }
-    any GetOutputEvent() const override { return fOutputEvent; }
+    RESTValue GetInputEvent() const override { return fInputEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 

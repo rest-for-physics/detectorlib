@@ -70,8 +70,8 @@ class TRestDetectorHitmapAnalysisProcess : public TRestEventProcess {
     TVector3 Translation(const TVector3& pos, const HitTransformation& tr);
 
    public:
-    any GetInputEvent() const override { return fHitsEvent; }
-    any GetOutputEvent() const override { return fHitsEvent; }
+    RESTValue GetInputEvent() const override { return fHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fHitsEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
