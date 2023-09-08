@@ -209,12 +209,12 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     }
 
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-        cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : " << fInputHitsEvent->GetTotalEnergy()
-             << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : "
+             << fInputHitsEvent->GetTotalEnergy() << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetTotalEnergy()
-             << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : "
+             << fOutputHitsEvent->GetTotalEnergy() << endl;
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
     }
 
