@@ -97,7 +97,7 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
 void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
                                     REST_HitType type) {
-    fHits->AddHit(x, y, z, en, t, type);
+    fHits->AddHit({x, y, z}, en, t, type);
 }
 
 ///////////////////////////////////////////////
@@ -105,7 +105,7 @@ void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t
 ///
 /// It adds a new hit with position `pos` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(TVector3 pos, Double_t en, Double_t t, REST_HitType type) {
+void TRestDetectorHitsEvent::AddHit(const TVector3& pos, Double_t en, Double_t t, REST_HitType type) {
     fHits->AddHit(pos, en, t, type);
 }
 
@@ -172,8 +172,8 @@ TRestHits* TRestDetectorHitsEvent::GetXZHits() {
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XZ)
-            fXZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
-                            XZ);
+            fXZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
+                            this->GetTime(i), XZ);
 
     return fXZHits;
 }
@@ -190,8 +190,8 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == YZ)
-            fYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
-                            YZ);
+            fYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
+                            this->GetTime(i), YZ);
 
     return fYZHits;
 }
@@ -202,12 +202,13 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 /// A XYZ hit compatible are those hits that have valid X, Y and Z coordinates.
 ///
 /// \return It returns back a TRestHits structure with the hits fulfilling the XYZ condition.
+///
 TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
     fXYZHits->RemoveHits();
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XYZ)
-            fXYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i),
+            fXYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
                              this->GetTime(i), XYZ);
 
     return fXYZHits;
@@ -876,7 +877,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fXZHisto->GetXaxis()->SetTitleSize(1.4 * fXZHisto->GetXaxis()->GetTitleSize());
         fXZHisto->GetYaxis()->SetLabelSize(1.25 * fXZHisto->GetYaxis()->GetLabelSize());
         fXZHisto->GetXaxis()->SetLabelSize(1.25 * fXZHisto->GetXaxis()->GetLabelSize());
-        fXZHisto->GetYaxis()->SetTitleOffset(1.75);
+        fXZHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     if (nYZ > 0) {
@@ -888,7 +889,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fYZHisto->GetXaxis()->SetTitleSize(1.4 * fYZHisto->GetXaxis()->GetTitleSize());
         fYZHisto->GetYaxis()->SetLabelSize(1.25 * fYZHisto->GetYaxis()->GetLabelSize());
         fYZHisto->GetXaxis()->SetLabelSize(1.25 * fYZHisto->GetXaxis()->GetLabelSize());
-        fYZHisto->GetYaxis()->SetTitleOffset(1.75);
+        fYZHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     if (nXY > 0) {
@@ -900,7 +901,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fXYHisto->GetXaxis()->SetTitleSize(1.4 * fXYHisto->GetXaxis()->GetTitleSize());
         fXYHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
         fXYHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
-        fXYHisto->GetYaxis()->SetTitleOffset(1.75);
+        fXYHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     column++;
@@ -914,7 +915,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fXHisto->GetXaxis()->SetTitleSize(1.4 * fXHisto->GetXaxis()->GetTitleSize());
         fXHisto->GetYaxis()->SetLabelSize(1.25 * fXHisto->GetYaxis()->GetLabelSize());
         fXHisto->GetXaxis()->SetLabelSize(1.25 * fXHisto->GetXaxis()->GetLabelSize());
-        fXHisto->GetYaxis()->SetTitleOffset(1.75);
+        fXHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     if (nY > 0) {
@@ -926,7 +927,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fYHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
         fYHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
         fYHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
-        fYHisto->GetYaxis()->SetTitleOffset(1.75);
+        fYHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     if (nZ > 0) {
@@ -938,7 +939,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fZHisto->GetXaxis()->SetTitleSize(1.4 * fYHisto->GetXaxis()->GetTitleSize());
         fZHisto->GetYaxis()->SetLabelSize(1.25 * fYHisto->GetYaxis()->GetLabelSize());
         fZHisto->GetXaxis()->SetLabelSize(1.25 * fYHisto->GetXaxis()->GetLabelSize());
-        fZHisto->GetYaxis()->SetTitleOffset(1.75);
+        fZHisto->GetYaxis()->SetTitleOffset(1);
     }
 
     column++;
@@ -947,7 +948,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
 void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     TRestEvent::PrintEvent();
 
-    cout << "Total energy : " << GetEnergy() << endl;
+    cout << "Total energy : " << GetTotalEnergy() << endl;
     cout << "Mean position : ( " << GetMeanPositionX() << " , " << GetMeanPositionY() << " , "
          << GetMeanPositionZ() << " ) " << endl;
     cout << "Number of hits : " << fHits->GetNumberOfHits() << endl;
@@ -957,4 +958,265 @@ void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     }
 
     fHits->PrintHits(nHits);
+}
+
+///////////////////////////////////////////////
+/// \brief This method draws the hits found on XY as a TH2F and it returns the
+/// generated histogram.
+///
+/// The first argument allows to define the ranges in the format:
+/// {binsX, minX, maxX, binsY, minY, maxY}.
+///
+/// The pitch allows to adjust the binning in automatic mode (when ranges vector is empty).
+///
+/// The border gives an additional margin to the automatic minX, maxX, minY, maxY found.
+///
+TH2F* TRestDetectorHitsEvent::GetXYHistogram(std::vector<float> ranges, Double_t pitch, Double_t border) {
+    double maxX, minX, maxY, minY;
+    int nBinsX, nBinsY;
+
+    if (ranges.size() == 6) {
+        nBinsX = ranges[0];
+        minX = ranges[1];
+        maxX = ranges[2];
+
+        nBinsY = ranges[3];
+        minY = ranges[4];
+        maxY = ranges[5];
+    } else {
+        std::vector<double> x, y, en;
+
+        for (unsigned int i = 0; i < GetNumberOfHits(); i++) {
+            if (GetType(i) % X == 0) x.emplace_back(GetX(i));
+            if (GetType(i) % Y == 0) y.emplace_back(GetY(i));
+        }
+
+        if (x.empty() && y.empty()) {
+            std::cout << "TRestDetectorHitsEvent::GetXYHistogram. Empty histogram!" << std::endl;
+            return nullptr;
+        }
+
+        TRestHits::GetBoundaries(x, maxX, minX, nBinsX);
+        TRestHits::GetBoundaries(y, maxY, minY, nBinsY);
+
+        maxX += border;
+        minX -= border;
+
+        maxY += border;
+        minY -= border;
+
+        if (pitch > 0) {
+            nBinsX = std::round((maxX - minX) / pitch);
+            nBinsY = std::round((maxY - minY) / pitch);
+        }
+    }
+
+    delete fXYHisto;
+    fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXYHisto->SetStats(false);
+
+    Int_t nXY = 0;
+
+    for (unsigned int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
+        Double_t x = fHits->GetX(nhit);
+        Double_t y = fHits->GetY(nhit);
+        Double_t en = fHits->GetEnergy(nhit);
+        int type = fHits->GetType(nhit);
+
+        if (type % XY == 0 || type % XYZ == 0) {
+            fXYHisto->Fill(x, y, en);
+            nXY++;
+        }
+    }
+
+    TStyle style;
+    style.SetPalette(1);
+
+    if (nXY > 0) {
+        fXYHisto->Draw("col");
+        fXYHisto->Draw("cont3 same");
+        fXYHisto->GetXaxis()->SetTitle("X-axis (mm)");
+        fXYHisto->GetYaxis()->SetTitle("Y-axis (mm)");
+        fXYHisto->GetYaxis()->SetTitleSize(1.4 * fXYHisto->GetYaxis()->GetTitleSize());
+        fXYHisto->GetXaxis()->SetTitleSize(1.4 * fXYHisto->GetXaxis()->GetTitleSize());
+        fXYHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
+        fXYHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
+        fXYHisto->GetYaxis()->SetTitleOffset(1);
+    }
+
+    return fXYHisto;
+}
+
+///////////////////////////////////////////////
+/// \brief This method draws the hits found on XY as a TH2F and it returns the
+/// generated histogram.
+///
+/// The first argument allows to define the ranges in the format:
+/// {binsX, minX, maxX, binsZ, minZ, maxZ}.
+///
+/// The pitch allows to adjust the binning in automatic mode (when ranges vector is empty).
+///
+/// The border gives an additional margin to the automatic minX, maxX, minZ, maxZ found.
+///
+TH2F* TRestDetectorHitsEvent::GetXZHistogram(std::vector<float> ranges, Double_t pitch, Double_t border) {
+    double maxX, minX, maxZ, minZ;
+    int nBinsX, nBinsZ;
+
+    if (ranges.size() == 6) {
+        nBinsX = ranges[0];
+        minX = ranges[1];
+        maxX = ranges[2];
+
+        nBinsZ = ranges[3];
+        minZ = ranges[4];
+        maxZ = ranges[5];
+    } else {
+        std::vector<double> x, z;
+
+        for (unsigned int i = 0; i < GetNumberOfHits(); i++) {
+            if (GetType(i) % X == 0) x.emplace_back(GetX(i));
+            if (GetType(i) % Z == 0) z.emplace_back(GetZ(i));
+        }
+
+        if (x.empty() || z.empty()) {
+            std::cout << "TRestDetectorHitsEvent::GetXZHistogram. Empty histogram!" << std::endl;
+            return nullptr;
+        }
+
+        TRestHits::GetBoundaries(x, maxX, minX, nBinsX);
+        TRestHits::GetBoundaries(z, maxZ, minZ, nBinsZ);
+
+        maxX += border;
+        minX -= border;
+
+        maxZ += border;
+        minZ -= border;
+
+        if (pitch > 0) {
+            nBinsX = std::round((maxX - minX) / pitch);
+            nBinsZ = std::round((maxZ - minZ) / pitch);
+        }
+    }
+
+    delete fXZHisto;
+    fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fXZHisto->SetStats(false);
+
+    Int_t nXZ = 0;
+
+    for (unsigned int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
+        Double_t x = fHits->GetX(nhit);
+        Double_t z = fHits->GetZ(nhit);
+        Double_t en = fHits->GetEnergy(nhit);
+        int type = fHits->GetType(nhit);
+
+        if (type % XZ == 0 || type % XYZ == 0) {
+            fXZHisto->Fill(x, z, en);
+            nXZ++;
+        }
+    }
+
+    TStyle style;
+    style.SetPalette(1);
+
+    if (nXZ > 0) {
+        fXZHisto->Draw("col");
+        fXZHisto->Draw("cont3 same");
+        fXZHisto->GetXaxis()->SetTitle("X-axis (mm)");
+        fXZHisto->GetYaxis()->SetTitle("Z-axis (mm)");
+        fXZHisto->GetYaxis()->SetTitleSize(1.4 * fXZHisto->GetYaxis()->GetTitleSize());
+        fXZHisto->GetXaxis()->SetTitleSize(1.4 * fXYHisto->GetXaxis()->GetTitleSize());
+        fXZHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
+        fXZHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
+        fXZHisto->GetYaxis()->SetTitleOffset(1);
+    }
+
+    return fXZHisto;
+}
+
+///////////////////////////////////////////////
+/// \brief This method draws the hits found on YZ as a TH2F and it returns the
+/// generated histogram.
+///
+/// The first argument allows to define the ranges in the format:
+/// {binsY, minY, maxY, binsZ, minZ, maxZ}.
+///
+/// The pitch allows to adjust the binning in automatic mode (when ranges vector is empty).
+///
+/// The border gives an additional margin to the automatic minY, maxY, minZ, maxZ found.
+///
+TH2F* TRestDetectorHitsEvent::GetYZHistogram(std::vector<float> ranges, Double_t pitch, Double_t border) {
+    double maxY, minY, maxZ, minZ;
+    int nBinsY, nBinsZ;
+
+    if (ranges.size() == 6) {
+        nBinsY = ranges[0];
+        minY = ranges[1];
+        maxY = ranges[2];
+
+        nBinsZ = ranges[3];
+        minZ = ranges[4];
+        maxZ = ranges[5];
+    } else {
+        std::vector<double> y, z, en;
+
+        for (unsigned int i = 0; i < GetNumberOfHits(); i++) {
+            if (GetType(i) % Y == 0) y.emplace_back(GetY(i));
+            if (GetType(i) % Z == 0) z.emplace_back(GetZ(i));
+        }
+
+        if (y.empty() || z.empty()) {
+            std::cout << "TRestDetectorHitsEvent::GetYZHistogram. Empty histogram!" << std::endl;
+            return nullptr;
+        }
+
+        TRestHits::GetBoundaries(y, maxY, minY, nBinsY);
+        TRestHits::GetBoundaries(z, maxZ, minZ, nBinsZ);
+
+        maxY += border;
+        minY -= border;
+
+        maxZ += border;
+        minZ -= border;
+
+        if (pitch > 0) {
+            nBinsY = std::round((maxY - minZ) / pitch);
+            nBinsZ = std::round((maxZ - minZ) / pitch);
+        }
+    }
+
+    delete fYZHisto;
+    fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+    fYZHisto->SetStats(false);
+
+    Int_t nYZ = 0;
+
+    for (unsigned int nhit = 0; nhit < this->GetNumberOfHits(); nhit++) {
+        Double_t y = fHits->GetY(nhit);
+        Double_t z = fHits->GetZ(nhit);
+        Double_t en = fHits->GetEnergy(nhit);
+        int type = fHits->GetType(nhit);
+
+        if (type % YZ == 0 || type % XYZ == 0) {
+            fYZHisto->Fill(y, z, en);
+            nYZ++;
+        }
+    }
+
+    TStyle style;
+    style.SetPalette(1);
+
+    if (nYZ > 0) {
+        fYZHisto->Draw("col");
+        fYZHisto->Draw("cont3 same");
+        fYZHisto->GetXaxis()->SetTitle("Y-axis (mm)");
+        fYZHisto->GetYaxis()->SetTitle("Z-axis (mm)");
+        fYZHisto->GetYaxis()->SetTitleSize(1.4 * fYZHisto->GetYaxis()->GetTitleSize());
+        fYZHisto->GetXaxis()->SetTitleSize(1.4 * fYZHisto->GetXaxis()->GetTitleSize());
+        fYZHisto->GetYaxis()->SetLabelSize(1.25 * fYZHisto->GetYaxis()->GetLabelSize());
+        fYZHisto->GetXaxis()->SetLabelSize(1.25 * fYZHisto->GetXaxis()->GetLabelSize());
+        fYZHisto->GetYaxis()->SetTitleOffset(1);
+    }
+
+    return fYZHisto;
 }

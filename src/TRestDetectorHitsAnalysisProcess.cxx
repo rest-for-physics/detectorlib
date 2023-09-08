@@ -175,7 +175,7 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
     }
 
-    Double_t energy = fOutputHitsEvent->GetEnergy();
+    Double_t energy = fOutputHitsEvent->GetTotalEnergy();
     TVector3 meanPosition = fOutputHitsEvent->GetMeanPosition();
     Double_t sigmaX = fOutputHitsEvent->GetSigmaX();
     Double_t sigmaY = fOutputHitsEvent->GetSigmaY();

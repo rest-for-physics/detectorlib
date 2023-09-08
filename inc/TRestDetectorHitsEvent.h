@@ -55,7 +55,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
    public:
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
-    void AddHit(TVector3 pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
+    void AddHit(const TVector3& pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
 
     void Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                      const TRestHits::iterator& hit2) = nullptr);
@@ -122,9 +122,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
     inline Double_t GetEnergyX() const { return fHits->GetEnergyX(); }
     inline Double_t GetEnergyY() const { return fHits->GetEnergyY(); }
-    inline Double_t GetTotalDepositedEnergy() const { return fHits->GetTotalDepositedEnergy(); }
     inline Double_t GetTotalEnergy() const { return fHits->GetTotalEnergy(); }
-    inline Double_t GetEnergy() const { return fHits->GetEnergy(); }
     inline Double_t GetEnergy(int n) const { return fHits->GetEnergy(n); }
     inline Double_t GetTime(int n) const { return GetHits()->GetTime(n); }  // return value in us
 
@@ -160,6 +158,10 @@ class TRestDetectorHitsEvent : public TRestEvent {
                                                       Double_t sizeY, Double_t theta);
 
     TPad* DrawEvent(const TString& option = "");
+
+    TH2F* GetXYHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
+    TH2F* GetXZHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
+    TH2F* GetYZHistogram(std::vector<float> ranges, Double_t pitch = 3, Double_t border = 5);
 
     void DrawHistograms(Int_t& column, const TString& histOption = "", double pitch = 0);
     void DrawGraphs(Int_t& column);

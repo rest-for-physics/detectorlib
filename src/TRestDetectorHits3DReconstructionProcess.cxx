@@ -523,8 +523,8 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
 
     // scale the total energy
     if (fDoEnergyScaling) {
-        double e1 = fInputHitsEvent->GetEnergy();
-        double e2 = fOutputHitsEvent->GetEnergy();
+        double e1 = fInputHitsEvent->GetTotalEnergy();
+        double e2 = fOutputHitsEvent->GetTotalEnergy();
         for (auto h : *fOutputHitsEvent->GetHits()) {
             h.e() = h.e() / e2 * e1;
         }

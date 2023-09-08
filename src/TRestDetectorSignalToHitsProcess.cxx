@@ -447,7 +447,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
 
     RESTDebug << "TRestDetectorSignalToHitsProcess. Hits added : " << fHitsEvent->GetNumberOfHits()
               << RESTendl;
-    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetEnergy()
+    RESTDebug << "TRestDetectorSignalToHitsProcess. Hits total energy : " << fHitsEvent->GetTotalEnergy()
               << RESTendl;
 
     if (this->GetVerboseLevel() == TRestStringOutput::REST_Verbose_Level::REST_Debug) {

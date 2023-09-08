@@ -54,8 +54,8 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     ULong_t fSeed = 0;  //<
 
    public:
-    any GetInputEvent() const override { return fInputEvent; }
-    any GetOutputEvent() const override { return fOutputEvent; }
+    RESTValue GetInputEvent() const override { return fInputEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 

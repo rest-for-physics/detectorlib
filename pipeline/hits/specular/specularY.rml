@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<specular>
+    <TRestDetectorHitsSpecularProcess name="Y" title="A Y specular image">
+        <parameter name="position" value="(0,0,0)"/>
+        <parameter name="normal" value="(0,1,0)"/>
+    </TRestDetectorHitsSpecularProcess>
+</specular>

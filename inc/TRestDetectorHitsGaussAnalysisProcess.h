@@ -57,8 +57,8 @@ class TRestDetectorHitsGaussAnalysisProcess : public TRestEventProcess {
     Int_t fNHitsMin = 100000;
 
    public:
-    any GetInputEvent() const override { return fInputHitsEvent; }
-    any GetOutputEvent() const override { return fOutputHitsEvent; }
+    RESTValue GetInputEvent() const override { return fInputHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputHitsEvent; }
 
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
 
