@@ -97,7 +97,7 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
 void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
                                     REST_HitType type) {
-    fHits->AddHit(x, y, z, en, t, type);
+    fHits->AddHit({x, y, z}, en, t, type);
 }
 
 ///////////////////////////////////////////////
@@ -105,7 +105,7 @@ void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t
 ///
 /// It adds a new hit with position `pos` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
 /// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(TVector3 pos, Double_t en, Double_t t, REST_HitType type) {
+void TRestDetectorHitsEvent::AddHit(const TVector3& pos, Double_t en, Double_t t, REST_HitType type) {
     fHits->AddHit(pos, en, t, type);
 }
 
@@ -172,8 +172,8 @@ TRestHits* TRestDetectorHitsEvent::GetXZHits() {
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XZ)
-            fXZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
-                            XZ);
+            fXZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
+                            this->GetTime(i), XZ);
 
     return fXZHits;
 }
@@ -190,8 +190,8 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == YZ)
-            fYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i), this->GetTime(i),
-                            YZ);
+            fYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
+                            this->GetTime(i), YZ);
 
     return fYZHits;
 }
@@ -208,7 +208,7 @@ TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
 
     for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
         if (GetType(i) == XYZ)
-            fXYZHits->AddHit(this->GetX(i), this->GetY(i), this->GetZ(i), this->GetEnergy(i),
+            fXYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
                              this->GetTime(i), XYZ);
 
     return fXYZHits;
@@ -948,7 +948,7 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
 void TRestDetectorHitsEvent::PrintEvent(Int_t nHits) const {
     TRestEvent::PrintEvent();
 
-    cout << "Total energy : " << GetEnergy() << endl;
+    cout << "Total energy : " << GetTotalEnergy() << endl;
     cout << "Mean position : ( " << GetMeanPositionX() << " , " << GetMeanPositionY() << " , "
          << GetMeanPositionZ() << " ) " << endl;
     cout << "Number of hits : " << fHits->GetNumberOfHits() << endl;

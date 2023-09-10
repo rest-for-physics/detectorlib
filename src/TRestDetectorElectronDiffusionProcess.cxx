@@ -123,12 +123,12 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
     Int_t isAttached;
 
-    Int_t totalElectrons = fInputHitsEvent->GetEnergy() * REST_Units::eV / fWvalue;
+    Int_t totalElectrons = fInputHitsEvent->GetTotalEnergy() * REST_Units::eV / fWvalue;
 
     Double_t wValue = fWvalue;
     if (fMaxHits > 0 && totalElectrons > fMaxHits) {
         // set a fake w-value if max hits are limited. this fake w-value will be larger
-        wValue = fInputHitsEvent->GetEnergy() * REST_Units::eV / fMaxHits;
+        wValue = fInputHitsEvent->GetTotalEnergy() * REST_Units::eV / fMaxHits;
     }
 
     for (int n = 0; n < nHits; n++) {
@@ -209,12 +209,12 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     }
 
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-        cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : " << fInputHitsEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Input hits energy : "
+             << fInputHitsEvent->GetTotalEnergy() << endl;
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : "
+             << fOutputHitsEvent->GetTotalEnergy() << endl;
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) GetChar();
     }
 

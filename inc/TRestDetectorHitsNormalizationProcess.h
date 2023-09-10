@@ -35,8 +35,8 @@ class TRestDetectorHitsNormalizationProcess : public TRestEventProcess {
     Double_t fFactor;
 
    public:
-    any GetInputEvent() const override { return fHitsInputEvent; }
-    any GetOutputEvent() const override { return fHitsOutputEvent; }
+    RESTValue GetInputEvent() const override { return fHitsInputEvent; }
+    RESTValue GetOutputEvent() const override { return fHitsOutputEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
