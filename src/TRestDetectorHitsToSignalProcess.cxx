@@ -211,6 +211,8 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
     if (!fReadout) return nullptr;
 
+    double minTimeHits = numeric_limits<float>::max();
+
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fHitsEvent->GetNumberOfHits() << endl;
         cout << "--------------------------" << endl;
@@ -221,6 +223,10 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         Double_t y = fHitsEvent->GetY(hit);
         Double_t z = fHitsEvent->GetZ(hit);
         Double_t t = fHitsEvent->GetTime(hit);
+
+        if (t < minTimeHits) {
+            minTimeHits = t;
+        }
 
         if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
             cout << "Hit : " << hit << " x : " << x << " y : " << y << " z : " << z << " t : " << t << endl;
@@ -277,6 +283,16 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
     }
 
     if (fSignalEvent->GetNumberOfSignals() == 0) return nullptr;
+
+    for (int s = 0; s < fSignalEvent->GetNumberOfSignals(); s++) {
+        TRestDetectorSignal* signal = fSignalEvent->GetSignal(s);
+        const double minTime = signal->GetMinTime();
+        if (minTime < 0) {
+            cerr << "TRestDetectorHitsToSignalProcess: signal has negative time. This should not happen."
+                 << endl;
+            exit(1);
+        }
+    }
 
     return fSignalEvent;
 }
