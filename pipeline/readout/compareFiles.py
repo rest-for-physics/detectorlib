@@ -32,14 +32,14 @@ for line in file_1_text:
 
     if "[32m" in line:
         # removing color codes
-        numeric_string_1 = numeric_string_1[3: len(numeric_string_1) - 1]
+        numeric_string_1 = numeric_string_1[3 : len(numeric_string_1) - 1]
 
     numeric_filter_2 = filter(str.isdigit, file_2_text[n].rstrip())
     numeric_string_2 = "".join(numeric_filter_2)
 
     if "[32m" in file_2_text[n].rstrip():
         # removing color codes
-        numeric_string_2 = numeric_string_2[3: len(numeric_string_2) - 1]
+        numeric_string_2 = numeric_string_2[3 : len(numeric_string_2) - 1]
 
     if numeric_string_1 != numeric_string_2:
         print("xx:" + numeric_string_1)
