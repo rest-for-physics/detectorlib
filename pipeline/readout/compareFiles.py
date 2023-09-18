@@ -5,6 +5,8 @@ with open("print.txt") as file_1:
 
 with open("validation.txt") as file_2:
     file_2_text = file_2.readlines()
+    # Add a line to the end of the file to avoid error
+    file_2_text.append("")
 
 stop_removing = 0
 while not stop_removing:
