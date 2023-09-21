@@ -15,17 +15,17 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     vector<double> hitEnergy;
     double energyInFiducial = 0;
 
-    for (size_t hit_index = 0; hit_index < fInputHitsEvent->GetNumberOfHits(); hit_index++) {
-        const auto position = fInputHitsEvent->GetPosition(hit_index);
-        const auto energy = fInputHitsEvent->GetEnergy(hit_index);
-        const auto time = fInputHitsEvent->GetTime(hit_index);
-        const auto type = fInputHitsEvent->GetType(hit_index);
+    for (size_t hitIndex = 0; hitIndex < fInputHitsEvent->GetNumberOfHits(); hitIndex++) {
+        const auto position = fInputHitsEvent->GetPosition(hitIndex);
+        const auto energy = fInputHitsEvent->GetEnergy(hitIndex);
+        const auto time = fInputHitsEvent->GetTime(hitIndex);
+        const auto type = fInputHitsEvent->GetType(hitIndex);
         fOutputHitsEvent->AddHit(position, energy, time, type);
 
         if (energy <= 0) {
             // this should never happen
             cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
-                 << "Negative or zero energy found in hit " << hit_index << endl;
+                 << "Negative or zero energy found in hit " << hitIndex << endl;
             exit(1);
         }
 
@@ -52,7 +52,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
 
     const double readoutEnergy = accumulate(hitEnergy.begin(), hitEnergy.end(), 0.0);
 
-    if (readoutEnergy <= 0) {
+    if (fRemoveZeroEnergyEvents && readoutEnergy <= 0) {
         return nullptr;
     }
 
@@ -121,6 +121,7 @@ void TRestDetectorHitsReadoutAnalysisProcess::PrintMetadata() {
 }
 
 void TRestDetectorHitsReadoutAnalysisProcess::InitFromConfigFile() {
+    fRemoveZeroEnergyEvents = StringToBool(GetParameter("removeZeroEnergyEvents", "false"));
     fChannelType = GetParameter("channelType", fChannelType);
     fFiducialPosition = Get3DVectorParameterWithUnits("fiducialPosition", fFiducialPosition);
     fFiducialDiameter = GetDblParameterWithUnits("fiducialDiameter", fFiducialDiameter);

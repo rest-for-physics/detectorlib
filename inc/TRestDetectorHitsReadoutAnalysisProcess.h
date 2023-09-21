@@ -27,6 +27,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
     std::string fChannelType;
     TVector3 fFiducialPosition;
     Double_t fFiducialDiameter = 0;
+    bool fRemoveZeroEnergyEvents = false;
 
     TRestDetectorReadout* fReadout = nullptr;  //!
 
