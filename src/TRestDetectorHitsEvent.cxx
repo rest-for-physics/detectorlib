@@ -94,7 +94,7 @@ TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
 ///
 /// It adds a new hit with coordinates `x`,`y`,`z` in mm, and energy `en` in keV, to this
 /// TRestDetectorHitsEvent
-/// structure. Additionaly a time delay value in `us` may be added to the hits.
+/// structure. Additionally a time delay value in `us` may be added to the hits.
 void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t,
                                     REST_HitType type) {
     fHits->AddHit({x, y, z}, en, t, type);
@@ -104,9 +104,10 @@ void TRestDetectorHitsEvent::AddHit(Double_t x, Double_t y, Double_t z, Double_t
 /// \brief Adds a new hit to this event
 ///
 /// It adds a new hit with position `pos` in mm, and energy `en` in keV, to this TRestDetectorHitsEvent
-/// structure. Additionaly a time delay value in `us` may be added to the hits.
-void TRestDetectorHitsEvent::AddHit(const TVector3& pos, Double_t en, Double_t t, REST_HitType type) {
-    fHits->AddHit(pos, en, t, type);
+/// structure. Additionally a time delay value in `us` may be added to the hits.
+void TRestDetectorHitsEvent::AddHit(const TVector3& position, Double_t energy, Double_t time,
+                                    REST_HitType type) {
+    fHits->AddHit(position, energy, time, type);
 }
 
 ///////////////////////////////////////////////
@@ -114,7 +115,6 @@ void TRestDetectorHitsEvent::AddHit(const TVector3& pos, Double_t en, Double_t t
 ///
 void TRestDetectorHitsEvent::Initialize() {
     TRestEvent::Initialize();
-
     fHits->RemoveHits();
 
     if (fXZHits) {
@@ -170,10 +170,12 @@ void TRestDetectorHitsEvent::Shuffle(int NLoop) {
 TRestHits* TRestDetectorHitsEvent::GetXZHits() {
     fXZHits->RemoveHits();
 
-    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
-        if (GetType(i) == XZ)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++) {
+        if (GetType(i) == XZ) {
             fXZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
                             this->GetTime(i), XZ);
+        }
+    }
 
     return fXZHits;
 }
@@ -188,10 +190,12 @@ TRestHits* TRestDetectorHitsEvent::GetXZHits() {
 TRestHits* TRestDetectorHitsEvent::GetYZHits() {
     fYZHits->RemoveHits();
 
-    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
-        if (GetType(i) == YZ)
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++) {
+        if (GetType(i) == YZ) {
             fYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
                             this->GetTime(i), YZ);
+        }
+    }
 
     return fYZHits;
 }
@@ -206,10 +210,14 @@ TRestHits* TRestDetectorHitsEvent::GetYZHits() {
 TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
     fXYZHits->RemoveHits();
 
-    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++)
-        if (GetType(i) == XYZ)
-            fXYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
-                             this->GetTime(i), XYZ);
+    for (unsigned int i = 0; i < this->GetNumberOfHits(); i++) {
+        if (GetType(i) == XYZ) {
+            {
+                fXYZHits->AddHit({this->GetX(i), this->GetY(i), this->GetZ(i)}, this->GetEnergy(i),
+                                 this->GetTime(i), XYZ);
+            }
+        }
+    }
 
     return fXYZHits;
 }
@@ -222,7 +230,9 @@ TRestHits* TRestDetectorHitsEvent::GetXYZHits() {
 /// \param radius The radius of the cylinder.
 ///
 Bool_t TRestDetectorHitsEvent::anyHitInsideCylinder(TVector3 x0, TVector3 x1, Double_t radius) {
-    if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) > 0) return true;
+    if (fHits->GetNumberOfHitsInsideCylinder(x0, x1, radius) > 0) {
+        return true;
+    }
 
     return false;
 }

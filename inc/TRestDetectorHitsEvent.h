@@ -55,7 +55,7 @@ class TRestDetectorHitsEvent : public TRestEvent {
 
    public:
     void AddHit(Double_t x, Double_t y, Double_t z, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
-    void AddHit(const TVector3& pos, Double_t en, Double_t t = 0, REST_HitType type = XYZ);
+    void AddHit(const TVector3& position, Double_t energy, Double_t time, REST_HitType type = XYZ);
 
     void Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                      const TRestHits::iterator& hit2) = nullptr);
@@ -123,6 +123,8 @@ class TRestDetectorHitsEvent : public TRestEvent {
     inline Double_t GetEnergyX() const { return fHits->GetEnergyX(); }
     inline Double_t GetEnergyY() const { return fHits->GetEnergyY(); }
     inline Double_t GetTotalEnergy() const { return fHits->GetTotalEnergy(); }
+    inline Double_t GetEnergy() const { return fHits->GetTotalEnergy(); }
+
     inline Double_t GetEnergy(int n) const { return fHits->GetEnergy(n); }
     inline Double_t GetTime(int n) const { return GetHits()->GetTime(n); }  // return value in us
 

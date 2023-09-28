@@ -90,7 +90,9 @@ void TRestDetectorReadoutPlane::SetHeight(Double_t height) {
 ///
 TRestDetectorReadoutModule* TRestDetectorReadoutPlane::GetModuleByID(Int_t modID) {
     for (size_t md = 0; md < GetNumberOfModules(); md++) {
-        if (fReadoutModules[md].GetModuleID() == modID) return &fReadoutModules[md];
+        if (fReadoutModules[md].GetModuleID() == modID) {
+            return &fReadoutModules[md];
+        }
     }
 
     cout << "REST ERROR (GetReadoutModuleByID) : Module ID : " << modID << " was not found" << endl;
@@ -256,8 +258,9 @@ Int_t TRestDetectorReadoutPlane::FindChannel(Int_t module, const TVector2& posit
 /// \brief Returns the perpendicular distance to the readout plane of a given
 /// TVector3 position
 ///
-Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& pos) const {
-    return (pos - GetPosition()).Dot(GetNormal());
+Double_t TRestDetectorReadoutPlane::GetDistanceTo(const TVector3& position) const {
+    const TVector3 diff = position - fPosition;
+    return diff.Dot(fNormal);
 }
 
 ///////////////////////////////////////////////
@@ -282,7 +285,7 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(Double_t z) {
 ///
 Bool_t TRestDetectorReadoutPlane::isDaqIDInside(Int_t daqId) {
     for (size_t m = 0; m < GetNumberOfModules(); m++)
-        if (fReadoutModules[m].isDaqIDInside(daqId)) return true;
+        if (fReadoutModules[m].IsDaqIDInside(daqId)) return true;
 
     return false;
 }
@@ -301,47 +304,32 @@ Int_t TRestDetectorReadoutPlane::isZInsideDriftVolume(const TVector3& position) 
 
     Double_t distance = GetDistanceTo(posNew);
 
-    if (distance > 0 && distance < fHeight) return 1;
+    if (distance > 0 && distance < fHeight) {
+        return 1;
+    }
 
     return 0;
 }
 
-///////////////////////////////////////////////
-/// \brief This method returns the module id where the hits with coordinates
-/// (x,y,z) is found. The z-coordinate must be found in between the cathode and
-/// the readout plane. The *x* and *y* values must be found inside one of the
-/// readout modules defined inside the readout plane.
-///
-/// \param x,y,z Three Double_t defining the position.
-///
-/// \return the module *id* where the hit is found. If no module *id* is found
-/// it returns -1.
-///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z) {
-    TVector3 pos = TVector3(x, y, z);
-
-    return GetModuleIDFromPosition(pos);
-}
 ///////////////////////////////////////////////
 /// \brief This method returns the module id where *pos* is found.
 /// The z-coordinate must be found in between
 /// the cathode and the readout plane. The *x* and *y* values must be found
 /// inside one of the readout modules defined inside the readout plane.
 ///
-/// \param pos A TVector3 defining the position.
+/// \param position A TVector3 defining the position.
 ///
 /// \return the module *id* where the hit is found. If no module *id* is found
 /// it returns -1.
 ///
-Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& pos) {
-    TVector3 posNew = TVector3(pos.X() - fPosition.X(), pos.Y() - fPosition.Y(), pos.Z());
-
-    Double_t distance = GetDistanceTo(posNew);
-
-    if (distance > 0 && distance < fHeight) {
+Int_t TRestDetectorReadoutPlane::GetModuleIDFromPosition(const TVector3& position) const {
+    Double_t distance = GetDistanceTo(position);
+    if (distance >= 0 && distance <= fHeight) {
+        const TVector2 positionInPlane = GetPositionInPlane(position);
         for (size_t m = 0; m < GetNumberOfModules(); m++) {
-            if (fReadoutModules[m].isInside(posNew.X(), posNew.Y())) {
-                return fReadoutModules[m].GetModuleID();
+            auto& module = fReadoutModules[m];
+            if (module.IsInside(positionInPlane)) {
+                return module.GetModuleID();
             }
         }
     }
@@ -536,4 +524,43 @@ void TRestDetectorReadoutPlane::SetAxisX(const TVector3& axis) {
     const Double_t angle = fAxisX.Angle(axisInPlane);
 
     SetRotation(fRotation - angle);
+}
+
+bool TRestDetectorReadoutPlane::IsInside(const TVector3& point) const {
+    const double distance = GetDistanceToPlane(point);
+    if (distance < 0 || distance > fHeight) {
+        // point is outside the volume defined by the plane
+        return false;
+    }
+    const TVector2 pointInPlane = GetPositionInPlane(point);
+    for (size_t moduleIndex = 0; moduleIndex < GetNumberOfModules(); moduleIndex++) {
+        if (fReadoutModules[moduleIndex].IsInside(pointInPlane)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void TRestDetectorReadoutPlane::AddModule(const TRestDetectorReadoutModule& module) {
+    cout << "Adding module" << endl;
+    fReadoutModules.emplace_back(module);
+    // if the module has no name or no type, add the one from the plane
+
+    auto& lastModule = fReadoutModules.back();
+    if (lastModule.GetName().empty()) {
+        lastModule.SetName(fName);
+    }
+    if (lastModule.GetType().empty()) {
+        lastModule.SetType(fType);
+    }
+
+    for (size_t channelIndex = 0; channelIndex < lastModule.GetNumberOfChannels(); channelIndex++) {
+        TRestDetectorReadoutChannel* channel = lastModule.GetChannel(channelIndex);
+        if (channel->GetName().empty()) {
+            channel->SetName(lastModule.GetName());
+        }
+        if (channel->GetType().empty()) {
+            channel->SetType(lastModule.GetType());
+        }
+    }
 }

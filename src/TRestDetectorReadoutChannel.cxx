@@ -66,8 +66,11 @@ void TRestDetectorReadoutChannel::Initialize() { fDaqID = -1; }
 /// channel
 ///
 Int_t TRestDetectorReadoutChannel::isInside(Double_t x, Double_t y) {
-    for (unsigned int i = 0; i < fReadoutPixel.size(); i++)
-        if (fReadoutPixel[i].isInside(x, y)) return true;
+    for (auto& pixel : fReadoutPixel) {
+        if (pixel.IsInside({x, y})) {
+            return true;
+        }
+    }
     return false;
 }
 
@@ -77,31 +80,16 @@ Int_t TRestDetectorReadoutChannel::isInside(Double_t x, Double_t y) {
 ///
 void TRestDetectorReadoutChannel::Print(int DetailLevel) {
     if (DetailLevel >= 0) {
-        RESTMetadata << "++++ Channel : " << GetChannelId() << " Daq channel : " << GetDaqID() << RESTendl;
+        RESTMetadata << "++++ Channel: " << GetChannelId() << " Daq channel: " << GetDaqID()
+                     << " Channel name: " << GetChannelName() << " Channel type: " << GetChannelType()
+                     << " total pixels: " << GetNumberOfPixels() << RESTendl;
 
-        string typestr;
-        if (GetType() == Channel_NoType)
-            typestr = "NoType";
-        else if (GetType() == Channel_Pixel)
-            typestr = "Pixel";
-        else if (GetType() == Channel_X)
-            typestr = "X";
-        else if (GetType() == Channel_Y)
-            typestr = "Y";
-        else if (GetType() == Channel_U)
-            typestr = "U";
-        else if (GetType() == Channel_V)
-            typestr = "V";
-        else if (GetType() == Channel_W)
-            typestr = "W";
-
-        RESTMetadata << " Total pixels : " << GetNumberOfPixels() << " Channel type : " << typestr
-                     << RESTendl;
         RESTMetadata << "+++++++++++++++++++++++++++++++++++++++++++++++++" << RESTendl;
 
-        if (DetailLevel - 1 >= 0)
+        if (DetailLevel - 1 >= 0) {
             for (int n = 0; n < GetNumberOfPixels(); n++) {
                 fReadoutPixel[n].Print();
             }
+        }
     }
 }

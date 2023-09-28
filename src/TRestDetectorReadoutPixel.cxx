@@ -71,11 +71,11 @@ TVector2 TRestDetectorReadoutPixel::GetCenter() const {
     TVector2 origin(fPixelOriginX, fPixelOriginY);
     TVector2 oppositeVertex = GetVertex(2);
 
-    if (fTriangle)
+    if (fTriangle) {
         center = (oppositeVertex - origin) / 4. + origin;
-    else
+    } else {
         center = (origin + oppositeVertex) / 2.;
-
+    }
     return center;
 }
 
@@ -110,20 +110,11 @@ TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if a given *x,y* coordinates are found inside the pixel.
-/// The coordinates are referenced to the readout module system.
-///
-Bool_t TRestDetectorReadoutPixel::isInside(Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-    return isInside(pos);
-}
-
-///////////////////////////////////////////////
 /// \brief Determines if a given TVector2 *pos* coordinates are found inside
 /// the pixel. The coordinates are referenced to the readout module system.
 ///
-Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
-    pos = TransformToPixelCoordinates(pos);
+Bool_t TRestDetectorReadoutPixel::IsInside(const TVector2& inputPosition) {
+    const auto pos = TransformToPixelCoordinates(inputPosition);
     Double_t const x = pos.X();
     if (pos.X() >= -fTolerance && pos.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
     {

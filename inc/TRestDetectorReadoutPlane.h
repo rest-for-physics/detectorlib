@@ -59,6 +59,9 @@ class TRestDetectorReadoutPlane {
     /// Rotation (in radians) of the readout plane around the normal vector.
     Double_t fRotation = 0;  //<
 
+    std::string fName;  //<
+    std::string fType;  //<
+
     ///< A list of TRestDetectorReadoutModule components contained in the readout plane.
     std::vector<TRestDetectorReadoutModule> fReadoutModules;  //<
 
@@ -117,6 +120,9 @@ class TRestDetectorReadoutPlane {
     /// Returns the perpendicular distance to the readout plane from a given position *pos*.
     Double_t GetDistanceTo(const TVector3& pos) const;
 
+    /// Check if the point is inside any module of the readout plane
+    bool IsInside(const TVector3& point) const;
+
     /// Returns a TVector2 oriented as the shortest distance of a given position
     /// *pos* on the plane to a specific module with id *mod*
     TVector2 GetDistanceToModule(Int_t mod, const TVector2& position) {
@@ -134,10 +140,10 @@ class TRestDetectorReadoutPlane {
     }
 
     /// Returns the total number of modules in the readout plane
-    size_t GetNumberOfModules() { return fReadoutModules.size(); }
+    size_t GetNumberOfModules() const { return fReadoutModules.size(); }
 
     /// Adds a new module to the readout plane
-    void AddModule(TRestDetectorReadoutModule& rModule) { fReadoutModules.push_back(rModule); }
+    void AddModule(const TRestDetectorReadoutModule& module);
 
     /// Prints the readout plane description
     void PrintMetadata() { Print(); }
@@ -146,15 +152,21 @@ class TRestDetectorReadoutPlane {
 
     TRestDetectorReadoutModule* GetModuleByID(Int_t modID);
 
+    std::string GetType() const { return fType; }
+
+    std::string GetName() const { return fName; }
+
+    void SetType(const std::string& type) { fType = type; }
+
+    void SetName(const std::string& name) { fName = name; }
+
     Int_t isZInsideDriftVolume(Double_t z);
 
     Int_t isZInsideDriftVolume(const TVector3& position);
 
     Bool_t isDaqIDInside(Int_t daqId);
 
-    Int_t GetModuleIDFromPosition(const TVector3& position);
-
-    Int_t GetModuleIDFromPosition(Double_t x, Double_t y, Double_t z);
+    Int_t GetModuleIDFromPosition(const TVector3& position) const;
 
     TVector2 GetPositionInPlane(const TVector3& point) const;
     Double_t GetDistanceToPlane(const TVector3& point) const;
@@ -178,6 +190,6 @@ class TRestDetectorReadoutPlane {
     // Destructor
     virtual ~TRestDetectorReadoutPlane();
 
-    ClassDef(TRestDetectorReadoutPlane, 5);
+    ClassDef(TRestDetectorReadoutPlane, 6);
 };
 #endif

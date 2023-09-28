@@ -11,7 +11,7 @@
 ///             TRestDetectorHitsNormalizationProcess
 ///             How to use: replace TRestDetectorHitsNormalizationProcess by your name,
 ///             fill the required functions following instructions and add all
-///             needed additional members and funcionality
+///             needed additional members and functionality
 ///
 ///             sep 2016:   First concept
 ///                 Created as part of the conceptualization of existing REST

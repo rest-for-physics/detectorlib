@@ -29,6 +29,7 @@
 #include "TRestDetectorHitsEvent.h"
 #include "TRestDetectorReadout.h"
 #include "TRestDetectorSignalEvent.h"
+#include "TRestPhysics.h"
 
 //! A process to transform a x,y,z coordinate hits into daq identified physical time signals
 class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
@@ -39,7 +40,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    /// A pointer to the detector readout definition accesible to TRestRun
+    /// A pointer to the detector readout definition available to TRestRun
     TRestDetectorReadout* fReadout;  //!
 
     /// A pointer to the detector gas definition accessible to TRestRun
@@ -90,6 +91,6 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     TRestDetectorHitsToSignalProcess(const char* configFilename);
     ~TRestDetectorHitsToSignalProcess();
 
-    ClassDefOverride(TRestDetectorHitsToSignalProcess, 1);
+    ClassDefOverride(TRestDetectorHitsToSignalProcess, 3);
 };
 #endif

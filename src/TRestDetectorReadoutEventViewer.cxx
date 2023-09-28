@@ -120,7 +120,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
         for (size_t m = 0; m < plane->GetNumberOfModules(); m++) {
             module = &(*plane)[m];
 
-            if (module->isDaqIDInside(daqChannel)) break;
+            if (module->IsDaqIDInside(daqChannel)) break;
         }
         modId = module->GetModuleID();
 

@@ -67,7 +67,9 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     inline TRestDetectorSignal* GetSignalById(Int_t sid) {
         Int_t index = GetSignalIndex(sid);
-        if (index < 0) return nullptr;
+        if (index < 0) {
+            return nullptr;
+        }
 
         return &fSignal[index];
     }

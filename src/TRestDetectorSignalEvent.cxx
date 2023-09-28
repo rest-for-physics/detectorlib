@@ -93,7 +93,6 @@ void TRestDetectorSignalEvent::AddChargeToSignal(Int_t signalID, Double_t time, 
     Int_t signalIndex = GetSignalIndex(signalID);
     if (signalIndex == -1) {
         signalIndex = GetNumberOfSignals();
-
         TRestDetectorSignal signal;
         signal.SetSignalID(signalID);
         AddSignal(signal);
@@ -106,12 +105,8 @@ void TRestDetectorSignalEvent::PrintEvent() {
     TRestEvent::PrintEvent();
 
     for (int i = 0; i < GetNumberOfSignals(); i++) {
-        cout << "================================================" << endl;
-        cout << "Signal ID : " << fSignal[i].GetSignalID() << endl;
-        cout << "Integral : " << fSignal[i].GetIntegral() << endl;
-        cout << "------------------------------------------------" << endl;
-        fSignal[i].Print();
-        cout << "================================================" << endl;
+        const auto& signal = fSignal[i];
+        signal.Print();
     }
 }
 
@@ -144,14 +139,19 @@ Double_t TRestDetectorSignalEvent::GetMinValue() {
 Double_t TRestDetectorSignalEvent::GetMinTime() {
     Double_t minTime = 1.e10;
     for (int s = 0; s < GetNumberOfSignals(); s++)
-        if (minTime > fSignal[s].GetMinTime()) minTime = fSignal[s].GetMinTime();
+        if (minTime > fSignal[s].GetMinTime()) {
+            minTime = fSignal[s].GetMinTime();
+        }
     return minTime;
 }
 
 Double_t TRestDetectorSignalEvent::GetMaxTime() {
     Double_t maxTime = -1.e10;
-    for (int s = 0; s < GetNumberOfSignals(); s++)
-        if (maxTime < fSignal[s].GetMaxTime()) maxTime = fSignal[s].GetMaxTime();
+    for (int s = 0; s < GetNumberOfSignals(); s++) {
+        if (maxTime < fSignal[s].GetMaxTime()) {
+            maxTime = fSignal[s].GetMaxTime();
+        }
+    }
     return maxTime;
 }
 

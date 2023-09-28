@@ -1043,7 +1043,7 @@ Double_t TRestDetectorGas::GetDriftVelocity(Double_t E) {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different "
              << "from REST standard unit. E is V/cm. The return is cm/us" << RESTendl;
 
     Double_t vx, vy, vz;
@@ -1074,7 +1074,7 @@ Double_t TRestDetectorGas::GetLongitudinalDiffusion(Double_t E) {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different "
              << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
@@ -1104,7 +1104,7 @@ Double_t TRestDetectorGas::GetTransversalDiffusion(Double_t E) {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different "
              << "from REST standard unit. E is V/cm. The return is cm^1/2" << RESTendl;
 
     Double_t dl, dt;
@@ -1134,7 +1134,7 @@ Double_t TRestDetectorGas::GetTownsendCoefficient(Double_t E) {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different "
              << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t alpha;
@@ -1164,7 +1164,7 @@ Double_t TRestDetectorGas::GetAttachmentCoefficient(Double_t E) {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different"
+    RESTInfo << "Calling Garfield directly. Please be aware that the unit is different "
              << "from REST standard unit. E is V/cm. The return is V/cm" << RESTendl;
 
     Double_t eta;

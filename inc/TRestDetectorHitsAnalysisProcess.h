@@ -29,8 +29,7 @@
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
-
-#include "TRestEventProcess.h"
+#include <TRestEventProcess.h>
 
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
