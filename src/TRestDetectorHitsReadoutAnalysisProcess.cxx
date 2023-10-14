@@ -87,6 +87,26 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     positionSigma.SetY(sqrt(positionSigma.Y()));
     positionSigma.SetZ(sqrt(positionSigma.Z()));
 
+    const auto positionSigmaXY =
+        sqrt(positionSigma.X() * positionSigma.X() + positionSigma.Y() * positionSigma.Y());
+    const auto positionSigmaXYBalance =
+        (positionSigma.X() - positionSigma.Y()) / (positionSigma.X() + positionSigma.Y());
+
+    TVector3 positionSkewness;
+    for (size_t i = 0; i < hitPosition.size(); i++) {
+        TVector3 diff3 = hitPosition[i] - positionAverage;
+        diff3.SetX(diff3.X() * diff3.X() * diff3.X());
+        diff3.SetY(diff3.Y() * diff3.Y() * diff3.Y());
+        diff3.SetZ(diff3.Z() * diff3.Z() * diff3.Z());
+        positionSkewness += diff3 * hitEnergy[i];
+    }
+    positionSkewness *= 1.0 / readoutEnergy;
+    const auto positionSkewnessXY =
+        (positionSkewness.X() + positionSkewness.Y()) / (positionSigmaXY * positionSigmaXY * positionSigmaXY);
+    positionSkewness.SetX(positionSkewness.X() / (positionSigma.X() * positionSigma.X() * positionSigma.X()));
+    positionSkewness.SetY(positionSkewness.Y() / (positionSigma.Y() * positionSigma.Y() * positionSigma.Y()));
+    positionSkewness.SetZ(positionSkewness.Z() / (positionSigma.Z() * positionSigma.Z() * positionSigma.Z()));
+
     SetObservableValue("readoutEnergy", readoutEnergy);
     SetObservableValue("readoutNumberOfHits", hitEnergy.size());
 
@@ -97,6 +117,14 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     SetObservableValue("readoutSigmaPositionX", positionSigma.X());
     SetObservableValue("readoutSigmaPositionY", positionSigma.Y());
     SetObservableValue("readoutSigmaPositionZ", positionSigma.Z());
+    SetObservableValue("readoutSigmaPositionXY", positionSigmaXY);
+
+    SetObservableValue("readoutSigmaPositionXYBalance", positionSigmaXYBalance);
+
+    SetObservableValue("readoutSkewnessPositionX", positionSkewness.X());
+    SetObservableValue("readoutSkewnessPositionY", positionSkewness.Y());
+    SetObservableValue("readoutSkewnessPositionZ", positionSkewness.Z());
+    SetObservableValue("readoutSkewnessPositionXY", positionSkewnessXY);
 
     SetObservableValue("readoutEnergyInFiducial", energyInFiducial);
 
