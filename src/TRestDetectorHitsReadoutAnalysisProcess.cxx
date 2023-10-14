@@ -32,12 +32,19 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
         const bool isValidHit = channelType == fChannelType;
 
+        const auto nHits = fOutputHitsEvent->GetNumberOfHits();
         if (isValidHit || !fRemoveHitsOutsideReadout) {
             fOutputHitsEvent->AddHit(position, energy, time, type);
         }
         if (!isValidHit) {
             // this hit is either not on the readout or the channel is not of the type we want
             continue;
+        }
+        if (fOutputHitsEvent->GetNumberOfHits() != nHits + 1) {
+            // this should never happen
+            cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
+                 << "Error adding hit " << hitIndex << " to output event" << endl;
+            exit(1);
         }
 
         hitPosition.push_back(position);
