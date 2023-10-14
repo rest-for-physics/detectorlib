@@ -20,7 +20,6 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         const auto energy = fInputHitsEvent->GetEnergy(hitIndex);
         const auto time = fInputHitsEvent->GetTime(hitIndex);
         const auto type = fInputHitsEvent->GetType(hitIndex);
-        fOutputHitsEvent->AddHit(position, energy, time, type);
 
         if (energy <= 0) {
             // this should never happen
@@ -31,8 +30,13 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
 
         const auto daqId = fReadout->GetDaqId(position, false);
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
+        const bool isValidHit = channelType == fChannelType;
 
-        if (channelType != fChannelType) {
+        if (isValidHit || !fRemoveHitsOutsideReadout) {
+            fOutputHitsEvent->AddHit(position, energy, time, type);
+        }
+        if (!isValidHit) {
+            // this hit is either not on the readout or the channel is not of the type we want
             continue;
         }
 
@@ -100,7 +104,7 @@ void TRestDetectorHitsReadoutAnalysisProcess::InitProcess() {
         exit(1);
     }
 
-    if (fChannelType == "") {
+    if (fChannelType.empty()) {
         cerr << "TRestDetectorHitsReadoutAnalysisProcess::InitProcess() : "
              << "Channel type not defined" << endl;
         exit(1);
@@ -122,6 +126,7 @@ void TRestDetectorHitsReadoutAnalysisProcess::PrintMetadata() {
 
 void TRestDetectorHitsReadoutAnalysisProcess::InitFromConfigFile() {
     fRemoveZeroEnergyEvents = StringToBool(GetParameter("removeZeroEnergyEvents", "false"));
+    fRemoveHitsOutsideReadout = StringToBool(GetParameter("removeHitsOutsideReadout", "false"));
     fChannelType = GetParameter("channelType", fChannelType);
     fFiducialPosition = Get3DVectorParameterWithUnits("fiducialPosition", fFiducialPosition);
     fFiducialDiameter = GetDblParameterWithUnits("fiducialDiameter", fFiducialDiameter);
