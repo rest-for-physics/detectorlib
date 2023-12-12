@@ -16,8 +16,8 @@
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fInputHitsEvent;   //!
-    TRestDetectorHitsEvent* fOutputHitsEvent;  //!
+    TRestDetectorHitsEvent* fInputHitsEvent = nullptr;   //!
+    TRestDetectorHitsEvent* fOutputHitsEvent = nullptr;  //!
 
     void InitFromConfigFile() override;
     void Initialize() override;
@@ -28,6 +28,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
     TVector3 fFiducialPosition;
     Double_t fFiducialDiameter = 0;
     bool fRemoveZeroEnergyEvents = false;
+    bool fRemoveHitsOutsideReadout = false;
 
     TRestDetectorReadout* fReadout = nullptr;  //!
 
@@ -48,7 +49,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsReadoutAnalysisProcess() override = default;
 
-    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 3);
 };
 
 #endif  // REST_TRESTDETECTORHITSREADOUTANALYSISPROCESS_H
