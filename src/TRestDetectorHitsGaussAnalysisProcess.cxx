@@ -161,9 +161,9 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
         fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
     }
 
-    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX();
-    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY();
-    Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ();
+    Double_t gausSigmaX = fOutputHitsEvent->GetGaussSigmaX(fError, fNHitsMin);
+    Double_t gausSigmaY = fOutputHitsEvent->GetGaussSigmaY(fError, fNHitsMin);
+    Double_t gausSigmaZ = fOutputHitsEvent->GetGaussSigmaZ(fError, fNHitsMin);
     Double_t xy2SigmaGaus = (gausSigmaX == -1. || gausSigmaY == -1.)
                                 ? -1.
                                 : (gausSigmaX * gausSigmaX) + (gausSigmaY * gausSigmaY);
@@ -192,14 +192,6 @@ TRestEvent* TRestDetectorHitsGaussAnalysisProcess::ProcessEvent(TRestEvent* inpu
 }
 
 ///////////////////////////////////////////////
-/// \brief Function reading input parameters from the RML
-/// TRestDetectorHitsGaussAnalysisProcess section
-///
-void TRestDetectorHitsGaussAnalysisProcess::InitFromConfigFile() {
-    fPitch = StringToDouble(GetParameter("Pitch", "0.5"));
-}
-
-///////////////////////////////////////////////
 /// \brief It prints out the process parameters stored in the
 /// metadata structure
 ///
@@ -208,6 +200,8 @@ void TRestDetectorHitsGaussAnalysisProcess::PrintMetadata() {
 
     // Print output metadata using, metadata << endl;
     RESTMetadata << "Pitch (mm) : " << fPitch << RESTendl;
+    RESTMetadata << "Error (ADC) : " << fError << RESTendl;
+    RESTMetadata << "Minimum number of hits to apply correction : " << fNHitsMin << RESTendl;
 
     EndPrintProcess();
 }

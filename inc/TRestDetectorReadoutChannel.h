@@ -23,26 +23,15 @@
 #ifndef RestCore_TRestDetectorReadoutChannel
 #define RestCore_TRestDetectorReadoutChannel
 
-#include <TObject.h>
 #include <TRestMetadata.h>
 
 #include <iostream>
 
 #include "TRestDetectorReadoutPixel.h"
 
-enum TRestDetectorReadoutChannelType {
-    Channel_NoType = 0,
-    Channel_Pixel = 1,
-    Channel_X = 2,
-    Channel_Y = 3,
-    Channel_U = 4,
-    Channel_V = 5,
-    Channel_W = 6,
-};
-
 /// A class to store the readout channel definition used in TRestDetectorReadoutModule.
 /// It allows to integrate any number of independent readout pixels.
-class TRestDetectorReadoutChannel : public TObject {
+class TRestDetectorReadoutChannel {
    private:
     Int_t fDaqID;  ///< Defines the corresponding daq channel id. See decoding
                    ///< details at TRestDetectorReadout.
@@ -51,14 +40,29 @@ class TRestDetectorReadoutChannel : public TObject {
 
     Short_t fChannelId = -1;  ///< It stores the corresponding physical readout channel
 
+    std::string fName;  // Name of the signal
+    std::string fType;  // Type of the signal
+
     void Initialize();
 
    public:
     /// Returns the corresponding daq channel id
     inline Int_t GetDaqID() const { return fDaqID; }
 
+    /// Returns the channel name
+    inline std::string GetName() const { return fName; }
+
+    /// Returns the channel type
+    inline std::string GetType() const { return fType; }
+
     /// Returns the corresponding channel id
     inline Int_t GetChannelId() const { return fChannelId; }
+
+    std::string GetChannelName() const { return fName; }
+    std::string GetChannelType() const { return fType; }
+
+    void SetChannelName(const std::string& name) { fName = name; }
+    void SetChannelType(const std::string& type) { fType = type; }
 
     /// Returns the total number of pixels inside the readout channel
     Int_t GetNumberOfPixels() { return fReadoutPixel.size(); }
@@ -71,15 +75,6 @@ class TRestDetectorReadoutChannel : public TObject {
         return &fReadoutPixel[n];
     }
 
-    void SetType(TRestDetectorReadoutChannelType type) {
-        // in future we may implement this
-    }
-
-    TRestDetectorReadoutChannelType GetType() {
-        // in future we may implement this
-        return Channel_NoType;
-    }
-
     /// Sets the daq channel number id
     void SetDaqID(Int_t id) { fDaqID = id; }
 
@@ -87,7 +82,13 @@ class TRestDetectorReadoutChannel : public TObject {
     void SetChannelID(Int_t id) { fChannelId = id; }
 
     /// Adds a new pixel to the readout channel
-    void AddPixel(TRestDetectorReadoutPixel pix) { fReadoutPixel.push_back(pix); }
+    void AddPixel(const TRestDetectorReadoutPixel& pixel) { fReadoutPixel.emplace_back(pixel); }
+
+    /// Sets the channel name
+    void SetName(const std::string& name) { fName = name; }
+
+    /// Sets the channel type
+    void SetType(const std::string& type) { fType = type; }
 
     Int_t isInside(Double_t x, Double_t y);
 
@@ -98,6 +99,6 @@ class TRestDetectorReadoutChannel : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutChannel();
 
-    ClassDef(TRestDetectorReadoutChannel, 3);  // REST run class
+    ClassDef(TRestDetectorReadoutChannel, 6);  // REST run class
 };
 #endif

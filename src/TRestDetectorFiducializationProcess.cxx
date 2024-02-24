@@ -74,18 +74,21 @@ TRestEvent* TRestDetectorFiducializationProcess::ProcessEvent(TRestEvent* inputE
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
 
-            if (plane->GetModuleIDFromPosition(TVector3(x, y, z)) >= 0)
+            if (plane->GetModuleIDFromPosition(TVector3(x, y, z)) >= 0) {
                 fOutputHitsEvent->AddHit(x, y, z, eDep, t, type);
+            }
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) {
+        return nullptr;
+    }
 
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorFiducializationProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorFiducializationProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorFiducializationProcess. Hits total energy : "
+             << fOutputHitsEvent->GetTotalEnergy() << endl;
     }
 
     return fOutputHitsEvent;

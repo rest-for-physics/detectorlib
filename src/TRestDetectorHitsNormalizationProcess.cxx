@@ -11,7 +11,7 @@
 ///             TRestDetectorHitsNormalizationProcess
 ///             How to use: replace TRestDetectorHitsNormalizationProcess by your name,
 ///             fill the required functions following instructions and add all
-///             needed additional members and funcionality
+///             needed additional members and functionality
 ///
 ///             sep 2016:   First concept
 ///                 Created as part of the conceptualization of existing REST
@@ -85,8 +85,8 @@ TRestEvent* TRestDetectorHitsNormalizationProcess::ProcessEvent(TRestEvent* inpu
     if (this->GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsNormalizationProcess. Hits added : " << fHitsOutputEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : " << fHitsOutputEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorHitsNormalizationProcess. Hits total energy : "
+             << fHitsOutputEvent->GetTotalEnergy() << endl;
     }
 
     return fHitsOutputEvent;

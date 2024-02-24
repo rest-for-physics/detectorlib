@@ -19,11 +19,8 @@
 
 class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
    private:
-#ifndef __CINT__
     TRestDetectorHitsEvent* fHitsEvent;  //!
-
-    TRandom3* fRandom;  //!
-#endif
+    TRandom3* fRandom;                   //!
 
     void InitFromConfigFile() override;
 
@@ -33,8 +30,8 @@ class TRestDetectorHitsShuffleProcess : public TRestEventProcess {
     Int_t fIterations;
 
    public:
-    any GetInputEvent() const override { return fHitsEvent; }
-    any GetOutputEvent() const override { return fHitsEvent; }
+    RESTValue GetInputEvent() const override { return fHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fHitsEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;

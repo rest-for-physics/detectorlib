@@ -31,12 +31,10 @@
 
 class TRestDetectorSignalEvent : public TRestEvent {
    protected:
-#ifndef __CINT__
     Double_t fMinTime;   //!
     Double_t fMaxTime;   //!
     Double_t fMinValue;  //!
     Double_t fMaxValue;  //!
-#endif
 
     std::vector<TRestDetectorSignal> fSignal;  // Collection of signals that define the event
 
@@ -69,7 +67,9 @@ class TRestDetectorSignalEvent : public TRestEvent {
 
     inline TRestDetectorSignal* GetSignalById(Int_t sid) {
         Int_t index = GetSignalIndex(sid);
-        if (index < 0) return nullptr;
+        if (index < 0) {
+            return nullptr;
+        }
 
         return &fSignal[index];
     }

@@ -23,7 +23,6 @@
 #ifndef RestCore_TRestDetectorReadout
 #define RestCore_TRestDetectorReadout
 
-#include <TObject.h>
 #include <TRestMetadata.h>
 
 #include <iostream>
@@ -37,27 +36,21 @@ class TRestDetectorReadout : public TRestMetadata {
 
     void Initialize() override;
 
-    Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
-                       ///< between a physical readout channel id and a signal daq id
-
-    Int_t fNReadoutPlanes;  ///< Number of readout planes present on the readout
     std::vector<TRestDetectorReadoutPlane>
         fReadoutPlanes;  ///< A std::vector storing the TRestDetectorReadoutPlane definitions.
 
-#ifndef __CINT__
     Int_t fMappingNodes;  //!///< Number of nodes per axis used on the readout
                           //! coordinate mapping. See also TRestDetectorReadoutMapping.
     std::vector<TRestDetectorReadoutModule> fModuleDefinitions;  //!///< A std::vector storing the different
                                                                  //! TRestDetectorReadoutModule definitions.
-#endif
 
-    void ValidateReadout();
+    void ValidateReadout() const;
 
    public:
     TRestDetectorReadoutPlane& operator[](int p) { return fReadoutPlanes[p]; }
 
     TRestDetectorReadoutPlane* GetReadoutPlane(int p);
-    void AddReadoutPlane(TRestDetectorReadoutPlane plane);
+    void AddReadoutPlane(const TRestDetectorReadoutPlane& plane);
 
     /////////////////////////////////////
     TRestDetectorReadoutPlane* GetReadoutPlaneWithID(int id);
@@ -65,18 +58,28 @@ class TRestDetectorReadout : public TRestMetadata {
     TRestDetectorReadoutChannel* GetReadoutChannelWithDaqID(int daqId);
     /////////////////////////////////////
 
-    Int_t GetNumberOfReadoutPlanes();
+    Int_t GetNumberOfReadoutPlanes() const { return fReadoutPlanes.size(); }
     Int_t GetNumberOfModules();
     Int_t GetNumberOfChannels();
 
-    Int_t GetModuleDefinitionId(TString name);
+    Int_t GetModuleDefinitionId(const TString& name);
 
     /////////////////////////////////////
     TRestDetectorReadoutModule* ParseModuleDefinition(TiXmlElement* moduleDefinition);
     void GetPlaneModuleChannel(Int_t daqID, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannel(const TVector3& hitPosition, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
-    Int_t GetHitsDaqChannelAtReadoutPlane(const TVector3& hitPosition, Int_t& moduleID, Int_t& channelID,
-                                          Int_t planeId = 0);
+    Int_t GetHitsDaqChannel(const TVector3& position, Int_t& planeID, Int_t& moduleID, Int_t& channelID);
+
+    /// Returns a tuple with the DaqID, ModuleID, ChannelID
+    std::tuple<Int_t, Int_t, Int_t> GetHitsDaqChannelAtReadoutPlane(const TVector3& position,
+                                                                    Int_t planeId = 0);
+
+    /// \brief Returns the DaqID of the channel for position. If no channel is found returns -1
+    Int_t GetDaqId(const TVector3& position, bool check = true);
+
+    std::string GetTypeForChannelDaqId(Int_t daqId);
+
+    std::set<Int_t> GetAllDaqIds();
+
     Double_t GetX(Int_t signalID);
     Double_t GetY(Int_t signalID);
     /////////////////////////////////////
@@ -95,13 +98,15 @@ class TRestDetectorReadout : public TRestMetadata {
 
     void Draw();
 
+    void Export(const std::string& fileName);
+
     // Constructor
     TRestDetectorReadout();
-    TRestDetectorReadout(const char* configFilename);
-    TRestDetectorReadout(const char* configFilename, std::string name);
+    explicit TRestDetectorReadout(const char* configFilename);
+    TRestDetectorReadout(const char* configFilename, const std::string& name);
     // Destructor
-    virtual ~TRestDetectorReadout();
+    ~TRestDetectorReadout() override;
 
-    ClassDefOverride(TRestDetectorReadout, 1);
+    ClassDefOverride(TRestDetectorReadout, 3);
 };
 #endif

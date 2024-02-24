@@ -237,7 +237,7 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
             if (fabs(planeZpos - matrixZpos) > 1)
                 continue;  // we search for fReadout entry at same Z position
             rdPlaneFound = true;
-            planeZvec = readoutplane->GetPlaneVector().z();
+            planeZvec = readoutplane->GetNormal().z();
             cout << "     planeZvec " << planeZvec << endl;
         }
 
@@ -330,8 +330,11 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
 Int_t TRestDetectorGarfieldDriftProcess::FindModule(Int_t readoutPlane, Double_t x, Double_t y) {
     // TODO verify this
     TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(readoutPlane);
-    for (int md = 0; md < plane->GetNumberOfModules(); md++)
-        if ((*plane)[md].isInside(x, y)) return md;
+    for (size_t md = 0; md < plane->GetNumberOfModules(); md++) {
+        if ((*plane)[md].IsInside({x, y})) {
+            return md;
+        }
+    }
 
     return -1;
 }
@@ -419,8 +422,8 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorElectronDiffusionProcess. Hits added : " << fOutputHitsEvent->GetNumberOfHits()
              << endl;
-        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : " << fOutputHitsEvent->GetEnergy()
-             << endl;
+        cout << "TRestDetectorElectronDiffusionProcess. Hits total energy : "
+             << fOutputHitsEvent->GetTotalEnergy() << endl;
         cout << " fTimedHitsEvent " << fOutputHitsEvent << " class " << fOutputHitsEvent->ClassName() << endl;
         fOutputHitsEvent->PrintEvent(20);
     }

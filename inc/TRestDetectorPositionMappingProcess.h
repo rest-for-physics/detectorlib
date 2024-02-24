@@ -50,8 +50,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TH2F* fAreaGainMap;  //!
 
    public:
-    any GetInputEvent() const override { return fHitsEvent; }
-    any GetOutputEvent() const override { return fHitsEvent; }
+    RESTValue GetInputEvent() const override { return fHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fHitsEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
@@ -69,8 +69,8 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
         RESTMetadata << (fCreateGainMap ? ">   " : "    ")
                      << "Create new correction std::map for each position" << RESTendl;
         RESTMetadata << "output mapping file: " << fMappingSave << RESTendl;
-        RESTMetadata << "Energy cut for Threshold integral: " << any(fEnergyCutRange) << RESTendl;
-        RESTMetadata << "Energy cut for NGoodSignals: " << any(fNHitsCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for Threshold integral: " << RESTValue(fEnergyCutRange) << RESTendl;
+        RESTMetadata << "Energy cut for NGoodSignals: " << RESTValue(fNHitsCutRange) << RESTendl;
         RESTMetadata << "Binning: " << fNBinsX << ", " << fNBinsY << ", " << fNBinsZ << RESTendl;
 
         EndPrintProcess();
@@ -81,7 +81,7 @@ class TRestDetectorPositionMappingProcess : public TRestEventProcess {
     TRestDetectorPositionMappingProcess();
     TRestDetectorPositionMappingProcess(const char* configFilename);
 
-    ~TRestDetectorPositionMappingProcess();
+    ~TRestDetectorPositionMappingProcess() override;
 
     ClassDefOverride(TRestDetectorPositionMappingProcess, 1);
 };

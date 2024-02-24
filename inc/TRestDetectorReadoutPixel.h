@@ -24,26 +24,26 @@
 #define RestCore_TRestDetectorReadoutPixel
 
 #include <TMath.h>
-#include <TObject.h>
-#include <TRestMetadata.h>
 #include <TVector2.h>
 
 #include <iostream>
 
 /// A class to store the readout pixel definition used in TRestDetectorReadoutChannel.
-class TRestDetectorReadoutPixel : public TObject {
+class TRestDetectorReadoutPixel {
    private:
-    Double_t fPixelOriginX;  ///< The pixel x-origin position, left-bottom corner.
-    Double_t fPixelOriginY;  ///< The pixel y-origin position, left-bottom corner.
+    // TODO: refactor as TVector2 as with other readout classes (readouts will need to be regenerated)
 
-    Double_t fPixelSizeX;  ///< The pixel x size.
-    Double_t fPixelSizeY;  ///< The pixel y size.
+    Double_t fPixelOriginX = 0;  ///< The pixel x-origin position, left-bottom corner.
+    Double_t fPixelOriginY = 0;  ///< The pixel y-origin position, left-bottom corner.
 
-    Double_t fRotation;  ///< The pixel rotation angle in degrees, rotation with
-                         ///< axis at the origin position.
+    Double_t fPixelSizeX = 0;  ///< The pixel x size.
+    Double_t fPixelSizeY = 0;  ///< The pixel y size.
 
-    Bool_t fTriangle;  ///< The type of the pixel : false is rectangular, true is
-                       ///< triangle
+    Double_t fRotation = 0;  ///< The pixel rotation angle in degrees, rotation with
+                             ///< axis at the origin position.
+
+    Bool_t fTriangle = false;  ///< The type of the pixel : false is rectangular, true is
+                               ///< triangle
 
     /// It will be initialized with the module parameter "pixelTolerance"
     Double_t fTolerance = 1.e-6;  //!
@@ -59,7 +59,7 @@ class TRestDetectorReadoutPixel : public TObject {
     Double_t GetOriginY() const { return fPixelOriginY; }
 
     /// Returns a TVector2 with the pixel origin.
-    TVector2 GetOrigin() const { return TVector2(fPixelOriginX, fPixelOriginY); }
+    TVector2 GetOrigin() const { return {fPixelOriginX, fPixelOriginY}; }
 
     /// Returns the rotation angle in degrees
     Double_t GetRotation() const { return fRotation; }
@@ -71,7 +71,7 @@ class TRestDetectorReadoutPixel : public TObject {
     inline Double_t GetSizeY() const { return fPixelSizeY; }
 
     /// Returns a TVector2 with the pixel size.
-    TVector2 GetSize() { return TVector2(fPixelSizeX, fPixelSizeY); }
+    TVector2 GetSize() { return {fPixelSizeX, fPixelSizeY}; }
 
     /// Returns true if the pixel is a triangle.
     Bool_t GetTriangle() const { return fTriangle; }
@@ -80,26 +80,14 @@ class TRestDetectorReadoutPixel : public TObject {
 
     TVector2 GetVertex(int n) const;
 
-    /// Sets the origin of the pixel using the coordinate values *x*,*y*.
-    void SetOrigin(Double_t x, Double_t y) {
-        fPixelOriginX = x;
-        fPixelOriginY = y;
-    }
-
     /// Sets the origin of the pixel using a TVector2.
-    void SetOrigin(TVector2 origin) {
+    void SetOrigin(const TVector2& origin) {
         fPixelOriginX = origin.X();
         fPixelOriginY = origin.Y();
     }
 
-    /// Sets the size of the pixel using the coordinate values *sx*,*sy*.
-    void SetSize(Double_t sx, Double_t sy) {
-        fPixelSizeX = sx;
-        fPixelSizeY = sy;
-    }
-
     /// Sets the size of the pixel using a TVector2.
-    void SetSize(TVector2 size) {
+    void SetSize(const TVector2& size) {
         fPixelSizeX = size.X();
         fPixelSizeY = size.Y();
     }
@@ -113,18 +101,18 @@ class TRestDetectorReadoutPixel : public TObject {
     /// Sets the value of the tolerance in mm. Used in IsInside method.
     void SetTolerance(Double_t tol) { fTolerance = tol; }
 
-    Bool_t isInside(TVector2 pos);
-    Bool_t isInside(Double_t x, Double_t y);
+    Bool_t IsInside(const TVector2& pos);
 
-    TVector2 TransformToPixelCoordinates(TVector2 p);
+    TVector2 TransformToPixelCoordinates(const TVector2& pixel) const;
 
-    void Print();
+    void Print() const;
 
     // Constructor
     TRestDetectorReadoutPixel();
     // Destructor
     virtual ~TRestDetectorReadoutPixel();
 
-    ClassDef(TRestDetectorReadoutPixel, 4);
+    ClassDef(TRestDetectorReadoutPixel, 5);
 };
+
 #endif

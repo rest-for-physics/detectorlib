@@ -24,7 +24,6 @@
 #define RestCore_TRestDetectorReadoutModule
 
 #include <TMath.h>
-#include <TObject.h>
 #include <TVector2.h>
 
 #include <iostream>
@@ -34,29 +33,19 @@
 
 /// A class to store the readout module definition used in TRestDetectorReadoutPlane. It
 /// allows to integrate any number of independent readout channels.
-class TRestDetectorReadoutModule : public TObject {
+class TRestDetectorReadoutModule {
    private:
-    Int_t fModuleID;  ///< The module id given by the readout definition.
+    Int_t fId = -1;  ///< The module id given by the readout definition.
 
-    TString fModuleName;  ///< The assigned module name.
+    TVector2 fOrigin = {0, 0};  ///< The module (x, y) position relative to the readout plane position.
 
-    Double_t fModuleOriginX;  ///< The module x-position (left-bottom corner)
-                              ///< relative to the readout plane position.
-    Double_t fModuleOriginY;  ///< The module y-position (left-bottom corner)
-                              ///< relative to the readout plane position.
+    TVector2 fSize = {0, 0};  ///< The module (x, y) size. All pixels should be contained within this size.
 
-    Double_t fModuleSizeX;  ///< X-size of the module. All pixels should be
-                            ///< contained within this size.
-    Double_t fModuleSizeY;  ///< Y-size of the module. All pixels should be
-                            ///< contained within this size.
+    /// The rotation of the module around the module origin (fModuleOriginX, fModuleOriginY) in radians.
+    Double_t fRotation = 0;  //<
 
-    Double_t fModuleRotation;  ///< The rotation of the module around the
-                               ///< position=(fModuleOriginX, fModuleOriginY) in
-                               ///< degrees.
-
-    Int_t fMininimumDaqId;  ///< The minimum daq channel id associated to the
-                            ///< module.
-    Int_t fMaximumDaqId;    ///< The maximum daq channel id associated to the module.
+    std::pair<Int_t, Int_t> fDaqIdRange = {
+        -1, -1};  ///< The minimum and maximum daq channel ids associated to the module.
 
     std::vector<TRestDetectorReadoutChannel>
         fReadoutChannel;  ///< A std::vector of the instances of TRestDetectorReadoutChannel
@@ -67,37 +56,33 @@ class TRestDetectorReadoutModule : public TObject {
     Double_t fTolerance;  ///< Tolerance allowed in overlaps at the pixel
                           ///< boundaries in mm.
 
-#ifndef __CINT__
     Bool_t showWarnings;  //!///< Flag to enable/disable warning outputs. Disabled by
                           //! default. REST_Warning in TRestDetectorReadout will enable it.
-#endif
+
+    Int_t fFirstDaqChannel = 0;  ///< First DAQ channel
+
+    std::string fDecodingFile = "";  ///< Decoding file
+
+    Int_t fMappingNodes = 0;  ///< Number of nodes
+
+    Bool_t fDecoding;  ///< Defines if a decoding file was used to set the relation
+                       ///< between a physical readout channel id and a signal daq id
+
+    std::string fName;  //<
+    std::string fType;  //<
 
     void Initialize();
 
-    /// Converts the coordinates given by TVector2 in the readout plane reference
-    /// system to the readout module reference system.
-    inline TVector2 TransformToModuleCoordinates(const TVector2& p) {
-        return TransformToModuleCoordinates(p.X(), p.Y());
-    }
-
     /// Converts the coordinates (xPhys,yPhys) in the readout plane reference
     /// system to the readout module reference system.
-    inline TVector2 TransformToModuleCoordinates(Double_t xPhys, Double_t yPhys) {
-        TVector2 coords(xPhys - fModuleOriginX, yPhys - fModuleOriginY);
-        TVector2 rot = coords.Rotate(-fModuleRotation * TMath::Pi() / 180.);
-
-        return rot;
+    inline TVector2 TransformToModuleCoordinates(const TVector2& coords) const {
+        return TVector2(coords - fOrigin).Rotate(-1.0 * fRotation);
     }
 
     /// Converts the coordinates (xMod,yMod) in the readout module reference
     /// system to the readout plane reference system.
-    inline TVector2 TransformToPhysicalCoordinates(Double_t xMod, Double_t yMod) {
-        TVector2 coords(xMod, yMod);
-
-        coords = coords.Rotate(fModuleRotation * TMath::Pi() / 180.);
-        coords = coords + TVector2(fModuleOriginX, fModuleOriginY);
-
-        return coords;
+    inline TVector2 TransformToPlaneCoordinates(const TVector2& coords) const {
+        return coords.Rotate(fRotation) + fOrigin;
     }
 
    protected:
@@ -105,88 +90,76 @@ class TRestDetectorReadoutModule : public TObject {
     // Setters
 
     ///  Sets the module by id definition
-    inline void SetModuleID(Int_t modID) { fModuleID = modID; }
+    inline void SetModuleID(Int_t modID) { fId = modID; }
 
     /// Sets the module size by definition using TVector2 input
-    inline void SetSize(const TVector2& s) {
-        fModuleSizeX = s.X();
-        fModuleSizeY = s.Y();
-    }
-
-    /// Sets the module size by definition using (sX, sY) coordinates
-    inline void SetSize(Double_t sX, Double_t sY) { SetSize({sX, sY}); }
+    inline void SetSize(const TVector2& size) { fSize = size; }
 
     /// Sets the module origin by definition using TVector2 input
-    inline void SetOrigin(const TVector2& c) {
-        fModuleOriginX = c.X();
-        fModuleOriginY = c.Y();
-    }
-
-    /// Sets the module origin by definition using (x,y) coordinates
-    inline void SetOrigin(Double_t x, Double_t y) { SetOrigin({x, y}); }
+    inline void SetOrigin(const TVector2& origin) { fOrigin = origin; }
 
     /// Sets the module rotation in degrees
-    inline void SetRotation(Double_t rotation) { fModuleRotation = rotation; }
+    inline void SetRotation(Double_t rotation) { fRotation = rotation; }
 
     /// Sets the name of the readout module
-    inline void SetName(const TString& name) { fModuleName = name; }
+    inline void SetName(const std::string& name) { fName = name; }
+
+    /// Sets the type of the readout module
+    inline void SetType(const std::string& type) { fType = type; }
 
     /// Sets the tolerance for independent pixel overlaps
     inline void SetTolerance(Double_t tolerance) { fTolerance = tolerance; }
+
+    /// Sets first DAQ channel
+    inline void SetFirstDaqChannel(Int_t firstDaqChannel) { fFirstDaqChannel = firstDaqChannel; }
+
+    /// Sets number of nodes
+    inline void SetMappingNodes(Int_t nodes) { fMappingNodes = nodes; }
 
     /// Gets the tolerance for independent pixel overlaps
     inline Double_t GetTolerance() const { return fTolerance; }
 
     /// Returns the minimum daq id number
-    inline Int_t GetMinDaqID() const { return fMininimumDaqId; }
+    inline Int_t GetMinDaqID() const { return fDaqIdRange.first; }
 
     /// Returns the maximum daq id number
-    inline Int_t GetMaxDaqID() const { return fMaximumDaqId; }
+    inline Int_t GetMaxDaqID() const { return fDaqIdRange.second; }
 
-    /// Returns the physical readout channel index for a given daq id channel
-    /// number
+    inline Int_t GetMappingNodes() const { return fMappingNodes; }
+
+    /// Returns the physical readout channel index for a given daq id channel number
     inline Int_t DaqToReadoutChannel(Int_t daqChannel) {
-        for (int n = 0; n < GetNumberOfChannels(); n++)
-            if (GetChannel(n)->GetDaqID() == daqChannel) return n;
+        for (size_t n = 0; n < GetNumberOfChannels(); n++) {
+            if (GetChannel(n)->GetDaqID() == daqChannel) {
+                return n;
+            }
+        }
         return -1;
     }
 
     /// Returns the module id
-    inline Int_t GetModuleID() const { return fModuleID; }
+    inline Int_t GetModuleID() const { return fId; }
 
-    /// Returns the module x-coordinate origin
-    inline Double_t GetModuleOriginX() const { return fModuleOriginX; }
+    /// Returns the module origin position
+    inline TVector2 GetOrigin() const { return fOrigin; }
 
-    /// Returns the module y-coordinate origin
-    inline Double_t GetModuleOriginY() const { return fModuleOriginY; }
-
-    /// Returns the module x-coordinate origin
-    inline Double_t GetOriginX() const { return fModuleOriginX; }
-
-    /// Returns the module y-coordinate origin
-    inline Double_t GetOriginY() const { return fModuleOriginY; }
-
-    /// Returns the module size x-coordinate
-    inline Double_t GetModuleSizeX() const { return fModuleSizeX; }
-
-    /// Returns the module size y-coordinate
-    inline Double_t GetModuleSizeY() const { return fModuleSizeY; }
+    /// Returns the module size (x, y) in mm
+    inline TVector2 GetSize() const { return fSize; }
 
     /// Returns the module rotation in degrees
-    inline Double_t GetModuleRotation() const { return fModuleRotation; }
+    inline Double_t GetRotation() const { return fRotation; }
 
     /// Converts the coordinates given by TVector2 in the readout plane reference
     /// system to the readout module reference system.
-    TVector2 GetModuleCoordinates(const TVector2& p) { return TransformToModuleCoordinates(p); }
+    TVector2 GetModuleCoordinates(const TVector2& p) const { return TransformToModuleCoordinates(p); }
 
     /// Converts the coordinates given by TVector2 in the readout module reference
     /// system to the readout plane reference system.
-    TVector2 GetPhysicalCoordinates(const TVector2& p) {
-        return TransformToPhysicalCoordinates(p.X(), p.Y());
-    }
+    TVector2 GetPlaneCoordinates(const TVector2& p) { return TransformToPlaneCoordinates(p); }
 
     /// Returns the module name
-    inline const char* GetName() const override { return fModuleName.Data(); }
+    inline std::string GetName() const { return fName; }
+    inline std::string GetType() const { return fType; }
 
     /// Returns a pointer to the readout mapping
     inline TRestDetectorReadoutMapping* GetMapping() { return &fMapping; }
@@ -194,13 +167,15 @@ class TRestDetectorReadoutModule : public TObject {
     inline TRestDetectorReadoutChannel& operator[](int n) { return fReadoutChannel[n]; }
 
     /// Returns a pointer to a readout channel by index
-    inline TRestDetectorReadoutChannel* GetChannel(int n) {
-        if (n >= GetNumberOfChannels()) return nullptr;
+    inline TRestDetectorReadoutChannel* GetChannel(size_t n) {
+        if (n >= GetNumberOfChannels()) {
+            return nullptr;
+        }
         return &fReadoutChannel[n];
     }
 
     /// Returns the total number of channels defined inside the module
-    inline Int_t GetNumberOfChannels() const { return fReadoutChannel.size(); }
+    inline size_t GetNumberOfChannels() const { return fReadoutChannel.size(); }
 
     /// Enables warning output
     inline void EnableWarnings() { showWarnings = true; }
@@ -208,24 +183,22 @@ class TRestDetectorReadoutModule : public TObject {
     /// Disables warning output
     inline void DisableWarnings() { showWarnings = false; }
 
-    void DoReadoutMapping(Int_t nodes = 0);
+    void DoReadoutMapping();
 
-    Bool_t isInside(const TVector2& position);
+    void SetDecodingFile(const std::string& decodingFile);
 
     ///////////////////////////////////////////////
     /// \brief Determines if the position *x,y* relative to the readout
     /// plane are inside this readout module.
     ///
-    inline Bool_t isInside(Double_t x, Double_t y) { return isInside({x, y}); }
+    Bool_t IsInside(const TVector2& position) const;
 
-    Bool_t isInsideChannel(Int_t channel, Double_t x, Double_t y);
-    Bool_t isInsideChannel(Int_t channel, const TVector2& position);
+    Bool_t IsInsideChannel(Int_t channel, const TVector2& position);
 
-    Bool_t isInsidePixel(Int_t channel, Int_t pixel, Double_t x, Double_t y);
-    Bool_t isInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
+    Bool_t IsInsidePixel(Int_t channel, Int_t pixel, const TVector2& position);
 
-    Bool_t isDaqIDInside(Int_t daqID);
-    Int_t FindChannel(Double_t x, Double_t y);
+    Bool_t IsDaqIDInside(Int_t daqID);
+    Int_t FindChannel(const TVector2& position);
     TVector2 GetDistanceToModule(const TVector2& position);
 
     TVector2 GetPixelOrigin(Int_t channel, Int_t pixel);
@@ -240,7 +213,7 @@ class TRestDetectorReadoutModule : public TObject {
 
     TVector2 GetVertex(int n) const;
 
-    void AddChannel(TRestDetectorReadoutChannel& rChannel);
+    void AddChannel(TRestDetectorReadoutChannel& channel);
 
     void SetMinMaxDaqIDs();
 
@@ -253,6 +226,6 @@ class TRestDetectorReadoutModule : public TObject {
     // Destructor
     virtual ~TRestDetectorReadoutModule();
 
-    ClassDefOverride(TRestDetectorReadoutModule, 1);
+    ClassDef(TRestDetectorReadoutModule, 5);
 };
 #endif

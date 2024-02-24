@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<specular>
+    <TRestDetectorHitsRotationProcess name="45degOff" title="45deg rotation">
+        <parameter name="center" value="(-25,25,0)"/>
+        <parameter name="axis" value="(0,0,1)"/>
+        <parameter name="angle" value="-45deg"/>
+    </TRestDetectorHitsRotationProcess>
+</specular>

@@ -172,10 +172,14 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         auto time = hits->GetTime(n);
         auto type = hits->GetType(n);
 
-        fOutputHitsEvent->AddHit(x, y, z, eDep, time, type);
+        // do not analyze veto hits
+        if (type == VETO) {
+            continue;
+        }
+        fOutputHitsEvent->AddHit({x, y, z}, eDep, time, type);
     }
 
-    Double_t energy = fOutputHitsEvent->GetEnergy();
+    Double_t energy = fOutputHitsEvent->GetTotalEnergy();
     TVector3 meanPosition = fOutputHitsEvent->GetMeanPosition();
     Double_t sigmaX = fOutputHitsEvent->GetSigmaX();
     Double_t sigmaY = fOutputHitsEvent->GetSigmaY();
@@ -325,7 +329,26 @@ TRestEvent* TRestDetectorHitsAnalysisProcess::ProcessEvent(TRestEvent* inputEven
         GetChar();
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) {
+        return nullptr;
+    }
+
+    for (unsigned int n = 0; n < hits->GetNumberOfHits(); n++) {
+        Double_t eDep = hits->GetEnergy(n);
+
+        Double_t x = hits->GetX(n);
+        Double_t y = hits->GetY(n);
+        Double_t z = hits->GetZ(n);
+
+        auto time = hits->GetTime(n);
+        auto type = hits->GetType(n);
+
+        // add back missing hits from veto
+        if (type != VETO) {
+            continue;
+        }
+        fOutputHitsEvent->AddHit({x, y, z}, eDep, time, type);
+    }
 
     return fOutputHitsEvent;
 }
@@ -347,11 +370,13 @@ void TRestDetectorHitsAnalysisProcess::InitFromConfigFile() {
     fFid_sX = GetDblParameterWithUnits("fiducial_sX", 1);
     fFid_sY = GetDblParameterWithUnits("fiducial_sY", 1);
     // read angle in degrees
-    fFid_theta = StringToDouble(GetParameter("fiducial_theta", "0"));
-    // convert it into radians for internal usage
-    fFid_theta = std::fmod(fFid_theta, 360) * TMath::DegToRad();
+    fFid_theta = GetDblParameterWithUnits("fiducial_theta", 0.0);
 
-    if (GetParameter("cylinderFiducialization", "false") == "true") fCylinderFiducial = true;
+    if (GetParameter("cylinderFiducialization", "false") == "true") {
+        fCylinderFiducial = true;
+    }
 
-    if (GetParameter("prismFiducialization", "false") == "true") fPrismFiducial = true;
+    if (GetParameter("prismFiducialization", "false") == "true") {
+        fPrismFiducial = true;
+    }
 }

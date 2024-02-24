@@ -25,15 +25,16 @@
 
 #include "TRestDetectorSignal.h"
 
-#include "TFitResult.h"
-using namespace std;
-
+#include <TCanvas.h>
 #include <TF1.h>
+#include <TFitResult.h>
 #include <TH1.h>
 #include <TMath.h>
 #include <TRandom3.h>
 
-#include "TCanvas.h"
+#include <limits>
+
+using namespace std;
 
 ClassImp(TRestDetectorSignal);
 
@@ -127,12 +128,18 @@ void TRestDetectorSignal::SetPoint(Int_t index, Double_t t, Double_t d) {
     fSignalCharge[index] = d;
 }
 
-Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) {
-    if (startBin < 0) startBin = 0;
-    if (endBin <= 0 || endBin > GetNumberOfPoints()) endBin = GetNumberOfPoints();
+Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) const {
+    if (startBin < 0) {
+        startBin = 0;
+    }
+    if (endBin <= 0 || endBin > GetNumberOfPoints()) {
+        endBin = GetNumberOfPoints();
+    }
 
     Double_t sum = 0;
-    for (int i = startBin; i < endBin; i++) sum += GetData(i);
+    for (int i = startBin; i < endBin; i++) {
+        sum += GetData(i);
+    }
 
     return sum;
 }
@@ -143,16 +150,19 @@ void TRestDetectorSignal::Normalize(Double_t scale) {
     for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = scale * GetData(i) / sum;
 }
 
-Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) {
+Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) const {
     Double_t sum = 0;
-    for (int i = 0; i < GetNumberOfPoints(); i++)
-        if (GetTime(i) >= startTime && GetTime(i) < endTime) sum += GetData(i);
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        if (GetTime(i) >= startTime && GetTime(i) < endTime) {
+            sum += GetData(i);
+        }
+    }
 
     return sum;
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) {
-    Double_t max = -1E10;
+    Double_t max = std::numeric_limits<double>::min();
 
     for (int i = 0; i < GetNumberOfPoints(); i++)
         if (GetTime(i) >= startTime && GetTime(i) < endTime) {
@@ -259,7 +269,7 @@ Int_t TRestDetectorSignal::GetMaxPeakWidth() {
 Double_t TRestDetectorSignal::GetMaxPeakValue() { return GetData(GetMaxIndex()); }
 
 Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
-    Double_t max = -1E10;
+    Double_t max = std::numeric_limits<double>::min();
     Int_t index = 0;
 
     if (from < 0) from = 0;
@@ -447,13 +457,6 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
              << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
              << " || " << aget->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
     }
 
     TVector2 fitParam(time, energy);
@@ -468,7 +471,7 @@ Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetT
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
 Int_t TRestDetectorSignal::GetMinIndex() {
-    Double_t min = 1E10;
+    Double_t min = numeric_limits<double>::max();
     Int_t index = 0;
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
@@ -481,19 +484,30 @@ Int_t TRestDetectorSignal::GetMinIndex() {
     return index;
 }
 
-Double_t TRestDetectorSignal::GetMinTime() {
-    Double_t minTime = 1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (minTime > fSignalTime[n]) minTime = fSignalTime[n];
+Double_t TRestDetectorSignal::GetMinTime() const {
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
+    Double_t minTime = numeric_limits<float>::max();
+    for (int n = 0; n < GetNumberOfPoints(); n++) {
+        if (minTime > fSignalTime[n]) {
+            minTime = fSignalTime[n];
+        }
+    }
 
     return minTime;
 }
 
-Double_t TRestDetectorSignal::GetMaxTime() {
-    Double_t maxTime = -1E10;
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (maxTime < fSignalTime[n]) maxTime = fSignalTime[n];
-
+Double_t TRestDetectorSignal::GetMaxTime() const {
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
+    Double_t maxTime = numeric_limits<float>::min();
+    for (int n = 0; n < GetNumberOfPoints(); n++) {
+        if (maxTime < fSignalTime[n]) {
+            maxTime = fSignalTime[n];
+        }
+    }
     return maxTime;
 }
 
@@ -525,21 +539,22 @@ void TRestDetectorSignal::Sort() {
     }
 }
 
-void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints) {
+void TRestDetectorSignal::GetDifferentialSignal(TRestDetectorSignal* diffSignal, Int_t smearPoints) {
     this->Sort();
 
-    for (int i = 0; i < smearPoints; i++) diffSgnl->IncreaseAmplitude(GetTime(i), 0);
+    for (int i = 0; i < smearPoints; i++) diffSignal->IncreaseAmplitude(GetTime(i), 0);
 
     for (int i = smearPoints; i < this->GetNumberOfPoints() - smearPoints; i++) {
         Double_t value = (this->GetData(i + smearPoints) - GetData(i - smearPoints)) /
                          (GetTime(i + smearPoints) - GetTime(i - smearPoints));
         Double_t time = (GetTime(i + smearPoints) + GetTime(i - smearPoints)) / 2.;
 
-        diffSgnl->IncreaseAmplitude(time, value);
+        diffSignal->IncreaseAmplitude(time, value);
     }
 
-    for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++)
-        diffSgnl->IncreaseAmplitude(GetTime(i), 0);
+    for (int i = GetNumberOfPoints() - smearPoints; i < GetNumberOfPoints(); i++) {
+        diffSignal->IncreaseAmplitude(GetTime(i), 0);
+    }
 }
 
 void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, Int_t delay) {
@@ -547,8 +562,9 @@ void TRestDetectorSignal::GetSignalDelayed(TRestDetectorSignal* delayedSignal, I
 
     for (int i = 0; i < delay; i++) delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i));
 
-    for (int i = delay; i < GetNumberOfPoints(); i++)
+    for (int i = delay; i < GetNumberOfPoints(); i++) {
         delayedSignal->IncreaseAmplitude(GetTime(i), GetData(i - delay));
+    }
 }
 
 void TRestDetectorSignal::GetSignalSmoothed(TRestDetectorSignal* smthSignal, Int_t averagingPoints) {
@@ -619,8 +635,8 @@ void TRestDetectorSignal::ExponentialConvolution(Double_t fromTime, Double_t dec
     }
 }
 
-void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
-    if (this->GetNumberOfPoints() != inSgnl->GetNumberOfPoints()) {
+void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSignal) {
+    if (this->GetNumberOfPoints() != inSignal->GetNumberOfPoints()) {
         cout << "ERROR : I cannot add two signals with different number of points" << endl;
         return;
     }
@@ -628,8 +644,8 @@ void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
     Int_t badSignalTimes = 0;
 
     for (int i = 0; i < GetNumberOfPoints(); i++)
-        if (GetTime(i) != inSgnl->GetTime(i)) {
-            cout << "Time : " << GetTime(i) << " != " << inSgnl->GetTime(i) << endl;
+        if (GetTime(i) != inSignal->GetTime(i)) {
+            cout << "Time : " << GetTime(i) << " != " << inSignal->GetTime(i) << endl;
             badSignalTimes++;
         }
 
@@ -638,7 +654,7 @@ void TRestDetectorSignal::SignalAddition(TRestDetectorSignal* inSgnl) {
         return;
     }
 
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] += inSgnl->GetData(i);
+    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] += inSignal->GetData(i);
 }
 
 void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double_t time, Int_t N,
@@ -653,19 +669,19 @@ void TRestDetectorSignal::AddGaussianSignal(Double_t amp, Double_t sigma, Double
     }
 }
 
-void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSgnl, Double_t noiseLevel) {
+void TRestDetectorSignal::GetWhiteNoiseSignal(TRestDetectorSignal* noiseSignal, Double_t noiseLevel) {
     this->Sort();
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         TRandom3* fRandom = new TRandom3(0);
 
-        noiseSgnl->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
+        noiseSignal->IncreaseAmplitude(GetTime(i), GetData(i) + fRandom->Gaus(0, noiseLevel));
 
         delete fRandom;
     }
 }
 
-void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* convSgnl, Double_t sigma,
+void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* convSignal, Double_t sigma,
                                                        Int_t nSigmas) {
     this->Sort();
 
@@ -691,7 +707,7 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
             fGaus->SetParameter(1, GetTime(j));
             sum = fSignalCharge[j] / TMath::Sqrt(2. * TMath::Pi()) / sigma * fGaus->Integral(i, i + 1);
 
-            convSgnl->IncreaseAmplitude(i, sum);
+            convSignal->IncreaseAmplitude(i, sum);
             totChargeFinal += sum;
         }
     }
@@ -700,15 +716,30 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
     cout << "Final charge of the pulse " << totChargeFinal << endl;
 }
 
-void TRestDetectorSignal::WriteSignalToTextFile(TString filename) {
+void TRestDetectorSignal::WriteSignalToTextFile(const TString& filename) {
     FILE* fff = fopen(filename.Data(), "w");
-    for (int i = 0; i < GetNumberOfPoints(); i++) fprintf(fff, "%e\t%e\n", GetTime(i), GetData(i));
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        fprintf(fff, "%e\t%e\n", GetTime(i), GetData(i));
+    }
     fclose(fff);
 }
 
-void TRestDetectorSignal::Print() {
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+void TRestDetectorSignal::Print() const {
+    cout << "Signal ID : " << GetSignalID() << endl;
+    cout << "Integral : " << GetIntegral() << endl;
+    if (!GetSignalName().empty()) {
+        cout << "Name: " << GetSignalName() << endl;
+    }
+    if (!GetSignalType().empty()) {
+        cout << "Type: " << GetSignalType() << endl;
+    }
+
+    cout << "------------------------------------------------" << endl;
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
         cout << "Time : " << GetTime(i) << " Charge : " << GetData(i) << endl;
+    }
+
+    cout << "================================================" << endl;
 }
 
 TGraph* TRestDetectorSignal::GetGraph(Int_t color) {

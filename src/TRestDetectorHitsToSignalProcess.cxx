@@ -125,7 +125,9 @@ TRestDetectorHitsToSignalProcess::TRestDetectorHitsToSignalProcess(const char* c
         LoadDefaultConfig();
     }
 
-    if (fReadout == nullptr) fReadout = new TRestDetectorReadout(configFilename);
+    if (fReadout == nullptr) {
+        fReadout = new TRestDetectorReadout(configFilename);
+    }
 }
 
 ///////////////////////////////////////////////
@@ -179,26 +181,40 @@ void TRestDetectorHitsToSignalProcess::InitProcess() {
             << "Please, remove the TRestDetectorGas definition, and add gas parameters inside the process "
                "TRestDetectorHitsToSignalProcess"
             << RESTendl;
-        if (!fGas->GetError()) fGas->SetError("REST was not compiled with Garfield.");
-        if (!this->GetError()) this->SetError("Attempt to use TRestDetectorGas without Garfield");
+        if (!fGas->GetError()) {
+            fGas->SetError("REST was not compiled with Garfield.");
+        }
+        if (!this->GetError()) {
+            this->SetError("Attempt to use TRestDetectorGas without Garfield");
+        }
 #endif
-        if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
-        if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
+        if (fGasPressure <= 0) {
+            fGasPressure = fGas->GetPressure();
+        }
+        if (fElectricField <= 0) {
+            fElectricField = fGas->GetElectricField();
+        }
 
         fGas->SetPressure(fGasPressure);
         fGas->SetElectricField(fElectricField);
 
-        if (fDriftVelocity <= 0) fDriftVelocity = fGas->GetDriftVelocity();
-    } else {
-        if (fDriftVelocity < 0) {
-            if (!this->GetError()) this->SetError("Drift velocity is negative.");
+        if (fDriftVelocity <= 0) {
+            fDriftVelocity = fGas->GetDriftVelocity();
         }
     }
 
-    fReadout = GetMetadata<TRestDetectorReadout>();
+    if (fDriftVelocity <= 0) {
+        RESTError
+            << "Drift velocity not defined. Please, define it in the process metadata or in TRestDetectorGas"
+            << RESTendl;
+        exit(1);
+    }
 
+    fReadout = GetMetadata<TRestDetectorReadout>();
     if (fReadout == nullptr) {
-        if (!this->GetError()) this->SetError("The readout was not properly initialized.");
+        if (!this->GetError()) {
+            this->SetError("The readout was not properly initialized.");
+        }
     }
 }
 
@@ -209,7 +225,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
     fHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fSignalEvent->SetEventInfo(fHitsEvent);
 
-    if (!fReadout) return nullptr;
+    if (!fReadout) {
+        return nullptr;
+    }
 
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "Number of hits : " << fHitsEvent->GetNumberOfHits() << endl;
@@ -222,47 +240,66 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
         Double_t z = fHitsEvent->GetZ(hit);
         Double_t t = fHitsEvent->GetTime(hit);
 
-        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
+        if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20) {
             cout << "Hit : " << hit << " x : " << x << " y : " << y << " z : " << z << " t : " << t << endl;
-
-        Int_t moduleId = -1;
-        Int_t channelId = -1;
+        }
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
-            Int_t daqId =
-                fReadout->GetHitsDaqChannelAtReadoutPlane(TVector3(x, y, z), moduleId, channelId, p);
-
-            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlaneWithID(p);
+            const auto [daqId, moduleId, channelId] = fReadout->GetHitsDaqChannelAtReadoutPlane({x, y, z}, p);
+            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
 
             if (daqId >= 0) {
+                auto channel = fReadout->GetReadoutChannelWithDaqID(daqId);
+
+                const bool isVeto = (channel->GetChannelType() == "veto");
+
                 Double_t energy = fHitsEvent->GetEnergy(hit);
+                const auto distance = plane->GetDistanceTo({x, y, z});
+                if (distance < 0) {
+                    RESTError << "TRestDetectorHitsToSignalProcess: Negative distance to readout plane. "
+                                 "This should not happen."
+                              << RESTendl;
+                    exit(1);
+                }
 
-                Double_t time = plane->GetDistanceTo(x, y, z) / fDriftVelocity + t;
+                auto velocity = fDriftVelocity;
+                if (isVeto) {
+                    velocity = REST_Physics::lightSpeed;
+                }
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
+                Double_t time = t + distance / velocity;
+
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Module : " << moduleId << " Channel : " << channelId << " daq ID : " << daqId
                          << endl;
+                }
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
                     cout << "Energy : " << energy << " time : " << time << endl;
-
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20)
+                }
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme && hit < 20) {
                     printf(
                         " TRestDetectorHitsToSignalProcess: x %lf y %lf z %lf energy %lf t %lf "
                         "fDriftVelocity %lf fSampling %lf time %lf\n",
                         x, y, z, energy, t, fDriftVelocity, fSampling, time);
+                }
 
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
-
+                }
                 time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
+                auto signal = fSignalEvent->GetSignalById(daqId);
+                signal->SetSignalName(channel->GetChannelName());
+                signal->SetSignalType(channel->GetChannelType());
+
             } else {
-                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug)
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     RESTDebug << "TRestDetectorHitsToSignalProcess. Readout channel not find for position ("
                               << x << ", " << y << ", " << z << ")!" << RESTendl;
+                }
             }
         }
     }
@@ -276,7 +313,9 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
              << endl;
     }
 
-    if (fSignalEvent->GetNumberOfSignals() == 0) return nullptr;
+    if (fSignalEvent->GetNumberOfSignals() == 0) {
+        return nullptr;
+    }
 
     return fSignalEvent;
 }

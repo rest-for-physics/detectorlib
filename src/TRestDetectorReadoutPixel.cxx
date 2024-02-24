@@ -43,6 +43,8 @@
 
 #include "TRestDetectorReadoutPixel.h"
 
+#include <TRestMetadata.h>
+
 using namespace std;
 
 ClassImp(TRestDetectorReadoutPixel);
@@ -67,21 +69,20 @@ void TRestDetectorReadoutPixel::Initialize() {}
 TVector2 TRestDetectorReadoutPixel::GetCenter() const {
     TVector2 center(0, 0);
     TVector2 origin(fPixelOriginX, fPixelOriginY);
-    TVector2 opositeVertex = GetVertex(2);
+    TVector2 oppositeVertex = GetVertex(2);
 
-    if (fTriangle)
-        center = (opositeVertex - origin) / 4. + origin;
-    else
-        center = (origin + opositeVertex) / 2.;
-
+    if (fTriangle) {
+        center = (oppositeVertex - origin) / 4. + origin;
+    } else {
+        center = (origin + oppositeVertex) / 2.;
+    }
     return center;
-    //*/
 }
 
 ///////////////////////////////////////////////
 /// \brief Returns the specified pixel vertex position
 ///
-/// \param n A value between 0-3 definning the vertex position to be returned.
+/// \param n A value between 0-3 defining the vertex position to be returned.
 ///
 TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
     TVector2 vertex(0, 0);
@@ -109,20 +110,11 @@ TVector2 TRestDetectorReadoutPixel::GetVertex(int n) const {
 }
 
 ///////////////////////////////////////////////
-/// \brief Determines if a given *x,y* coordinates are found inside the pixel.
-/// The coordinates are referenced to the readout module system.
-///
-Bool_t TRestDetectorReadoutPixel::isInside(Double_t x, Double_t y) {
-    TVector2 pos(x, y);
-    return isInside(pos);
-}
-
-///////////////////////////////////////////////
 /// \brief Determines if a given TVector2 *pos* coordinates are found inside
 /// the pixel. The coordinates are referenced to the readout module system.
 ///
-Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
-    pos = TransformToPixelCoordinates(pos);
+Bool_t TRestDetectorReadoutPixel::IsInside(const TVector2& inputPosition) {
+    const auto pos = TransformToPixelCoordinates(inputPosition);
     Double_t const x = pos.X();
     if (pos.X() >= -fTolerance && pos.X() <= fPixelSizeX + fTolerance)  // Condition on X untouched
     {
@@ -143,8 +135,8 @@ Bool_t TRestDetectorReadoutPixel::isInside(TVector2 pos) {
 /// pixel coordinate system. The coordinates are referenced to the readout
 /// module system.
 ///
-TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
-    TVector2 pos(p.X() - fPixelOriginX, p.Y() - fPixelOriginY);
+TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(const TVector2& pixel) const {
+    TVector2 pos(pixel.X() - fPixelOriginX, pixel.Y() - fPixelOriginY);
     pos = pos.Rotate(-fRotation * TMath::Pi() / 180.);
     return pos;
 }
@@ -152,13 +144,13 @@ TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(TVector2 p) {
 ///////////////////////////////////////////////
 /// \brief Prints on screen the pixel details, origin, size, rotation
 ///
-void TRestDetectorReadoutPixel::Print() {
-    RESTMetadata << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
-                 << GetSizeX() << "," << GetSizeY() << ") mm" << RESTendl;
-    RESTMetadata << "       rotation : " << fRotation << " degrees"
-                 << " type : ";
+void TRestDetectorReadoutPixel::Print() const {
+    std::cout << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
+              << GetSizeX() << "," << GetSizeY() << ") mm" << std::endl;
+    std::cout << "       rotation : " << fRotation << " degrees"
+              << " type : ";
     if (fTriangle)
-        RESTMetadata << "triangle" << RESTendl;
+        std::cout << "triangle" << std::endl;
     else
-        RESTMetadata << "rectangle" << RESTendl;
+        std::cout << "rectangle" << std::endl;
 }

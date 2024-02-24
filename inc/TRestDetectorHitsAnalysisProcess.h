@@ -29,8 +29,7 @@
 #include <TRestDetectorHitsEvent.h>
 #include <TRestDetectorReadout.h>
 #include <TRestDetectorSignalEvent.h>
-
-#include "TRestEventProcess.h"
+#include <TRestEventProcess.h>
 
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
@@ -58,8 +57,8 @@ class TRestDetectorHitsAnalysisProcess : public TRestEventProcess {
     Double_t fFid_theta;
 
    public:
-    any GetInputEvent() const override { return fInputHitsEvent; }
-    any GetOutputEvent() const override { return fOutputHitsEvent; }
+    RESTValue GetInputEvent() const override { return fInputHitsEvent; }
+    RESTValue GetOutputEvent() const override { return fOutputHitsEvent; }
 
     void InitProcess() override;
     TRestEvent* ProcessEvent(TRestEvent* inputEvent) override;
