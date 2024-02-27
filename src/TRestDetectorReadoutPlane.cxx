@@ -419,7 +419,8 @@ void TRestDetectorReadoutPlane::GetBoundaries(double& xmin, double& xmax, double
     Double_t x[4];
     Double_t y[4];
 
-    xmin = std::numeric_limits<Double_t>::max(), xmax = std::numeric_limits<Double_t>::min(), ymin = std::numeric_limits<Double_t>::max(), ymax = std::numeric_limits<Double_t>::min();
+    xmin = std::numeric_limits<Double_t>::max(), xmax = std::numeric_limits<Double_t>::min(),
+    ymin = std::numeric_limits<Double_t>::max(), ymax = std::numeric_limits<Double_t>::min();
 
     for (size_t mdID = 0; mdID < this->GetNumberOfModules(); mdID++) {
         TRestDetectorReadoutModule* module = &fReadoutModules[mdID];

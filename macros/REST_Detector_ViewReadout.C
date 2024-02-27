@@ -67,7 +67,8 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
     vector<TGraph*> modGraph(nModConst);
     vector<TLatex*> channelIDLabel(nPixConst);
 
-    double xmin = std::numeric_limits<Double_t>::max(), xmax = std::numeric_limits<Double_t>::min(), ymin = std::numeric_limits<Double_t>::max(), ymax = std::numeric_limits<Double_t>::min();
+    double xmin = std::numeric_limits<Double_t>::max(), xmax = std::numeric_limits<Double_t>::min(),
+           ymin = std::numeric_limits<Double_t>::max(), ymax = std::numeric_limits<Double_t>::min();
 
     Int_t graph = 0;
     Int_t modGraphID = 0;
