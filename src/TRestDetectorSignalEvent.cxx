@@ -40,10 +40,10 @@ void TRestDetectorSignalEvent::Initialize() {
     TRestEvent::Initialize();
     fSignal.clear();
     fPad = nullptr;
-    fMinValue = 1E10;
-    fMaxValue = -1E10;
-    fMinTime = 1E10;
-    fMaxTime = -1E10;
+    fMinValue = std::numeric_limits<Double_t>::max();
+    fMaxValue = std::numeric_limits<Double_t>::min();
+    fMinTime = std::numeric_limits<Double_t>::max();
+    fMaxTime = std::numeric_limits<Double_t>::min();
 }
 
 void TRestDetectorSignalEvent::AddSignal(const TRestDetectorSignal& signal) {
@@ -112,10 +112,10 @@ void TRestDetectorSignalEvent::PrintEvent() {
 
 // TODO: GetMaxTimeFast, GetMinTimeFast, GetMaxValueFast that return the value of fMinTime, fMaxTime, etc.
 void TRestDetectorSignalEvent::SetMaxAndMin() {
-    fMinValue = 1E10;
-    fMaxValue = -1E10;
-    fMinTime = 1E10;
-    fMaxTime = -1E10;
+    fMinValue = std::numeric_limits<Double_t>::max();
+    fMaxValue = std::numeric_limits<Double_t>::min();
+    fMinTime = std::numeric_limits<Double_t>::max();
+    fMaxTime = std::numeric_limits<Double_t>::min();
 
     for (int s = 0; s < GetNumberOfSignals(); s++) {
         if (fMinTime > fSignal[s].GetMinTime()) fMinTime = fSignal[s].GetMinTime();
@@ -137,7 +137,7 @@ Double_t TRestDetectorSignalEvent::GetMinValue() {
 }
 
 Double_t TRestDetectorSignalEvent::GetMinTime() {
-    Double_t minTime = 1.e10;
+    Double_t minTime = numeric_limits<Double_t>::max();
     for (int s = 0; s < GetNumberOfSignals(); s++)
         if (minTime > fSignal[s].GetMinTime()) {
             minTime = fSignal[s].GetMinTime();
@@ -146,7 +146,7 @@ Double_t TRestDetectorSignalEvent::GetMinTime() {
 }
 
 Double_t TRestDetectorSignalEvent::GetMaxTime() {
-    Double_t maxTime = -1.e10;
+    Double_t maxTime = numeric_limits<Double_t>::min();
     for (int s = 0; s < GetNumberOfSignals(); s++) {
         if (maxTime < fSignal[s].GetMaxTime()) {
             maxTime = fSignal[s].GetMaxTime();
@@ -166,10 +166,10 @@ TPad* TRestDetectorSignalEvent::DrawEvent(const TString& option) {
         return nullptr;
     }
 
-    fMinValue = 1E10;
-    fMaxValue = -1E10;
-    fMinTime = 1E10;
-    fMaxTime = -1E10;
+    fMinValue = std::numeric_limits<Double_t>::max();
+    fMaxValue = std::numeric_limits<Double_t>::min();
+    fMinTime = std::numeric_limits<Double_t>::max();
+    fMaxTime = std::numeric_limits<Double_t>::min();
 
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
     fPad->Draw();

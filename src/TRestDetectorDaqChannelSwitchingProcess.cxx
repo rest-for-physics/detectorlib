@@ -45,7 +45,7 @@ void TRestDetectorDaqChannelSwitchingProcess::InitProcess() {
             auto mod = fReadout->GetReadoutModuleWithID(iter->first);
             if (mod == nullptr) continue;
             // finding out the old "firstdaqchannel" value
-            int mindaq = 1e9;
+            int mindaq = std::numeric_limits<Double_t>::max();
             for (size_t i = 0; i < mod->GetNumberOfChannels(); i++) {
                 if (mod->GetChannel(i)->GetDaqID() < mindaq) {
                     mindaq = mod->GetChannel(i)->GetDaqID();
