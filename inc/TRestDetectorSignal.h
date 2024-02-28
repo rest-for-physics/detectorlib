@@ -31,7 +31,7 @@
 
 class TRestDetectorSignal {
    private:
-    Int_t GetMinIndex();
+    Int_t GetMinIndex() const;
     Int_t GetTimeIndex(Double_t t);
 
    protected:
@@ -49,8 +49,8 @@ class TRestDetectorSignal {
 
     std::vector<Int_t> fPointsOverThreshold;  //!
 
-    void IncreaseAmplitude(TVector2 p);
-    void SetPoint(TVector2 p);
+    void IncreaseAmplitude(const TVector2& p);
+    void SetPoint(const TVector2& p);
 
     // TODO other objects should probably skip using GetMaxIndex direclty
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
@@ -101,7 +101,7 @@ class TRestDetectorSignal {
 
     Double_t GetAverage(Int_t start = 0, Int_t end = 0);
     Int_t GetMaxPeakWidth();
-    Double_t GetMaxPeakWithTime(Double_t startTime, Double_t endTime);
+    Double_t GetMaxPeakWithTime(Double_t startTime, Double_t endTime) const;
 
     Double_t GetMaxPeakValue();
     Double_t GetMinPeakValue();
