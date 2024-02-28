@@ -72,7 +72,7 @@ void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
-void TRestDetectorSignal::IncreaseAmplitude(TVector2 p) {
+void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
     Float_t x = p.X();
     Float_t y = p.Y();
@@ -93,7 +93,7 @@ void TRestDetectorSignal::IncreaseAmplitude(TVector2 p) {
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
-void TRestDetectorSignal::SetPoint(TVector2 p) {
+void TRestDetectorSignal::SetPoint(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
     Float_t x = p.X();
     Float_t y = p.Y();
@@ -110,7 +110,7 @@ void TRestDetectorSignal::SetPoint(TVector2 p) {
 ///////////////////////////////////////////////
 /// \brief If the point already exists inside the detector signal event,
 /// it will be overwritten. If it does not exists, a new point will be
-/// added to the poins vector.
+/// added to the points vector.
 ///
 /// In this method the time and amplitude (data) are given as argument
 ///
@@ -146,29 +146,29 @@ Double_t TRestDetectorSignal::GetIntegral(Int_t startBin, Int_t endBin) const {
 
 void TRestDetectorSignal::Normalize(Double_t scale) {
     Double_t sum = GetIntegral();
-
-    for (int i = 0; i < GetNumberOfPoints(); i++) fSignalCharge[i] = scale * GetData(i) / sum;
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        fSignalCharge[i] = scale * GetData(i) / sum;
+    }
 }
 
 Double_t TRestDetectorSignal::GetIntegralWithTime(Double_t startTime, Double_t endTime) const {
     Double_t sum = 0;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        if (GetTime(i) >= startTime && GetTime(i) < endTime) {
+        const auto time = GetTime(i);
+        if (time >= startTime && time <= endTime) {
             sum += GetData(i);
         }
     }
-
     return sum;
 }
 
-Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) {
+Double_t TRestDetectorSignal::GetMaxPeakWithTime(Double_t startTime, Double_t endTime) const {
     Double_t max = std::numeric_limits<double>::min();
-
-    for (int i = 0; i < GetNumberOfPoints(); i++)
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
         if (GetTime(i) >= startTime && GetTime(i) < endTime) {
             if (this->GetData(i) > max) max = GetData(i);
         }
-
+    }
     return max;
 }
 
@@ -470,7 +470,7 @@ Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetT
 
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
-Int_t TRestDetectorSignal::GetMinIndex() {
+Int_t TRestDetectorSignal::GetMinIndex() const {
     Double_t min = numeric_limits<double>::max();
     Int_t index = 0;
 
@@ -485,28 +485,29 @@ Int_t TRestDetectorSignal::GetMinIndex() {
 }
 
 Double_t TRestDetectorSignal::GetMinTime() const {
-    if (GetNumberOfPoints() == 0) {
-        return 0;
-    }
     Double_t minTime = numeric_limits<float>::max();
-    for (int n = 0; n < GetNumberOfPoints(); n++) {
-        if (minTime > fSignalTime[n]) {
-            minTime = fSignalTime[n];
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        const auto time = GetTime(i);
+        if (time < minTime) {
+            minTime = time;
         }
     }
-
+    if (minTime == numeric_limits<float>::max()) {
+        minTime = 0;
+    }
     return minTime;
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() const {
-    if (GetNumberOfPoints() == 0) {
-        return 0;
-    }
     Double_t maxTime = numeric_limits<float>::min();
-    for (int n = 0; n < GetNumberOfPoints(); n++) {
-        if (maxTime < fSignalTime[n]) {
-            maxTime = fSignalTime[n];
+    for (int i = 0; i < GetNumberOfPoints(); i++) {
+        const auto time = GetTime(i);
+        if (time > maxTime) {
+            maxTime = time;
         }
+    }
+    if (maxTime == numeric_limits<float>::min()) {
+        maxTime = 0;
     }
     return maxTime;
 }
@@ -514,14 +515,19 @@ Double_t TRestDetectorSignal::GetMaxTime() const {
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
     Float_t time = t;
 
-    for (int n = 0; n < GetNumberOfPoints(); n++)
-        if (time == fSignalTime[n]) return n;
+    for (int n = 0; n < GetNumberOfPoints(); n++) {
+        if (time == fSignalTime[n]) {
+            return n;
+        }
+    }
     return -1;
 }
 
 Bool_t TRestDetectorSignal::isSorted() {
     for (int i = 0; i < GetNumberOfPoints() - 1; i++) {
-        if (GetTime(i + 1) < GetTime(i)) return false;
+        if (GetTime(i + 1) < GetTime(i)) {
+            return false;
+        }
     }
     return true;
 }
