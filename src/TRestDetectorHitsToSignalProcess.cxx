@@ -287,7 +287,8 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
                 }
-                time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
+
+                time = floor(time / fSampling) * fSampling;
 
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
