@@ -548,7 +548,7 @@ TRestEvent* TRestDetectorHits3DReconstructionProcess::ProcessEvent(TRestEvent* i
                            .z();
         double dz = maxz2 - maxz1;
 
-        double mindistmean = 1e9;
+        double mindistmean = std::numeric_limits<Double_t>::max();
         for (double i = -fZRange * 2; i <= fZRange * 2; i += fZRange / 2) {
             double distsum2 = 0;
             for (auto hit : hits1) {

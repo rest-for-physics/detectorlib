@@ -223,7 +223,7 @@ using namespace std;
 
 ClassImp(TRestDetectorGas);
 
-// const char* defaultServer = "https://sultan.unizar.es/gasFiles/";
+// const char* defaultServer = "https://rest-for-physics.github.io/gas-files/";
 
 /////////////////////////////////////////////
 /// \brief TRestDetectorGas default constructor

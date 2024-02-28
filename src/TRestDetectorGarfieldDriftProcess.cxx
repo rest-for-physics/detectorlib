@@ -264,7 +264,8 @@ void TRestDetectorGarfieldDriftProcess::InitProcess() {
         fGfSensor->AddElectrode(fGeometry->GetGfComponent(0), "m");
         fGfSensor->SetTimeWindow(0., 0.1, 500);
 
-        double xmin = -1e9, xmax = 1e9, ymin = -1e9, ymax = 1e9;
+        double xmin = std::numeric_limits<Double_t>::min(), xmax = std::numeric_limits<Double_t>::max(),
+               ymin = std::numeric_limits<Double_t>::min(), ymax = std::numeric_limits<Double_t>::max();
         TGeoShape* readoutshape = fGeometry->GetReadoutElecNode(0)->GetVolume()->GetShape();
         TGeoMatrix* readoutmatrix = fGeometry->GetReadoutElecNode(0)->GetMatrix();
         double xmid = 10. * readoutmatrix->GetTranslation()[0],
