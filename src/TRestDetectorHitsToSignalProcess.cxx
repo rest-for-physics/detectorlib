@@ -320,12 +320,6 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
     fSignalEvent->SortSignals();
 
-    const auto minTime = fSignalEvent->GetMinTime();
-    if (minTime < 0) {
-        RESTError << "TRestDetectorHitsToSignalProcess: Negative time. This should not happen." << RESTendl;
-        exit(1);
-    }
-
     if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
         cout << "TRestDetectorHitsToSignalProcess : Number of signals added : "
              << fSignalEvent->GetNumberOfSignals() << endl;

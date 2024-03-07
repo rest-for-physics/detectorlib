@@ -72,31 +72,19 @@ void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
     Double_t y = p.Y();
     Int_t index = GetTimeIndex(x);
 
-    if (x < 0) {
-        RESTWarning << "Negative time value in signal " << fSignalID << " at time " << x << RESTendl;
-    }
     if (index >= 0) {
         fSignalTime[index] = x;
         fSignalCharge[index] += y;
-        if (GetTime(index) < 0) {
-            RESTWarning << "TRestDetectorSignal::IncreaseAmplitude :: Negative time value in signal "
-                        << fSignalID << " at time " << GetTime(index) << " x: " << x << RESTendl;
-        }
     } else {
         fSignalTime.push_back(x);
         fSignalCharge.push_back(y);
-        if (GetTime(GetNumberOfPoints() - 1) < 0) {
-            RESTWarning << "TRestDetectorSignal::IncreaseAmplitude :: (push) Negative time value in signal "
-                        << fSignalID << " at time " << GetTime(GetNumberOfPoints() - 1) << " x: " << x
-                        << RESTendl;
-        }
     }
 }
 
 ///////////////////////////////////////////////
 /// \brief If the point already exists inside the detector signal event,
 /// it will be overwritten. If it does not exists, a new point will be
-/// added to the poins vector.
+/// added to the points vector.
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
@@ -492,37 +480,29 @@ Int_t TRestDetectorSignal::GetMinIndex() const {
 }
 
 Double_t TRestDetectorSignal::GetMinTime() const {
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
     Double_t minTime = numeric_limits<Double_t>::max();
-    bool found = false;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const Double_t time = GetTime(i);
-        if (time < 0) {
-            RESTWarning << "TRestDetectorSignal::GetMinTime - Negative time value in signal " << fSignalID
-                        << " at time " << time << " at index " << i << RESTendl;
-        }
         if (time < minTime) {
             minTime = time;
-            found = true;
         }
-    }
-    if (!found) {
-        minTime = 0;
     }
     return minTime;
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() const {
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
     Double_t maxTime = numeric_limits<Double_t>::min();
-    bool found = false;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time > maxTime) {
             maxTime = time;
-            found = true;
         }
-    }
-    if (!found) {
-        maxTime = 0;
     }
     return maxTime;
 }
