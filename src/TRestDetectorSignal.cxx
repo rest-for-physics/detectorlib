@@ -68,10 +68,13 @@ void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) { IncreaseAm
 /// The input vector should contain a physical time and an amplitude.
 ///
 void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
-    Int_t index = GetTimeIndex(p.X());
     Double_t x = p.X();
     Double_t y = p.Y();
+    Int_t index = GetTimeIndex(x);
 
+    if (x < 0) {
+        RESTWarning << "Negative time value in signal " << fSignalID << " at time " << x << RESTendl;
+    }
     if (index >= 0) {
         fSignalTime[index] = x;
         fSignalCharge[index] += y;
