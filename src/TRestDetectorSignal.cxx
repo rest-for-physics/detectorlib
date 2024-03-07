@@ -486,13 +486,15 @@ Int_t TRestDetectorSignal::GetMinIndex() const {
 
 Double_t TRestDetectorSignal::GetMinTime() const {
     Double_t minTime = numeric_limits<Double_t>::max();
+    bool found = false;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time < minTime) {
             minTime = time;
+            found = true;
         }
     }
-    if (minTime == numeric_limits<Double_t>::max()) {
+    if (!found) {
         minTime = 0;
     }
     return minTime;
@@ -500,13 +502,15 @@ Double_t TRestDetectorSignal::GetMinTime() const {
 
 Double_t TRestDetectorSignal::GetMaxTime() const {
     Double_t maxTime = numeric_limits<Double_t>::min();
+    bool found = false;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time > maxTime) {
             maxTime = time;
+            found = true;
         }
     }
-    if (maxTime == numeric_limits<Double_t>::min()) {
+    if (!found) {
         maxTime = 0;
     }
     return maxTime;

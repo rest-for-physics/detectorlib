@@ -267,6 +267,13 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                     velocity = REST_Physics::lightSpeed;
                 }
 
+                if (velocity <= 0) {
+                    RESTError
+                        << "TRestDetectorHitsToSignalProcess: Negative velocity. This should not happen."
+                        << RESTendl;
+                    exit(1);
+                }
+
                 Double_t time = t + distance / velocity;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
@@ -290,6 +297,12 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
 
                 time = floor(time / fSampling) * fSampling;
 
+                if (time < 0) {
+                    RESTError << "TRestDetectorHitsToSignalProcess: Negative time. This should not happen. "
+                                 "EventID: "
+                              << fHitsEvent->GetID() << RESTendl;
+                    exit(1);
+                }
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
                 auto signal = fSignalEvent->GetSignalById(daqId);

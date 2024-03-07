@@ -52,7 +52,7 @@ class TRestDetectorSignal {
     void IncreaseAmplitude(const TVector2& p);
     void SetPoint(const TVector2& p);
 
-    // TODO other objects should probably skip using GetMaxIndex direclty
+    // TODO other objects should probably skip using GetMaxIndex directly
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
     TVector2 GetMaxGauss();
@@ -97,7 +97,7 @@ class TRestDetectorSignal {
 
     void Normalize(Double_t scale = 1.);
 
-    std::vector<Int_t> GetPointsOverThreshold() { return fPointsOverThreshold; }
+    std::vector<Int_t> GetPointsOverThreshold() const { return fPointsOverThreshold; }
 
     Double_t GetAverage(Int_t start = 0, Int_t end = 0);
     Int_t GetMaxPeakWidth();
