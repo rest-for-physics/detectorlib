@@ -114,8 +114,8 @@ class TRestDetectorSignal {
     Double_t GetMinTime() const;
     Double_t GetMaxTime() const;
 
-    Double_t GetData(Int_t index) const { return (double)fSignalCharge[index]; }
-    Double_t GetTime(Int_t index) const { return (double)fSignalTime[index]; }
+    Double_t GetData(Int_t index) const { return fSignalCharge[index]; }
+    Double_t GetTime(Int_t index) const { return fSignalTime[index]; }
 
     // Setters
     void SetSignalID(Int_t sID) { fSignalID = sID; }

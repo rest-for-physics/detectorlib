@@ -486,7 +486,11 @@ Double_t TRestDetectorSignal::GetMinTime() const {
     Double_t minTime = numeric_limits<Double_t>::max();
     bool found = false;
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        const auto time = GetTime(i);
+        const Double_t time = GetTime(i);
+        if (time < 0) {
+            RESTWarning << "TRestDetectorSignal::GetMinTime - Negative time value in signal " << fSignalID
+                        << " at time " << time << " at index " << i << RESTendl;
+        }
         if (time < minTime) {
             minTime = time;
             found = true;
