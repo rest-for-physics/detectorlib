@@ -80,14 +80,15 @@ void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
         fSignalCharge[index] += y;
         if (GetTime(index) < 0) {
             RESTWarning << "TRestDetectorSignal::IncreaseAmplitude :: Negative time value in signal "
-                        << fSignalID << " at time " << GetTime(index) << RESTendl;
+                        << fSignalID << " at time " << GetTime(index) << " x: " << x << RESTendl;
         }
     } else {
         fSignalTime.push_back(x);
         fSignalCharge.push_back(y);
-        if (GetTime(GetNumberOfPoints()) < 0) {
-            RESTWarning << "TRestDetectorSignal::IncreaseAmplitude :: Negative time value in signal "
-                        << fSignalID << " at time " << GetTime(index) << RESTendl;
+        if (GetTime(GetNumberOfPoints() - 1) < 0) {
+            RESTWarning << "TRestDetectorSignal::IncreaseAmplitude :: (push) Negative time value in signal "
+                        << fSignalID << " at time " << GetTime(GetNumberOfPoints() - 1) << " x: " << x
+                        << RESTendl;
         }
     }
 }
