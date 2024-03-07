@@ -37,8 +37,8 @@ class TRestDetectorSignal {
    protected:
     Int_t fSignalID = -1;
 
-    std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
-    std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
+    std::vector<Double_t> fSignalTime;    // Vector with the time of the signal
+    std::vector<Double_t> fSignalCharge;  // Vector with the charge of the signal
 
     // TODO: remove this and use readout
     std::string fName;  // Name of the signal
@@ -121,7 +121,7 @@ class TRestDetectorSignal {
     void SetSignalID(Int_t sID) { fSignalID = sID; }
     void SetID(Int_t sID) { fSignalID = sID; }
 
-    void NewPoint(Float_t time, Float_t data);
+    void NewPoint(Double_t time, Double_t data);
     void IncreaseAmplitude(Double_t t, Double_t d);
 
     void SetPoint(Double_t t, Double_t d);
@@ -167,6 +167,6 @@ class TRestDetectorSignal {
     // Destructor
     ~TRestDetectorSignal();
 
-    ClassDef(TRestDetectorSignal, 3);
+    ClassDef(TRestDetectorSignal, 4);
 };
 #endif

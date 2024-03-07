@@ -50,7 +50,7 @@ TRestDetectorSignal::TRestDetectorSignal() {
 
 TRestDetectorSignal::~TRestDetectorSignal() = default;
 
-void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
+void TRestDetectorSignal::NewPoint(Double_t time, Double_t data) {
     fSignalTime.push_back(time);
     fSignalCharge.push_back(data);
 }
@@ -69,8 +69,8 @@ void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) { IncreaseAm
 ///
 void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
+    Double_t x = p.X();
+    Double_t y = p.Y();
 
     if (index >= 0) {
         fSignalTime[index] = x;
@@ -90,8 +90,8 @@ void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
 ///
 void TRestDetectorSignal::SetPoint(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
+    Double_t x = p.X();
+    Double_t y = p.Y();
 
     if (index >= 0) {
         fSignalTime[index] = x;
@@ -512,7 +512,7 @@ Double_t TRestDetectorSignal::GetMaxTime() const {
 }
 
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
-    Float_t time = t;
+    Double_t time = t;
 
     for (int n = 0; n < GetNumberOfPoints(); n++) {
         if (time == fSignalTime[n]) {
@@ -634,9 +634,10 @@ void TRestDetectorSignal::MultiplySignalBy(Double_t factor) {
 
 void TRestDetectorSignal::ExponentialConvolution(Double_t fromTime, Double_t decayTime, Double_t offset) {
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        if (fSignalTime[i] > fromTime)
+        if (fSignalTime[i] > fromTime) {
             fSignalCharge[i] =
                 (fSignalCharge[i] - offset) * exp(-(fSignalTime[i] - fromTime) / decayTime) + offset;
+        }
     }
 }
 
