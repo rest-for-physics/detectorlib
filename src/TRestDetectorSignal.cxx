@@ -48,9 +48,7 @@ TRestDetectorSignal::TRestDetectorSignal() {
     fPointsOverThreshold.clear();
 }
 
-TRestDetectorSignal::~TRestDetectorSignal() {
-    // TRestDetectorSignal destructor
-}
+TRestDetectorSignal::~TRestDetectorSignal() = default;
 
 void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
     fSignalTime.push_back(time);
@@ -61,10 +59,7 @@ void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
 /// \brief If the point already exists inside the detector signal event,
 /// the amplitude value will be added to the corresponding time.
 ///
-void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
-    TVector2 p(t, d);
-    IncreaseAmplitude(p);
-}
+void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) { IncreaseAmplitude({t, d}); }
 
 ///////////////////////////////////////////////
 /// \brief If the point already exists inside the detector signal event,
