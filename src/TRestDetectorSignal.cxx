@@ -471,7 +471,7 @@ Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetT
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
 Int_t TRestDetectorSignal::GetMinIndex() const {
-    Double_t min = numeric_limits<double>::max();
+    Double_t min = numeric_limits<Double_t>::max();
     Int_t index = 0;
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
@@ -485,28 +485,28 @@ Int_t TRestDetectorSignal::GetMinIndex() const {
 }
 
 Double_t TRestDetectorSignal::GetMinTime() const {
-    Double_t minTime = numeric_limits<float>::max();
+    Double_t minTime = numeric_limits<Double_t>::max();
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time < minTime) {
             minTime = time;
         }
     }
-    if (minTime == numeric_limits<float>::max()) {
+    if (minTime == numeric_limits<Double_t>::max()) {
         minTime = 0;
     }
     return minTime;
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() const {
-    Double_t maxTime = numeric_limits<float>::min();
+    Double_t maxTime = numeric_limits<Double_t>::min();
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time > maxTime) {
             maxTime = time;
         }
     }
-    if (maxTime == numeric_limits<float>::min()) {
+    if (maxTime == numeric_limits<Double_t>::min()) {
         maxTime = 0;
     }
     return maxTime;
