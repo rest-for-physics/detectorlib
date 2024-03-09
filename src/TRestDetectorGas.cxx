@@ -736,7 +736,7 @@ string TRestDetectorGas::FindGasFile(string name) {
     string absoluteName = "";
 
     if (!fGasGeneration && fGasServer != "none") {
-        absoluteName = TRestTools::DownloadRemoteFile((string)fGasServer + "/" + name);
+        absoluteName = TRestTools::DownloadRemoteFile((string)fGasServer + "/" + name, true);
     }
 
     if (absoluteName == "") {
