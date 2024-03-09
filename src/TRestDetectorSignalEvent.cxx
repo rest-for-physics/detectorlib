@@ -138,10 +138,11 @@ Double_t TRestDetectorSignalEvent::GetMinValue() {
 
 Double_t TRestDetectorSignalEvent::GetMinTime() {
     Double_t minTime = numeric_limits<Double_t>::max();
-    for (int s = 0; s < GetNumberOfSignals(); s++)
+    for (int s = 0; s < GetNumberOfSignals(); s++) {
         if (minTime > fSignal[s].GetMinTime()) {
             minTime = fSignal[s].GetMinTime();
         }
+    }
     return minTime;
 }
 

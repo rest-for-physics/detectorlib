@@ -37,8 +37,8 @@ class TRestDetectorSignal {
    protected:
     Int_t fSignalID = -1;
 
-    std::vector<Float_t> fSignalTime;    // Vector with the time of the signal
-    std::vector<Float_t> fSignalCharge;  // Vector with the charge of the signal
+    std::vector<Double_t> fSignalTime;    // Vector with the time of the signal
+    std::vector<Double_t> fSignalCharge;  // Vector with the charge of the signal
 
     // TODO: remove this and use readout
     std::string fName;  // Name of the signal
@@ -52,7 +52,7 @@ class TRestDetectorSignal {
     void IncreaseAmplitude(const TVector2& p);
     void SetPoint(const TVector2& p);
 
-    // TODO other objects should probably skip using GetMaxIndex direclty
+    // TODO other objects should probably skip using GetMaxIndex directly
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
     TVector2 GetMaxGauss();
@@ -97,7 +97,7 @@ class TRestDetectorSignal {
 
     void Normalize(Double_t scale = 1.);
 
-    std::vector<Int_t> GetPointsOverThreshold() { return fPointsOverThreshold; }
+    std::vector<Int_t> GetPointsOverThreshold() const { return fPointsOverThreshold; }
 
     Double_t GetAverage(Int_t start = 0, Int_t end = 0);
     Int_t GetMaxPeakWidth();
@@ -114,14 +114,14 @@ class TRestDetectorSignal {
     Double_t GetMinTime() const;
     Double_t GetMaxTime() const;
 
-    Double_t GetData(Int_t index) const { return (double)fSignalCharge[index]; }
-    Double_t GetTime(Int_t index) const { return (double)fSignalTime[index]; }
+    Double_t GetData(Int_t index) const { return fSignalCharge[index]; }
+    Double_t GetTime(Int_t index) const { return fSignalTime[index]; }
 
     // Setters
     void SetSignalID(Int_t sID) { fSignalID = sID; }
     void SetID(Int_t sID) { fSignalID = sID; }
 
-    void NewPoint(Float_t time, Float_t data);
+    void NewPoint(Double_t time, Double_t data);
     void IncreaseAmplitude(Double_t t, Double_t d);
 
     void SetPoint(Double_t t, Double_t d);
@@ -167,6 +167,6 @@ class TRestDetectorSignal {
     // Destructor
     ~TRestDetectorSignal();
 
-    ClassDef(TRestDetectorSignal, 3);
+    ClassDef(TRestDetectorSignal, 4);
 };
 #endif

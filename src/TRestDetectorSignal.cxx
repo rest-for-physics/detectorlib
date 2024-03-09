@@ -48,11 +48,9 @@ TRestDetectorSignal::TRestDetectorSignal() {
     fPointsOverThreshold.clear();
 }
 
-TRestDetectorSignal::~TRestDetectorSignal() {
-    // TRestDetectorSignal destructor
-}
+TRestDetectorSignal::~TRestDetectorSignal() = default;
 
-void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
+void TRestDetectorSignal::NewPoint(Double_t time, Double_t data) {
     fSignalTime.push_back(time);
     fSignalCharge.push_back(data);
 }
@@ -61,10 +59,7 @@ void TRestDetectorSignal::NewPoint(Float_t time, Float_t data) {
 /// \brief If the point already exists inside the detector signal event,
 /// the amplitude value will be added to the corresponding time.
 ///
-void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
-    TVector2 p(t, d);
-    IncreaseAmplitude(p);
-}
+void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) { IncreaseAmplitude({t, d}); }
 
 ///////////////////////////////////////////////
 /// \brief If the point already exists inside the detector signal event,
@@ -73,9 +68,9 @@ void TRestDetectorSignal::IncreaseAmplitude(Double_t t, Double_t d) {
 /// The input vector should contain a physical time and an amplitude.
 ///
 void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
-    Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
+    Double_t x = p.X();
+    Double_t y = p.Y();
+    Int_t index = GetTimeIndex(x);
 
     if (index >= 0) {
         fSignalTime[index] = x;
@@ -89,14 +84,14 @@ void TRestDetectorSignal::IncreaseAmplitude(const TVector2& p) {
 ///////////////////////////////////////////////
 /// \brief If the point already exists inside the detector signal event,
 /// it will be overwritten. If it does not exists, a new point will be
-/// added to the poins vector.
+/// added to the points vector.
 ///
 /// The input vector should contain a physical time and an amplitude.
 ///
 void TRestDetectorSignal::SetPoint(const TVector2& p) {
     Int_t index = GetTimeIndex(p.X());
-    Float_t x = p.X();
-    Float_t y = p.Y();
+    Double_t x = p.X();
+    Double_t y = p.Y();
 
     if (index >= 0) {
         fSignalTime[index] = x;
@@ -471,7 +466,7 @@ Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetT
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
 
 Int_t TRestDetectorSignal::GetMinIndex() const {
-    Double_t min = numeric_limits<double>::max();
+    Double_t min = numeric_limits<Double_t>::max();
     Int_t index = 0;
 
     for (int i = 0; i < GetNumberOfPoints(); i++) {
@@ -485,35 +480,35 @@ Int_t TRestDetectorSignal::GetMinIndex() const {
 }
 
 Double_t TRestDetectorSignal::GetMinTime() const {
-    Double_t minTime = numeric_limits<float>::max();
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
+    Double_t minTime = numeric_limits<Double_t>::max();
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        const auto time = GetTime(i);
+        const Double_t time = GetTime(i);
         if (time < minTime) {
             minTime = time;
         }
-    }
-    if (minTime == numeric_limits<float>::max()) {
-        minTime = 0;
     }
     return minTime;
 }
 
 Double_t TRestDetectorSignal::GetMaxTime() const {
-    Double_t maxTime = numeric_limits<float>::min();
+    if (GetNumberOfPoints() == 0) {
+        return 0;
+    }
+    Double_t maxTime = numeric_limits<Double_t>::min();
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         const auto time = GetTime(i);
         if (time > maxTime) {
             maxTime = time;
         }
     }
-    if (maxTime == numeric_limits<float>::min()) {
-        maxTime = 0;
-    }
     return maxTime;
 }
 
 Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
-    Float_t time = t;
+    Double_t time = t;
 
     for (int n = 0; n < GetNumberOfPoints(); n++) {
         if (time == fSignalTime[n]) {
@@ -635,9 +630,10 @@ void TRestDetectorSignal::MultiplySignalBy(Double_t factor) {
 
 void TRestDetectorSignal::ExponentialConvolution(Double_t fromTime, Double_t decayTime, Double_t offset) {
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        if (fSignalTime[i] > fromTime)
+        if (fSignalTime[i] > fromTime) {
             fSignalCharge[i] =
                 (fSignalCharge[i] - offset) * exp(-(fSignalTime[i] - fromTime) / decayTime) + offset;
+        }
     }
 }
 
