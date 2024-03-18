@@ -137,6 +137,7 @@ void TRestDetectorHitsEvent::Initialize() {
 
 void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
+#ifndef __APPLE__
     if (compareCondition == 0) {
         // default sort logic: z from smaller to greater
         std::sort(fHits->begin(), fHits->end(),
@@ -146,6 +147,10 @@ void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterat
     } else {
         std::sort(fHits->begin(), fHits->end(), compareCondition);
     }
+#else
+	std::cout << "TRestDetectorHitsEvent::Sort is not implemented on MacOs!!" << std::endl;
+	std::cout << "This method implementation should be reviewed for proper operation in Mac" << std::endl;
+#endif
 }
 
 void TRestDetectorHitsEvent::Shuffle(int NLoop) {
