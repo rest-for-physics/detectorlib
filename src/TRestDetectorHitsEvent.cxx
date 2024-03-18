@@ -148,8 +148,8 @@ void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterat
         std::sort(fHits->begin(), fHits->end(), compareCondition);
     }
 #else
-	std::cout << "TRestDetectorHitsEvent::Sort is not implemented on MacOs!!" << std::endl;
-	std::cout << "This method implementation should be reviewed for proper operation in Mac" << std::endl;
+    std::cout << "TRestDetectorHitsEvent::Sort is not implemented on MacOs!!" << std::endl;
+    std::cout << "This method implementation should be reviewed for proper operation in Mac" << std::endl;
 #endif
 }
 
