@@ -101,8 +101,8 @@ void TRestDetectorHitsReadoutAnalysisProcess::InitProcess() {
     }
 
     if (fChannelType == "") {
-        cerr << "TRestDetectorHitsReadoutAnalysisProcess::InitProcess() : "
-             << "Channel type not defined" << endl;
+        cerr << "TRestDetectorHitsReadoutAnalysisProcess::InitProcess() : " << "Channel type not defined"
+             << endl;
         exit(1);
     }
 }

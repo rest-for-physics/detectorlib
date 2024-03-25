@@ -322,8 +322,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1)
              << " || " << gaus->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
@@ -377,8 +376,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1)
              << " || " << landau->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
@@ -447,8 +445,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
              << " || " << aget->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;

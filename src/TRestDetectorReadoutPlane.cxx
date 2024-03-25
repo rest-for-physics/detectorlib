@@ -345,12 +345,12 @@ void TRestDetectorReadoutPlane::Print(Int_t DetailLevel) {
     if (DetailLevel >= 0) {
         RESTMetadata << "-- Readout plane : " << GetID() << RESTendl;
         RESTMetadata << "----------------------------------------------------------------" << RESTendl;
-        RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, "
-                     << " Y : " << fPosition.Y() << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- Normal vector : X = " << fNormal.X() << " mm, "
-                     << " Y : " << fNormal.Y() << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
-        RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, "
-                     << " Y : " << fAxisX.Y() << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Position : X = " << fPosition.X() << " mm, " << " Y : " << fPosition.Y()
+                     << " mm, Z : " << fPosition.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- Normal vector : X = " << fNormal.X() << " mm, " << " Y : " << fNormal.Y()
+                     << " mm, Z : " << fNormal.Z() << " mm" << RESTendl;
+        RESTMetadata << "-- X-axis vector : X = " << fAxisX.X() << " mm, " << " Y : " << fAxisX.Y()
+                     << " mm, Z : " << fAxisX.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Y-axis vector : Y = " << fAxisY.X() << " mm, Y : " << fAxisY.Y()
                      << " mm, Z : " << fAxisY.Z() << " mm" << RESTendl;
         RESTMetadata << "-- Cathode Position : X = " << GetCathodePosition().X() << " mm, "

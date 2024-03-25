@@ -21,7 +21,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
 
     void InitFromConfigFile() override;
     void Initialize() override;
-    void LoadDefaultConfig(){};
+    void LoadDefaultConfig() {};
 
     /// \brief This process will only work on hits corresponding to this channel type (using readout)
     std::string fChannelType;
