@@ -147,8 +147,7 @@ TVector2 TRestDetectorReadoutPixel::TransformToPixelCoordinates(const TVector2& 
 void TRestDetectorReadoutPixel::Print() const {
     std::cout << "    ## Pixel  position : (" << GetOriginX() << "," << GetOriginY() << ") mm size : ("
               << GetSizeX() << "," << GetSizeY() << ") mm" << std::endl;
-    std::cout << "       rotation : " << fRotation << " degrees"
-              << " type : ";
+    std::cout << "       rotation : " << fRotation << " degrees" << " type : ";
     if (fTriangle)
         std::cout << "triangle" << std::endl;
     else
