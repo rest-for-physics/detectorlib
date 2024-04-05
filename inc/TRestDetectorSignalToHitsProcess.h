@@ -39,7 +39,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
     /// A pointer to the specific TRestDetectorHitsEvent input
     TRestDetectorSignalEvent* fSignalEvent;  //!
 
-    /// A pointer to the detector readout definition accesible to TRestRun
+    /// A pointer to the detector readout definition accessible to TRestRun
     TRestDetectorReadout* fReadout;  //!
 
     /// A pointer to the detector gas definition accessible to TRestRun
@@ -51,10 +51,10 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
    protected:
     /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
-    Double_t fElectricField = 100;
+    Double_t fElectricField = -1;
 
     /// The gas pressure in atm. Only relevant if TRestDetectorGas is used.
-    Double_t fGasPressure = 1;
+    Double_t fGasPressure = -1;
 
     /// The drift velocity in standard REST units (mm/us).
     Double_t fDriftVelocity = -1;
@@ -98,7 +98,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
     TRestDetectorSignalToHitsProcess();
     TRestDetectorSignalToHitsProcess(const char* configFilename);
-    ~TRestDetectorSignalToHitsProcess();
+    ~TRestDetectorSignalToHitsProcess() override;
 
     ClassDefOverride(TRestDetectorSignalToHitsProcess, 4);
 };

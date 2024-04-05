@@ -416,7 +416,9 @@ TRestEvent* TRestDetectorGarfieldDriftProcess::ProcessEvent(TRestEvent* inputEve
         }
     }
 
-    if (fOutputHitsEvent->GetNumberOfHits() == 0) return nullptr;
+    if (fOutputHitsEvent->GetNumberOfHits() == 0) {
+        return nullptr;
+    }
 
     // fSignalEvent->PrintEvent();
 

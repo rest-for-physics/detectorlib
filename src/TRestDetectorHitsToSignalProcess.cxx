@@ -148,8 +148,8 @@ void TRestDetectorHitsToSignalProcess::LoadDefaultConfig() {
     cout << "Hits to signal metadata not found. Loading default values" << endl;
 
     fSampling = 1;
-    fElectricField = 1000;
-    fGasPressure = 10;
+    fElectricField = -1;
+    fGasPressure = -1;
 }
 
 ///////////////////////////////////////////////
