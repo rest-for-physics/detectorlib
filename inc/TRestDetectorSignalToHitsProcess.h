@@ -51,7 +51,7 @@ class TRestDetectorSignalToHitsProcess : public TRestEventProcess {
 
    protected:
     /// The electric field in standard REST units (V/mm). Only relevant if TRestDetectorGas is used.
-    Double_t fElectricField = 100;
+    Double_t fElectricField = -1;
 
     /// The gas pressure in atm. Only relevant if TRestDetectorGas is used.
     Double_t fGasPressure = -1;
