@@ -64,11 +64,11 @@ class TRestDetectorGarfieldDriftProcess : public TRestEventProcess {
 #endif
    protected:
 #if defined USE_Garfield
-    Double_t fGasPressure;     // atm
-                               //         Double_t fElectricField; // V/cm
-    Double_t fDriftPotential;  // V
-    Double_t fPEReduction;     // reduction factor of primary electrons to track
-    double fStopDistance;      ///< Distance from readout to stop electron drift, in mm
+    Double_t fGasPressure = -1;  // atm
+                                 //         Double_t fElectricField; // V/cm
+    Double_t fDriftPotential;    // V
+    Double_t fPEReduction;       // reduction factor of primary electrons to track
+    double fStopDistance;        ///< Distance from readout to stop electron drift, in mm
 
     TString fGDML_Filename;
 

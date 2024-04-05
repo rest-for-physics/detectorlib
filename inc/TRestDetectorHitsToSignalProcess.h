@@ -55,7 +55,7 @@ class TRestDetectorHitsToSignalProcess : public TRestEventProcess {
     Double_t fSampling = 1;  //<
 
     /// The gas pressure. If defined it will change the TRestDetectorGas pressure in atm.
-    Double_t fGasPressure = 1;  // atm
+    Double_t fGasPressure = -1;  // atm
 
     /// The electric field in V/mm. Used to calculate the drift velocity if TRestDetectorGas is defined.
     Double_t fElectricField = 100;  //<
