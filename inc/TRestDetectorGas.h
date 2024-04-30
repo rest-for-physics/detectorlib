@@ -127,7 +127,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
    public:
     TRestDetectorGas();
-    TRestDetectorGas(const char* configFilename, std::string name = "", bool gasGeneration = false,
+    TRestDetectorGas(const char* configFilename, const std::string& name = "", bool gasGeneration = false,
                      bool test = false);
     ~TRestDetectorGas();
 
@@ -237,7 +237,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     }
 
     /// Returns the gas fano factor
-    Double_t GetGasFanoFactor();
+    Double_t GetGasFanoFactor() const;
 
     /// Return pointer to Garfield::MediumGas for gas properties
     inline MediumMagboltz* GetGasMedium() const { return fGasMedium; };

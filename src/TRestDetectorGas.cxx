@@ -246,7 +246,8 @@ TRestDetectorGas::TRestDetectorGas() : TRestDetectorDriftVolume() {
 /// section. \param name The name of the TRestDetectorGas section to be read. \param
 /// gasGeneration Parameter allowing to activate the gas generation.
 ///
-TRestDetectorGas::TRestDetectorGas(const char* configFilename, string name, bool gasGeneration, bool test)
+TRestDetectorGas::TRestDetectorGas(const char* configFilename, const string& name, bool gasGeneration,
+                                   bool test)
     : TRestDetectorDriftVolume() {
     Initialize();
     fGasGeneration = gasGeneration;
@@ -254,7 +255,7 @@ TRestDetectorGas::TRestDetectorGas(const char* configFilename, string name, bool
     fTest = test;
 
     if (strcmp(configFilename, "server") == 0) {
-        LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + "\" file=\"server\"/>"),
+        LoadConfigFromElement(StringToElement("<TRestDetectorGas name=\"" + name + R"(" file="server"/>)"),
                               nullptr);
     } else {
         fConfigFileName = configFilename;
@@ -498,7 +499,7 @@ void TRestDetectorGas::GetGasWorkFunction() {
 // User need to have installed the last version of
 // Garfield to this to work
 
-Double_t TRestDetectorGas::GetGasFanoFactor() {
+Double_t TRestDetectorGas::GetGasFanoFactor() const {
 #if defined USE_Garfield
     if (fStatus != RESTGAS_GASFILE_LOADED) {
         RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
@@ -506,11 +507,10 @@ Double_t TRestDetectorGas::GetGasFanoFactor() {
         return 0;
     }
 
-    RESTInfo << "Calling Garfield directly." << RESTendl;
-    Double_t F;
-    F = fGasMedium->GetFanoFactor();
+    RESTInfo << "Calling Garfield directly to fetch Fano factor" << RESTendl;
+    const auto fanoFactor = fGasMedium->GetFanoFactor();
 
-    if (F == 0.) {
+    if (fanoFactor == 0.) {
         std::cout << "Fano Factor is 0! This REST is not compiled with the last "
                      "version of Garfield"
                   << std::endl;
@@ -518,13 +518,13 @@ Double_t TRestDetectorGas::GetGasFanoFactor() {
                      " with the latest Garfield version!"
                   << std::endl;
     }
-    return F;
+    return fanoFactor;
 #else
-    std::cout << "This REST is not compiled with garfield, Do not use Fano "
-                 "Factor from TRestDetectorGas!"
-              << std::endl;
-    std::cout << "Please define the Fano factor in each process!" << std::endl;
-    return 0;
+    cerr << "This REST is not compiled with garfield, Do not use Fano "
+            "Factor from TRestDetectorGas!"
+         << endl
+         << "Please define the Fano factor in each process!" << endl;
+    throw runtime_error("This REST is not compiled with garfield, cannot retrieve the Fano Factor");
 #endif
 }
 
@@ -561,9 +561,9 @@ void TRestDetectorGas::InitFromConfigFile() {
         AddGasComponent(gasName, gasFraction);
         gasComponentDefinition = GetNextElement(gasComponentDefinition);
     }
-    if (fNofGases == 0 && fMaterial != "") {
+    if (fNofGases == 0 && !fMaterial.empty()) {
         vector<string> componentsdef = Split(fMaterial, " ");
-        for (auto componentdef : componentsdef) {
+        for (const auto& componentdef : componentsdef) {
             vector<string> componentdefpair = Split(componentdef, ":");
             if (componentdefpair.size() != 2) {
                 continue;
@@ -773,16 +773,16 @@ string TRestDetectorGas::FindGasFile(string name) {
         absoluteName = TRestTools::DownloadRemoteFile((string)fGasServer + "/" + name, true);
     }
 
-    if (absoluteName == "") {
+    if (absoluteName.empty()) {
         RESTInfo << "Trying to find the gasFile locally" << RESTendl;
         absoluteName = SearchFile(name);
-        if (absoluteName == "") {
+        if (absoluteName.empty()) {
             RESTWarning << "-- Warning : No sucess finding local gas file definition." << RESTendl;
             RESTWarning << "-- Warning : Gas file definition does not exist." << RESTendl;
             RESTInfo << "To generate a new gasFile enable gas generation in TRestDetectorGas "
                         "constructor"
                      << RESTendl;
-            RESTInfo << "TRestDetectorGas ( \"gasDefinition.rml\", \"gas Name\", true );" << RESTendl;
+            RESTInfo << R"(TRestDetectorGas ( "gasDefinition.rml", "gas Name", true );)" << RESTendl;
             RESTInfo << "Further details can be found at TRestDetectorGas class definition and "
                         "tutorial."
                      << RESTendl;
@@ -820,7 +820,7 @@ TString TRestDetectorGas::GetGasMixture() {
 string TRestDetectorGas::ConstructFilename() {
     RESTDebug << "Entering ... TRestDetectorGas::ConstructFilename( )" << RESTendl;
 
-    string name = "";
+    string name;
     char tmpStr[256];
     for (int n = 0; n < fNofGases; n++) {
         if (n > 0) name += "-";
@@ -951,8 +951,8 @@ void TRestDetectorGas::PlotDriftVelocity(Double_t eMin, Double_t eMax, Int_t nSt
         driftVel[i] = GetDriftVelocity() * units("cm/us");
     }
 
-    TCanvas* c = new TCanvas("Drift velocity", "  ");
-    TGraph* fDriftVel = new TGraph(nSteps, &eField[0], &driftVel[0]);
+    auto c = new TCanvas("Drift velocity", "  ");
+    auto fDriftVel = new TGraph(nSteps, &eField[0], &driftVel[0]);
     TString str;
     str.Form("Drift Velocity for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fDriftVel->SetTitle(str);
@@ -984,8 +984,8 @@ void TRestDetectorGas::PlotLongitudinalDiffusion(Double_t eMin, Double_t eMax, I
         longDiff[i] = 10. * GetLongitudinalDiffusion();  // to express it in mm/sqrt(cm)
     }
 
-    TCanvas* c = new TCanvas("Longitudinal diffusion", "  ");
-    TGraph* fLongDiff = new TGraph(nSteps, &eField[0], &longDiff[0]);
+    auto c = new TCanvas("Longitudinal diffusion", "  ");
+    auto fLongDiff = new TGraph(nSteps, &eField[0], &longDiff[0]);
     TString str;
     str.Form("Longitudinal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fLongDiff->SetTitle(str);
@@ -1017,8 +1017,8 @@ void TRestDetectorGas::PlotTransversalDiffusion(Double_t eMin, Double_t eMax, In
         transDiff[i] = 10. * GetTransversalDiffusion();  // to express it in mm/sqrt(cm)
     }
 
-    TCanvas* c = new TCanvas("Transitudinal diffusion", "  ");
-    TGraph* fTransDiff = new TGraph(nSteps, &eField[0], &transDiff[0]);
+    auto c = new TCanvas("Transitudinal diffusion", "  ");
+    auto fTransDiff = new TGraph(nSteps, &eField[0], &transDiff[0]);
     TString str;
     str.Form("Transversal diffusion for %s (Pressure: %3.1lf bar)", GetName(), this->GetPressure());
     fTransDiff->SetTitle(str);
@@ -1049,8 +1049,8 @@ void TRestDetectorGas::PlotTownsendCoefficient(Double_t eMin, Double_t eMax, Int
         townsendCoeff[i] = GetTownsendCoefficient(eField[i]);
     }
 
-    TCanvas* c = new TCanvas("Townsend coefficient", "  ");
-    TGraph* fTownsend = new TGraph(nSteps, &eField[0], &townsendCoeff[0]);
+    auto c = new TCanvas("Townsend coefficient", "  ");
+    auto fTownsend = new TGraph(nSteps, &eField[0], &townsendCoeff[0]);
     TString str;
     str.Form("Townsend coefficient for %s", GetName());
     fTownsend->SetTitle(str);
