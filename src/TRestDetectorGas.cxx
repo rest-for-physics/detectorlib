@@ -494,6 +494,41 @@ void TRestDetectorGas::GetGasWorkFunction() {
 #endif
 }
 
+//Get the fano factor from Garfield::MediumMagboltz
+//User need to have installed the last version of
+//Garfield to this to work
+
+Double_t TRestDetectorGas::GetGasFanoFactor(){
+#if defined USE_Garfield
+    if(fStatus != RESTGAS_GASFILE_LOADED){
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
+        return 0;
+    }
+
+    RESTInfo << "Calling Garfield directly." << RESTendl;
+    Double_t F;
+    F = fGasMedium->GetFanoFactor();
+
+    if (F == 0.){
+        std::cout << "Fano Factor is 0! This REST is not compiled with the last "
+                     "version of Garfield" 
+                  << std::endl;
+        std::cout << "To use Garfield Fano factors, please compile REST "
+                     " with the latest Garfield version!" 
+                  << std::endl;         
+    }
+    return F;
+#else
+    std::cout << "This REST is not compiled with garfield, Do not use Fano "
+                 "Factor from TRestDetectorGas!"
+              << std::endl;
+    std::cout << "Please define the Fano factor in each process!" << std::endl;
+    return 0;
+#endif
+
+}
+
 /////////////////////////////////////////////
 /// \brief Loads the gas parameters that define the gas calculation
 /// and properties.

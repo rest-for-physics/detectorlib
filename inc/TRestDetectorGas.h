@@ -236,6 +236,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return fGasComponentFraction[n];
     }
 
+    /// Returns the gas fano factor
+    Double_t GetGasFanoFactor();
+
     /// Return pointer to Garfield::MediumGas for gas properties
     inline MediumMagboltz* GetGasMedium() const { return fGasMedium; };
 
