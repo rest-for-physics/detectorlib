@@ -149,7 +149,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     void CalcGarField(double Emin, double Emax, int n);
 
-    Int_t Write(const char* name = 0, Int_t option = 0, Int_t bufsize = 0) override;
+    Int_t Write(const char* name = nullptr, Int_t option = 0, Int_t bufsize = 0) override;
 
     void InitFromRootFile() override;
 
@@ -223,7 +223,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
         return GetAttachmentCoefficient(fElectricField * units("V/cm"));
     }
 
-    void GetGasWorkFunction();
+    void GetGasWorkFunctionOld();
 
     /// Returns the gas fraction in volume for component *n*.
     inline Double_t GetGasComponentFraction(Int_t n) {
@@ -238,6 +238,9 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
 
     /// Returns the gas fano factor
     Double_t GetGasFanoFactor() const;
+
+    /// Returns the gas work function in eV
+    Double_t GetGasWorkFunction() const;
 
     /// Return pointer to Garfield::MediumGas for gas properties
     inline MediumMagboltz* GetGasMedium() const { return fGasMedium; };

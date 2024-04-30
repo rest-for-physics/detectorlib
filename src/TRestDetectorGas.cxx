@@ -451,7 +451,7 @@ void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
 // This was just a test to try to Get the calculated W for the gas definition.
 // However, I tested with Xe+TMA and I got an error message that TMA
 // photoncrossection database is not available
-void TRestDetectorGas::GetGasWorkFunction() {
+void TRestDetectorGas::GetGasWorkFunctionOld() {
 #if defined USE_Garfield
     RESTEssential << __PRETTY_FUNCTION__ << RESTendl;
     RESTEssential << "This method has never been validated to operate properly" << RESTendl;
@@ -511,12 +511,7 @@ Double_t TRestDetectorGas::GetGasFanoFactor() const {
     const auto fanoFactor = fGasMedium->GetFanoFactor();
 
     if (fanoFactor == 0.) {
-        std::cout << "Fano Factor is 0! This REST is not compiled with the last "
-                     "version of Garfield"
-                  << std::endl;
-        std::cout << "To use Garfield Fano factors, please compile REST "
-                     " with the latest Garfield version!"
-                  << std::endl;
+        runtime_error("Fano Factor is 0! This REST is not compiled with the last version of Garfield");
     }
     return fanoFactor;
 #else
@@ -525,6 +520,27 @@ Double_t TRestDetectorGas::GetGasFanoFactor() const {
          << endl
          << "Please define the Fano factor in each process!" << endl;
     throw runtime_error("This REST is not compiled with garfield, cannot retrieve the Fano Factor");
+#endif
+}
+
+Double_t TRestDetectorGas::GetGasWorkFunction() const {
+#if defined USE_Garfield
+    if (fStatus != RESTGAS_GASFILE_LOADED) {
+        RESTDebug << "-- Error : " << __PRETTY_FUNCTION__ << RESTendl;
+        RESTDebug << "-- Error : Gas file was not loaded!" << RESTendl;
+        return 0;
+    }
+
+    RESTInfo << "Calling Garfield directly to fetch the work function" << RESTendl;
+    const auto workFunction = fGasMedium->GetW();
+
+    if (workFunction == 0.) {
+        throw runtime_error("Work Function is 0! This should never happen");
+    }
+    return workFunction;
+#else
+    throw runtime_error(
+        "This REST is not compiled with garfield, cannot retrieve the work function from the gas");
 #endif
 }
 
