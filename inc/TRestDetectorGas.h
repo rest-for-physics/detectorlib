@@ -113,7 +113,7 @@ class TRestDetectorGas : public TRestDetectorDriftVolume {
     void InitFromConfigFile() override;
     std::string ConstructFilename();
 
-    void AddGasComponent(std::string gasName, Double_t fraction);
+    void AddGasComponent(const std::string& gasName, Double_t fraction);
 
     void GenerateGasFile();
 

@@ -433,25 +433,27 @@ void TRestDetectorGas::CalcGarField(double Emin, double Emax, int n) {
 /////////////////////////////////////////////
 /// \brief Adds a new element/compound to the gas.
 ///
-/// This method is private to make gas intialization possible only through an
+/// This method is private to make gas initialization possible only through an
 /// RML file. This might change if necessary.
 ///
 /// \param gasName A gas element/compound name valid in Garfield++.
 /// \param fraction The element fraction in volume.
 ///
-void TRestDetectorGas::AddGasComponent(string gasName, Double_t fraction) {
+void TRestDetectorGas::AddGasComponent(const string& gasName, Double_t fraction) {
     RESTDebug << "Entering ... TRestDetectorGas::AddGasComponent( gasName=" << gasName
               << " , fraction=" << fraction << " )" << RESTendl;
 
-    fGasComponentName.push_back(gasName);
+    fGasComponentName.emplace_back(gasName);
     fGasComponentFraction.push_back(fraction);
     fNofGases++;
 }
 
+/*
 // This was just a test to try to Get the calculated W for the gas definition.
 // However, I tested with Xe+TMA and I got an error message that TMA
 // photoncrossection database is not available
-void TRestDetectorGas::GetGasWorkFunctionOld() {
+
+void TRestDetectorGas::GetGasWorkFunction() {
 #if defined USE_Garfield
     RESTEssential << __PRETTY_FUNCTION__ << RESTendl;
     RESTEssential << "This method has never been validated to operate properly" << RESTendl;
@@ -494,6 +496,7 @@ void TRestDetectorGas::GetGasWorkFunctionOld() {
          << endl;
 #endif
 }
+*/
 
 // Get the fano factor from Garfield::MediumMagboltz
 // User need to have installed the last version of
