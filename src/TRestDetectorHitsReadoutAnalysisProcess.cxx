@@ -15,7 +15,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     vector<double> hitEnergy;
     double energyInFiducial = 0;
 
-    for (size_t hitIndex = 0; hitIndex < fInputHitsEvent->GetNumberOfHits(); hitIndex++) {
+    for (int hitIndex = 0; hitIndex < fInputHitsEvent->GetNumberOfHits(); hitIndex++) {
         const auto position = fInputHitsEvent->GetPosition(hitIndex);
         const auto energy = fInputHitsEvent->GetEnergy(hitIndex);
         const auto time = fInputHitsEvent->GetTime(hitIndex);
@@ -32,19 +32,10 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
         const bool isValidHit = channelType == fChannelType;
 
-        const auto nHits = fOutputHitsEvent->GetNumberOfHits();
-        if (isValidHit || !fRemoveHitsOutsideReadout) {
-            fOutputHitsEvent->AddHit(position, energy, time, type);
-        }
+        fOutputHitsEvent->AddHit(position, energy, time, type);
+
         if (!isValidHit) {
-            // this hit is either not on the readout or the channel is not of the type we want
             continue;
-        }
-        if (fOutputHitsEvent->GetNumberOfHits() != nHits + 1) {
-            // this should never happen
-            cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
-                 << "Error adding hit " << hitIndex << " to output event" << endl;
-            exit(1);
         }
 
         hitPosition.push_back(position);
@@ -161,7 +152,6 @@ void TRestDetectorHitsReadoutAnalysisProcess::PrintMetadata() {
 
 void TRestDetectorHitsReadoutAnalysisProcess::InitFromConfigFile() {
     fRemoveZeroEnergyEvents = StringToBool(GetParameter("removeZeroEnergyEvents", "false"));
-    fRemoveHitsOutsideReadout = StringToBool(GetParameter("removeHitsOutsideReadout", "false"));
     fChannelType = GetParameter("channelType", fChannelType);
     fFiducialPosition = Get3DVectorParameterWithUnits("fiducialPosition", fFiducialPosition);
     fFiducialDiameter = GetDblParameterWithUnits("fiducialDiameter", fFiducialDiameter);
