@@ -99,7 +99,7 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
-        if (fWValue <= 0) fWValue = fGas->GetWvalue(); 
+        if (fWValue <= 0) fWValue = fGas->GetWvalue();
         if (fFano <= 0) fFano = fGas->GetGasFanoFactor();
 
         fGas->SetPressure(fGasPressure);
