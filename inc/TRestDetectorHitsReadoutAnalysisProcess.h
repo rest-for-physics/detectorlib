@@ -48,7 +48,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsReadoutAnalysisProcess() override = default;
 
-    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 3);
+    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 2);
 };
 
 #endif  // REST_TRESTDETECTORHITSREADOUTANALYSISPROCESS_H
