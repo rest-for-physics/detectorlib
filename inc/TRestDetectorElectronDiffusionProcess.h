@@ -39,6 +39,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fAttachment;
     Double_t fGasPressure;
     Double_t fWValue;
+    Double_t fFano;
     Double_t fLongitudinalDiffusionCoefficient;
     Double_t fTransversalDiffusionCoefficient;
     Bool_t fPoissonElectronExcitation;

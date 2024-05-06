@@ -49,6 +49,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fTransversalDiffusionCoefficient = 0;
     fLongitudinalDiffusionCoefficient = 0;
     fWValue = 0;
+    fFano = 0;
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
     fInputHitsEvent = nullptr;
@@ -98,7 +99,8 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
 #endif
         if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
         if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
-        if (fWValue <= 0) fWValue = fGas->GetWvalue();
+        if (fWValue <= 0) fWValue = fGas->GetWvalue(); 
+        if (fFano <= 0) fFano = fGas->GetGasFanoFactor();
 
         fGas->SetPressure(fGasPressure);
         fGas->SetElectricField(fElectricField);
@@ -186,8 +188,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
             Int_t numberOfElectrons;
+            Double_t fanofactor = fFano;
             if (fPoissonElectronExcitation) {
-                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
+                numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
                 if (wValue != fWValue) {
                     // reduce the number of electrons to improve speed
                     numberOfElectrons = numberOfElectrons * fWValue / wValue;
@@ -280,6 +283,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
     fWValue = GetDblParameterWithUnits("WValue", 0.0) * REST_Units::eV;
+    fFano = GetDblParameterWithUnits("FanoFactor", 0.0);
     fAttachment = StringToDouble(GetParameter("attachment", "0"));
     fLongitudinalDiffusionCoefficient =
         StringToDouble(GetParameter("longitudinalDiffusionCoefficient", "-1"));
