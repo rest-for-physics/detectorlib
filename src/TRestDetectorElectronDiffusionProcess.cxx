@@ -35,7 +35,7 @@ void TRestDetectorElectronDiffusionProcess::LoadDefaultConfig() {
 
     fElectricField = 2000;
     fAttachment = 0;
-    fGasPressure = 1;
+    fGasPressure = -1;
 }
 
 void TRestDetectorElectronDiffusionProcess::Initialize() {
@@ -44,7 +44,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
 
     fElectricField = 0;
     fAttachment = 0;
-    fGasPressure = 1;
+    fGasPressure = -1;
 
     fTransversalDiffusionCoefficient = 0;
     fLongitudinalDiffusionCoefficient = 0;

@@ -52,7 +52,7 @@ void TRestDetectorHitsEventViewer::AddEvent(TRestEvent* ev) {
     }
 
     Double_t slope;
-    if (eDepMin == eDepMin)
+    if (eDepMin == eDepMax)
         slope = 0;
     else
         slope = (fMaxRadius - fMinRadius) / (eDepMax - eDepMin);

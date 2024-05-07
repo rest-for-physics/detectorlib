@@ -96,7 +96,7 @@ void TRestDetectorReadoutEventViewer::DrawReadoutPulses() {
 
     int maxIndex;
 
-    zmin = 1E9;
+    zmin = std::numeric_limits<Double_t>::max();
     zmax = 1E-9;
 
     double z;

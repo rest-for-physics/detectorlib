@@ -67,7 +67,8 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
     vector<TGraph*> modGraph(nModConst);
     vector<TLatex*> channelIDLabel(nPixConst);
 
-    double xmin = 1E9, xmax = -1E9, ymin = 1E9, ymax = -1E9;
+    double xmin = std::numeric_limits<Double_t>::max(), xmax = std::numeric_limits<Double_t>::min(),
+           ymin = std::numeric_limits<Double_t>::max(), ymax = std::numeric_limits<Double_t>::min();
 
     Int_t graph = 0;
     Int_t modGraphID = 0;
@@ -120,9 +121,9 @@ int REST_Detector_ViewReadout(TString rootFile, TString name = "", Int_t plane =
                 // pixelGraph[graph]->SetMinimum( -200 );
                 // pixelGraph[graph]->GetXaxis()->SetLimits(-200,200);
 
-                Double_t xMin = 1e10;
-                Double_t yMin = 1e10;
-                Double_t xMax = -1e10;
+                Double_t xMin = numeric_limits<Double_t>::max();
+                Double_t yMin = numeric_limits<Double_t>::max();
+                Double_t xMax = numeric_limits<Double_t>::min();
                 for (int l = 0; l < 5; l++) {
                     if (x[l] < xMin) xMin = x[l];
                     if (y[l] < yMin) yMin = y[l];

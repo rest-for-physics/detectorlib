@@ -148,8 +148,8 @@ void TRestDetectorHitsToSignalProcess::LoadDefaultConfig() {
     cout << "Hits to signal metadata not found. Loading default values" << endl;
 
     fSampling = 1;
-    fElectricField = 1000;
-    fGasPressure = 10;
+    fElectricField = -1;
+    fGasPressure = -1;
 }
 
 ///////////////////////////////////////////////
@@ -267,6 +267,13 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                     velocity = REST_Physics::lightSpeed;
                 }
 
+                if (velocity <= 0) {
+                    RESTError
+                        << "TRestDetectorHitsToSignalProcess: Negative velocity. This should not happen."
+                        << RESTendl;
+                    exit(1);
+                }
+
                 Double_t time = t + distance / velocity;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug && hit < 20) {
@@ -287,8 +294,15 @@ TRestEvent* TRestDetectorHitsToSignalProcess::ProcessEvent(TRestEvent* inputEven
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Drift velocity : " << fDriftVelocity << " mm/us" << endl;
                 }
-                time = ((Int_t)(time / fSampling)) * fSampling;  // now time is in unit "us", but dispersed
 
+                time = floor(time / fSampling) * fSampling;
+
+                if (time < 0) {
+                    RESTError << "TRestDetectorHitsToSignalProcess: Negative time. This should not happen. "
+                                 "EventID: "
+                              << fHitsEvent->GetID() << RESTendl;
+                    exit(1);
+                }
                 fSignalEvent->AddChargeToSignal(daqId, time, energy);
 
                 auto signal = fSignalEvent->GetSignalById(daqId);

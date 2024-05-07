@@ -191,7 +191,7 @@ void TRestDetectorSingleChannelAnalysisProcess::FitChannelGain() {
             TSpectrum spc;
             int n = spc.Search(h);
             double* peaks = spc.GetPositionX();
-            double min = 1e9;
+            double min = std::numeric_limits<Double_t>::max();
             int minpos = 0;
             for (int i = 0; i < n; i++) {
                 double dist = abs(peaks[i] - middle);
