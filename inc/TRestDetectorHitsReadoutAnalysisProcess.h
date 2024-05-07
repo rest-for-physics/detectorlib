@@ -16,8 +16,8 @@
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
    private:
-    TRestDetectorHitsEvent* fInputHitsEvent;   //!
-    TRestDetectorHitsEvent* fOutputHitsEvent;  //!
+    TRestDetectorHitsEvent* fInputHitsEvent = nullptr;   //!
+    TRestDetectorHitsEvent* fOutputHitsEvent = nullptr;  //!
 
     void InitFromConfigFile() override;
     void Initialize() override;
