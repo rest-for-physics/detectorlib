@@ -45,7 +45,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Bool_t fPoissonElectronExcitation;
     Bool_t fUnitElectronEnergy;
     UInt_t fMaxHits;
-    Double_t fSeed = 0;
+    UInt_t fSeed = 0;
     Bool_t fCheckIsInside = true;
 
    public:
@@ -91,7 +91,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     // Destructor
     ~TRestDetectorElectronDiffusionProcess();
 
-    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 4);  // Template for a REST "event process" class
+    ClassDefOverride(TRestDetectorElectronDiffusionProcess, 5);  // Template for a REST "event process" class
                                                                  // inherited from TRestEventProcess
 };
 #endif

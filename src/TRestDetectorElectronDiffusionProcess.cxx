@@ -97,14 +97,24 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
             << RESTendl;
         exit(1);
 #endif
-        if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
-        if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
-        if (fWValue <= 0) fWValue = fGas->GetWvalue();
-        if (fFano <= 0) fFano = fGas->GetGasFanoFactor();
-
+        if (fGasPressure <= 0) {
+            fGasPressure = fGas->GetPressure();
+        }
         fGas->SetPressure(fGasPressure);
+
+        if (fElectricField <= 0) {
+            fElectricField = fGas->GetElectricField();
+        }
         fGas->SetElectricField(fElectricField);
+
+        if (fWValue <= 0) {
+            fWValue = fGas->GetWvalue();
+        }
         fGas->SetW(fWValue);
+
+        if (fFano <= 0) {
+            fFano = fGas->GetGasFanoFactor();
+        }
 
         if (fLongitudinalDiffusionCoefficient <= 0) {
             fLongitudinalDiffusionCoefficient = fGas->GetLongitudinalDiffusion();
@@ -126,8 +136,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
-    set<unsigned int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
-    for (unsigned int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+    set<int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
+    for (int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
         if (fInputHitsEvent->GetType(n) == REST_HitType::VETO) {
             // keep unprocessed hits as they are
             fOutputHitsEvent->AddHit(fInputHitsEvent->GetX(n), fInputHitsEvent->GetY(n),
@@ -150,7 +160,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     bool isAttached;
 
     Double_t wValue = fWValue;
-    const unsigned int totalElectrons = totalEnergy * REST_Units::eV / wValue;
+    const auto totalElectrons = static_cast<unsigned int>(totalEnergy * REST_Units::eV / wValue);
 
     // TODO: double check this
     if (fMaxHits > 0 && totalElectrons > fMaxHits) {
@@ -187,16 +197,16 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
-            Int_t numberOfElectrons;
+            unsigned int numberOfElectrons;
             Double_t fanofactor = fFano;
             if (fPoissonElectronExcitation) {
                 numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
                 if (wValue != fWValue) {
                     // reduce the number of electrons to improve speed
-                    numberOfElectrons = numberOfElectrons * fWValue / wValue;
+                    numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
                 }
             } else {
-                numberOfElectrons = energy * REST_Units::eV / wValue;
+                numberOfElectrons = static_cast<unsigned int>(energy * REST_Units::eV / wValue);
             }
 
             if (numberOfElectrons <= 0) {
@@ -290,7 +300,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fLongitudinalDiffusionCoefficient == -1)
         fLongitudinalDiffusionCoefficient = StringToDouble(GetParameter("longDiff", "-1"));
     else {
-        RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon dissapear."
+        RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon disappear."
                     << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : longDiff" << RESTendl;
     }
@@ -299,11 +309,11 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fTransversalDiffusionCoefficient == -1)
         fTransversalDiffusionCoefficient = StringToDouble(GetParameter("transDiff", "-1"));
     else {
-        RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon disappear." << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : transDiff" << RESTendl;
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
-    fSeed = StringToDouble(GetParameter("seed", "0"));
+    fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
     fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
