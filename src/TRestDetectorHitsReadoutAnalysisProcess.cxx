@@ -15,7 +15,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     vector<double> hitEnergy;
     double energyInFiducial = 0;
 
-    for (int hitIndex = 0; hitIndex < fInputHitsEvent->GetNumberOfHits(); hitIndex++) {
+    for (int hitIndex = 0; hitIndex < static_cast<int>(fInputHitsEvent->GetNumberOfHits()); hitIndex++) {
         const auto position = fInputHitsEvent->GetPosition(hitIndex);
         const auto energy = fInputHitsEvent->GetEnergy(hitIndex);
         const auto time = fInputHitsEvent->GetTime(hitIndex);
