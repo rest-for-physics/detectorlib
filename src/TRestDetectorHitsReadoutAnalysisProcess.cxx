@@ -32,6 +32,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
         const bool isValidHit = channelType == fChannelType;
 
+        // we need to add all hits to preserve the input event
         fOutputHitsEvent->AddHit(position, energy, time, type);
 
         if (!isValidHit) {
@@ -55,6 +56,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
     const double readoutEnergy = accumulate(hitEnergy.begin(), hitEnergy.end(), 0.0);
 
     if (fRemoveZeroEnergyEvents && readoutEnergy <= 0) {
+        // events not depositing any energy in the readout are removed
         return nullptr;
     }
 
