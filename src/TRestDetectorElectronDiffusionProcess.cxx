@@ -137,7 +137,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
     set<int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
-    for (int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+    for (int n = 0; n < static_cast<int>(fInputHitsEvent->GetNumberOfHits()); n++) {
         if (fInputHitsEvent->GetType(n) == REST_HitType::VETO) {
             // keep unprocessed hits as they are
             fOutputHitsEvent->AddHit(fInputHitsEvent->GetX(n), fInputHitsEvent->GetY(n),
