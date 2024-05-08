@@ -27,6 +27,7 @@
 #include <TRestEventProcess.h>
 
 #include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
 
 /// A process to include detector energy resolution in a TRestDetectorHitsEvent
 class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
@@ -42,6 +43,10 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     void Initialize() override;
     void InitProcess() override;
+
+    std::string fChannelType = "tpc";
+
+    TRestDetectorReadout* fReadout = nullptr;  //!
 
    protected:
     /// Reference energy for the FWHM
@@ -85,6 +90,6 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsSmearingProcess();
 
-    ClassDefOverride(TRestDetectorHitsSmearingProcess, 3);
+    ClassDefOverride(TRestDetectorHitsSmearingProcess, 4);
 };
 #endif

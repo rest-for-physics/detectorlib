@@ -65,6 +65,7 @@
 ///
 /// <hr>
 ///
+
 #include "TRestDetectorHitsSmearingProcess.h"
 
 using namespace std;
@@ -79,10 +80,7 @@ TRestDetectorHitsSmearingProcess::TRestDetectorHitsSmearingProcess() { Initializ
 ///////////////////////////////////////////////
 /// \brief Default destructor
 ///
-TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() {
-    delete fOutputEvent;
-    // TRestDetectorHitsSmearingProcess destructor
-}
+TRestDetectorHitsSmearingProcess::~TRestDetectorHitsSmearingProcess() { delete fOutputEvent; }
 
 ///////////////////////////////////////////////
 /// \brief Function to initialize input/output event members and define the section name
@@ -96,11 +94,25 @@ void TRestDetectorHitsSmearingProcess::Initialize() {
 }
 
 void TRestDetectorHitsSmearingProcess::InitProcess() {
-    if (fRandom != nullptr) {
-        delete fRandom;
-    }
+    delete fRandom;
     fRandom = new TRandom3(fSeed);
     fSeed = fRandom->TRandom::GetSeed();
+
+    fReadout = dynamic_cast<TRestDetectorReadout*>(fRunInfo->GetMetadataClass("TRestDetectorReadout"));
+
+    if (!fReadout && !fChannelType.empty()) {
+        throw runtime_error(
+            "TRestDetectorHitsSmearingProcess::InitProcess() : "
+            "TRestDetectorReadout not found and channel type is requested");
+    }
+
+    transform(fChannelType.begin(), fChannelType.end(), fChannelType.begin(), ::tolower);
+    const auto validChannelTypes = {"veto", "tpc"};
+    if (find(validChannelTypes.begin(), validChannelTypes.end(), fChannelType) == validChannelTypes.end()) {
+        throw runtime_error(
+            "TRestDetectorHitsSmearingProcess::InitProcess() : Channel type not valid: valid types are: "
+            "'tpc', 'veto'");
+    }
 }
 
 ///////////////////////////////////////////////
@@ -114,10 +126,42 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEven
     Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
 
     Double_t gain = fRandom->Gaus(1.0, eRes);
-    for (unsigned int hit = 0; hit < fInputEvent->GetNumberOfHits(); hit++)
-        fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
-                             fInputEvent->GetEnergy(hit) * gain, fInputEvent->GetTime(hit),
-                             fInputEvent->GetType(hit));
+    for (int hit = 0; hit < static_cast<int>(fInputEvent->GetNumberOfHits()); hit++) {
+        const auto hitType = fInputEvent->GetType(hit);
+
+        // VETO hit types are processed according the "veto" channel type. All other hit types are processed
+        // according to the "tpc" type (XYZ, XZ, etc.)
+
+        if (fChannelType == "veto") {
+            if (hitType == REST_HitType::VETO) {
+                fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
+                                     fInputEvent->GetEnergy(hit) * gain, fInputEvent->GetTime(hit),
+                                     fInputEvent->GetType(hit));
+            } else {
+                // Do nothing
+                fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
+                                     fInputEvent->GetEnergy(hit), fInputEvent->GetTime(hit),
+                                     fInputEvent->GetType(hit));
+            }
+        } else if (fChannelType == "tpc") {
+            if (hitType == REST_HitType::VETO) {
+                // Do nothing
+                fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
+                                     fInputEvent->GetEnergy(hit), fInputEvent->GetTime(hit),
+                                     fInputEvent->GetType(hit));
+            } else {
+                fOutputEvent->AddHit(fInputEvent->GetX(hit), fInputEvent->GetY(hit), fInputEvent->GetZ(hit),
+                                     fInputEvent->GetEnergy(hit) * gain, fInputEvent->GetTime(hit),
+                                     fInputEvent->GetType(hit));
+            }
+        } else {
+            // this should never happen
+            throw runtime_error(
+                "TRestDetectorHitsSmearingProcess::ProcessEvent() : "
+                "Channel type not valid: valid types are: "
+                "'tpc', 'veto'");
+        }
+    }
 
     return fOutputEvent;
 }
