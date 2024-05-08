@@ -69,8 +69,10 @@ class TRestDetectorHitsSmearingProcess : public TRestEventProcess {
     void PrintMetadata() override {
         BeginPrintProcess();
 
-        RESTMetadata << " reference energy (ERef): " << fEnergyRef << RESTendl;
-        RESTMetadata << " resolution at ERef : " << fResolutionAtERef << RESTendl;
+        RESTMetadata << "Channel type: " << fChannelType << RESTendl;
+
+        RESTMetadata << "Reference energy (ERef): " << fEnergyRef << RESTendl;
+        RESTMetadata << "Resolution at ERef : " << fResolutionAtERef << RESTendl;
 
         EndPrintProcess();
     }
