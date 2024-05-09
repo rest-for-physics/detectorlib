@@ -21,10 +21,12 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         const auto time = fInputHitsEvent->GetTime(hitIndex);
         const auto type = fInputHitsEvent->GetType(hitIndex);
 
-        if (energy <= 0) {
+        if (energy == 0) {
+            continue;
+        } else if (energy < 0) {
             // this should never happen
             cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
-                 << "Negative or zero energy found in hit " << hitIndex << endl;
+                 << "Negative energy found in hit " << hitIndex << endl;
             exit(1);
         }
 
@@ -133,8 +135,8 @@ void TRestDetectorHitsReadoutAnalysisProcess::InitProcess() {
     }
 
     if (fChannelType.empty()) {
-        cerr << "TRestDetectorHitsReadoutAnalysisProcess::InitProcess() : "
-             << "Channel type not defined" << endl;
+        cerr << "TRestDetectorHitsReadoutAnalysisProcess::InitProcess() : " << "Channel type not defined"
+             << endl;
         exit(1);
     }
 }
