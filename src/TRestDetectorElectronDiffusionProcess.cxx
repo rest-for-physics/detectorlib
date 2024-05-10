@@ -198,26 +198,22 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
             unsigned int numberOfElectrons;
-            Double_t fanofactor = fFano;
+            Double_t fanoFactor = fFano;
             if (fPoissonElectronExcitation) {
                 if (fUseFanoFactor) {
-                    std::cout << "using fano factor " << fanofactor << std::endl;
-                    numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
-                    if (wValue != fWValue) {
-                        // reduce the number of electrons to improve speed
-                        numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
-                    }
+                    RESTInfo << "using fano factor " << fanoFactor << RESTendl;
+                    numberOfElectrons = fRandom->Poisson(energy * fanoFactor * REST_Units::eV / fWValue);
                 } else {
-                    std::cout << "not using fano factor " << std::endl;
+                    RESTInfo << "not using fano factor " << RESTendl;
                     numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
-                    if (wValue != fWValue) {
-                        // reduce the number of electrons to improve speed
-                        numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
-                    }
                 }
-
             } else {
                 numberOfElectrons = static_cast<unsigned int>(energy * REST_Units::eV / wValue);
+            }
+
+            if (wValue != fWValue) {
+                // reduce the number of electrons to improve speed
+                numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
             }
 
             if (numberOfElectrons <= 0) {
