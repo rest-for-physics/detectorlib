@@ -197,7 +197,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
-            unsigned int numberOfElectrons;
+            unsigned int numberOfElectrons = 0;
             Double_t fanoFactor = fFano;
             if (fPoissonElectronExcitation) {
                 if (fUseFanoFactor) {
@@ -222,13 +222,12 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             const Double_t energyPerElectron = energy * REST_Units::eV / numberOfElectrons;
 
-            while (numberOfElectrons > 0) {
-                numberOfElectrons--;
+            Double_t longitudinalDiffusion =
+                10. * TMath::Sqrt(driftDistance / 10.) * fLongitudinalDiffusionCoefficient;  // mm
+            Double_t transversalDiffusion =
+                10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
 
-                Double_t longitudinalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fLongitudinalDiffusionCoefficient;  // mm
-                Double_t transversalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
+            for (unsigned int i = 0; i < numberOfElectrons; i++) {
 
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
