@@ -201,10 +201,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             Double_t fanoFactor = fFano;
             if (fPoissonElectronExcitation) {
                 if (fUseFanoFactor) {
-                    RESTInfo << "using fano factor " << fanoFactor << RESTendl;
                     numberOfElectrons = fRandom->Poisson(energy * fanoFactor * REST_Units::eV / fWValue);
                 } else {
-                    RESTInfo << "not using fano factor " << RESTendl;
                     numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
                 }
             } else {
