@@ -320,8 +320,8 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
     fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
-    fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
+    fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "true"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
-    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
+    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "false"));
     fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
 }
