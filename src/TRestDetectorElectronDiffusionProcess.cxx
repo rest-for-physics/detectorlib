@@ -259,7 +259,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                         1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
                 }
 
-                if (!fCheckIsInside && !plane->IsInside(positionAfterDiffusion)) {
+                if (fCheckIsInside && !plane->IsInside(positionAfterDiffusion)) {
                     // electron has been moved outside the readout plane
                     continue;
                 }
