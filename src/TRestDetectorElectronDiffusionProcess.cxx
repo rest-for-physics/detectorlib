@@ -226,7 +226,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
 
             for (unsigned int i = 0; i < numberOfElectrons; i++) {
-
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
                     isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
