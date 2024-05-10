@@ -200,11 +200,22 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             unsigned int numberOfElectrons;
             Double_t fanofactor = fFano;
             if (fPoissonElectronExcitation) {
-                numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
-                if (wValue != fWValue) {
-                    // reduce the number of electrons to improve speed
-                    numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
+                if(fUseFanoFactor){
+                    std::cout << "using fano factor " << fanofactor << std::endl;
+                    numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
+                    if (wValue != fWValue) {
+                        // reduce the number of electrons to improve speed
+                        numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
+                    }
+                } else {
+                    std::cout << "not using fano factor " << std::endl;
+                    numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
+                    if (wValue != fWValue) {
+                        // reduce the number of electrons to improve speed
+                        numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
+                    }
                 }
+
             } else {
                 numberOfElectrons = static_cast<unsigned int>(energy * REST_Units::eV / wValue);
             }
@@ -317,4 +328,5 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
     fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
+    fUseFanoFactor = StringToBool(GetParameter("useFano","false"));
 }
