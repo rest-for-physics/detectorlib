@@ -47,7 +47,7 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     UInt_t fMaxHits;
     UInt_t fSeed = 0;
     Bool_t fCheckIsInside = true;
-    Bool_t fUseFanoFactor = false; 
+    Bool_t fUseFanoFactor = false;
 
    public:
     RESTValue GetInputEvent() const override { return fInputHitsEvent; }

@@ -200,7 +200,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             unsigned int numberOfElectrons;
             Double_t fanofactor = fFano;
             if (fPoissonElectronExcitation) {
-                if(fUseFanoFactor){
+                if (fUseFanoFactor) {
                     std::cout << "using fano factor " << fanofactor << std::endl;
                     numberOfElectrons = fRandom->Poisson(energy * fanofactor * REST_Units::eV / fWValue);
                     if (wValue != fWValue) {
@@ -328,5 +328,5 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
     fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
-    fUseFanoFactor = StringToBool(GetParameter("useFano","false"));
+    fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
 }
