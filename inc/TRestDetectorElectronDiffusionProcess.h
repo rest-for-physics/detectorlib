@@ -38,11 +38,10 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
     Double_t fElectricField;
     Double_t fAttachment;
     Double_t fGasPressure;
-    Double_t fWValue;
-    Double_t fFano;
+    Double_t fWorkFunction;
+    Double_t fFanoFactor;
     Double_t fLongitudinalDiffusionCoefficient;
     Double_t fTransversalDiffusionCoefficient;
-    Bool_t fPoissonElectronExcitation;
     Bool_t fUnitElectronEnergy;
     UInt_t fMaxHits;
     UInt_t fSeed = 0;
@@ -63,13 +62,13 @@ class TRestDetectorElectronDiffusionProcess : public TRestEventProcess {
         BeginPrintProcess();
 
         RESTMetadata << " eField : " << fElectricField * units("V/cm") << " V/cm" << RESTendl;
-        RESTMetadata << " attachment coeficient : " << fAttachment << " V/cm" << RESTendl;
+        RESTMetadata << " attachment coefficient : " << fAttachment << " V/cm" << RESTendl;
         RESTMetadata << " gas pressure : " << fGasPressure << " atm" << RESTendl;
         RESTMetadata << " longitudinal diffusion coefficient : " << fLongitudinalDiffusionCoefficient
                      << " cm^1/2" << RESTendl;
         RESTMetadata << " transversal diffusion coefficient : " << fTransversalDiffusionCoefficient
                      << " cm^1/2" << RESTendl;
-        RESTMetadata << " W value : " << fWValue << " eV" << RESTendl;
+        RESTMetadata << " W value : " << fWorkFunction << " eV" << RESTendl;
 
         RESTMetadata << " Maximum number of hits : " << fMaxHits << RESTendl;
 
