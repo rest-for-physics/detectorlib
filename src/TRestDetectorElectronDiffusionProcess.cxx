@@ -198,9 +198,15 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
             double numberOfElectrons = energy * REST_Units::eV / wValue;
-            if (fUseFanoFactor && fFanoFactor > 0) {
-                const double sigma = TMath::Sqrt(fFanoFactor * numberOfElectrons);
+            if (fUseFanoFactor) {
+                if (fFanoFactor <= 0) {
+                    throw runtime_error("Fano factor not valid");
+                }
+                const auto sigma = TMath::Sqrt(fFanoFactor * numberOfElectrons);
                 numberOfElectrons = fRandom->Gaus(numberOfElectrons, sigma);
+            } else if (fPoissonElectronExcitation) {
+                // this is probably a bad idea, we only keep it for backwards compatibility
+                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWorkFunction);
             }
 
             if (wValue != fWorkFunction) {
@@ -293,7 +299,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
     fWorkFunction = GetDblParameterWithUnits("WValue", 0.0) * REST_Units::eV;
-    fFanoFactor = GetDblParameterWithUnits("fanoFactor", 0.0);
+    fFanoFactor = GetDblParameterWithUnits("FanoFactor", 0.0);
     fAttachment = StringToDouble(GetParameter("attachment", "0"));
     fLongitudinalDiffusionCoefficient =
         StringToDouble(GetParameter("longitudinalDiffusionCoefficient", "-1"));
@@ -314,6 +320,7 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
     fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
+    fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
     fCheckIsInside = StringToBool(GetParameter("checkIsInside", "false"));
     fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
