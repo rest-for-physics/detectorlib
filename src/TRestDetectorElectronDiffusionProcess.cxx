@@ -49,6 +49,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fTransversalDiffusionCoefficient = 0;
     fLongitudinalDiffusionCoefficient = 0;
     fWValue = 0;
+    fFanoFactor = 0;
 
     fOutputHitsEvent = new TRestDetectorHitsEvent();
     fInputHitsEvent = nullptr;
@@ -96,13 +97,24 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
             << RESTendl;
         exit(1);
 #endif
-        if (fGasPressure <= 0) fGasPressure = fGas->GetPressure();
-        if (fElectricField <= 0) fElectricField = fGas->GetElectricField();
-        if (fWValue <= 0) fWValue = fGas->GetWvalue();
-
+        if (fGasPressure <= 0) {
+            fGasPressure = fGas->GetPressure();
+        }
         fGas->SetPressure(fGasPressure);
+
+        if (fElectricField <= 0) {
+            fElectricField = fGas->GetElectricField();
+        }
         fGas->SetElectricField(fElectricField);
+
+        if (fWValue <= 0) {
+            fWValue = fGas->GetWvalue();
+        }
         fGas->SetW(fWValue);
+
+        if (fFanoFactor <= 0) {
+            fFanoFactor = fGas->GetGasFanoFactor();
+        }
 
         if (fLongitudinalDiffusionCoefficient <= 0) {
             fLongitudinalDiffusionCoefficient = fGas->GetLongitudinalDiffusion();
@@ -124,8 +136,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     fInputHitsEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputHitsEvent->SetEventInfo(fInputHitsEvent);
 
-    set<unsigned int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
-    for (unsigned int n = 0; n < fInputHitsEvent->GetNumberOfHits(); n++) {
+    set<int> hitsToProcess;  // indices of the hits to process (we do not want to process veto hits)
+    for (int n = 0; n < static_cast<int>(fInputHitsEvent->GetNumberOfHits()); n++) {
         if (fInputHitsEvent->GetType(n) == REST_HitType::VETO) {
             // keep unprocessed hits as they are
             fOutputHitsEvent->AddHit(fInputHitsEvent->GetX(n), fInputHitsEvent->GetY(n),
@@ -148,7 +160,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
     bool isAttached;
 
     Double_t wValue = fWValue;
-    const unsigned int totalElectrons = totalEnergy * REST_Units::eV / wValue;
+    const auto totalElectrons = static_cast<unsigned int>(totalEnergy * REST_Units::eV / wValue);
 
     // TODO: double check this
     if (fMaxHits > 0 && totalElectrons > fMaxHits) {
@@ -185,15 +197,21 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             Double_t driftDistance = plane->GetDistanceTo({x, y, z});
 
-            Int_t numberOfElectrons;
-            if (fPoissonElectronExcitation) {
-                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
-                if (wValue != fWValue) {
-                    // reduce the number of electrons to improve speed
-                    numberOfElectrons = numberOfElectrons * fWValue / wValue;
+            double numberOfElectrons = energy * REST_Units::eV / wValue;
+            if (fUseFanoFactor) {
+                if (fFanoFactor <= 0) {
+                    throw runtime_error("Fano factor not valid");
                 }
-            } else {
-                numberOfElectrons = energy * REST_Units::eV / wValue;
+                const auto sigma = TMath::Sqrt(fFanoFactor * numberOfElectrons);
+                numberOfElectrons = fRandom->Gaus(numberOfElectrons, sigma);
+            } else if (fPoissonElectronExcitation) {
+                // this is probably a bad idea, we only keep it for backwards compatibility
+                numberOfElectrons = fRandom->Poisson(energy * REST_Units::eV / fWValue);
+            }
+
+            if (wValue != fWValue) {
+                // reduce the number of electrons to improve speed
+                numberOfElectrons = static_cast<unsigned int>(numberOfElectrons * fWValue / wValue);
             }
 
             if (numberOfElectrons <= 0) {
@@ -202,14 +220,12 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
             const Double_t energyPerElectron = energy * REST_Units::eV / numberOfElectrons;
 
-            while (numberOfElectrons > 0) {
-                numberOfElectrons--;
+            Double_t longitudinalDiffusion =
+                10. * TMath::Sqrt(driftDistance / 10.) * fLongitudinalDiffusionCoefficient;  // mm
+            Double_t transversalDiffusion =
+                10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
 
-                Double_t longitudinalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fLongitudinalDiffusionCoefficient;  // mm
-                Double_t transversalDiffusion =
-                    10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
-
+            for (unsigned int i = 0; i < numberOfElectrons; i++) {
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
                     isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
@@ -240,7 +256,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                         1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
                 }
 
-                if (!fCheckIsInside && !plane->IsInside(positionAfterDiffusion)) {
+                if (fCheckIsInside && !plane->IsInside(positionAfterDiffusion)) {
                     // electron has been moved outside the readout plane
                     continue;
                 }
@@ -280,13 +296,14 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
     fWValue = GetDblParameterWithUnits("WValue", 0.0) * REST_Units::eV;
+    fFanoFactor = GetDblParameterWithUnits("fanoFactor", 0.0);
     fAttachment = StringToDouble(GetParameter("attachment", "0"));
     fLongitudinalDiffusionCoefficient =
         StringToDouble(GetParameter("longitudinalDiffusionCoefficient", "-1"));
     if (fLongitudinalDiffusionCoefficient == -1)
         fLongitudinalDiffusionCoefficient = StringToDouble(GetParameter("longDiff", "-1"));
     else {
-        RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon dissapear."
+        RESTWarning << "longitudinalDiffusionCoefficient is now OBSOLETE! It will soon disappear."
                     << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : longDiff" << RESTendl;
     }
@@ -295,12 +312,13 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     if (fTransversalDiffusionCoefficient == -1)
         fTransversalDiffusionCoefficient = StringToDouble(GetParameter("transDiff", "-1"));
     else {
-        RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon dissapear." << RESTendl;
+        RESTWarning << "transversalDiffusionCoefficient is now OBSOLETE! It will soon disappear." << RESTendl;
         RESTWarning << " Please use the shorter form of this parameter : transDiff" << RESTendl;
     }
     fMaxHits = StringToInteger(GetParameter("maxHits", "1000"));
-    fSeed = StringToDouble(GetParameter("seed", "0"));
-    fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "false"));
+    fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
+    fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "true"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
-    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
+    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "false"));
+    fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
 }
