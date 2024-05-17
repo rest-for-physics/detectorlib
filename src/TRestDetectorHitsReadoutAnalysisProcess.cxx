@@ -29,8 +29,11 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
                  << "Negative energy found in hit " << hitIndex << endl;
             exit(1);
         }
-
-        const auto daqId = fReadout->GetDaqId(position, false);
+        // when working with hits derived from experimental data, only relative z is available, so it cannot
+        // be used to check if a position is inside the readout. We use z=0 in this case which in most cases
+        // is inside.
+        const auto daqId =
+            fReadout->GetDaqId({position.X(), position.Y(), fIgnoreZ ? 0 : position.Z()}, false);
         const auto channelType = fReadout->GetTypeForChannelDaqId(daqId);
         const bool isValidHit = channelType == fChannelType;
 
@@ -156,6 +159,7 @@ void TRestDetectorHitsReadoutAnalysisProcess::PrintMetadata() {
 
 void TRestDetectorHitsReadoutAnalysisProcess::InitFromConfigFile() {
     fRemoveZeroEnergyEvents = StringToBool(GetParameter("removeZeroEnergyEvents", "false"));
+    fIgnoreZ = StringToBool(GetParameter("ignoreZ", "false"));
     fChannelType = GetParameter("channelType", fChannelType);
     fFiducialPosition = Get3DVectorParameterWithUnits("fiducialPosition", fFiducialPosition);
     fFiducialDiameter = GetDblParameterWithUnits("fiducialDiameter", fFiducialDiameter);

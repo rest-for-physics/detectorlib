@@ -7,11 +7,12 @@
 
 #include <TCanvas.h>
 #include <TH1D.h>
-#include <TRestDetectorGas.h>
-#include <TRestDetectorHitsEvent.h>
-#include <TRestDetectorReadout.h>
-#include <TRestDetectorSignalEvent.h>
 #include <TRestEventProcess.h>
+
+#include "TRestDetectorGas.h"
+#include "TRestDetectorHitsEvent.h"
+#include "TRestDetectorReadout.h"
+#include "TRestDetectorSignalEvent.h"
 
 //! An analysis REST process to extract valuable information from Hits type of data.
 class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
@@ -28,6 +29,9 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
     TVector3 fFiducialPosition;
     Double_t fFiducialDiameter = 0;
     bool fRemoveZeroEnergyEvents = false;
+    /// \brief If true, the Z coordinate will be ignored when checking if a position is inside the readout.
+    /// This is required if processing experimental data where only relative z is available.
+    bool fIgnoreZ = false;
 
     TRestDetectorReadout* fReadout = nullptr;  //!
 
@@ -48,7 +52,7 @@ class TRestDetectorHitsReadoutAnalysisProcess : public TRestEventProcess {
 
     ~TRestDetectorHitsReadoutAnalysisProcess() override = default;
 
-    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 2);
+    ClassDefOverride(TRestDetectorHitsReadoutAnalysisProcess, 3);
 };
 
 #endif  // REST_TRESTDETECTORHITSREADOUTANALYSISPROCESS_H
