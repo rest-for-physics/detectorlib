@@ -293,13 +293,32 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t energy = 0, time = 0;
 
     // Define fit limits
-    Double_t threshold = maxRaw * 0.10;      // 10% of the maximum value
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.4;  // us
+    Double_t threshold = GetData(maxRaw)*0.9;  // 90% of the maximum value
+
+    Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
+
+    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    for (int i = maxRaw; i >= 0; --i) {
+        if (GetData(i) <= threshold) {
+            lowerLimit = GetTime(i);
+            break;
+        }
+    }
+
+    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
+        if (GetData(i) <= threshold) {
+            upperLimit = GetTime(i);
+            break;
+        }
+    }
+
+    std::cout << "The max is " << maxRaw  << " " << GetData(maxRaw) << " " << maxRawTime << std::endl;
+    std::cout << "The threshold is " << threshold << std::endl;
+    std::cout << "The range is " << lowerLimit << " " << upperLimit << std::endl;
 
     TF1* gaus = new TF1("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
+    TH1F* h1 = new TH1F("h1", "h1", signal->GetNumberOfPoints(),signal->GetTime(0),signal->GetTime(signal->GetNumberOfPoints()-1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
