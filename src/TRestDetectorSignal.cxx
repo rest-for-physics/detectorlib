@@ -291,6 +291,9 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t energy = 0, time = 0;
+
+    // Define fit limits
+    Double_t threshold = maxRaw * 0.10;  // 10% of the maximum value
     Double_t lowerLimit = maxRawTime - 0.2;  // us
     Double_t upperLimit = maxRawTime + 0.4;  // us
 
