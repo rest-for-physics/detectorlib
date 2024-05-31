@@ -293,7 +293,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     Double_t energy = 0, time = 0;
 
     // Define fit limits
-    Double_t threshold = GetData(maxRaw)*0.9;  // 90% of the maximum value
+    Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
 
     Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
 
@@ -313,12 +313,13 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         }
     }
 
-    std::cout << "The max is " << maxRaw  << " " << GetData(maxRaw) << " " << maxRawTime << std::endl;
+    std::cout << "The max is " << maxRaw << " " << GetData(maxRaw) << " " << maxRawTime << std::endl;
     std::cout << "The threshold is " << threshold << std::endl;
     std::cout << "The range is " << lowerLimit << " " << upperLimit << std::endl;
 
     TF1* gaus = new TF1("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", signal->GetNumberOfPoints(),signal->GetTime(0),signal->GetTime(signal->GetNumberOfPoints()-1));
+    TH1F* h1 = new TH1F("h1", "h1", signal->GetNumberOfPoints(), signal->GetTime(0),
+                        signal->GetTime(signal->GetNumberOfPoints() - 1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
