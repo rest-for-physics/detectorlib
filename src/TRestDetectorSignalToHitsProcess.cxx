@@ -379,33 +379,38 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             }
 
         } else if (fMethod == "gaussFit") {
-            TVector2 gaussFit = signal->GetMaxGauss();
+            const auto peak = signal->GetMaxGauss();
+            if (peak) {
+                // unpack peak
+                const TVector2 gaussFit = peak.value();
+                Double_t hitTime = 0;
+                Double_t z = -1.0;
+                if (gaussFit.X() >= 0.0) {
+                    hitTime = gaussFit.X();
+                    Double_t distanceToPlane = hitTime * fDriftVelocity;
+                    z = zPosition + fieldZDirection * distanceToPlane;
+                }
+                Double_t energy = -1.0;
+                if (gaussFit.Y() >= 0.0) {
+                    energy = gaussFit.Y();
+                }
 
-            Double_t hitTime = 0;
-            Double_t z = -1.0;
-            if (gaussFit.X() >= 0.0) {
-                hitTime = gaussFit.X();
-                Double_t distanceToPlane = hitTime * fDriftVelocity;
-                z = zPosition + fieldZDirection * distanceToPlane;
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
+                    cout << "Signal event : " << signal->GetSignalID()
+                         << "--------------------------------------------------------" << endl;
+                    cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
+                    cout << "Signal to hit info : zPosition : " << zPosition
+                         << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
+                         << endl;
+                    cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
+                         << " Energy : " << energy << endl;
+                }
+            } else {
+                // Perhaps we should just skip it
+                double energy = -1;
+                double z = -1;
+                fHitsEvent->AddHit(x, y, z, energy, 0, type);
             }
-            Double_t energy = -1.0;
-            if (gaussFit.Y() >= 0.0) {
-                energy = gaussFit.Y();
-            }
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-                cout << "Signal event : " << signal->GetSignalID()
-                     << "--------------------------------------------------------" << endl;
-                cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
-                cout << "Signal to hit info : zPosition : " << zPosition
-                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
-                     << endl;
-                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
-                     << " Energy : " << energy << endl;
-            }
-
-            fHitsEvent->AddHit(x, y, z, energy, 0, type);
-
         } else if (fMethod == "landauFit") {
             TVector2 landauFit = signal->GetMaxLandau();
 

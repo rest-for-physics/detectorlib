@@ -284,20 +284,19 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
 
 // z position by gaussian fit
 
-TVector2
+optional<TVector2>
 TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak time in us and the energy
 {
     Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
-    Double_t energy = 0, time = 0;
 
     // Define fit limits
     Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
 
     Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
 
-    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    // Find the lower limit: time when signal drops to 90% of the max before the peak
     for (int i = maxRaw; i >= 0; --i) {
         if (GetData(i) <= threshold) {
             lowerLimit = GetTime(i);
@@ -336,19 +335,17 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
                                 // = save and return the fit result
 
     if (fitResult->IsValid()) {
-        energy = gaus.GetParameter(0);
-        time = gaus.GetParameter(1);
+        double energy = gaus.GetParameter(0);
+        double time = gaus.GetParameter(1);
+
+        return TVector2(time, energy);
     } else {
-        // the fit failed, return -1 to indicate failure
-        energy = -1;
-        time = -1;
+        // The fit failed
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << endl
              << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1) << " || "
-             << gaus.GetParameter(2) << "\n"
-             << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
+             << gaus.GetParameter(2) << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
         h1->Draw();
@@ -356,9 +353,9 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         getchar();
         delete c2;
         */
-    }
 
-    return {time, energy};
+        return nullopt;
+    }
 }
 
 // z position by landau fit
@@ -394,8 +391,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1)
              << " || " << landau->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
@@ -462,8 +458,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
              << " || " << aget->GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
