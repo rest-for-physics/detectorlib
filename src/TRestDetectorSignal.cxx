@@ -305,7 +305,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         }
     }
 
-    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    // Find the upper limit: time when signal drops to 90% of the max after the peak
     for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
         if (GetData(i) <= threshold) {
             upperLimit = GetTime(i);
@@ -358,9 +358,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         */
     }
 
-    TVector2 fitParam(time, energy);
-
-    return fitParam;
+    return {time, energy};
 }
 
 // z position by landau fit
@@ -410,12 +408,10 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         */
     }
 
-    TVector2 fitParam(time, energy);
-
     delete h1;
     delete landau;
 
-    return fitParam;
+    return {time, energy};
 }
 
 // z position by aget fit
@@ -473,12 +469,10 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
     }
 
-    TVector2 fitParam(time, energy);
-
     delete h1;
     delete aget;
 
-    return fitParam;
+    return {time, energy};
 }
 Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetTime(GetMaxIndex(from, to)); }
 

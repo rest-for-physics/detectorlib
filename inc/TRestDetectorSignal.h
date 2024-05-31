@@ -66,11 +66,7 @@ class TRestDetectorSignal {
     void SetSignalType(const std::string& type) { fType = type; }
 
     // Getters
-    TVector2 GetPoint(Int_t n) {
-        TVector2 vector2(GetTime(n), GetData(n));
-
-        return vector2;
-    }
+    TVector2 GetPoint(Int_t n) { return {GetTime(n), GetData(n)}; }
 
     inline Int_t GetSignalID() const { return fSignalID; }
     inline Int_t GetID() const { return fSignalID; }
