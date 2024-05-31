@@ -322,7 +322,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1.SetBinContent(i+1, GetData(i));
+        h1.SetBinContent(i + 1, GetData(i));
     }
     /*
     TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
@@ -346,8 +346,8 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
              << " ns "
              << "\n"
-             << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1)
-             << " || " << gaus.GetParameter(2) << "\n"
+             << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1) << " || "
+             << gaus.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
