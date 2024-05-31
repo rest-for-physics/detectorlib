@@ -32,6 +32,7 @@
 #include <TMath.h>
 #include <TRandom3.h>
 
+#include <algorithm>
 #include <limits>
 
 using namespace std;
@@ -284,37 +285,34 @@ Int_t TRestDetectorSignal::GetMaxIndex(Int_t from, Int_t to) {
 
 // z position by gaussian fit
 
-optional<TVector2>
+optional<pair<Double_t, Double_t>>
 TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the peak time in us and the energy
 {
-    Int_t maxRaw = GetMaxIndex();  // The bin where the maximum of the raw signal is found
-    Double_t maxRawTime =
-        GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
+    const auto indexMax =
+        std::distance(fSignalCharge.begin(), std::max_element(fSignalCharge.begin(), fSignalCharge.end()));
+    const auto timeMax = fSignalTime[indexMax];
+    const auto signalMax = fSignalCharge[indexMax];
 
     // Define fit limits
-    Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
+    Double_t threshold = signalMax * 0.9;  // 90% of the maximum value
 
-    Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
+    Double_t lowerLimit = timeMax, upperLimit = timeMax;
 
     // Find the lower limit: time when signal drops to 90% of the max before the peak
-    for (int i = maxRaw; i >= 0; --i) {
-        if (GetData(i) <= threshold) {
-            lowerLimit = GetTime(i);
+    for (auto i = indexMax; i >= 0; --i) {
+        if (fSignalCharge[i] <= threshold) {
+            lowerLimit = fSignalTime[i];
             break;
         }
     }
 
     // Find the upper limit: time when signal drops to 90% of the max after the peak
-    for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
-        if (GetData(i) <= threshold) {
-            upperLimit = GetTime(i);
+    for (auto i = indexMax; i < GetNumberOfPoints(); ++i) {
+        if (fSignalCharge[i] <= threshold) {
+            lowerLimit = fSignalTime[i];
             break;
         }
     }
-
-    std::cout << "The max is " << maxRaw << " " << GetData(maxRaw) << " " << maxRawTime << std::endl;
-    std::cout << "The threshold is " << threshold << std::endl;
-    std::cout << "The range is " << lowerLimit << " " << upperLimit << std::endl;
 
     TF1 gaus("gaus", "gaus", lowerLimit, upperLimit);
     TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
@@ -338,11 +336,11 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         double energy = gaus.GetParameter(0);
         double time = gaus.GetParameter(1);
 
-        return TVector2(time, energy);
+        return make_pair(time, energy);
     } else {
         // The fit failed
         cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
+             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << timeMax
              << " ns " << endl
              << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1) << " || "
              << gaus.GetParameter(2) << endl;

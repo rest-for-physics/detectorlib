@@ -381,28 +381,19 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
         } else if (fMethod == "gaussFit") {
             const auto peak = signal->GetMaxGauss();
             if (peak) {
-                // unpack peak
-                const TVector2 gaussFit = peak.value();
-                Double_t hitTime = 0;
-                Double_t z = -1.0;
-                if (gaussFit.X() >= 0.0) {
-                    hitTime = gaussFit.X();
-                    Double_t distanceToPlane = hitTime * fDriftVelocity;
-                    z = zPosition + fieldZDirection * distanceToPlane;
-                }
-                Double_t energy = -1.0;
-                if (gaussFit.Y() >= 0.0) {
-                    energy = gaussFit.Y();
-                }
+                const auto [time, energy] = peak.value();
+
+                const auto distanceToPlane = time * fDriftVelocity;
+                const auto z = zPosition + fieldZDirection * distanceToPlane;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                     cout << "Signal event : " << signal->GetSignalID()
                          << "--------------------------------------------------------" << endl;
-                    cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
+                    cout << "GaussFit : time " << time << " ns and energy : " << energy << endl;
                     cout << "Signal to hit info : zPosition : " << zPosition
                          << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                          << endl;
-                    cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
+                    cout << "Adding hit. Time : " << time << " ns x : " << x << " y : " << y << " z : " << z
                          << " Energy : " << energy << endl;
                 }
             } else {

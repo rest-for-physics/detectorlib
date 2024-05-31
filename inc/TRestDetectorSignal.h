@@ -56,7 +56,7 @@ class TRestDetectorSignal {
     // TODO other objects should probably skip using GetMaxIndex directly
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
-    std::optional<TVector2> GetMaxGauss();
+    std::optional<std::pair<Double_t, Double_t>> GetMaxGauss();
     TVector2 GetMaxLandau();
     TVector2 GetMaxAget();
 
