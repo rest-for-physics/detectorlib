@@ -317,13 +317,12 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     std::cout << "The threshold is " << threshold << std::endl;
     std::cout << "The range is " << lowerLimit << " " << upperLimit << std::endl;
 
-    TF1* gaus = new TF1("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", signal->GetNumberOfPoints(), signal->GetTime(0),
-                        signal->GetTime(signal->GetNumberOfPoints() - 1));
+    TF1 gaus("gaus", "gaus", lowerLimit, upperLimit);
+    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
+        h1.SetBinContent(i+1, GetData(i));
     }
     /*
     TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
@@ -333,12 +332,12 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     */
 
     TFitResultPtr fitResult =
-        h1->Fit(gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range; S
+        h1.Fit(&gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range; S
                                 // = save and return the fit result
 
     if (fitResult->IsValid()) {
-        energy = gaus->GetParameter(0);
-        time = gaus->GetParameter(1);
+        energy = gaus.GetParameter(0);
+        time = gaus.GetParameter(1);
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
@@ -347,8 +346,8 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
              << " ns "
              << "\n"
-             << "Failed fit parameters = " << gaus->GetParameter(0) << " || " << gaus->GetParameter(1)
-             << " || " << gaus->GetParameter(2) << "\n"
+             << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1)
+             << " || " << gaus.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
@@ -360,9 +359,6 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     }
 
     TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete gaus;
 
     return fitParam;
 }
