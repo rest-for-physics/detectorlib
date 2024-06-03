@@ -459,8 +459,8 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
              << " ns "
              << "\n"
-             << "Failed fit parameters = " << aget.GetParameter(0) << " || " << aget.GetParameter(1)
-             << " || " << aget.GetParameter(2) << "\n"
+             << "Failed fit parameters = " << aget.GetParameter(0) << " || " << aget.GetParameter(1) << " || "
+             << aget.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
     }
 
