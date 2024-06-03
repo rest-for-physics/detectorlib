@@ -374,7 +374,6 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     TF1 landau("landau", "landau", lowerLimit, upperLimit);
     TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
-
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         h1.SetBinContent(i + 1, GetData(i));
