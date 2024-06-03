@@ -313,10 +313,6 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         }
     }
 
-    std::cout << "The max is " << maxRaw << " " << GetData(maxRaw) << " " << maxRawTime << std::endl;
-    std::cout << "The threshold is " << threshold << std::endl;
-    std::cout << "The range is " << lowerLimit << " " << upperLimit << std::endl;
-
     TF1 gaus("gaus", "gaus", lowerLimit, upperLimit);
     TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
