@@ -371,21 +371,21 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Double_t lowerLimit = maxRawTime - 0.2;  // us
     Double_t upperLimit = maxRawTime + 0.4;  // us
 
-    TF1* landau = new TF1("landau", "landau", lowerLimit, upperLimit);
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
+    TF1 landau("landau", "landau", lowerLimit, upperLimit);
+    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
+
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
+        h1.SetBinContent(i + 1, GetData(i));
     }
 
     TFitResultPtr fitResult =
-        h1->Fit(landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
+        h1.Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
                                   // S = save and return the fit result
     if (fitResult->IsValid()) {
-        energy = landau->GetParameter(0);
-        time = landau->GetParameter(1);
+        energy = landau.GetParameter(0);
+        time = landau.GetParameter(1);
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
@@ -394,8 +394,8 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
              << " ns "
              << "\n"
-             << "Failed fit parameters = " << landau->GetParameter(0) << " || " << landau->GetParameter(1)
-             << " || " << landau->GetParameter(2) << "\n"
+             << "Failed fit parameters = " << landau.GetParameter(0) << " || " << landau.GetParameter(1)
+             << " || " << landau.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
@@ -407,9 +407,6 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     }
 
     TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete landau;
 
     return fitParam;
 }
