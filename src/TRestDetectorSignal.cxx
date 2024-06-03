@@ -436,23 +436,22 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     Double_t lowerLimit = maxRawTime - 0.2;  // us
     Double_t upperLimit = maxRawTime + 0.7;  // us
 
-    TF1* aget = new TF1("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
-    TH1F* h1 = new TH1F("h1", "h1", 1000, 0,
-                        10);  // Histogram to store the signal. For now the number of bins is fixed.
-    aget->SetParameters(500, maxRawTime, 1.2);
+    TF1 aget("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
+    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
+    aget.SetParameters(500, maxRawTime, 1.2);
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1->Fill(GetTime(i), GetData(i));
+        h1.SetBinContent(i + 1, GetData(i));
     }
 
     TFitResultPtr fitResult =
-        h1->Fit(aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+        h1.Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
                                 // the function range; S = save and return the fit result
 
     if (fitResult->IsValid()) {
-        energy = aget->GetParameter(0);
-        time = aget->GetParameter(1);
+        energy = aget.GetParameter(0);
+        time = aget.GetParameter(1);
     } else {
         // the fit failed, return -1 to indicate failure
         energy = -1;
@@ -461,15 +460,12 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
              << " ns "
              << "\n"
-             << "Failed fit parameters = " << aget->GetParameter(0) << " || " << aget->GetParameter(1)
-             << " || " << aget->GetParameter(2) << "\n"
+             << "Failed fit parameters = " << aget.GetParameter(0) << " || " << aget.GetParameter(1)
+             << " || " << aget.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
     }
 
     TVector2 fitParam(time, energy);
-
-    delete h1;
-    delete aget;
 
     return fitParam;
 }
