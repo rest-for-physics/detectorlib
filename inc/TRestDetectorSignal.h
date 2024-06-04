@@ -138,7 +138,7 @@ class TRestDetectorSignal {
     void ExponentialConvolution(Double_t fromTime, Double_t decayTime, Double_t offset = 0);
     void SignalAddition(TRestDetectorSignal* inSgnl);
 
-    Bool_t isSorted();
+    Bool_t isSorted() const;
     void Sort();
 
     void GetDifferentialSignal(TRestDetectorSignal* diffSgnl, Int_t smearPoints = 5);
@@ -157,7 +157,7 @@ class TRestDetectorSignal {
         fSignalCharge.clear();
     }
 
-    void WriteSignalToTextFile(const TString& filename);
+    void WriteSignalToTextFile(const TString& filename) const;
     void Print() const;
 
     TGraph* GetGraph(Int_t color = 1);
