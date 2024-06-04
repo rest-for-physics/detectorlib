@@ -368,7 +368,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t energy = 0, time = 0;
-    
+
     // Define fit limits
     Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
 
@@ -450,7 +450,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t energy = 0, time = 0;
-    
+
     // Define fit limits
     Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
 
