@@ -368,8 +368,27 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t energy = 0, time = 0;
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.4;  // us
+    
+    // Define fit limits
+    Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
+
+    Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
+
+    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    for (int i = maxRaw; i >= 0; --i) {
+        if (GetData(i) <= threshold) {
+            lowerLimit = GetTime(i);
+            break;
+        }
+    }
+
+    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
+        if (GetData(i) <= threshold) {
+            upperLimit = GetTime(i);
+            break;
+        }
+    }
 
     TF1 landau("landau", "landau", lowerLimit, upperLimit);
     TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
@@ -431,9 +450,27 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     Double_t maxRawTime =
         GetTime(maxRaw);  // The time of the bin where the maximum of the raw signal is found
     Double_t energy = 0, time = 0;
-    // The intervals below are small because otherwise the function doesn't fit anymore.
-    Double_t lowerLimit = maxRawTime - 0.2;  // us
-    Double_t upperLimit = maxRawTime + 0.7;  // us
+    
+    // Define fit limits
+    Double_t threshold = GetData(maxRaw) * 0.9;  // 90% of the maximum value
+
+    Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
+
+    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    for (int i = maxRaw; i >= 0; --i) {
+        if (GetData(i) <= threshold) {
+            lowerLimit = GetTime(i);
+            break;
+        }
+    }
+
+    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
+        if (GetData(i) <= threshold) {
+            upperLimit = GetTime(i);
+            break;
+        }
+    }
 
     TF1 aget("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
     TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
