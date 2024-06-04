@@ -297,7 +297,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
 
     Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
 
-    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    // Find the lower limit: time when signal drops to 90% of the max before the peak
     for (int i = maxRaw; i >= 0; --i) {
         if (GetData(i) <= threshold) {
             lowerLimit = GetTime(i);
@@ -305,7 +305,7 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         }
     }
 
-    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    // Find the upper limit: time when signal drops to 90% of the max after the peak
     for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
         if (GetData(i) <= threshold) {
             upperLimit = GetTime(i);
@@ -314,22 +314,21 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
     }
 
     TF1 gaus("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
+    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1.SetBinContent(i + 1, GetData(i));
+        h.SetBinContent(i + 1, GetData(i));
     }
     /*
     TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
-    h1->GetXaxis()->SetTitle("Time (us)");
-    h1->GetYaxis()->SetTitle("Amplitude");
-    h1->Draw();
+    h->GetXaxis()->SetTitle("Time (us)");
+    h->GetYaxis()->SetTitle("Amplitude");
+    h->Draw();
     */
 
-    TFitResultPtr fitResult =
-        h1.Fit(&gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range; S
-                                // = save and return the fit result
+    TFitResultPtr fitResult = h.Fit(&gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+                                                     // the function range; S = save and return the fit result
 
     if (fitResult->IsValid()) {
         energy = gaus.GetParameter(0);
@@ -340,23 +339,20 @@ TRestDetectorSignal::GetMaxGauss()  // returns a 2vector with the time of the pe
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1) << " || "
              << gaus.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
+        h->Draw();
         c2->Update();
         getchar();
         delete c2;
         */
     }
 
-    TVector2 fitParam(time, energy);
-
-    return fitParam;
+    return {time, energy};
 }
 
 // z position by landau fit
@@ -374,7 +370,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
 
     Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
 
-    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    // Find the lower limit: time when signal drops to 90% of the max before the peak
     for (int i = maxRaw; i >= 0; --i) {
         if (GetData(i) <= threshold) {
             lowerLimit = GetTime(i);
@@ -382,7 +378,7 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         }
     }
 
-    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    // Find the upper limit: time when signal drops to 90% of the max after the peak
     for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
         if (GetData(i) <= threshold) {
             upperLimit = GetTime(i);
@@ -391,16 +387,16 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
     }
 
     TF1 landau("landau", "landau", lowerLimit, upperLimit);
-    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
+    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1.SetBinContent(i + 1, GetData(i));
+        h.SetBinContent(i + 1, GetData(i));
     }
 
     TFitResultPtr fitResult =
-        h1.Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
-                                  // S = save and return the fit result
+        h.Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
+                                 // S = save and return the fit result
     if (fitResult->IsValid()) {
         energy = landau.GetParameter(0);
         time = landau.GetParameter(1);
@@ -410,23 +406,20 @@ TRestDetectorSignal::GetMaxLandau()  // returns a 2vector with the time of the p
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << landau.GetParameter(0) << " || " << landau.GetParameter(1)
              << " || " << landau.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
         /*
         TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h1->Draw();
+        h->Draw();
         c2->Update();
         getchar();
         delete c2;
         */
     }
 
-    TVector2 fitParam(time, energy);
-
-    return fitParam;
+    return {time, energy};
 }
 
 // z position by aget fit
@@ -456,7 +449,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
 
     Double_t lowerLimit = maxRawTime, upperLimit = maxRawTime;
 
-    // Find the lower limit: time where signal drops to 90% of the max before the peak
+    // Find the lower limit: time when signal drops to 90% of the max before the peak
     for (int i = maxRaw; i >= 0; --i) {
         if (GetData(i) <= threshold) {
             lowerLimit = GetTime(i);
@@ -464,7 +457,7 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
         }
     }
 
-    // Find the upper limit: time where signal drops to 90% of the max after the peak
+    // Find the upper limit: time when signal drops to 90% of the max after the peak
     for (int i = maxRaw; i < GetNumberOfPoints(); ++i) {
         if (GetData(i) <= threshold) {
             upperLimit = GetTime(i);
@@ -473,17 +466,16 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
     }
 
     TF1 aget("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
-    TH1F h1("h1", "h1", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
+    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
     aget.SetParameters(500, maxRawTime, 1.2);
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h1.SetBinContent(i + 1, GetData(i));
+        h.SetBinContent(i + 1, GetData(i));
     }
 
-    TFitResultPtr fitResult =
-        h1.Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
-                                // the function range; S = save and return the fit result
+    TFitResultPtr fitResult = h.Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+                                                     // the function range; S = save and return the fit result
 
     if (fitResult->IsValid()) {
         energy = aget.GetParameter(0);
@@ -494,17 +486,15 @@ TRestDetectorSignal::GetMaxAget()  // returns a 2vector with the time of the pea
         time = -1;
         cout << endl
              << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns "
-             << "\n"
+             << " ns " << "\n"
              << "Failed fit parameters = " << aget.GetParameter(0) << " || " << aget.GetParameter(1) << " || "
              << aget.GetParameter(2) << "\n"
              << "Assigned fit parameters : energy = " << energy << ", time = " << time << endl;
     }
 
-    TVector2 fitParam(time, energy);
-
-    return fitParam;
+    return {time, energy};
 }
+
 Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetTime(GetMaxIndex(from, to)); }
 
 Double_t TRestDetectorSignal::GetMinPeakValue() { return GetData(GetMinIndex()); }
@@ -562,7 +552,7 @@ Int_t TRestDetectorSignal::GetTimeIndex(Double_t t) {
     return -1;
 }
 
-Bool_t TRestDetectorSignal::isSorted() {
+Bool_t TRestDetectorSignal::isSorted() const {
     for (int i = 0; i < GetNumberOfPoints() - 1; i++) {
         if (GetTime(i + 1) < GetTime(i)) {
             return false;
@@ -762,7 +752,7 @@ void TRestDetectorSignal::GetSignalGaussianConvolution(TRestDetectorSignal* conv
     cout << "Final charge of the pulse " << totChargeFinal << endl;
 }
 
-void TRestDetectorSignal::WriteSignalToTextFile(const TString& filename) {
+void TRestDetectorSignal::WriteSignalToTextFile(const TString& filename) const {
     FILE* fff = fopen(filename.Data(), "w");
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         fprintf(fff, "%e\t%e\n", GetTime(i), GetData(i));
