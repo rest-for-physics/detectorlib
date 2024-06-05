@@ -376,7 +376,6 @@ TRestDetectorSignal::GetPeakLandau()  // returns a 2vector with the time of the 
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h.Fill(GetTime(i), GetData(i));
         h.SetBinContent(i + 1, GetData(i));
     }
 
@@ -441,7 +440,6 @@ TRestDetectorSignal::GetPeakAget()  // returns a 2vector with the time of the pe
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h.Fill(GetTime(i), GetData(i));
         h.SetBinContent(i + 1, GetData(i));
     }
 

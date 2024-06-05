@@ -404,11 +404,11 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Signal event : " << signal->GetSignalID()
                      << "--------------------------------------------------------" << endl;
-                cout << "Method: " << fMethod << " : time " << time << " ns and energy : " << energy << endl;
+                cout << "Method: " << fMethod << " : time " << time << " us and energy : " << energy << endl;
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
-                cout << "Adding hit. Time : " << time << " ns x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << time << " us x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
 
