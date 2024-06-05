@@ -390,6 +390,10 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 throw std::runtime_error("Invalid method");
             }
             if (!peak) {
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
+                    cout << "Unable to find peak for signal " << signal->GetSignalID()
+                         << " with method: " << fMethod << endl;
+                }
                 continue;
             }
             const auto [time, energy] = peak.value();

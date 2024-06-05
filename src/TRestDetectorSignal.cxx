@@ -319,45 +319,25 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
         }
     }
 
-    TF1 gaus("gaus", "gaus", lowerLimit, upperLimit);
+    TF1 gauss("gaus", "gaus", lowerLimit, upperLimit);
     TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
     // copying the signal peak to a histogram
     for (int i = 0; i < GetNumberOfPoints(); i++) {
         h.SetBinContent(i + 1, GetData(i));
     }
-    /*
-    TCanvas* c = new TCanvas("c", "Signal fit", 200, 10, 1280, 720);
-    h->GetXaxis()->SetTitle("Time (us)");
-    h->GetYaxis()->SetTitle("Amplitude");
-    h->Draw();
-    */
 
-    TFitResultPtr fitResult = h.Fit(&gaus, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+    TFitResultPtr fitResult = h.Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
                                                      // the function range; S = save and return the fit result
 
-    if (fitResult->IsValid()) {
-        double energy = gaus.GetParameter(0);
-        double time = gaus.GetParameter(1);
-
-        return make_pair(time, energy);
-    } else {
-        // The fit failed
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << timeMax
-             << " ns " << endl
-             << "Failed fit parameters = " << gaus.GetParameter(0) << " || " << gaus.GetParameter(1) << " || "
-             << gaus.GetParameter(2) << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
-
+    if (!fitResult->IsValid()) {
         return nullopt;
     }
+
+    double energy = gauss.GetParameter(0);
+    double time = gauss.GetParameter(1);
+
+    return make_pair(time, energy);
 }
 
 // z position by landau fit
@@ -402,24 +382,14 @@ TRestDetectorSignal::GetPeakLandau()  // returns a 2vector with the time of the 
     TFitResultPtr fitResult =
         h.Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
                                  // S = save and return the fit result
-    if (fitResult->IsValid()) {
-        double energy = landau.GetParameter(0);
-        double time = landau.GetParameter(1);
-        return make_pair(time, energy);
-    } else {
-        // the fit failed
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " us " << endl;
-        /*
-        TCanvas* c2 = new TCanvas("c2", "Signal fit", 200, 10, 1280, 720);
-        h->Draw();
-        c2->Update();
-        getchar();
-        delete c2;
-        */
-        return std::nullopt;
+    if (!fitResult->IsValid()) {
+        return nullopt;
     }
+
+    double energy = landau.GetParameter(0);
+    double time = landau.GetParameter(1);
+
+    return make_pair(time, energy);
 }
 
 // z position by aget fit
@@ -477,17 +447,14 @@ TRestDetectorSignal::GetPeakAget()  // returns a 2vector with the time of the pe
     TFitResultPtr fitResult = h.Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
                                                      // the function range; S = save and return the fit result
 
-    if (fitResult->IsValid()) {
-        double energy = aget.GetParameter(0);
-        double time = aget.GetParameter(1);
-        return make_pair(time, energy);
-    } else {
-        // the fit failed
-        cout << endl
-             << "WARNING: bad fit to signal with ID " << GetID() << " with maximum at time = " << maxRawTime
-             << " ns " << endl;
+    if (!fitResult->IsValid()) {
         return nullopt;
     }
+
+    double energy = aget.GetParameter(0);
+    double time = aget.GetParameter(1);
+
+    return make_pair(time, energy);
 }
 
 Double_t TRestDetectorSignal::GetMaxPeakTime(Int_t from, Int_t to) { return GetTime(GetMaxIndex(from, to)); }
