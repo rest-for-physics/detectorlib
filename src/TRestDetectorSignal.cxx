@@ -327,8 +327,9 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
         h.SetBinContent(i + 1, GetData(i));
     }
 
-    TFitResultPtr fitResult = h.Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
-                                                     // the function range; S = save and return the fit result
+    TFitResultPtr fitResult =
+        h.Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+                                // the function range; S = save and return the fit result
 
     if (!fitResult->IsValid()) {
         return nullopt;
