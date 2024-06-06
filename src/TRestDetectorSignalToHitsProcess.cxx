@@ -378,90 +378,41 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
                 cout << "E1, E2, E3 = " << energy1 << ", " << energy2 << ", " << energy3 << endl;
             }
 
-        } else if (fMethod == "gaussFit") {
-            TVector2 gaussFit = signal->GetMaxGauss();
+        } else if (fMethod == "gaussFit" || fMethod == "landauFit" || fMethod == "agetFit") {
+            optional<pair<Double_t, Double_t>> peak;
+            if (fMethod == "gaussFit") {
+                peak = signal->GetPeakGauss();
+            } else if (fMethod == "landauFit") {
+                peak = signal->GetPeakLandau();
+            } else if (fMethod == "agetFit") {
+                peak = signal->GetPeakAget();
+            } else {
+                throw std::runtime_error("Invalid method");
+            }
+            if (!peak) {
+                if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Info) {
+                    cout << "Unable to find peak for signal " << signal->GetSignalID()
+                         << " with method: " << fMethod << endl;
+                }
+                continue;
+            }
+            const auto [time, energy] = peak.value();
 
-            Double_t hitTime = 0;
-            Double_t z = -1.0;
-            if (gaussFit.X() >= 0.0) {
-                hitTime = gaussFit.X();
-                Double_t distanceToPlane = hitTime * fDriftVelocity;
-                z = zPosition + fieldZDirection * distanceToPlane;
-            }
-            Double_t energy = -1.0;
-            if (gaussFit.Y() >= 0.0) {
-                energy = gaussFit.Y();
-            }
+            const auto distanceToPlane = time * fDriftVelocity;
+            const auto z = zPosition + fieldZDirection * distanceToPlane;
 
             if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
                 cout << "Signal event : " << signal->GetSignalID()
                      << "--------------------------------------------------------" << endl;
-                cout << "GausFit : time bin " << gaussFit.X() << " and energy : " << gaussFit.Y() << endl;
+                cout << "Method: " << fMethod << " : time " << time << " us and energy : " << energy << endl;
                 cout << "Signal to hit info : zPosition : " << zPosition
                      << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
                      << endl;
-                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
+                cout << "Adding hit. Time : " << time << " us x : " << x << " y : " << y << " z : " << z
                      << " Energy : " << energy << endl;
             }
 
             fHitsEvent->AddHit(x, y, z, energy, 0, type);
-
-        } else if (fMethod == "landauFit") {
-            TVector2 landauFit = signal->GetMaxLandau();
-
-            Double_t hitTime = 0;
-            Double_t z = -1.0;
-            if (landauFit.X() >= 0.0) {
-                hitTime = landauFit.X();
-                Double_t distanceToPlane = hitTime * fDriftVelocity;
-                z = zPosition + fieldZDirection * distanceToPlane;
-            }
-            Double_t energy = -1.0;
-            if (landauFit.Y() >= 0.0) {
-                energy = landauFit.Y();
-            }
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-                cout << "Signal event : " << signal->GetSignalID()
-                     << "--------------------------------------------------------" << endl;
-                cout << "landauFit : time bin " << landauFit.X() << " and energy : " << landauFit.Y() << endl;
-                cout << "Signal to hit info : zPosition : " << zPosition
-                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
-                     << endl;
-                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
-                     << " Energy : " << energy << endl;
-            }
-
-            fHitsEvent->AddHit(x, y, z, energy, 0, type);
-
-        } else if (fMethod == "agetFit") {
-            TVector2 agetFit = signal->GetMaxAget();
-
-            Double_t hitTime = 0;
-            Double_t z = -1.0;
-            if (agetFit.X() >= 0.0) {
-                hitTime = agetFit.X();
-                Double_t distanceToPlane = hitTime * fDriftVelocity;
-                z = zPosition + fieldZDirection * distanceToPlane;
-            }
-            Double_t energy = -1.0;
-            if (agetFit.Y() >= 0.0) {
-                energy = agetFit.Y();
-            }
-
-            if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Debug) {
-                cout << "Signal event : " << signal->GetSignalID()
-                     << "--------------------------------------------------------" << endl;
-                cout << "agetFit : time bin " << agetFit.X() << " and energy : " << agetFit.Y() << endl;
-                cout << "Signal to hit info : zPosition : " << zPosition
-                     << "; fieldZDirection : " << fieldZDirection << " and driftV : " << fDriftVelocity
-                     << endl;
-                cout << "Adding hit. Time : " << hitTime << " x : " << x << " y : " << y << " z : " << z
-                     << " Energy : " << energy << endl;
-            }
-
-            fHitsEvent->AddHit(x, y, z, energy, 0, type);
-
         } else if (fMethod == "qCenter") {
             Double_t energy_signal = 0;
             Double_t distanceToPlane = 0;
@@ -496,7 +447,7 @@ TRestEvent* TRestDetectorSignalToHitsProcess::ProcessEvent(TRestEvent* inputEven
             }
         } else if (fMethod == "intwindow") {
             Int_t nPoints = signal->GetNumberOfPoints();
-            std::map<int, std::pair<int, double> > windowMap;
+            std::map<int, std::pair<int, double>> windowMap;
             for (int j = 0; j < nPoints; j++) {
                 int index = signal->GetTime(j) / fIntWindow;
                 auto it = windowMap.find(index);

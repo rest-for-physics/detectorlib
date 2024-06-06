@@ -28,6 +28,7 @@
 #include <TVector2.h>
 
 #include <iostream>
+#include <optional>
 
 class TRestDetectorSignal {
    private:
@@ -55,9 +56,9 @@ class TRestDetectorSignal {
     // TODO other objects should probably skip using GetMaxIndex directly
     Int_t GetMaxIndex(Int_t from = 0, Int_t to = 0);
 
-    TVector2 GetMaxGauss();
-    TVector2 GetMaxLandau();
-    TVector2 GetMaxAget();
+    std::optional<std::pair<Double_t, Double_t>> GetPeakGauss();
+    std::optional<std::pair<Double_t, Double_t>> GetPeakLandau();
+    std::optional<std::pair<Double_t, Double_t>> GetPeakAget();
 
     std::string GetSignalName() const { return fName; }
     std::string GetSignalType() const { return fType; }
@@ -66,11 +67,7 @@ class TRestDetectorSignal {
     void SetSignalType(const std::string& type) { fType = type; }
 
     // Getters
-    TVector2 GetPoint(Int_t n) {
-        TVector2 vector2(GetTime(n), GetData(n));
-
-        return vector2;
-    }
+    TVector2 GetPoint(Int_t n) { return {GetTime(n), GetData(n)}; }
 
     inline Int_t GetSignalID() const { return fSignalID; }
     inline Int_t GetID() const { return fSignalID; }
