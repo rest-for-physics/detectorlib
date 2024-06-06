@@ -320,15 +320,11 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
     }
 
     TF1 gauss("gaus", "gaus", lowerLimit, upperLimit);
-    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h.SetBinContent(i + 1, GetData(i));
-    }
+    auto signal_graph = std::unique_ptr<TGraph>(GetGraph());
 
     TFitResultPtr fitResult =
-        h.Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+        signal_graph->Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
                                 // the function range; S = save and return the fit result
 
     if (!fitResult->IsValid()) {
@@ -337,7 +333,7 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
 
     double energy = gauss.GetParameter(0);
     double time = gauss.GetParameter(1);
-
+    
     return make_pair(time, energy);
 }
 
@@ -372,15 +368,11 @@ TRestDetectorSignal::GetPeakLandau()  // returns a 2vector with the time of the 
     }
 
     TF1 landau("landau", "landau", lowerLimit, upperLimit);
-    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
 
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h.SetBinContent(i + 1, GetData(i));
-    }
-
+    auto signal_graph = std::unique_ptr<TGraph>(GetGraph());
+    
     TFitResultPtr fitResult =
-        h.Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
+        signal_graph->Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
                                  // S = save and return the fit result
     if (!fitResult->IsValid()) {
         return nullopt;
@@ -435,15 +427,11 @@ TRestDetectorSignal::GetPeakAget()  // returns a 2vector with the time of the pe
     }
 
     TF1 aget("aget", agetResponseFunction, lowerLimit, upperLimit, 3);  //
-    TH1F h("h", "h", GetNumberOfPoints(), GetTime(0), GetTime(GetNumberOfPoints() - 1));
     aget.SetParameters(500, maxRawTime, 1.2);
 
-    // copying the signal peak to a histogram
-    for (int i = 0; i < GetNumberOfPoints(); i++) {
-        h.SetBinContent(i + 1, GetData(i));
-    }
+    auto signal_graph = std::unique_ptr<TGraph>(GetGraph());
 
-    TFitResultPtr fitResult = h.Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+    TFitResultPtr fitResult = signal_graph->Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
                                                      // the function range; S = save and return the fit result
 
     if (!fitResult->IsValid()) {
