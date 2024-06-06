@@ -325,7 +325,7 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
 
     TFitResultPtr fitResult =
         signal_graph->Fit(&gauss, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
-                                // the function range; S = save and return the fit result
+                                            // the function range; S = save and return the fit result
 
     if (!fitResult->IsValid()) {
         return nullopt;
@@ -333,7 +333,7 @@ TRestDetectorSignal::GetPeakGauss()  // returns a 2vector with the time of the p
 
     double energy = gauss.GetParameter(0);
     double time = gauss.GetParameter(1);
-    
+
     return make_pair(time, energy);
 }
 
@@ -370,10 +370,10 @@ TRestDetectorSignal::GetPeakLandau()  // returns a 2vector with the time of the 
     TF1 landau("landau", "landau", lowerLimit, upperLimit);
 
     auto signal_graph = std::unique_ptr<TGraph>(GetGraph());
-    
+
     TFitResultPtr fitResult =
-        signal_graph->Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the function range;
-                                 // S = save and return the fit result
+        signal_graph->Fit(&landau, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in the
+                                             // function range; S = save and return the fit result
     if (!fitResult->IsValid()) {
         return nullopt;
     }
@@ -431,8 +431,9 @@ TRestDetectorSignal::GetPeakAget()  // returns a 2vector with the time of the pe
 
     auto signal_graph = std::unique_ptr<TGraph>(GetGraph());
 
-    TFitResultPtr fitResult = signal_graph->Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
-                                                     // the function range; S = save and return the fit result
+    TFitResultPtr fitResult =
+        signal_graph->Fit(&aget, "QNRS");  // Q = quiet, no info in screen; N = no plot; R = fit in
+                                           // the function range; S = save and return the fit result
 
     if (!fitResult->IsValid()) {
         return nullopt;
