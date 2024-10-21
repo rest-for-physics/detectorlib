@@ -41,7 +41,7 @@ class TRestDetectorLightAttenuationProcess : public TRestEventProcess {
     void PrintMetadata() override;
 
     TRestDetectorLightAttenuationProcess() = default;
-    explicit TRestDetectorLightAttenuationProcess(const char* configFilename){};
+    explicit TRestDetectorLightAttenuationProcess(const char* configFilename) {};
 
     const char* GetProcessName() const override { return "lightAttenuation"; }
 
