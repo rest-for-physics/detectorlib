@@ -28,7 +28,7 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
             cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
                  << "Negative energy found in hit " << hitIndex << ". Energy (keV): " << energy << endl;
             // exit(1);
-            continue; // We should error, but for now we just skip the hit
+            continue;  // We should error, but for now we just skip the hit
         }
         // when working with hits derived from experimental data, only relative z is available, so it cannot
         // be used to check if a position is inside the readout. We use z=0 in this case which in most cases
