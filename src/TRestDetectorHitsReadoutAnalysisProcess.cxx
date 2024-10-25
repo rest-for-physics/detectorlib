@@ -24,10 +24,11 @@ TRestEvent* TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent(TRestEvent* in
         if (energy == 0) {
             continue;
         } else if (energy < 0) {
-            // this should never happen
+            // This should never happen. Why does it happen?
             cerr << "TRestDetectorHitsReadoutAnalysisProcess::ProcessEvent() : "
-                 << "Negative energy found in hit " << hitIndex << endl;
-            exit(1);
+                 << "Negative energy found in hit " << hitIndex << ". Energy (keV): " << energy << endl;
+            // exit(1);
+            continue; // We should error, but for now we just skip the hit
         }
         // when working with hits derived from experimental data, only relative z is available, so it cannot
         // be used to check if a position is inside the readout. We use z=0 in this case which in most cases
