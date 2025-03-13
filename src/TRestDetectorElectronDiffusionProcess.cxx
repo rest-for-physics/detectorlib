@@ -45,6 +45,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fElectricField = 0;
     fAttachment = 0;
     fGasPressure = -1;
+    fDriftVelocity = 0;
 
     fTransversalDiffusionCoefficient = 0;
     fLongitudinalDiffusionCoefficient = 0;
@@ -106,6 +107,10 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
             fElectricField = fGas->GetElectricField();
         }
         fGas->SetElectricField(fElectricField);
+
+        if (fDriftVelocity <= 0) {
+            fDriftVelocity = fGas->GetDriftVelocity();
+        }
 
         if (fWValue <= 0) {
             fWValue = fGas->GetWvalue();
@@ -226,6 +231,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 10. * TMath::Sqrt(driftDistance / 10.) * fTransversalDiffusionCoefficient;  // mm
 
             for (unsigned int i = 0; i < numberOfElectrons; i++) {
+                TVector3 positionBeforeDiffusion = {x, y, z};
+                positionBeforeDiffusion = {x, y, z};
+
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
                     isAttached = (fRandom->Uniform(0, 1) > pow(1 - fAttachment, driftDistance / 10.));
@@ -264,14 +272,29 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 const double electronEnergy =
                     fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
 
+                // Compute drift diffusion distance using 3D Euclidean distance formula
+                auto driftDiffusionDistance = sqrt(
+                    pow(positionAfterDiffusion.X() - positionBeforeDiffusion.X(), 2) +
+                    pow(positionAfterDiffusion.Y() - positionBeforeDiffusion.Y(), 2) +
+                    pow(positionAfterDiffusion.Z() - positionBeforeDiffusion.Z(), 2)
+                );
+
+                // Compute drift time with updated distance
+                auto driftTime = driftDiffusionDistance / fDriftVelocity;
+                auto totalTime = time + driftTime;
+
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Adding hit. x : " << positionAfterDiffusion.X()
-                         << " y : " << positionAfterDiffusion.Y() << " z : " << positionAfterDiffusion.Z()
-                         << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
-                         << endl;
+                        << " y : " << positionAfterDiffusion.Y()
+                        << " z : " << positionAfterDiffusion.Z()
+                        << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
+                        << " driftTime: " << driftTime << " us"
+                        << endl;
                 }
+
+                // Store the hit with updated drift time
                 fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
-                                         positionAfterDiffusion.Z(), electronEnergy, time, type);
+                                        positionAfterDiffusion.Z(), electronEnergy, totalTime, type);
             }
         }
     }
@@ -295,6 +318,7 @@ void TRestDetectorElectronDiffusionProcess::EndProcess() {}
 void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fGasPressure = GetDblParameterWithUnits("gasPressure", -1.);
     fElectricField = GetDblParameterWithUnits("electricField", -1.);
+    fDriftVelocity = GetDblParameterWithUnits("driftVelocity", -1.);
     fWValue = GetDblParameterWithUnits("WValue", 0.0) * REST_Units::eV;
     fFanoFactor = GetDblParameterWithUnits("fanoFactor", 0.0);
     fAttachment = StringToDouble(GetParameter("attachment", "0"));
