@@ -273,11 +273,10 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
 
                 // Compute drift diffusion distance using 3D Euclidean distance formula
-                auto driftDiffusionDistance = sqrt(
-                    pow(positionAfterDiffusion.X() - positionBeforeDiffusion.X(), 2) +
-                    pow(positionAfterDiffusion.Y() - positionBeforeDiffusion.Y(), 2) +
-                    pow(positionAfterDiffusion.Z() - positionBeforeDiffusion.Z(), 2)
-                );
+                auto driftDiffusionDistance =
+                    sqrt(pow(positionAfterDiffusion.X() - positionBeforeDiffusion.X(), 2) +
+                         pow(positionAfterDiffusion.Y() - positionBeforeDiffusion.Y(), 2) +
+                         pow(positionAfterDiffusion.Z() - positionBeforeDiffusion.Z(), 2));
 
                 // Compute drift time with updated distance
                 auto driftTime = driftDiffusionDistance / fDriftVelocity;
@@ -285,16 +284,14 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Adding hit. x : " << positionAfterDiffusion.X()
-                        << " y : " << positionAfterDiffusion.Y()
-                        << " z : " << positionAfterDiffusion.Z()
-                        << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
-                        << " driftTime: " << driftTime << " us"
-                        << endl;
+                         << " y : " << positionAfterDiffusion.Y() << " z : " << positionAfterDiffusion.Z()
+                         << " en : " << energyPerElectron * REST_Units::keV / REST_Units::eV << " keV"
+                         << " driftTime: " << driftTime << " us" << endl;
                 }
 
                 // Store the hit with updated drift time
                 fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
-                                        positionAfterDiffusion.Z(), electronEnergy, totalTime, type);
+                                         positionAfterDiffusion.Z(), electronEnergy, totalTime, type);
             }
         }
     }
