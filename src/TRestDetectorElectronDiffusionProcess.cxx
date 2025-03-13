@@ -180,6 +180,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         const auto time = hits->GetTime(hitIndex);
         const auto type = hits->GetType(hitIndex);
 
+        cout << "Time: " << time << endl;
+
         if (energy <= 0) {
             continue;
         }
@@ -187,6 +189,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         const Double_t x = hits->GetX(hitIndex);
         const Double_t y = hits->GetY(hitIndex);
         const Double_t z = hits->GetZ(hitIndex);
+
+        cout << "Position before diffusion primary e-: x: " << x << " y: " << y << " z: " << z << endl;
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
             TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
@@ -233,6 +237,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             for (unsigned int i = 0; i < numberOfElectrons; i++) {
                 TVector3 positionBeforeDiffusion = {x, y, z};
                 positionBeforeDiffusion = {x, y, z};
+                cout << "Position before diffusion: x: " << positionBeforeDiffusion.X() << " y: " << positionBeforeDiffusion.Y() << " z: " << positionBeforeDiffusion.Z() << endl;
 
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
@@ -251,6 +256,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     fRandom->Gaus(0, transversalDiffusion),  //
                     fRandom->Gaus(0, longitudinalDiffusion)  //
                 };
+
+                cout << "Position after diffusion: x: " << positionAfterDiffusion.X() << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
+
                 if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
                     // electron has been moved under the plane
                     positionAfterDiffusion.SetZ(
@@ -278,9 +286,14 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                          pow(positionAfterDiffusion.Y() - positionBeforeDiffusion.Y(), 2) +
                          pow(positionAfterDiffusion.Z() - positionBeforeDiffusion.Z(), 2));
 
+                cout << "Diffusion distance: " << driftDiffusionDistance << endl;
+
                 // Compute drift time with updated distance
                 auto driftTime = driftDiffusionDistance / fDriftVelocity;
                 auto totalTime = time + driftTime;
+
+                cout << "Drift time: " << driftTime << endl;
+                cout << "Total time: " << totalTime << endl;
 
                 if (GetVerboseLevel() >= TRestStringOutput::REST_Verbose_Level::REST_Extreme) {
                     cout << "Adding hit. x : " << positionAfterDiffusion.X()
