@@ -237,7 +237,9 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
             for (unsigned int i = 0; i < numberOfElectrons; i++) {
                 TVector3 positionBeforeDiffusion = {x, y, z};
                 positionBeforeDiffusion = {x, y, z};
-                cout << "Position before diffusion: x: " << positionBeforeDiffusion.X() << " y: " << positionBeforeDiffusion.Y() << " z: " << positionBeforeDiffusion.Z() << endl;
+                cout << "Position before diffusion: x: " << positionBeforeDiffusion.X()
+                     << " y: " << positionBeforeDiffusion.Y() << " z: " << positionBeforeDiffusion.Z()
+                     << endl;
 
                 if (fAttachment > 0) {
                     // TODO: where is this formula from?
@@ -257,7 +259,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     fRandom->Gaus(0, longitudinalDiffusion)  //
                 };
 
-                cout << "Position after diffusion: x: " << positionAfterDiffusion.X() << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
+                cout << "Position after diffusion: x: " << positionAfterDiffusion.X()
+                     << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
 
                 if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
                     // electron has been moved under the plane
