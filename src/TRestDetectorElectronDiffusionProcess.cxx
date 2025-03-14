@@ -278,7 +278,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 }
 
                 cout << "Position after diffusion: x: " << positionAfterDiffusion.X()
-                << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
+                     << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
 
                 const double electronEnergy =
                     fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
