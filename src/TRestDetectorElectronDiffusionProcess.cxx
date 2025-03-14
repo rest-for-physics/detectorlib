@@ -259,9 +259,6 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     fRandom->Gaus(0, longitudinalDiffusion)  //
                 };
 
-                cout << "Position after diffusion: x: " << positionAfterDiffusion.X()
-                     << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
-
                 if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
                     // electron has been moved under the plane
                     positionAfterDiffusion.SetZ(
@@ -280,14 +277,17 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     continue;
                 }
 
+                cout << "Position after diffusion: x: " << positionAfterDiffusion.X()
+                << " y: " << positionAfterDiffusion.Y() << " z: " << positionAfterDiffusion.Z() << endl;
+
                 const double electronEnergy =
                     fUnitElectronEnergy ? 1 : energyPerElectron * REST_Units::keV / REST_Units::eV;
 
                 // Compute drift diffusion distance using 3D Euclidean distance formula
                 auto driftDiffusionDistance =
-                    sqrt(pow(positionAfterDiffusion.X() - positionBeforeDiffusion.X(), 2) +
-                         pow(positionAfterDiffusion.Y() - positionBeforeDiffusion.Y(), 2) +
-                         pow(positionAfterDiffusion.Z() - positionBeforeDiffusion.Z(), 2));
+                    sqrt(pow(positionBeforeDiffusion.X() - positionAfterDiffusion.X(), 2) +
+                         pow(positionBeforeDiffusion.Y() - positionAfterDiffusion.Y(), 2) +
+                         pow(positionAfterDiffusion.Z() - plane->GetPosition().Z(), 2));
 
                 cout << "Diffusion distance: " << driftDiffusionDistance << endl;
 
