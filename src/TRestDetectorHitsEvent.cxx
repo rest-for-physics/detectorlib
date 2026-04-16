@@ -87,7 +87,24 @@ TRestDetectorHitsEvent::TRestDetectorHitsEvent() {
 ///////////////////////////////////////////////
 /// \brief TRestDetectorHitsEvent default destructor
 ///
-TRestDetectorHitsEvent::~TRestDetectorHitsEvent() { delete fHits; }
+TRestDetectorHitsEvent::~TRestDetectorHitsEvent() {
+    delete fHits;
+    delete fXZHits;
+    delete fYZHits;
+    delete fXYZHits;
+
+    delete fXYHitGraph;
+    delete fXZHitGraph;
+    delete fYZHitGraph;
+
+    delete fXYHisto;
+    delete fXZHisto;
+    delete fYZHisto;
+
+    delete fXHisto;
+    delete fYHisto;
+    delete fZHisto;
+}
 
 ///////////////////////////////////////////////
 /// \brief Adds a new hit to this event
