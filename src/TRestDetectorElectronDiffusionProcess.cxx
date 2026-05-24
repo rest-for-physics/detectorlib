@@ -58,6 +58,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fReadout = nullptr;
 
     fRandom = nullptr;
+    fCheckIsInside = true;
 }
 
 void TRestDetectorElectronDiffusionProcess::LoadConfig(const string& configFilename, const string& name) {
@@ -319,6 +320,6 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "true"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
-    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "false"));
+    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
     fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
 }
