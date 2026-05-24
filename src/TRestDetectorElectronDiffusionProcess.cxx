@@ -185,7 +185,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         const Double_t z = hits->GetZ(hitIndex);
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
-            TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
+            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
             const auto planeType = plane->GetType();
             if (planeType == "veto") {
                 // do not drift veto planes
