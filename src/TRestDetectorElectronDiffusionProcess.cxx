@@ -283,6 +283,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 }
                 fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
                                          positionAfterDiffusion.Z(), electronEnergy, time, type);
+                break; // avoid redoing for other planes (happens if fCheckIsInside is false)
             }
         }
     }
