@@ -243,13 +243,13 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                     positionAfterDiffusion += {
                         fRandom->Gaus(0, transversalDiffusion),  //
                         fRandom->Gaus(0, transversalDiffusion),  //
-                        0                                      //
+                        0                                        //
                     };
                 }
                 if (longitudinalDiffusion > 0) {
                     positionAfterDiffusion += {
-                        0,  //
-                        0,  //
+                        0,                                       //
+                        0,                                       //
                         fRandom->Gaus(0, longitudinalDiffusion)  //
                     };
                 }
@@ -260,7 +260,8 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                         plane->GetPosition().Z() +
                         1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
                 }
-                if (plane->GetDistanceTo(positionAfterDiffusion) > plane->GetHeight() && longitudinalDiffusion > 0) {
+                if (plane->GetDistanceTo(positionAfterDiffusion) > plane->GetHeight() &&
+                    longitudinalDiffusion > 0) {
                     // electron has been moved over the plane
                     positionAfterDiffusion.SetZ(
                         plane->GetPosition().Z() + plane->GetHeight() -
@@ -283,7 +284,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 }
                 fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
                                          positionAfterDiffusion.Z(), electronEnergy, time, type);
-                break; // avoid redoing for other planes (happens if fCheckIsInside is false)
+                break;  // avoid redoing for other planes (happens if fCheckIsInside is false)
             }
         }
     }
