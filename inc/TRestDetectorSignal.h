@@ -166,4 +166,22 @@ class TRestDetectorSignal {
 
     ClassDef(TRestDetectorSignal, 4);
 };
+
+// Schema evolution: fSignalTime and fSignalCharge changed from vector<Float_t> to
+// vector<Double_t> in ClassDef v4 (PR#109, March 2024). Files written with ClassDef
+// version <= 3 store the float layout; these rules tell ROOT how to convert on read.
+// Note: the rules can only fire when the input file contains the StreamerInfo of the
+// on-disk version of this class. See rest-for-physics/detectorlib#125.
+#pragma read                                                                    \
+    sourceClass="TRestDetectorSignal" version="[-3]"                            \
+    source="std::vector<Float_t> fSignalTime"                                   \
+    targetClass="TRestDetectorSignal" target="fSignalTime"                      \
+    code="{ fSignalTime.assign(onfile.fSignalTime.begin(), onfile.fSignalTime.end()); }"
+
+#pragma read                                                                    \
+    sourceClass="TRestDetectorSignal" version="[-3]"                            \
+    source="std::vector<Float_t> fSignalCharge"                                 \
+    targetClass="TRestDetectorSignal" target="fSignalCharge"                    \
+    code="{ fSignalCharge.assign(onfile.fSignalCharge.begin(), onfile.fSignalCharge.end()); }"
+
 #endif
