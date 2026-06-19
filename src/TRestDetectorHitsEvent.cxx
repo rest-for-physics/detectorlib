@@ -39,6 +39,8 @@
 ///
 #include "TRestDetectorHitsEvent.h"
 
+#include <array>
+
 #include "TCanvas.h"
 #include "TColor.h"
 #include "TH3F.h"
@@ -48,8 +50,6 @@
 #include "TRestStringHelper.h"
 #include "TRestTools.h"
 #include "TStyle.h"
-
-#include <array>
 
 using namespace std;
 using namespace TMath;
@@ -960,8 +960,8 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         // by the pad (kCanDelete) so they are freed when fPad is recreated on next DrawEvent.
         fPad->cd(3 + 3 * column);
 
-        TH3F* frame = new TH3F("XYZframe", "3D hits;X-axis (mm);Y-axis (mm);Z-axis (mm)", 1, minX,
-                               maxX, 1, minY, maxY, 1, minZ, maxZ);
+        TH3F* frame = new TH3F("XYZframe", "3D hits;X-axis (mm);Y-axis (mm);Z-axis (mm)", 1, minX, maxX, 1,
+                               minY, maxY, 1, minZ, maxZ);
         frame->SetDirectory(nullptr);
         frame->SetStats(false);
         frame->SetBit(kCanDelete);
