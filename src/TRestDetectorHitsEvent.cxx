@@ -805,15 +805,32 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
 
     double maxX, minX, maxY, minY, maxZ, minZ;
     int nBinsX, nBinsY, nBinsZ;
-    TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
-    TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
-    TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
+    // GetBoundaries reads dist.front()/back(), which is undefined for an empty projection
+    // (e.g. an event with no hits of a given type). Guard it so DrawEvent never crashes.
+    auto getBoundaries = [](std::vector<double>& v, double& mx, double& mn, int& nb) {
+        if (v.empty()) {
+            mn = -1;
+            mx = 1;
+            nb = 1;
+            return;
+        }
+        TRestHits::GetBoundaries(v, mx, mn, nb);
+    };
+    getBoundaries(fX, maxX, minX, nBinsX);
+    getBoundaries(fY, maxY, minY, nBinsY);
+    getBoundaries(fZ, maxZ, minZ, nBinsZ);
 
     if (pitch > 0) {
         nBinsX = std::round((maxX - minX) / pitch);
         nBinsY = std::round((maxY - minY) / pitch);
         nBinsZ = std::round((maxZ - minZ) / pitch);
     }
+
+    // A histogram needs at least one bin; ensure we never request 0 bins for a degenerate
+    // event (all hits sharing a coordinate, or a sub-pitch extent when a pitch is given).
+    nBinsX = std::max(1, nBinsX);
+    nBinsY = std::max(1, nBinsY);
+    nBinsZ = std::max(1, nBinsZ);
 
     delete fXYHisto;
     delete fXZHisto;
