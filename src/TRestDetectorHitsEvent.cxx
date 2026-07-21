@@ -39,7 +39,13 @@
 ///
 #include "TRestDetectorHitsEvent.h"
 
+#include <array>
+
 #include "TCanvas.h"
+#include "TColor.h"
+#include "TH3F.h"
+#include "TPolyLine3D.h"
+#include "TPolyMarker3D.h"
 #include "TRandom.h"
 #include "TRestStringHelper.h"
 #include "TRestTools.h"
@@ -624,7 +630,7 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
 
     /// The default histogram using a pitch of 0 mm,
     //  which means that it should be extracted from the hit array
-    if (optList.size() == 0) optList.push_back("hist(Cont1,col)[3]");
+    if (optList.size() == 0) optList.push_back("hist(Cont1,col)");
 
     if (fPad != nullptr) {
         delete fPad;
@@ -634,6 +640,14 @@ TPad* TRestDetectorHitsEvent::DrawEvent(const TString& option) {
     fPad = new TPad(this->GetName(), " ", 0, 0, 1, 1);
     fPad->Divide(3, 2 * optList.size());
     fPad->Draw();
+
+    // Give each sub-pad enough margin so the axis titles (in particular the bottom-row
+    // x-axis titles and the wider 2-digit y-axis labels) are not clipped at the edges.
+    for (int i = 1; i <= 6 * (int)optList.size(); i++) {
+        fPad->cd(i);
+        gPad->SetBottomMargin(0.13);
+        gPad->SetLeftMargin(0.15);
+    }
 
     Int_t column = 0;
     for (unsigned int n = 0; n < optList.size(); n++) {
@@ -805,15 +819,32 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
 
     double maxX, minX, maxY, minY, maxZ, minZ;
     int nBinsX, nBinsY, nBinsZ;
-    TRestHits::GetBoundaries(fX, maxX, minX, nBinsX);
-    TRestHits::GetBoundaries(fY, maxY, minY, nBinsY);
-    TRestHits::GetBoundaries(fZ, maxZ, minZ, nBinsZ);
+    // GetBoundaries reads dist.front()/back(), which is undefined for an empty projection
+    // (e.g. an event with no hits of a given type). Guard it so DrawEvent never crashes.
+    auto getBoundaries = [](std::vector<double>& v, double& mx, double& mn, int& nb) {
+        if (v.empty()) {
+            mn = -1;
+            mx = 1;
+            nb = 1;
+            return;
+        }
+        TRestHits::GetBoundaries(v, mx, mn, nb);
+    };
+    getBoundaries(fX, maxX, minX, nBinsX);
+    getBoundaries(fY, maxY, minY, nBinsY);
+    getBoundaries(fZ, maxZ, minZ, nBinsZ);
 
     if (pitch > 0) {
         nBinsX = std::round((maxX - minX) / pitch);
         nBinsY = std::round((maxY - minY) / pitch);
         nBinsZ = std::round((maxZ - minZ) / pitch);
     }
+
+    // A histogram needs at least one bin; ensure we never request 0 bins for a degenerate
+    // event (all hits sharing a coordinate, or a sub-pitch extent when a pitch is given).
+    nBinsX = std::max(1, nBinsX);
+    nBinsY = std::max(1, nBinsY);
+    nBinsZ = std::max(1, nBinsZ);
 
     delete fXYHisto;
     delete fXZHisto;
@@ -917,6 +948,80 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
         fXYHisto->GetYaxis()->SetLabelSize(1.25 * fXYHisto->GetYaxis()->GetLabelSize());
         fXYHisto->GetXaxis()->SetLabelSize(1.25 * fXYHisto->GetXaxis()->GetLabelSize());
         fXYHisto->GetYaxis()->SetTitleOffset(1);
+    } else {
+        // When there is no XY projection (a strip readout, where hits are XZ/YZ) the pad is
+        // otherwise empty, so we use it for a 3D view of the event. A strip hit has one
+        // undetermined coordinate, so it is drawn as a line spanning that axis (XZ -> line
+        // along Y, YZ -> along X, XY -> along Z), colored by energy. An XZ and a YZ line
+        // cross in 3D where they share the same Z; that crossing (x_from_XZ, y_from_YZ, z)
+        // is the reconstructed hit position, so we highlight it with a marker, which sketches
+        // the event in 3D. (With several strips at the same Z these crossings also include
+        // ambiguous "ghost" combinations, inherent to strip readouts.) All objects are owned
+        // by the pad (kCanDelete) so they are freed when fPad is recreated on next DrawEvent.
+        fPad->cd(3 + 3 * column);
+
+        TH3F* frame = new TH3F("XYZframe", "3D hits;X-axis (mm);Y-axis (mm);Z-axis (mm)", 1, minX, maxX, 1,
+                               minY, maxY, 1, minZ, maxZ);
+        frame->SetDirectory(nullptr);
+        frame->SetStats(false);
+        frame->SetBit(kCanDelete);
+        frame->Draw();
+
+        Double_t eMin = 1e9, eMax = -1e9;
+        for (unsigned int nhit = 0; nhit < GetNumberOfHits(); nhit++) {
+            Double_t e = fHits->GetEnergy(nhit);
+            if (e < eMin) eMin = e;
+            if (e > eMax) eMax = e;
+        }
+        const Int_t nColors = TColor::GetNumberOfColors();
+        auto energyColor = [&](Double_t e) {
+            Int_t ci = (eMax > eMin) ? (Int_t)((e - eMin) / (eMax - eMin) * (nColors - 1)) : 0;
+            return TColor::GetColorPalette(ci);
+        };
+
+        std::vector<std::array<Double_t, 3>> xzHits;  // {x, z, energy}
+        std::vector<std::array<Double_t, 3>> yzHits;  // {y, z, energy}
+        for (unsigned int nhit = 0; nhit < GetNumberOfHits(); nhit++) {
+            Double_t x = fHits->GetX(nhit);
+            Double_t y = fHits->GetY(nhit);
+            Double_t z = fHits->GetZ(nhit);
+            Double_t en = fHits->GetEnergy(nhit);
+            int type = fHits->GetType(nhit);
+            bool hasX = (type % X == 0);
+            bool hasY = (type % Y == 0);
+
+            TPolyLine3D* line = new TPolyLine3D(2);
+            if (!hasX) {  // undetermined X (e.g. YZ hit): line along X
+                line->SetPoint(0, minX, y, z);
+                line->SetPoint(1, maxX, y, z);
+                yzHits.push_back({y, z, en});
+            } else if (!hasY) {  // undetermined Y (e.g. XZ hit): line along Y
+                line->SetPoint(0, x, minY, z);
+                line->SetPoint(1, x, maxY, z);
+                xzHits.push_back({x, z, en});
+            } else {  // undetermined Z (e.g. XY hit): line along Z
+                line->SetPoint(0, x, y, minZ);
+                line->SetPoint(1, x, y, maxZ);
+            }
+            line->SetLineColor(energyColor(en));
+            line->SetBit(kCanDelete);
+            line->Draw();
+        }
+
+        // Highlight the XZ/YZ crossings (same Z) -> reconstructed 3D positions of the event.
+        const Double_t zTol = 0.05 * (maxZ - minZ);
+        for (const auto& xz : xzHits) {
+            for (const auto& yz : yzHits) {
+                if (std::abs(xz[1] - yz[1]) > zTol) continue;
+                TPolyMarker3D* marker = new TPolyMarker3D(1);
+                marker->SetPoint(0, xz[0], yz[0], 0.5 * (xz[1] + yz[1]));
+                marker->SetMarkerStyle(20);
+                marker->SetMarkerSize(1.2);
+                marker->SetMarkerColor(energyColor(0.5 * (xz[2] + yz[2])));
+                marker->SetBit(kCanDelete);
+                marker->Draw();
+            }
+        }
     }
 
     column++;
