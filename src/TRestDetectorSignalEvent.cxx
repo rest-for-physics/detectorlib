@@ -1,23 +1,81 @@
-
-///______________________________________________________________________________
-///______________________________________________________________________________
+//////////////////////////////////////////////////////////////////////////
+/// TRestDetectorSignalEvent stores the detector-channel signals associated
+/// with one REST event.
 ///
+/// A TRestDetectorSignalEvent is a collection of TRestDetectorSignal objects.
+/// Each TRestDetectorSignal corresponds to one readout channel, identified by
+/// its signal ID, and stores the signal as time-charge points in physical
+/// coordinates. The event object groups those channel signals and provides
+/// event-level operations such as signal lookup, drawing, sorting, integrals,
+/// and global time or amplitude limits.
 ///
-///             RESTSoft : Software for Rare Event Searches with TPCs
+/// This event type is usually found after the raw ADC representation has been
+/// converted into detector-level signals, or after simulated detector hits have
+/// been projected onto a readout. It sits between TRestRawSignalEvent, which
+/// keeps ADC samples, and TRestDetectorHitsEvent, which stores reconstructed or
+/// simulated spatial hits. Processes such as TRestDetectorHitsToSignalProcess,
+/// TRestRawToDetectorSignalProcess, and TRestDetectorSignalToHitsProcess use
+/// this class as the detector-signal representation.
 ///
-///             TRestDetectorSignalEvent.h
+/// A minimal inspection from a `restRoot` session or ROOT macro looks like:
 ///
-///             Event class to store DAQ events either from simulation and
-///             acquisition
+/// \code
+/// TRestRun run("detectorSignals.root");
+/// run.GetEntry(0);
 ///
-///             sept 2015:   First concept
-///                 Created as part of the conceptualization of existing REST
-///                 software.
+/// auto signalEvent = run.GetInputEvent<TRestDetectorSignalEvent>();
+/// std::cout << "Signals in event: " << signalEvent->GetNumberOfSignals()
+///           << std::endl;
+///
+/// auto signal = signalEvent->GetSignalById(12);
+/// if (signal != nullptr) {
+///     std::cout << "Signal 12 integral: " << signal->GetIntegral()
+///               << std::endl;
+/// }
+///
+/// signalEvent->DrawEvent();
+/// \endcode
+///
+/// Signals can be accessed by collection index with GetSignal(), or by channel
+/// identifier with GetSignalById(). Analysis code should normally use
+/// GetSignalById() when referring to a physical readout channel, because the
+/// internal ordering of the signal collection is not the channel mapping.
+///
+/// AddChargeToSignal() is a convenient way to fill an event when several charge
+/// contributions may arrive at the same channel and time. It creates the
+/// corresponding TRestDetectorSignal if the signal ID is not yet present, and
+/// otherwise accumulates the charge in the existing signal.
+///
+/// DrawEvent() displays all contained TRestDetectorSignal objects in a
+/// TMultiGraph, with time on the horizontal axis and amplitude on the vertical
+/// axis.
+///
+/// The following figure shows a detector signal event drawn with DrawEvent().
+/// Each trace corresponds to one TRestDetectorSignal in the event, with the
+/// horizontal axis expressed in physical time.
+///
+/// \htmlonly <style>div.image img[src="detector_signal_event.png"]{width:650px;}</style> \endhtmlonly
+///
+/// ![Detector signal event drawn with DrawEvent](detector_signal_event.png)
+///
+///--------------------------------------------------------------------------
+///
+/// RESTsoft - Software for Rare Event Searches with TPCs
+///
+/// History of developments:
+///
+/// 2015-September: First concept.
 ///                 JuanAn Garcia/Javier Galan
 ///
-///	       feb 2016: Added titles to axis in DrawGraph using TMultiGraph
-///		  Javier Gracia
-///_______________________________________________________________________________
+/// 2016-February: Added titles to axis in DrawGraph using TMultiGraph.
+///                Javier Gracia
+///
+/// \class      TRestDetectorSignalEvent
+/// \author     JuanAn Garcia
+/// \author     Javier Galan
+///
+/// <hr>
+///
 
 #include "TRestDetectorSignalEvent.h"
 
