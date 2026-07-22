@@ -864,20 +864,32 @@ void TRestDetectorHitsEvent::DrawHistograms(Int_t& column, const TString& histOp
     nBinsZ = std::max(1, nBinsZ);
 
     delete fXYHisto;
+    fXYHisto = nullptr;
     delete fXZHisto;
+    fXZHisto = nullptr;
     delete fYZHisto;
+    fYZHisto = nullptr;
 
     delete fXHisto;
+    fXHisto = nullptr;
     delete fYHisto;
+    fYHisto = nullptr;
     delete fZHisto;
+    fZHisto = nullptr;
 
     fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXYHisto->SetDirectory(nullptr);
     fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fXZHisto->SetDirectory(nullptr);
     fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+    fYZHisto->SetDirectory(nullptr);
 
     fXHisto = new TH1F("X", "", nBinsX, minX, maxX);
+    fXHisto->SetDirectory(nullptr);
     fYHisto = new TH1F("Y", "", nBinsY, minY, maxY);
+    fYHisto->SetDirectory(nullptr);
     fZHisto = new TH1F("Z", "", nBinsZ, minZ, maxZ);
+    fZHisto->SetDirectory(nullptr);
 
     fXYHisto->SetStats(false);
     fXZHisto->SetStats(false);
@@ -1149,7 +1161,9 @@ TH2F* TRestDetectorHitsEvent::GetXYHistogram(std::vector<float> ranges, Double_t
     }
 
     delete fXYHisto;
+    fXYHisto = nullptr;
     fXYHisto = new TH2F("XY", "", nBinsX, minX, maxX, nBinsY, minY, maxY);
+    fXYHisto->SetDirectory(nullptr);
     fXYHisto->SetStats(false);
 
     Int_t nXY = 0;
@@ -1236,7 +1250,9 @@ TH2F* TRestDetectorHitsEvent::GetXZHistogram(std::vector<float> ranges, Double_t
     }
 
     delete fXZHisto;
+    fXZHisto = nullptr;
     fXZHisto = new TH2F("XZ", "", nBinsX, minX, maxX, nBinsZ, minZ, maxZ);
+    fXZHisto->SetDirectory(nullptr);
     fXZHisto->SetStats(false);
 
     Int_t nXZ = 0;
@@ -1323,7 +1339,9 @@ TH2F* TRestDetectorHitsEvent::GetYZHistogram(std::vector<float> ranges, Double_t
     }
 
     delete fYZHisto;
+    fYZHisto = nullptr;
     fYZHisto = new TH2F("YZ", "", nBinsY, minY, maxY, nBinsZ, minZ, maxZ);
+    fYZHisto->SetDirectory(nullptr);
     fYZHisto->SetStats(false);
 
     Int_t nYZ = 0;
