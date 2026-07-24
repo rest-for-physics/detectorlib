@@ -32,7 +32,14 @@ if (${REST_GARFIELD} MATCHES "ON")
         set(external_include_dirs ${external_include_dirs}
                                   ${Garfield_INCLUDE_Heed_DIRS})
         set(external_libs ${external_libs} ${Garfield_LIBRARIES})
-        add_definitions(-DUSE_Garfield_OLD)
+        # Modern Garfield renamed Garfield::ComponentBase -> Garfield::Component
+        # (and ComponentBase.hh -> Component.hh). Only enable the legacy code
+        # path when the old header is actually present, so a modern Garfield
+        # reached through GARFIELD_HOME (e.g. an LCG/CVMFS install that ships no
+        # CMake config) builds correctly too.
+        if (EXISTS "${Garfield_INCLUDE_DIRS}/ComponentBase.hh")
+            add_definitions(-DUSE_Garfield_OLD)
+        endif ()
     else ()
         message(FATAL_ERROR "Garfield not found")
     endif ()
