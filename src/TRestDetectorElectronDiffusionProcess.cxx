@@ -46,8 +46,8 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fAttachment = 0;
     fGasPressure = -1;
 
-    fTransversalDiffusionCoefficient = 0;
-    fLongitudinalDiffusionCoefficient = 0;
+    fTransversalDiffusionCoefficient = -1;
+    fLongitudinalDiffusionCoefficient = -1;
     fWValue = 0;
     fFanoFactor = 0;
 
@@ -58,6 +58,7 @@ void TRestDetectorElectronDiffusionProcess::Initialize() {
     fReadout = nullptr;
 
     fRandom = nullptr;
+    fCheckIsInside = true;
 }
 
 void TRestDetectorElectronDiffusionProcess::LoadConfig(const string& configFilename, const string& name) {
@@ -116,11 +117,11 @@ void TRestDetectorElectronDiffusionProcess::InitProcess() {
             fFanoFactor = fGas->GetGasFanoFactor();
         }
 
-        if (fLongitudinalDiffusionCoefficient <= 0) {
+        if (fLongitudinalDiffusionCoefficient < 0) {
             fLongitudinalDiffusionCoefficient = fGas->GetLongitudinalDiffusion();
         }  // (cm)^1/2
 
-        if (fTransversalDiffusionCoefficient <= 0) {
+        if (fTransversalDiffusionCoefficient < 0) {
             fTransversalDiffusionCoefficient = fGas->GetTransversalDiffusion();
         }  // (cm)^1/2
     }
@@ -184,7 +185,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
         const Double_t z = hits->GetZ(hitIndex);
 
         for (int p = 0; p < fReadout->GetNumberOfReadoutPlanes(); p++) {
-            TRestDetectorReadoutPlane* plane = &(*fReadout)[p];
+            TRestDetectorReadoutPlane* plane = fReadout->GetReadoutPlane(p);
             const auto planeType = plane->GetType();
             if (planeType == "veto") {
                 // do not drift veto planes
@@ -238,18 +239,29 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 }
 
                 TVector3 positionAfterDiffusion = {x, y, z};
-                positionAfterDiffusion += {
-                    fRandom->Gaus(0, transversalDiffusion),  //
-                    fRandom->Gaus(0, transversalDiffusion),  //
-                    fRandom->Gaus(0, longitudinalDiffusion)  //
-                };
-                if (plane->GetDistanceTo(positionAfterDiffusion) < 0) {
+                if (transversalDiffusion > 0) {
+                    positionAfterDiffusion += {
+                        fRandom->Gaus(0, transversalDiffusion),  //
+                        fRandom->Gaus(0, transversalDiffusion),  //
+                        0                                        //
+                    };
+                }
+                if (longitudinalDiffusion > 0) {
+                    positionAfterDiffusion += {
+                        0,                                       //
+                        0,                                       //
+                        fRandom->Gaus(0, longitudinalDiffusion)  //
+                    };
+                }
+
+                if (plane->GetDistanceTo(positionAfterDiffusion) < 0 && longitudinalDiffusion > 0) {
                     // electron has been moved under the plane
                     positionAfterDiffusion.SetZ(
                         plane->GetPosition().Z() +
                         1E-6 * plane->GetNormal().Z());  // add a delta to make sure readout finds it
                 }
-                if (plane->GetDistanceTo(positionAfterDiffusion) > plane->GetHeight()) {
+                if (plane->GetDistanceTo(positionAfterDiffusion) > plane->GetHeight() &&
+                    longitudinalDiffusion > 0) {
                     // electron has been moved over the plane
                     positionAfterDiffusion.SetZ(
                         plane->GetPosition().Z() + plane->GetHeight() -
@@ -272,6 +284,7 @@ TRestEvent* TRestDetectorElectronDiffusionProcess::ProcessEvent(TRestEvent* inpu
                 }
                 fOutputHitsEvent->AddHit(positionAfterDiffusion.X(), positionAfterDiffusion.Y(),
                                          positionAfterDiffusion.Z(), electronEnergy, time, type);
+                break;  // avoid redoing for other planes (happens if fCheckIsInside is false)
             }
         }
     }
@@ -319,6 +332,6 @@ void TRestDetectorElectronDiffusionProcess::InitFromConfigFile() {
     fSeed = static_cast<UInt_t>(StringToInteger(GetParameter("seed", "0")));
     fPoissonElectronExcitation = StringToBool(GetParameter("poissonElectronExcitation", "true"));
     fUnitElectronEnergy = StringToBool(GetParameter("unitElectronEnergy", "false"));
-    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "false"));
+    fCheckIsInside = StringToBool(GetParameter("checkIsInside", "true"));
     fUseFanoFactor = StringToBool(GetParameter("useFano", "false"));
 }
