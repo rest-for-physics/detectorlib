@@ -109,7 +109,9 @@ TEST(LegacySignalRecovery, ConvertsOnlySignalBranchAndPreservesOpaqueContent) {
     fs::permissions(source, fs::perms::owner_write, fs::perm_options::remove);
     const auto originalBytes = ReadBytes(source);
 
-    ASSERT_EQ(RunProcess({REST_LEGACY_RESTROOT, "--recover-legacy-signals", source.string(), "--output",
+    // thisREST.sh aliases restRoot to `restRoot -l`; the recovery dispatch must
+    // still recognize the command when ROOT launcher flags precede its option.
+    ASSERT_EQ(RunProcess({REST_LEGACY_RESTROOT, "-l", "--recover-legacy-signals", source.string(), "--output",
                           output.string()},
                          REST_LEGACY_MACRO),
               0);
@@ -136,6 +138,15 @@ TEST(LegacySignalRecovery, ConvertsOnlySignalBranchAndPreservesOpaqueContent) {
     auto* opaqueClass = TClass::GetClass("LegacyOpaqueEvent");
     ASSERT_NE(opaqueClass, nullptr);
     EXPECT_FALSE(opaqueClass->HasDictionary());
+
+    // StreamerInfo makes an unavailable top-level class visible as a non-null
+    // emulated TClass.  This is deliberately not sufficient reason to call
+    // TKey::ReadObj(): real legacy REST metadata can crash there when an
+    // abstract compiled base cannot be instantiated.  The recovery must leave
+    // such a key opaque in the byte-copied candidate.
+    auto* opaqueMetadataClass = TClass::GetClass("LegacyOpaqueMetadata");
+    ASSERT_NE(opaqueMetadataClass, nullptr);
+    EXPECT_FALSE(opaqueMetadataClass->HasDictionary());
 
     for (const char* keyName : {"LegacyOpaqueMetadata", "AnalysisTree"}) {
         auto* oldKey = original.GetKey(keyName);
