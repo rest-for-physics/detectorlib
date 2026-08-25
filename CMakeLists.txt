@@ -64,3 +64,6 @@ file(GLOB_RECURSE MAC "${CMAKE_CURRENT_SOURCE_DIR}/macros/*")
 install(FILES ${MAC} DESTINATION ./macros/detector)
 
 add_library_test()
+if (TEST)
+    add_subdirectory(test/recovery)
+endif ()
