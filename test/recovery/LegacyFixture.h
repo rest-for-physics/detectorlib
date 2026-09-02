@@ -2,23 +2,11 @@
 #define REST_LEGACY_RECOVERY_FIXTURE_H
 
 #include <TObject.h>
+#include <TRestEvent.h>
 #include <TString.h>
-#include <TTimeStamp.h>
 
 #include <string>
 #include <vector>
-
-class TRestEvent : public TObject {
-   public:
-    Int_t fRunOrigin = 0;
-    Int_t fSubRunOrigin = 0;
-    Int_t fEventID = 0;
-    Int_t fSubEventID = 0;
-    TString fSubEventTag;
-    TTimeStamp fEventTime;
-    Bool_t fOk = true;
-    ClassDef(TRestEvent, 1)
-};
 
 class TRestDetectorSignal {
    public:
@@ -33,7 +21,8 @@ class TRestDetectorSignal {
 class TRestDetectorSignalEvent : public TRestEvent {
    public:
     std::vector<TRestDetectorSignal> fSignal;
-    ClassDef(TRestDetectorSignalEvent, 1)
+    void Initialize() override {}
+    ClassDefOverride(TRestDetectorSignalEvent, 1)
 };
 
 class LegacyOpaqueEvent : public TObject {

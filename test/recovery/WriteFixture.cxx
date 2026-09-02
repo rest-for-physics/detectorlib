@@ -1,5 +1,10 @@
+#include <TArrayC.h>
+#include <TClass.h>
 #include <TFile.h>
 #include <TNamed.h>
+#include <TRestAnalysisTree.h>
+#include <TRestRun.h>
+#include <TStreamerInfo.h>
 #include <TTree.h>
 
 #include <cstdlib>
@@ -8,7 +13,9 @@
 #include "LegacyFixture.h"
 
 int main(int argc, char* argv[]) {
-    if (argc != 2) return 2;
+    if (argc < 2 || argc > 3) return 2;
+    const bool keepSignalStreamerInfo = argc == 3 && std::string(argv[2]) == "--keep-signal-streamer-info";
+    if (argc == 3 && !keepSignalStreamerInfo) return 2;
     TFile file(argv[1], "CREATE");
     if (file.IsZombie()) return 3;
 
@@ -20,17 +27,16 @@ int main(int argc, char* argv[]) {
     TTree tree("EventTree", "legacy fixture");
     auto* signalEvent = new TRestDetectorSignalEvent;
     auto* opaqueEvent = new LegacyOpaqueEvent;
-    tree.Branch("TRestDetectorSignalEventBranch", &signalEvent);
     tree.Branch("LegacyOpaqueEventBranch", "LegacyOpaqueEvent", &opaqueEvent, 32000, 0);
+    tree.Branch("TRestDetectorSignalEventBranch", &signalEvent);
     for (Int_t entry = 0; entry < 3; ++entry) {
-        signalEvent->fRunOrigin = 12;
-        signalEvent->fSubRunOrigin = 2;
-        signalEvent->fEventID = 100 + entry;
-        signalEvent->fSubEventID = entry;
-        signalEvent->fSubEventTag = TString::Format("tag-%d", entry);
-        signalEvent->fEventTime.SetSec(1000 + entry);
-        signalEvent->fEventTime.SetNanoSec(200 + entry);
-        signalEvent->fOk = entry != 1;
+        signalEvent->SetRunOrigin(12);
+        signalEvent->SetSubRunOrigin(2);
+        signalEvent->SetID(100 + entry);
+        signalEvent->SetSubID(entry);
+        signalEvent->SetSubEventTag(TString::Format("tag-%d", entry));
+        signalEvent->SetTime(1000 + entry, 200 + entry);
+        signalEvent->SetOK(entry != 1);
         signalEvent->fSignal.clear();
         for (Int_t signalIndex = 0; signalIndex < 2; ++signalIndex) {
             TRestDetectorSignal signal;
@@ -51,14 +57,28 @@ int main(int argc, char* argv[]) {
     tree.GetUserInfo()->Add(new TNamed("TreeNote", "must survive fast cloning"));
     if (tree.Write() <= 0) return 6;
 
-    TTree analysis("AnalysisTree", "unrelated top-level tree");
-    Double_t observable = 0;
-    analysis.Branch("observable", &observable);
+    TRestAnalysisTree analysis("AnalysisTree", "unrelated top-level tree");
     for (Int_t entry = 0; entry < 3; ++entry) {
-        observable = entry * 1.5;
+        analysis.SetObservableValue("observable", entry * 1.5);
         analysis.Fill();
     }
     if (analysis.Write() <= 0) return 7;
+
+    TRestRun run;
+    if (run.Write("Run") <= 0) return 8;
+
+    if (!keepSignalStreamerInfo) {
+        auto* classIndex = file.GetClassIndex();
+        if (classIndex == nullptr) return 9;
+        for (auto* type : {TRestDetectorSignal::Class(), TRestDetectorSignalEvent::Class()}) {
+            auto* info = type->GetStreamerInfo();
+            const Int_t number = info == nullptr ? -1 : info->GetNumber();
+            if (number < 0 || number >= classIndex->GetSize()) return 10;
+            classIndex->fArray[number] = 0;
+        }
+        classIndex->fArray[0] = 1;
+        file.WriteStreamerInfo();
+    }
     file.Close();
-    return file.TestBit(TFile::kWriteError) ? 8 : EXIT_SUCCESS;
+    return file.TestBit(TFile::kWriteError) ? 11 : EXIT_SUCCESS;
 }

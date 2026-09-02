@@ -5,6 +5,7 @@
 #include <TKey.h>
 #include <TNamed.h>
 #include <TRestDetectorSignalEvent.h>
+#include <TStreamerInfo.h>
 #include <TTree.h>
 #include <gtest/gtest.h>
 
@@ -15,6 +16,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -67,6 +69,20 @@ int RunProcess(const std::vector<std::string>& arguments, const char* recoveryMa
 std::vector<char> ReadBytes(const fs::path& filename) {
     std::ifstream input(filename, std::ios::binary);
     return {std::istreambuf_iterator<char>(input), std::istreambuf_iterator<char>()};
+}
+
+bool HasLegacySignalStreamerInfo(const fs::path& filename) {
+    TFile file(filename.c_str(), "READ");
+    std::unique_ptr<TList> infos(file.GetStreamerInfoList());
+    if (file.IsZombie() || infos == nullptr) return false;
+    TIter next(infos.get());
+    while (auto* object = next()) {
+        auto* info = dynamic_cast<TStreamerInfo*>(object);
+        if (info != nullptr && std::string(info->GetName()) == "TRestDetectorSignal" &&
+            info->GetClassVersion() == 3)
+            return true;
+    }
+    return false;
 }
 
 std::vector<char> ReadBasketPayload(TFile& file, TBranch& branch, Int_t index) {
@@ -195,6 +211,29 @@ TEST(LegacySignalRecovery, ConvertsOnlySignalBranchAndPreservesOpaqueContent) {
                          REST_LEGACY_MACRO),
               0);
     EXPECT_FALSE(fs::exists(secondOutput));
+#endif
+}
+
+TEST(LegacySignalRecovery, NormalReadRequiresRecoveryOnlyWhenStreamerInfoIsMissing) {
+#ifdef _WIN32
+    GTEST_SKIP() << "The recovery command is currently POSIX-only";
+#else
+    TemporaryDirectory temporary;
+    const fs::path unsafe = temporary.path / "legacy-without-streamer-info.root";
+    const fs::path safe = temporary.path / "legacy-with-streamer-info.root";
+    const fs::path fixed = temporary.path / "fixed.root";
+    ASSERT_EQ(RunProcess({REST_LEGACY_FIXTURE_WRITER, unsafe.string()}), 0);
+    ASSERT_EQ(RunProcess({REST_LEGACY_FIXTURE_WRITER, safe.string(), "--keep-signal-streamer-info"}), 0);
+    EXPECT_FALSE(HasLegacySignalStreamerInfo(unsafe));
+    EXPECT_TRUE(HasLegacySignalStreamerInfo(safe));
+
+    EXPECT_EQ(RunProcess({REST_LEGACY_FIXTURE_READER, unsafe.string()}), 1);
+    EXPECT_EQ(RunProcess({REST_LEGACY_FIXTURE_READER, safe.string()}), 0);
+    ASSERT_EQ(RunProcess({REST_LEGACY_RESTROOT, "--recover-legacy-signals", unsafe.string(), "--output",
+                          fixed.string()},
+                         REST_LEGACY_MACRO),
+              0);
+    EXPECT_EQ(RunProcess({REST_LEGACY_FIXTURE_READER, fixed.string()}), 0);
 #endif
 }
 
