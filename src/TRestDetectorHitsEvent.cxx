@@ -39,7 +39,10 @@
 ///
 #include "TRestDetectorHitsEvent.h"
 
+#include <algorithm>
 #include <array>
+#include <numeric>
+#include <vector>
 
 #include "TCanvas.h"
 #include "TColor.h"
@@ -160,20 +163,43 @@ void TRestDetectorHitsEvent::Initialize() {
 
 void TRestDetectorHitsEvent::Sort(bool(compareCondition)(const TRestHits::iterator& hit1,
                                                          const TRestHits::iterator& hit2)) {
-#ifndef __APPLE__
+    // std::sort is not applied directly on TRestHits::iterator since it is a proxy iterator
+    // that does not fulfil all the random-access iterator requirements, and recent libc++
+    // versions (macOS) refuse to compile it. Instead, we sort a list of hit indices using the
+    // same comparison, and then we apply the resulting permutation using TRestHits::SwapHits.
+    // The result is the same on all platforms (hits with equal values keep their order).
+    const int nHits = static_cast<int>(fHits->GetNumberOfHits());
+    if (nHits < 2) return;
+
+    std::vector<int> order(nHits);
+    std::iota(order.begin(), order.end(), 0);
+
     if (compareCondition == 0) {
         // default sort logic: z from smaller to greater
-        std::sort(fHits->begin(), fHits->end(),
-                  [](const TRestHits::iterator& hit1, const TRestHits::iterator& hit2) -> bool {
-                      return hit1.z() < hit2.z();
-                  });
+        std::stable_sort(order.begin(), order.end(),
+                         [this](int a, int b) { return fHits->GetZ(a) < fHits->GetZ(b); });
     } else {
-        std::sort(fHits->begin(), fHits->end(), compareCondition);
+        std::stable_sort(order.begin(), order.end(), [this, compareCondition](int a, int b) {
+            return compareCondition(TRestHits::iterator(fHits, a), TRestHits::iterator(fHits, b));
+        });
     }
-#else
-    std::cout << "TRestDetectorHitsEvent::Sort is not implemented on MacOs!!" << std::endl;
-    std::cout << "This method implementation should be reviewed for proper operation in Mac" << std::endl;
-#endif
+
+    // Apply the permutation: the hit originally at order[i] must end up at position i
+    std::vector<int> where(nHits);  // where[original index] = current position
+    std::vector<int> at(nHits);     // at[current position] = original index
+    std::iota(where.begin(), where.end(), 0);
+    std::iota(at.begin(), at.end(), 0);
+    for (int i = 0; i < nHits; i++) {
+        const int orig = order[i];
+        const int p = where[orig];
+        if (p == i) continue;
+        fHits->SwapHits(i, p);
+        const int displaced = at[i];
+        at[i] = orig;
+        at[p] = displaced;
+        where[orig] = i;
+        where[displaced] = p;
+    }
 }
 
 void TRestDetectorHitsEvent::Shuffle(int NLoop) {
