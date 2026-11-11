@@ -1,27 +1,68 @@
-///______________________________________________________________________________
-///______________________________________________________________________________
-///______________________________________________________________________________
+//////////////////////////////////////////////////////////////////////////
+/// TRestDetectorSignal stores one detector-channel signal as time-charge
+/// points.
 ///
+/// A TRestDetectorSignal represents the response of one detector readout
+/// channel after the signal has been expressed in physical coordinates. Unlike
+/// TRestRawSignal, which stores a fixed array of ADC samples indexed by bin,
+/// TRestDetectorSignal stores two parallel vectors: one with the time of each
+/// point and one with the corresponding charge or amplitude. The signal is
+/// identified by its signal ID, which is the channel identifier used by the
+/// readout and by TRestDetectorSignalEvent.
 ///
-///             RESTSoft : Software for Rare Event Searches with TPCs
+/// This class is commonly produced by detector simulation or reconstruction
+/// processes. For example, TRestDetectorHitsToSignalProcess converts energy
+/// deposits in a TRestDetectorHitsEvent into detector signals using the readout
+/// geometry, drift velocity, and electronics sampling. The resulting
+/// TRestDetectorSignal objects can then be converted to hits again, analyzed
+/// channel by channel, or inspected visually through their TGraph
+/// representation.
 ///
-///             TRestDetectorSignal.cxx
+/// A signal can be filled point by point:
 ///
-///             Event class to store signals from simulation and acquisition
-///             events
+/// \code
+/// TRestDetectorSignal signal;
+/// signal.SetSignalID(12);
+/// signal.NewPoint(0.0, 0.0);
+/// signal.NewPoint(0.1, 4.2);
+/// signal.NewPoint(0.2, 12.8);
 ///
-///             sept 2015:   First concept
-///                 Created as part of the conceptualization of existing REST
-///                 software.
+/// std::cout << "Integral: " << signal.GetIntegral() << std::endl;
+/// std::cout << "Peak time: " << signal.GetMaxPeakTime() << std::endl;
+/// signal.GetGraph()->Draw("AL");
+/// \endcode
+///
+/// Use NewPoint() when appending a sampled point, SetPoint() when replacing or
+/// inserting a point at a given time, and IncreaseAmplitude() when several
+/// contributions should be accumulated at the same time. If the points are not
+/// added in chronological order, Sort() can be used before time-dependent
+/// operations.
+///
+/// The class provides basic signal observables such as GetIntegral(),
+/// GetIntegralWithTime(), GetMaxPeakValue(), GetMaxPeakTime(), GetMinTime(),
+/// and GetMaxTime(). It also includes utilities for normalization, baseline
+/// subtraction, smoothing, noise generation, delayed copies, and simple peak
+/// fits.
+///
+///--------------------------------------------------------------------------
+///
+/// RESTsoft - Software for Rare Event Searches with TPCs
+///
+/// History of developments:
+///
+/// 2015-September: First concept.
 ///                 JuanAn Garcia/Javier Galan
-///		nov 2015:
-///		    Changed vectors fSignalTime and fSignalCharge from <Int_t>
-/// to
-///< Float_t> 	            JuanAn Garcia
-//      dec 2015:
-//
-//              Javier Galan
-///_______________________________________________________________________________
+///
+/// 2015-November: Changed vectors fSignalTime and fSignalCharge from Int_t
+///                to Float_t.
+///                JuanAn Garcia
+///
+/// \class      TRestDetectorSignal
+/// \author     JuanAn Garcia
+/// \author     Javier Galan
+///
+/// <hr>
+///
 
 #include "TRestDetectorSignal.h"
 

@@ -22,8 +22,9 @@
 
 //////////////////////////////////////////////////////////////////////////
 /// TRestDetectorHitsSmearingProcess will introduce a stochastic smearing on the
-/// energy of the hits for each event. The total energy of each event will be
-/// re-distributed following a gaussian shaped function.
+/// energy of the hits for each event. The total energy of the selected channel
+/// type in each event will be re-distributed following a gaussian shaped
+/// function.
 ///
 /// The energy resolution will follow a root square law with the energy
 /// using the `energyReference` and the `resolutionReference` as a pivoting
@@ -122,10 +123,21 @@ TRestEvent* TRestDetectorHitsSmearingProcess::ProcessEvent(TRestEvent* inputEven
     fInputEvent = (TRestDetectorHitsEvent*)inputEvent;
     fOutputEvent->SetEventInfo(fInputEvent);
 
-    Double_t eDep = fInputEvent->GetTotalEnergy();
-    Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
+    Double_t eDep = 0.0;
+    for (int hit = 0; hit < static_cast<int>(fInputEvent->GetNumberOfHits()); hit++) {
+        const auto hitType = fInputEvent->GetType(hit);
+        if ((fChannelType == "veto" && hitType == REST_HitType::VETO) ||
+            (fChannelType == "tpc" && hitType != REST_HitType::VETO)) {
+            eDep += fInputEvent->GetEnergy(hit);
+        }
+    }
 
-    Double_t gain = fRandom->Gaus(1.0, eRes);
+    Double_t gain = 1.0;
+    if (eDep > 0) {
+        Double_t eRes = fResolutionAtERef * TMath::Sqrt(fEnergyRef / eDep) / 2.35 / 100.0;
+        gain = fRandom->Gaus(1.0, eRes);
+    }
+
     for (int hit = 0; hit < static_cast<int>(fInputEvent->GetNumberOfHits()); hit++) {
         const auto hitType = fInputEvent->GetType(hit);
 

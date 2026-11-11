@@ -7,7 +7,7 @@
 ///
 ///             TRestDetectorSignal.h
 ///
-///             Event class to store signals fromm simulation and acquisition
+///             Event class to store signals from simulation and acquisition
 ///             events
 ///
 ///             sept 2015:   First concept
